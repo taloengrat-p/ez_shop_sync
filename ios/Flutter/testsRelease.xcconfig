@@ -1,0 +1,7 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_tests.dart
+ASSET_PREFIX=tests
+BUNDLE_NAME=Ez Shop Sync -TESTS
+BUNDLE_DISPLAY_NAME=Ez Shop Sync -TESTS

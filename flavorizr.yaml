@@ -1,0 +1,16 @@
+flavors:
+  dev:
+    app:
+      name: "Ez Shop Sync -DEV"
+    android:
+      applicationId: "com.taloengratp.ezshopsync.dev"
+    ios:
+      bundleId: "com.taloengratp.ezshopsync.dev"
+
+  prod:
+    app:
+      name: "Ez Shop Sync"
+    android:
+      applicationId: "com.taloengratp.ezshopsync"
+    ios:
+      bundleId: "com.taloengratp.ezshopsync"
