@@ -1,30 +1,47 @@
-import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/services/hivedb_service/hivedb_service.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:uuid/v1.dart';
 
-class BaseHiveRepository<I, T extends Object> {
-  HiveDBService hiveDBService;
+abstract class BaseHiveRepository<I, T extends Object> {
+  String boxName;
+  late Box<T> box;
 
-  BaseHiveRepository({
-    required this.hiveDBService,
-  });
+  BaseHiveRepository({required this.boxName}) {
+    init();
+  }
+  init() {
+    box = Hive.box<T>(boxName);
+  }
+
+  Future<T> create(T request, {String? idCustom}) async {
+    final String id = idCustom ?? const UuidV1().generate();
+
+    await box.put(
+      id,
+      request,
+    );
+
+    return request;
+  }
 
   T? getById(I id) {
-    // Implement fetching logic here
-
-    if (T is Box<Product>) {
-      return hiveDBService.productBox.get(id) as T;
-    }
-
-    return null;
+    return box.get(id);
   }
 
   List<T> getAll() {
-    // Implement fetching logic here
-    if (T is Box<Product>) {
-      return hiveDBService.productBox.values as List<T>;
-    }
+    return box.values.toList();
+  }
 
-    return [];
+  delete(I id) {
+    box.delete(id);
+  }
+
+  deleteAll(List<I> ids) {
+    box.deleteAll(ids);
+  }
+
+  T update(I id, T updated) {
+    box.put(id, updated);
+    return updated;
   }
 }

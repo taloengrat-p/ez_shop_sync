@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
+import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/main/transaction/transaction_page.dart';
@@ -28,7 +29,8 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     cubit = MainCubit();
-    _navigationController = CircularBottomNavigationController(cubit.currentPage);
+    _navigationController =
+        CircularBottomNavigationController(cubit.currentPage);
     _pageController = PageController(initialPage: cubit.currentPage);
   }
 
@@ -42,6 +44,7 @@ class _MainPageState extends State<MainPage> {
           builder: (context, state) {
             return BaseScaffolds(
               body: Stack(
+                fit: StackFit.expand,
                 children: [
                   PageView(
                     controller: _pageController,
@@ -54,7 +57,7 @@ class _MainPageState extends State<MainPage> {
                       ProductPage(),
                       TransactionPage(),
                       HistoryPage(),
-                      Container(),
+                      MorePage(),
                     ],
                   ),
                   Align(
@@ -62,9 +65,12 @@ class _MainPageState extends State<MainPage> {
                     child: CircularBottomNavigation(
                       [
                         TabItem(CupertinoIcons.home, "Home", ColorKeys.skyBlue),
-                        TabItem(CupertinoIcons.cube_box, "Products", ColorKeys.skyBlue),
-                        TabItem(CupertinoIcons.money_dollar_circle, "Transaction", ColorKeys.skyBlue),
-                        TabItem(Icons.history_rounded, "History", ColorKeys.skyBlue),
+                        TabItem(CupertinoIcons.cube_box, "Products",
+                            ColorKeys.skyBlue),
+                        TabItem(CupertinoIcons.money_dollar_circle,
+                            "Transaction", ColorKeys.skyBlue),
+                        TabItem(Icons.history_rounded, "History",
+                            ColorKeys.skyBlue),
                         TabItem(Icons.menu_rounded, "Menu", ColorKeys.skyBlue),
                       ],
                       iconsSize: 24,
@@ -78,7 +84,8 @@ class _MainPageState extends State<MainPage> {
                           _pageController.jumpToPage(selectedPos);
                         } else {
                           _pageController.animateToPage(selectedPos,
-                              duration: const Duration(milliseconds: 300), curve: Curves.linear);
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.linear);
                         }
                       },
                     ),

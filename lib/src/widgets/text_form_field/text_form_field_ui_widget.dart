@@ -1,9 +1,11 @@
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 enum TextFormFieldUiType { password, normal, email }
 
 class TextFormFieldUiWidget extends StatefulWidget {
+  final Widget? labelSuffix;
   final String? label;
   final String? hintText;
   final String? textInitial;
@@ -32,37 +34,38 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final bool enableSuggestions;
   final double? maxLines;
   final bool? autofocus;
-  const TextFormFieldUiWidget(
-      {Key? key,
-      required this.label,
-      this.obscureText,
-      this.errorText,
-      this.validator,
-      this.isRequired = false,
-      this.textInitial,
-      this.autofillHints = const [],
-      this.suffixIcon,
-      this.hintText,
-      this.autoCompleteType = TextFormFieldUiType.normal,
-      this.controller,
-      this.customMessageRequired,
-      this.onChanged,
-      this.onBlur,
-      this.onTap,
-      this.readOnly = false,
-      this.onFieldSubmitted,
-      this.focusNode,
-      this.textAlign,
-      this.autofocus,
-      this.inputFormatters,
-      this.keyboardType,
-      this.contentPadding,
-      this.textValue,
-      this.textInputAction = TextInputAction.done,
-      this.autoCorrect = true,
-      this.enableSuggestions = true,
-      this.maxLines = 1})
-      : super(key: key);
+  const TextFormFieldUiWidget({
+    Key? key,
+    required this.label,
+    this.obscureText,
+    this.errorText,
+    this.validator,
+    this.isRequired = false,
+    this.textInitial,
+    this.autofillHints = const [],
+    this.suffixIcon,
+    this.hintText,
+    this.autoCompleteType = TextFormFieldUiType.normal,
+    this.controller,
+    this.customMessageRequired,
+    this.onChanged,
+    this.onBlur,
+    this.onTap,
+    this.readOnly = false,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.textAlign,
+    this.autofocus,
+    this.inputFormatters,
+    this.keyboardType,
+    this.contentPadding,
+    this.textValue,
+    this.textInputAction = TextInputAction.done,
+    this.autoCorrect = true,
+    this.enableSuggestions = true,
+    this.maxLines = 1,
+    this.labelSuffix,
+  }) : super(key: key);
 
   @override
   State<TextFormFieldUiWidget> createState() => _TextFormFieldUiWidgetState();
@@ -72,13 +75,13 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
   late TextEditingController _controller;
   bool isBlured = false;
   bool _isVisible = false;
-  late FocusNode _inputFocusNode;
+  // late FocusNode _inputFocusNode;
 
   @override
   void initState() {
     super.initState();
 
-    _inputFocusNode = widget.focusNode ?? FocusNode();
+    // _inputFocusNode = widget.focusNode ?? FocusNode();
 
     if (widget.controller == null) {
       _controller = TextEditingController();
@@ -91,16 +94,16 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
       widget.onChanged?.call(_controller.text);
     }
 
-    _inputFocusNode.addListener(() {
-      if (!_inputFocusNode.hasFocus) {
-        widget.onBlur?.call();
-        if (!isBlured) {
-          setState(() {
-            isBlured = true;
-          });
-        }
-      }
-    });
+    // _inputFocusNode.addListener(() {
+    //   if (!_inputFocusNode.hasFocus) {
+    //     widget.onBlur?.call();
+    //     if (!isBlured) {
+    //       setState(() {
+    //         isBlured = true;
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   @override
@@ -108,7 +111,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
     if (widget.controller == null) {
       _controller.dispose();
     }
-    _inputFocusNode.dispose();
+    // _inputFocusNode.dispose();
     super.dispose();
   }
 
@@ -116,11 +119,20 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
     if (label != null && label.isNotEmpty) {
       return Column(
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 15,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              if (widget.labelSuffix.isNotNull) widget.labelSuffix!,
+            ],
           ),
           const SizedBox(
             height: 6,
@@ -163,10 +175,12 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                 keyboardType: widget.keyboardType ?? TextInputType.text,
                 textAlign: widget.textAlign ?? TextAlign.start,
                 autofocus: widget.autofocus ?? false,
-                autovalidateMode: isBlured ? AutovalidateMode.always : AutovalidateMode.disabled,
+                autovalidateMode: isBlured
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
                 readOnly: widget.readOnly ?? false,
                 autofillHints: widget.autofillHints,
-                focusNode: _inputFocusNode,
+                focusNode: widget.focusNode,
                 controller: _controller,
                 onFieldSubmitted: widget.onFieldSubmitted,
                 onTap: () {
@@ -184,10 +198,12 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                  contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-                  suffixIcon: widget.autoCompleteType == TextFormFieldUiType.password
-                      ? getSuffixPasswordType()
-                      : widget.suffixIcon,
+                  contentPadding: widget.contentPadding ??
+                      const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                  suffixIcon:
+                      widget.autoCompleteType == TextFormFieldUiType.password
+                          ? getSuffixPasswordType()
+                          : widget.suffixIcon,
                   border: OutlineInputBorder(
                     borderRadius: borderRadius,
                   ),
@@ -244,7 +260,8 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
           _isVisible = !_isVisible;
         });
       },
-      icon: Icon(_isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      icon: Icon(
+          _isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
     );
   }
 

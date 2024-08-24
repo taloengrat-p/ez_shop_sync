@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'user.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 4)
 class User {
   @HiveField(1)
   String id;
@@ -16,8 +16,8 @@ class User {
   @HiveField(4)
   String lastName;
 
-  @HiveField(5)
-  String phoneNumber;
+  @HiveField(5, defaultValue: null)
+  String? phoneNumber;
 
   @HiveField(6)
   String email;
@@ -25,8 +25,8 @@ class User {
   @HiveField(7)
   String username;
 
-  @HiveField(8)
-  String profilePictureUrl;
+  @HiveField(8, defaultValue: null)
+  String? profilePictureUrl;
 
   @HiveField(9)
   String password;
@@ -35,10 +35,10 @@ class User {
   String passwordSalt;
 
   @HiveField(11)
-  String pin;
+  String? pin;
 
   @HiveField(12)
-  String pinSalt;
+  String? pinSalt;
 
   @HiveField(13, defaultValue: null)
   DateTime? createDate;
@@ -57,14 +57,14 @@ class User {
     required this.storeId,
     required this.firstName,
     required this.lastName,
-    required this.phoneNumber,
+    this.phoneNumber,
     required this.email,
     required this.username,
-    required this.profilePictureUrl,
+    this.profilePictureUrl,
     required this.password,
     required this.passwordSalt,
-    required this.pin,
-    required this.pinSalt,
+    this.pin,
+    this.pinSalt,
     this.createDate,
     this.createBy,
     this.updateDate,

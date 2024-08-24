@@ -13,6 +13,11 @@ class BaseInitial extends BaseState {
   String toString() => 'BaseInitial';
 }
 
+class BaseInitialSuccess extends BaseState {
+  @override
+  String toString() => 'BaseInitialSuccess';
+}
+
 class BaseLoading extends BaseState {
   @override
   String toString() => 'BaseLoading';
@@ -28,6 +33,17 @@ class BaseFailure extends BaseState {
   String toString() => 'BaseFailure';
 }
 
+class BaseRefresh extends BaseState {
+  final DateTime dateTime;
+
+  const BaseRefresh(this.dateTime);
+  @override
+  String toString() => 'BaseRefresh';
+
+  @override
+  List<Object?> get props => [dateTime.toIso8601String()];
+}
+
 class BaseChangeAppMode extends BaseState {
   AppMode mode;
 
@@ -38,4 +54,9 @@ class BaseChangeAppMode extends BaseState {
 
   @override
   List<Object?> get props => [mode];
+}
+
+class BaseInitialLocalStorageServiceSuccess extends BaseState {
+  @override
+  String toString() => 'BaseInitialLocalStorageServiceSuccess';
 }

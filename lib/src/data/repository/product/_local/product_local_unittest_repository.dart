@@ -18,9 +18,8 @@ class ProductLocalUnittestRepository implements ProductLocalRepository {
   }
 
   @override
-  deleteAll() {
-    // TODO: implement deleteAll
-    throw UnimplementedError();
+  deleteAll(List<String> ids) {
+    return ['1', '2', '3'];
   }
 
   @override
@@ -30,7 +29,7 @@ class ProductLocalUnittestRepository implements ProductLocalRepository {
   }
 
   @override
-  Product getDetail(String id) {
+  Product? getById(String id) {
     // TODO: implement getDetail
     throw UnimplementedError();
   }

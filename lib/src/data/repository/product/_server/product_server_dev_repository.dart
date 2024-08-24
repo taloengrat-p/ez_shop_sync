@@ -18,7 +18,7 @@ class ProductServerDevRepository implements ProductServerRepository {
   }
 
   @override
-  deleteAll() {
+  deleteAll(List<String> ids) {
     // TODO: implement deleteAll
     throw UnimplementedError();
   }
@@ -30,7 +30,7 @@ class ProductServerDevRepository implements ProductServerRepository {
   }
 
   @override
-  Product getDetail(String id) {
+  Product? getById(String id) {
     // TODO: implement getDetail
     throw UnimplementedError();
   }

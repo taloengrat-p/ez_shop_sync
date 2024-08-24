@@ -1,5 +1,5 @@
 generate-build_runner:
-	dart pub run build_runner build
+	dart run build_runner build
 
 init-native-splash-screen:
 	dart run flutter_native_splash:create

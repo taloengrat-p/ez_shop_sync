@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,16 +10,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalStorageDevService implements LocalStorageService {
   SharedPreferences? prefs;
 
-  LocalStorageDevService() {
-    init();
-  }
-
   @override
-  init() async {
-    log('init()', name: runtimeType.toString());
+  Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
   }
 
+  @override
   T? getPref<T>(String key) {
     try {
       final result = prefs?.get(key) as T;
@@ -30,6 +25,7 @@ class LocalStorageDevService implements LocalStorageService {
     }
   }
 
+  @override
   Future<bool> setPref(String key, Object? value) async {
     bool result = false;
 
@@ -56,6 +52,10 @@ class LocalStorageDevService implements LocalStorageService {
 
   @override
   Future<bool> doCheckIsFirstRunApp() async {
+    if (prefs.isNull) {
+      await init();
+    }
+
     final result = getPref<bool>(SharedPrefKeys.isFirstRunApp) ?? true;
 
     if (result) {
@@ -67,6 +67,10 @@ class LocalStorageDevService implements LocalStorageService {
 
   @override
   Future<bool> doCheckIsIntroduceFlowDone() async {
+    if (prefs.isNull) {
+      await init();
+    }
+
     final result = getPref<bool>(SharedPrefKeys.isIntroduceFlowDone) ?? false;
 
     if (!result) {

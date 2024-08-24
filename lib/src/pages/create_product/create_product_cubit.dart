@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
+import 'package:ez_shop_sync/src/utils/crypto_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
@@ -24,16 +26,19 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   void submit() async {
     emit(CreateProductLoading());
-    final result = await productRepository.create(Product(
-      name: name,
-      description: description,
-      price: price,
-      category: category,
-      brand: brand,
-      status: status,
-      image: productImage,
-      imageDetail: productDetalImages,
-    ));
+
+    final result = await productRepository.create(
+      Product(
+        name: name,
+        description: description,
+        price: price,
+        category: category,
+        brand: brand,
+        status: status,
+        image: productImage,
+        imageDetail: productDetalImages,
+      ),
+    );
     emit(CreateProductSuccess());
   }
 

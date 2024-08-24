@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class ImagePickerUtils {
   static Future<File?> pickImage() async {
     final picker = ImagePicker();

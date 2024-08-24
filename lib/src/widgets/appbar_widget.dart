@@ -9,6 +9,8 @@ class AppbarWidget {
   Color? color;
   Color? iconThemeColor;
   SystemUiOverlayStyle? systemUiOverlayStyle;
+  Widget? titleWidget;
+
   AppbarWidget({
     this.title,
     this.actions,
@@ -16,6 +18,7 @@ class AppbarWidget {
     this.centerTitle,
     this.iconThemeColor,
     this.systemUiOverlayStyle,
+    this.titleWidget,
   });
   AppBar build() {
     return AppBar(
@@ -28,7 +31,7 @@ class AppbarWidget {
               title!,
               style: const TextStyle(color: Colors.white, fontSize: 18),
             )
-          : null,
+          : titleWidget,
       actions: actions,
     );
   }

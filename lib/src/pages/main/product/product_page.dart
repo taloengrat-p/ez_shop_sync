@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ez_shop_sync/res/image_constance.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -101,7 +100,8 @@ class _ProductPageState extends State<ProductPage> {
             .map(
               (e) => GestureDetector(
                 onTap: () async {
-                  final result = await ProductDetailRouter(context).navigate(argruments: e);
+                  final result = await ProductDetailRouter(context)
+                      .navigate(argruments: e);
 
                   if (result is BaseArgrument && result.refresh) {
                     cubit.init();
@@ -138,7 +138,9 @@ class _ProductPageState extends State<ProductPage> {
 
     if (cubit.products.isNotEmpty) {
       return Expanded(
-          child: cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct());
+          child: cubit.displayType == ProductDisplayType.grid
+              ? buildGridViewProduct()
+              : buildListProduct());
     } else {
       return Expanded(
         child: Center(
@@ -164,7 +166,9 @@ class _ProductPageState extends State<ProductPage> {
               onPressed: () {
                 cubit.changeDisplayType();
               },
-              icon: Icon(cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
+              icon: Icon(cubit.displayType == ProductDisplayType.grid
+                  ? Icons.list_rounded
+                  : Icons.grid_view),
             ),
           ],
         ),

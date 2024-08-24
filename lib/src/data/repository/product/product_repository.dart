@@ -6,28 +6,29 @@ import 'package:injectable/injectable.dart';
 
 abstract class IProductRepository {
   List<Product> getAll();
-  Product getDetail(String id);
+  Product? getById(String id);
   Future<Product> create(Product request);
   Product update(String id, Product updated);
   delete(String id);
-  deleteAll();
+  deleteAll(List<String> ids);
 }
 
 @Singleton()
 @Injectable()
 class ProductRepository implements IProductRepository {
-  BaseCubit baseCubit;
+  String name = '';
+
   ProductLocalRepository productLocalRepository;
+
   ProductServerRepository productServerRepository;
 
   ProductRepository({
-    required this.baseCubit,
     required this.productLocalRepository,
     required this.productServerRepository,
   });
   @override
-  Future<Product> create(Product request) {
-    if (baseCubit.appMode == AppMode.local) {
+  Future<Product> create(Product request, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
       return productLocalRepository.create(request);
     } else {
       return productServerRepository.create(request);
@@ -35,8 +36,8 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  delete(String id) {
-    if (baseCubit.appMode == AppMode.local) {
+  delete(String id, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
       return productLocalRepository.delete(id);
     } else {
       return productServerRepository.delete(id);
@@ -44,17 +45,17 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  deleteAll() {
-    if (baseCubit.appMode == AppMode.local) {
-      return productLocalRepository.deleteAll();
+  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return productLocalRepository.deleteAll(ids);
     } else {
-      return productServerRepository.deleteAll();
+      return productServerRepository.deleteAll(ids);
     }
   }
 
   @override
-  List<Product> getAll() {
-    if (baseCubit.appMode == AppMode.local) {
+  List<Product> getAll({AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
       return productLocalRepository.getAll();
     } else {
       return productServerRepository.getAll();
@@ -62,17 +63,18 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  Product getDetail(String id) {
-    if (baseCubit.appMode == AppMode.local) {
-      return productLocalRepository.getDetail(id);
+  Product? getById(String id, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return productLocalRepository.getById(id);
     } else {
-      return productServerRepository.getDetail(id);
+      return productServerRepository.getById(id);
     }
   }
 
   @override
-  Product update(String id, Product updated) {
-    if (baseCubit.appMode == AppMode.local) {
+  Product update(String id, Product updated,
+      {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
       return productLocalRepository.update(id, updated);
     } else {
       return productServerRepository.update(id, updated);
