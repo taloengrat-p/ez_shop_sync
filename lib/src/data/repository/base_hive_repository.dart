@@ -1,8 +1,9 @@
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/v1.dart';
 
-abstract class BaseHiveRepository<I, T extends Object> {
+abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   String boxName;
   late Box<T> box;
 
@@ -43,5 +44,9 @@ abstract class BaseHiveRepository<I, T extends Object> {
   T update(I id, T updated) {
     box.put(id, updated);
     return updated;
+  }
+
+  List<T> getAllById(List<I> ids) {
+    return box.values.where((e) => ids.contains(ids)).toList();
   }
 }

@@ -25,7 +25,14 @@ class EmptyDataWidget extends StatelessWidget {
           height: height,
           width: width,
         ),
-        if (message.isNotNull) Text(message!),
+        if (message.isNotNull)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              message!,
+              textAlign: TextAlign.center,
+            ),
+          ),
       ],
     );
   }

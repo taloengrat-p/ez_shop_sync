@@ -1,10 +1,12 @@
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
+import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/model/bottom_sheet_menu_model.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -33,7 +35,7 @@ class _TransactionPageState extends State<TransactionPage> {
             child: ButtonWidget(
               label: 'Create Invoice',
               textStyle: textStyle,
-              icon: Icon(
+              icon: const Icon(
                 Icons.add,
                 color: Colors.white,
                 size: 40,
@@ -61,27 +63,36 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 
-  onCreateInvoice() async {
+  Future<void> onCreateInvoice() async {
     final result = await BottomSheetUtils.showMenu(
       context,
       title: 'Create Invoice',
       items: [
         BottomSheetMenuModel(
-          label: 'Choose Image',
+          label: 'Camera',
           icon: Icon(Icons.photo_camera),
           value: 1,
         ),
         BottomSheetMenuModel(
+          label: 'Photo Gallary',
+          icon: const Icon(Icons.photo),
+          value: 2,
+        ),
+        BottomSheetMenuModel(
           label: 'Product in Stock',
           icon: Icon(CupertinoIcons.cube_box),
-          value: 2,
+          value: 3,
         ),
       ],
     );
 
     if (result == 1) {
       // do create invoice by choose image
+      final image = await ImagePickerUtils.pickImage(imageSource: ImageSource.camera);
     } else if (result == 2) {
+      // do create invoice by photo gallary
+      final image = await ImagePickerUtils.pickImage(imageSource: ImageSource.gallery);
+    } else if (result == 3) {
       // do create invoice by product in stock
     }
   }

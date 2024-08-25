@@ -40,8 +40,6 @@ class UserAdapter extends TypeAdapter<User> {
   void write(BinaryWriter writer, User obj) {
     writer
       ..writeByte(16)
-      ..writeByte(1)
-      ..write(obj.id)
       ..writeByte(2)
       ..write(obj.storeId)
       ..writeByte(3)
@@ -71,7 +69,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(15)
       ..write(obj.updateDate)
       ..writeByte(16)
-      ..write(obj.updateBy);
+      ..write(obj.updateBy)
+      ..writeByte(1)
+      ..write(obj.id);
   }
 
   @override

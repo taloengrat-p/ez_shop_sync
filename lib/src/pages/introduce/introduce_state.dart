@@ -30,8 +30,11 @@ class IntroduceLoading extends IntroduceState {
 }
 
 class IntroduceSuccess extends IntroduceState {
+  final String username;
+
+  const IntroduceSuccess(this.username);
   @override
-  String toString() => 'IntroduceSuccess';
+  String toString() => 'IntroduceSuccess $username';
 }
 
 class IntroduceFailure extends IntroduceState {

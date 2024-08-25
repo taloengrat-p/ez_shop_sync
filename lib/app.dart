@@ -32,9 +32,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     baseCubit = GetIt.I<BaseCubit>();
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) {
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       baseCubit = GetIt.I<BaseCubit>();
 
       // if (result.contains(ConnectivityResult.none)) {
@@ -67,15 +65,17 @@ class _AppState extends State<App> {
       home: _flavorBanner(
         child: BlocProvider(
           create: (context) => baseCubit,
-          child: BlocBuilder<BaseCubit, BaseState>(builder: (context, state) {
-            return baseCubit.isIntroduceFlowDone.isNull
-                ? Container(
-                    color: Colors.white,
-                  )
-                : baseCubit.isIntroduceFlowDone!
-                    ? MainPage()
-                    : IntroduceFlowPage();
-          }),
+          child: BlocBuilder<BaseCubit, BaseState>(
+            builder: (context, state) {
+              return baseCubit.isIntroduceFlowDone.isNull
+                  ? Container(
+                      color: Colors.white,
+                    )
+                  : baseCubit.isIntroduceFlowDone!
+                      ? MainPage()
+                      : IntroduceFlowPage();
+            },
+          ),
         ),
         show: kDebugMode,
       ),
@@ -91,10 +91,7 @@ class _AppState extends State<App> {
               location: BannerLocation.topStart,
               message: F.name,
               color: Colors.green.withOpacity(0.6),
-              textStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                  letterSpacing: 1.0),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
               textDirection: TextDirection.ltr,
               child: child,
             )

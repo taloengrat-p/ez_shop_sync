@@ -33,8 +33,6 @@ class StoreAdapter extends TypeAdapter<Store> {
   void write(BinaryWriter writer, Store obj) {
     writer
       ..writeByte(9)
-      ..writeByte(1)
-      ..write(obj.id)
       ..writeByte(2)
       ..write(obj.ownerId)
       ..writeByte(3)
@@ -50,7 +48,9 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..writeByte(8)
       ..write(obj.description)
       ..writeByte(9)
-      ..write(obj.images);
+      ..write(obj.images)
+      ..writeByte(1)
+      ..write(obj.id);
   }
 
   @override

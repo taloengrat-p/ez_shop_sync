@@ -37,8 +37,7 @@ class IntroduceCubit extends Cubit<IntroduceState> {
     return true;
   }
 
-  bool get isShowIconPasswordMath =>
-      password.isNotEmpty && confirmPassword.isNotEmpty;
+  bool get isShowIconPasswordMath => password.isNotEmpty && confirmPassword.isNotEmpty;
   IntroduceCubit({
     required this.authRepository,
     required this.baseCubit,
@@ -100,13 +99,11 @@ class IntroduceCubit extends Cubit<IntroduceState> {
       ),
     );
 
-    final updateIntroduceFlow = await localStorageService.setPref(
-        SharedPrefKeys.isIntroduceFlowDone, true);
-    await localStorageService.setPref(
-        SharedPrefKeys.currentUsername, userRegister.username);
+    final updateIntroduceFlow = await localStorageService.setPref(SharedPrefKeys.isIntroduceFlowDone, true);
+    await localStorageService.setPref(SharedPrefKeys.currentUsername, userRegister.username);
     if (updateIntroduceFlow) {
       baseCubit.doLogin(userForceLogin: userRegister);
-      emit(IntroduceSuccess());
+      emit(IntroduceSuccess(userRegister.username));
     }
   }
 }

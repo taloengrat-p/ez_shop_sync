@@ -1,12 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
-import 'package:ez_shop_sync/src/utils/crypto_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
@@ -29,6 +27,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
     final result = await productRepository.create(
       Product(
+        id: const Uuid().v1(),
         name: name,
         description: description,
         price: price,

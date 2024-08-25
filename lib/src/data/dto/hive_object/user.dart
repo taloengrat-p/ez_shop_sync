@@ -1,12 +1,10 @@
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 
 part 'user.g.dart';
 
 @HiveType(typeId: 4)
-class User {
-  @HiveField(1)
-  String id;
-
+class User extends BaseHiveObject {
   @HiveField(2, defaultValue: [])
   List<String>? storeId;
 
@@ -53,7 +51,7 @@ class User {
   DateTime? updateBy;
 
   User({
-    required this.id,
+    required super.id,
     required this.storeId,
     required this.firstName,
     required this.lastName,

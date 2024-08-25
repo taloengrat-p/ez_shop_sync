@@ -1,12 +1,10 @@
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 
 part 'store.g.dart';
 
 @HiveType(typeId: 3)
-class Store {
-  @HiveField(1)
-  String id;
-
+class Store extends BaseHiveObject {
   @HiveField(2)
   String ownerId;
 
@@ -32,7 +30,7 @@ class Store {
   List<String>? images;
 
   Store({
-    required this.id,
+    required super.id,
     required this.ownerId,
     required this.name,
     this.address,

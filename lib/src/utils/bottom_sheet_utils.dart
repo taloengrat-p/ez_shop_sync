@@ -1,10 +1,11 @@
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/model/bottom_sheet_menu_model.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetUtils {
   static Future<dynamic> showMenu(
     BuildContext context, {
-    required String title,
+    String? title,
     required List<BottomSheetMenuModel> items,
   }) async {
     return await showModalBottomSheet<dynamic>(
@@ -21,17 +22,17 @@ class BottomSheetUtils {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
-                ),
+                if (title.isNotNull)
+                  Text(
+                    title!,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                 const SizedBox(
                   height: 16,
                 ),

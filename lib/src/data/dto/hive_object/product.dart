@@ -1,59 +1,57 @@
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 
 part 'product.g.dart';
 
 @HiveType(typeId: 1)
-class Product {
-  @HiveField(0)
-  String? id;
-
-  @HiveField(1)
+class Product extends BaseHiveObject {
+  @HiveField(2)
   String name;
 
-  @HiveField(2)
+  @HiveField(3)
   String description;
 
-  @HiveField(3)
+  @HiveField(4)
   num price;
 
-  @HiveField(4)
+  @HiveField(5)
   String category;
 
-  @HiveField(5)
+  @HiveField(6)
   String brand;
 
-  @HiveField(6, defaultValue: null)
+  @HiveField(7, defaultValue: null)
   List<String>? imageDetail;
 
-  @HiveField(7, defaultValue: null)
+  @HiveField(8, defaultValue: null)
   String? imageThumbnail;
 
-  @HiveField(8, defaultValue: {})
+  @HiveField(9, defaultValue: {})
   Map<String, dynamic>? attributes;
 
-  @HiveField(9, defaultValue: [])
+  @HiveField(10, defaultValue: [])
   List<String>? tag;
 
-  @HiveField(10, defaultValue: ProductStatus.undefined)
+  @HiveField(11, defaultValue: ProductStatus.undefined)
   ProductStatus status;
 
-  @HiveField(11, defaultValue: null)
+  @HiveField(12, defaultValue: null)
   DateTime? createDate;
 
-  @HiveField(12, defaultValue: null)
+  @HiveField(13, defaultValue: null)
   DateTime? createBy;
 
-  @HiveField(13, defaultValue: null)
+  @HiveField(14, defaultValue: null)
   DateTime? updateDate;
 
-  @HiveField(14, defaultValue: null)
+  @HiveField(15, defaultValue: null)
   DateTime? updateBy;
 
-  @HiveField(15, defaultValue: null)
+  @HiveField(16, defaultValue: null)
   String? image;
 
   Product({
-    this.id,
+    required super.id,
     required this.name,
     required this.description,
     required this.price,

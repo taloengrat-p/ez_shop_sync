@@ -52,9 +52,12 @@ class StoreRepository implements IStoreRepository {
   }
 
   @override
-  Store? getById(String id) {
-    // TODO: implement getById
-    throw UnimplementedError();
+  Store? getById(String id, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return storeLocalRepository.getById(id);
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override

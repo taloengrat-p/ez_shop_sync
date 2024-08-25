@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';
@@ -38,32 +37,29 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<User> register(CreateRegisterRequest request,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<User> register(CreateRegisterRequest request, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      // return authLocalRepository.create();
+      final userId = const Uuid().v1();
+      final storeId = const Uuid().v1();
 
-      final userId = const Uuid().v4();
-      final storeId = const Uuid().v4();
-
-      final store =
-          Store(id: storeId, ownerId: userId, name: request.storeName);
+      final store = Store(id: storeId, ownerId: userId, name: request.storeName);
       final user = User(
         id: userId,
         storeId: [store.id],
         firstName: request.firstName,
         lastName: request.lastName,
         email: request.email,
-        username: '${request.firstName}.${request.lastName.substring(0, 1)}',
+        username: '${request.firstName}.${request.lastName.substring(0, 1)}'.toLowerCase(),
         password: request.password,
         passwordSalt: request.salt,
       );
 
-      authLocalRepository.create(
+      await authLocalRepository.create(
         user,
         idCustom: userId,
       );
-      storeRepository.create(
+
+      await storeRepository.create(
         store,
       );
 

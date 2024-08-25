@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -25,10 +26,13 @@ FutureOr<void> main() async {
 
   await GetIt.I<LocalStorageService>().init();
 
-  GetIt.instance.registerSingleton<BaseCubit>(BaseCubit(
-    localStorageService: GetIt.I<LocalStorageService>(),
-    authLocalRepository: GetIt.I<AuthLocalRepository>(),
-  ));
+  GetIt.instance.registerSingleton<BaseCubit>(
+    BaseCubit(
+      localStorageService: GetIt.I<LocalStorageService>(),
+      authLocalRepository: GetIt.I<AuthLocalRepository>(),
+      storeRepository: GetIt.I<StoreRepository>(),
+    ),
+  );
   runApp(const App());
 }
 

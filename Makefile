@@ -1,4 +1,4 @@
-generate-build_runner:
+gen-build:
 	dart run build_runner build
 
 init-native-splash-screen:
