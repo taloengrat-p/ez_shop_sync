@@ -1,60 +1,56 @@
-import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 
 part 'product.g.dart';
 
 @HiveType(typeId: 1)
 class Product extends BaseHiveObject {
-  @HiveField(2)
+  @HiveField(6)
   String name;
 
-  @HiveField(3)
-  String description;
-
-  @HiveField(4)
-  num price;
-
-  @HiveField(5)
-  String category;
-
-  @HiveField(6)
-  String brand;
-
   @HiveField(7, defaultValue: null)
-  List<String>? imageDetail;
+  String? description;
 
   @HiveField(8, defaultValue: null)
-  String? imageThumbnail;
+  num? price;
 
-  @HiveField(9, defaultValue: {})
-  Map<String, dynamic>? attributes;
+  @HiveField(9, defaultValue: null)
+  String? category;
 
-  @HiveField(10, defaultValue: [])
-  List<String>? tag;
+  @HiveField(10, defaultValue: null)
+  String? brand;
 
-  @HiveField(11, defaultValue: ProductStatus.undefined)
-  ProductStatus status;
+  @HiveField(11, defaultValue: null)
+  List<String>? imageDetail;
 
   @HiveField(12, defaultValue: null)
-  DateTime? createDate;
+  String? imageThumbnail;
 
-  @HiveField(13, defaultValue: null)
-  DateTime? createBy;
+  @HiveField(13, defaultValue: {})
+  Map<String, dynamic>? attributes;
 
-  @HiveField(14, defaultValue: null)
-  DateTime? updateDate;
+  @HiveField(14, defaultValue: [])
+  List<String>? tag;
 
-  @HiveField(15, defaultValue: null)
-  DateTime? updateBy;
+  @HiveField(15, defaultValue: ProductStatus.undefined)
+  ProductStatus status;
 
   @HiveField(16, defaultValue: null)
   String? image;
 
+  @HiveField(17, defaultValue: null)
+  String? imageName;
+
   Product({
     required super.id,
+    super.createDate,
+    super.createBy,
+    super.updateDate,
+    super.updateBy,
     required this.name,
     required this.description,
-    required this.price,
+    this.price,
     required this.category,
     this.image,
     this.imageDetail,
@@ -63,15 +59,12 @@ class Product extends BaseHiveObject {
     required this.status,
     this.tag,
     this.attributes,
-    this.createDate,
-    this.createBy,
-    this.updateDate,
-    this.updateBy,
+    this.imageName,
   });
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, description: $description, price: $price, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, createDate: $createDate, createBy: $createBy, updateDate: $updateDate, updateBy: $updateBy)';
+    return 'Product(name: $name, description: $description, price: $price, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, createDate: $createDate, createBy: $createBy, updateDate: $updateDate, updateBy: $updateBy, image: $image)';
   }
 }
 

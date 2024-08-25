@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 
 abstract class CreateProductState extends Equatable {
   const CreateProductState() : super();
@@ -18,8 +19,15 @@ class CreateProductLoading extends CreateProductState {
 }
 
 class CreateProductSuccess extends CreateProductState {
+  final Product product;
+
+  const CreateProductSuccess(this.product);
+
   @override
-  String toString() => 'CreateProductSuccess';
+  String toString() => 'CreateProductSuccess $product';
+
+  @override
+  List<Object?> get props => [product.id];
 }
 
 class CreateProductFailure extends CreateProductState {

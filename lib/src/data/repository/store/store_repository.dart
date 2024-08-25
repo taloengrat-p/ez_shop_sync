@@ -1,7 +1,7 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/store/_local/store_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/_server/store_server_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class IStoreRepository {

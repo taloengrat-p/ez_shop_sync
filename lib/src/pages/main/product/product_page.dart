@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
+import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_cubit.dart';
@@ -75,7 +77,7 @@ class _ProductPageState extends State<ProductPage> {
 
     return Column(
       children: [
-        buildDisplayViewToggle(),
+        buildDisplayView(),
         buildContent(),
         Container(
           height: 60,
@@ -108,6 +110,7 @@ class _ProductPageState extends State<ProductPage> {
                   }
                 },
                 child: ProductGridItemWidget(
+                  key: ValueKey(e.id),
                   product: e,
                 ),
               ),
@@ -118,18 +121,21 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget buildListProduct() {
-    return ListView.builder(
-      itemCount: cubit.products.length,
-      itemBuilder: (context, index) {
-        final product = cubit.products.elementAt(index);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: cubit.products.length,
+        itemBuilder: (context, index) {
+          final product = cubit.products.elementAt(index);
 
-        return ProductListItemWidget(
-          product: product,
-          onDeleteProduct: () {
-            cubit.deleteProduct(product.id);
-          },
-        );
-      },
+          return ProductListItemWidget(
+            product: product,
+            onDeleteProduct: () {
+              cubit.deleteProduct(product.id);
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -154,7 +160,7 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  Widget buildDisplayViewToggle() {
+  Widget buildDisplayView() {
     return Visibility(
       visible: cubit.products.isNotEmpty,
       child: Padding(
@@ -162,6 +168,16 @@ class _ProductPageState extends State<ProductPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            IconButton(
+              onPressed: () {
+                cubit.changeSortType();
+              },
+              icon: Icon(
+                cubit.sortType == ProductSortType.asc
+                    ? CupertinoIcons.sort_up
+                    : CupertinoIcons.sort_down,
+              ),
+            ),
             IconButton(
               onPressed: () {
                 cubit.changeDisplayType();

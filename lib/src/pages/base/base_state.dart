@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 
 abstract class BaseState extends Equatable {
   const BaseState() : super();

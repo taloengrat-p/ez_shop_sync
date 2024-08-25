@@ -17,6 +17,7 @@ class ProductListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       child: Slidable(
         endActionPane: ActionPane(
           motion: ScrollMotion(),
@@ -36,9 +37,13 @@ class ProductListItemWidget extends StatelessWidget {
           children: [
             ImageWidget(
               imageUrl: product.image,
+              imageFullName: product.imageName,
               width: 60,
               height: 100,
               borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+            ),
+            const SizedBox(
+              width: 8,
             ),
             Text(product.name),
           ],

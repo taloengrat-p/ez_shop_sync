@@ -1,6 +1,6 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,8 @@ class ProductGridItemWidget extends StatelessWidget {
         children: [
           ImageWidget(
             imageUrl: product.image,
-            borderRadius: BorderRadius.only(
+            imageFullName: product.imageName,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(DimensionsKeys.radius),
               topRight: Radius.circular(DimensionsKeys.radius),
             ),
@@ -40,10 +41,11 @@ class ProductGridItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(product.name),
-                  Text(
-                    '\$${product.price.toString()}',
-                    style: const TextStyle(color: Colors.orange),
-                  ),
+                  if (product.price.isNotNull)
+                    Text(
+                      '\$${product.price.toString()}',
+                      style: const TextStyle(color: Colors.orange),
+                    ),
                 ],
               ),
             ),

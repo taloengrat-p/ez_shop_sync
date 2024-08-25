@@ -29,7 +29,7 @@ class _ImageFormFieldState extends State<ImageFormField> {
   CarouselSliderController _carouselController = CarouselSliderController();
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -80,8 +80,10 @@ class _ImageFormFieldState extends State<ImageFormField> {
                       setState(() {
                         productDetailImages.add(file!);
                       });
-                      _carouselController.animateToPage(productDetailImages.length);
-                      widget.onProductDetailImageSelect?.call(productDetailImages);
+                      _carouselController
+                          .animateToPage(productDetailImages.length);
+                      widget.onProductDetailImageSelect
+                          ?.call(productDetailImages);
                     }
                   },
                 ),
@@ -111,7 +113,8 @@ class _ImageFormFieldState extends State<ImageFormField> {
                       setState(() {
                         productDetailImages[index] = file!;
                       });
-                      widget.onProductDetailImageSelect?.call(productDetailImages);
+                      widget.onProductDetailImageSelect
+                          ?.call(productDetailImages);
                     }
                   },
                 ),

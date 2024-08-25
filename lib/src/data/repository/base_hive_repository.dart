@@ -1,7 +1,6 @@
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:uuid/v1.dart';
 
 abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   String boxName;
@@ -15,11 +14,11 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   Future<T> create(T request, {String? idCustom}) async {
-    final String id = idCustom ?? const UuidV1().generate();
-
     await box.put(
-      id,
-      request,
+      request.id,
+      request
+        ..createDate = DateTime.now()
+        ..updateDate = DateTime.now(),
     );
 
     return request;
@@ -30,15 +29,18 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   List<T> getAll() {
-    return box.values.toList();
+    List<T> result = box.values.toList();
+    result.sort((a, b) => a.createDate!.millisecondsSinceEpoch
+        .compareTo(b.createDate!.millisecondsSinceEpoch));
+    return result;
   }
 
-  delete(I id) {
-    box.delete(id);
+  Future<void> delete(I id) async {
+    await box.delete(id);
   }
 
-  deleteAll(List<I> ids) {
-    box.deleteAll(ids);
+  Future<void> deleteAll(List<I> ids) async {
+    await box.deleteAll(ids);
   }
 
   T update(I id, T updated) {

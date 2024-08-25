@@ -1,0 +1,4 @@
+enum ProductDisplayType {
+  grid,
+  list;
+}

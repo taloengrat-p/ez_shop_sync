@@ -19,13 +19,13 @@ class ProductAdapter extends TypeAdapter<Product> {
     return Product(
       id: fields[1] as String,
       name: fields[2] as String,
-      description: fields[3] as String,
-      price: fields[4] as num,
-      category: fields[5] as String,
+      description: fields[3] as String?,
+      price: fields[4] as num?,
+      category: fields[5] as String?,
       image: fields[16] as String?,
       imageDetail: (fields[7] as List?)?.cast<String>(),
       imageThumbnail: fields[8] as String?,
-      brand: fields[6] as String,
+      brand: fields[6] as String?,
       status: fields[11] == null
           ? ProductStatus.undefined
           : fields[11] as ProductStatus,
@@ -36,13 +36,14 @@ class ProductAdapter extends TypeAdapter<Product> {
       createBy: fields[13] as DateTime?,
       updateDate: fields[14] as DateTime?,
       updateBy: fields[15] as DateTime?,
+      imageName: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(2)
       ..write(obj.name)
       ..writeByte(3)
@@ -73,6 +74,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.updateBy)
       ..writeByte(16)
       ..write(obj.image)
+      ..writeByte(17)
+      ..write(obj.imageName)
       ..writeByte(1)
       ..write(obj.id);
   }

@@ -5,53 +5,45 @@ part 'user.g.dart';
 
 @HiveType(typeId: 4)
 class User extends BaseHiveObject {
-  @HiveField(2, defaultValue: [])
+  @HiveField(6, defaultValue: [])
   List<String>? storeId;
 
-  @HiveField(3)
+  @HiveField(7)
   String firstName;
 
-  @HiveField(4)
+  @HiveField(8)
   String lastName;
 
-  @HiveField(5, defaultValue: null)
+  @HiveField(9, defaultValue: null)
   String? phoneNumber;
 
-  @HiveField(6)
+  @HiveField(10)
   String email;
 
-  @HiveField(7)
+  @HiveField(11)
   String username;
 
-  @HiveField(8, defaultValue: null)
+  @HiveField(12, defaultValue: null)
   String? profilePictureUrl;
 
-  @HiveField(9)
+  @HiveField(13)
   String password;
 
-  @HiveField(10)
+  @HiveField(14)
   String passwordSalt;
 
-  @HiveField(11)
+  @HiveField(15)
   String? pin;
 
-  @HiveField(12)
+  @HiveField(16)
   String? pinSalt;
-
-  @HiveField(13, defaultValue: null)
-  DateTime? createDate;
-
-  @HiveField(14, defaultValue: null)
-  DateTime? createBy;
-
-  @HiveField(15, defaultValue: null)
-  DateTime? updateDate;
-
-  @HiveField(16, defaultValue: null)
-  DateTime? updateBy;
 
   User({
     required super.id,
+    super.createDate,
+    super.createBy,
+    super.updateDate,
+    super.updateBy,
     required this.storeId,
     required this.firstName,
     required this.lastName,
@@ -63,9 +55,5 @@ class User extends BaseHiveObject {
     required this.passwordSalt,
     this.pin,
     this.pinSalt,
-    this.createDate,
-    this.createBy,
-    this.updateDate,
-    this.updateBy,
   });
 }
