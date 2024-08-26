@@ -6,18 +6,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MoreCubit extends Cubit<MoreState> {
   BaseCubit baseCubit;
-
-  List<Store> get stores => [
-        Store(id: '1', ownerId: '1', name: 'Store 1'),
-        Store(id: '2', ownerId: '2', name: 'Store 2'),
-        Store(id: '3', ownerId: '3', name: 'Store 3'),
-      ];
+  bool isTh = false;
+  List<Store> get stores => baseCubit.stores;
 
   MoreCubit({
     required this.baseCubit,
   }) : super(MoreInitial());
 
-  String get shortName => baseCubit.user?.username.toSubStringFirstToIndex(2) ?? '';
+  String get storeShortName =>
+      baseCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
 
-  String get currentStore => baseCubit.store?.name ?? '';
+  String get userShortName =>
+      baseCubit.user?.username.toSubStringFirstToIndex(2) ?? '';
+
+  String get storeName => baseCubit.store?.name ?? '';
+
+  String get username => baseCubit.user?.username ?? '';
+
+  Store? get currentStore => baseCubit.store;
+
+  String get appVersion => '1.0.0';
+
+  doLogout() {}
+
+  void changeLanguage(bool value) {
+    isTh = !isTh;
+    baseCubit.setLanguage();
+    emit(MoreRefresh(DateTime.now()));
+  }
 }

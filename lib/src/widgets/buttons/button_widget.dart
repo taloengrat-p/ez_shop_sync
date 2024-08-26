@@ -92,7 +92,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           overlayColor: getOverlayColor(),
           backgroundColor: widget.onPressed != null
               ? MaterialStatePropertyAll(
-                  widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.skyBlue : Colors.white),
+                  widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.secondary : Colors.white),
                 )
               : null,
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -126,7 +126,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                           style: widget.textStyle ??
                               TextStyle(
                                 color: isPressed
-                                    ? ColorKeys.skyBlue
+                                    ? ColorKeys.secondary
                                     : widget.type == ButtonUiType.primary || widget.type == null
                                         ? Colors.white
                                         : Colors.black,

@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
@@ -27,6 +28,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
     super.initState();
     cubit = CreateProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
     );
   }
 
@@ -42,7 +44,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
             CreateProductRouter(context).pop(BaseArgrument(refresh: true));
           }
         },
-        child: BlocBuilder<CreateProductCubit, CreateProductState>(builder: (context, state) {
+        child: BlocBuilder<CreateProductCubit, CreateProductState>(
+            builder: (context, state) {
           return BaseScaffolds(
             appBar: AppbarWidget(title: 'Create Product', actions: []).build(),
             body: SingleChildScrollView(
@@ -56,7 +59,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
                       ),
                       ImageFormField(
                         imageDetailLimit: 5,
-                        onProductDetailImageSelect: cubit.setProductDetailImageSelect,
+                        onProductDetailImageSelect:
+                            cubit.setProductDetailImageSelect,
                         onProductImageSelect: cubit.setProductImageSelect,
                       ),
                       const SizedBox(

@@ -42,30 +42,25 @@ class Product extends BaseHiveObject {
   @HiveField(17, defaultValue: null)
   String? imageName;
 
+  @HiveField(18)
+  String storeId;
+
   Product({
     required super.id,
-    super.createDate,
-    super.createBy,
-    super.updateDate,
-    super.updateBy,
     required this.name,
-    required this.description,
+    this.description,
     this.price,
-    required this.category,
-    this.image,
+    this.category,
+    this.brand,
     this.imageDetail,
     this.imageThumbnail,
-    required this.brand,
-    required this.status,
-    this.tag,
     this.attributes,
+    this.tag,
+    this.image,
     this.imageName,
+    required this.storeId,
+    required this.status,
   });
-
-  @override
-  String toString() {
-    return 'Product(name: $name, description: $description, price: $price, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, createDate: $createDate, createBy: $createBy, updateDate: $updateDate, updateBy: $updateBy, image: $image)';
-  }
 }
 
 @HiveType(typeId: 2)

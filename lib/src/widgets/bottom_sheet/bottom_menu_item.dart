@@ -1,0 +1,39 @@
+import 'package:flutter/material.dart';
+
+class BottomMenuItem extends StatelessWidget {
+  final Widget? leading;
+  final dynamic value;
+  final String label;
+  final Widget? trailing;
+
+  const BottomMenuItem({
+    Key? key,
+    required this.leading,
+    required this.label,
+    this.value,
+    this.trailing,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop(value);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        height: 50,
+        child: Row(
+          children: [
+            if (leading != null) leading!,
+            const SizedBox(
+              width: 16,
+            ),
+            Expanded(child: Text(label)),
+            if (trailing != null) trailing!,
+          ],
+        ),
+      ),
+    );
+  }
+}

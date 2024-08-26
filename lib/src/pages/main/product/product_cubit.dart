@@ -41,7 +41,7 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   void init() async {
-    await baseCubit.doGetProduct();
+    await baseCubit.doGetProducts();
     emit(ProductRefresh(DateTime.now()));
   }
 }

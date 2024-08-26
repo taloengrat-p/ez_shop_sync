@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,7 +15,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     box = Hive.box<T>(boxName);
   }
 
-  Future<T> create(T request, {String? idCustom}) async {
+  Future<T> create(T request) async {
     await box.put(
       request.id,
       request
@@ -49,6 +51,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   List<T> getAllById(List<I> ids) {
-    return box.values.where((e) => ids.contains(ids)).toList();
+    log('box.values $T : ${box.values.map((e) => e.id)}');
+    return box.values.where((e) => ids.contains(e.id)).toList();
   }
 }

@@ -59,7 +59,6 @@ class AuthRepository implements IAuthRepository {
 
       await authLocalRepository.create(
         user,
-        idCustom: userId,
       );
 
       await storeRepository.create(

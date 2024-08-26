@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 abstract class IStoreRepository {
   List<Store> getAll();
+  List<Store> getAllByIds(List<String> ids);
   Store? getById(String id);
   Future<Store> create(Store request);
   Store update(String id, Store updated);
@@ -27,7 +28,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<Store> create(Store request, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
-      return storeLocalRepository.create(request, idCustom: request.id);
+      return storeLocalRepository.create(request);
     } else {
       throw UnimplementedError();
     }
@@ -64,5 +65,15 @@ class StoreRepository implements IStoreRepository {
   Store update(String id, Store updated) {
     // TODO: implement update
     throw UnimplementedError();
+  }
+
+  @override
+  List<Store> getAllByIds(List<String> ids,
+      {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return storeLocalRepository.getAllById(ids);
+    } else {
+      throw UnimplementedError();
+    }
   }
 }

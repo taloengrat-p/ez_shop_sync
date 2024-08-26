@@ -23,7 +23,7 @@ class AppbarWidget {
   AppBar build() {
     return AppBar(
       iconTheme: IconThemeData(color: iconThemeColor ?? Colors.white),
-      backgroundColor: color ?? ColorKeys.midnightBlue,
+      backgroundColor: color ?? ColorKeys.primary,
       systemOverlayStyle: systemUiOverlayStyle,
       centerTitle: centerTitle,
       title: title != null

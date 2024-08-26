@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/folder_file_utils.dart';
@@ -11,7 +12,7 @@ import 'package:uuid/uuid.dart';
 
 class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
-
+  BaseCubit baseCubit;
   String name = '';
   String description = '';
   String category = '';
@@ -23,6 +24,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   // List<String> tags = [];
   CreateProductCubit({
     required this.productRepository,
+    required this.baseCubit,
   }) : super(CreateProductInitial());
 
   setName(String? value) {
@@ -82,6 +84,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     final result = await productRepository.create(
       Product(
         id: id,
+        storeId: baseCubit.store!.id,
         name: name,
         description: description,
         price: price,

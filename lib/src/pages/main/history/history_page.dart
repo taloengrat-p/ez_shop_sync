@@ -13,7 +13,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(title: 'Histories').build(),
+      appBar: AppbarWidget(title: 'Histories', centerTitle: false).build(),
     );
   }
 }

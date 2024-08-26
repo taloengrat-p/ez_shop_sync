@@ -34,6 +34,8 @@ class AppBottomSheet extends StatelessWidget {
     required this.props,
   }) : super(key: key);
 
+  double get marginBodyTop => 44;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -44,10 +46,13 @@ class AppBottomSheet extends StatelessWidget {
       child: GestureDetector(
         onTap: () {},
         child: DraggableScrollableSheet(
-            initialChildSize:
-                props.initialChildSize ?? (size.height - props.sizeReduce) / size.height, // ขนาดแสดงเริ่มต้น 50%
-            minChildSize: props.minChildSize ?? 0.25, // ปรับขนาดน้อยสุด 25% น้อยกว่านี้จะเป็นการปิด
-            maxChildSize: (size.height - props.sizeReduce) / size.height, // ขยายสูงสุดแค่ 90%
+            initialChildSize: props.initialChildSize ??
+                (size.height - props.sizeReduce) /
+                    size.height, // ขนาดแสดงเริ่มต้น 50%
+            minChildSize: props.minChildSize ??
+                0.25, // ปรับขนาดน้อยสุด 25% น้อยกว่านี้จะเป็นการปิด
+            maxChildSize: (size.height - props.sizeReduce) /
+                size.height, // ขยายสูงสุดแค่ 90%
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 height: props.maxChildSize ?? 0.9,
@@ -83,9 +88,12 @@ class AppBottomSheet extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    height: 5, // Set the height of the drag handle here
-                                    width: 63, // Set the width of the drag handle here
-                                    margin: const EdgeInsets.symmetric(vertical: 14), // Adjust as needed
+                                    height:
+                                        5, // Set the height of the drag handle here
+                                    width:
+                                        63, // Set the width of the drag handle here
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 14), // Adjust as needed
                                     decoration: BoxDecoration(
                                       color: Colors.grey,
                                       borderRadius: BorderRadius.circular(3),
@@ -97,7 +105,7 @@ class AppBottomSheet extends StatelessWidget {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 17,
-                                      color: Colors.grey,
+                                      color: Colors.black,
                                       height: 1.3,
                                     ),
                                   ),
@@ -131,7 +139,8 @@ class AppBottomSheet extends StatelessWidget {
                               child: Container(
                                 height: double.infinity,
                                 margin: const EdgeInsets.only(top: 16),
-                                padding: const EdgeInsets.only(bottom: 0, top: 32),
+                                padding: EdgeInsets.only(
+                                    bottom: 0, top: marginBodyTop),
                                 child: props.body,
                               ),
                             ),
@@ -139,35 +148,20 @@ class AppBottomSheet extends StatelessWidget {
                             Container(
                               height: double.infinity,
                               margin: const EdgeInsets.only(top: 16),
-                              padding: const EdgeInsets.only(bottom: 0, top: 32),
+                              padding: EdgeInsets.only(
+                                  bottom: 0, top: marginBodyTop),
                               child: props.body,
                             ),
                           if (props.bottom != null)
                             Align(
                               alignment: Alignment.bottomCenter,
-                              child: Container(color: Colors.white, child: SafeArea(child: props.bottom!)),
+                              child: Container(
+                                  color: Colors.white,
+                                  child: SafeArea(child: props.bottom!)),
                             ),
                         ],
                       ),
                     ),
-                    // SliverFixedExtentList(
-                    //   itemExtent: 50.0,
-                    //   delegate: SliverChildBuilderDelegate(
-                    //     (BuildContext context, int index) {
-                    //       return Container(
-                    //         alignment: Alignment.center,
-                    //         color: Colors.lightBlue[100 * (index % 9)],
-                    //         child: SafeArea(child: props.bottom!),
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
-                    // if (props.bottom != null)
-                    //   SliverFillRemaining(
-                    //     hasScrollBody: false,
-                    //     fillOverscroll: true,
-                    //     child: SafeArea(child: props.bottom!),
-                    //   ),
                   ],
                 ),
               );

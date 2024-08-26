@@ -5,4 +5,6 @@ class DimensionsKeys {
   static const double m = 8;
   static const double l = 16;
   static const double xl = 32;
+
+  static const double heightBts = 60;
 }

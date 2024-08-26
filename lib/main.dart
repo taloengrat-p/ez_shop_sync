@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
+import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -33,6 +34,7 @@ FutureOr<void> main() async {
       authLocalRepository: GetIt.I<AuthLocalRepository>(),
       storeRepository: GetIt.I<StoreRepository>(),
       productRepository: GetIt.I<ProductRepository>(),
+      navigationService: GetIt.I<NavigationService>(),
     ),
   );
   runApp(const App());

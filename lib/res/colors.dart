@@ -25,14 +25,15 @@ class ColorKeys {
   static Color get white => const Color(0xFFFFFFFF);
   static Color get black => const Color(0xFF000000);
 
+  static Color get secondary => Colors.grey;
+  static Color get primary => const Color(0xFF000000);
+  static Color get accent => Colors.orange;
+
   static Color get dawnLight2 => const Color.fromRGBO(255, 255, 204, 1);
   static Color get dawnLight => const Color(0xFFFFE7C6);
   static Color get dawnDark => const Color.fromARGB(255, 255, 190, 99);
-  static Color get skyBlue => const Color(0xFF87CEEB);
   static Color get cloudGray => const Color(0xFFD3D3D3);
   static Color get twilightPurple => const Color(0xFF6A5ACD);
-  static Color get midnightBlue => const Color(0xFF191970);
-  static Color get primary => midnightBlue;
 
   static Color get sunsetCoral => const Color(0xFFFF6F61);
 

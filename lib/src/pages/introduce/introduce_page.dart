@@ -66,7 +66,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
         listener: (context, state) {
           if (state is IntroduceSuccess) {
             log('$state', name: runtimeType.toString());
-            MainRouter(context).navigate();
+            MainRouter(context).replace();
           }
         },
         child: BlocBuilder<IntroduceCubit, IntroduceState>(
@@ -117,7 +117,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           onChanged: cubit.setFirstName,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_lastNameFocusNode);
+                            FocusScope.of(context)
+                                .requestFocus(_lastNameFocusNode);
                           },
                         ),
                         TextFormFieldUiWidget(
@@ -128,7 +129,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           hintText: 'Your Last Name',
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_emailFocusNode);
+                            FocusScope.of(context)
+                                .requestFocus(_emailFocusNode);
                           },
                         ),
                         TextFormFieldUiWidget(
@@ -139,7 +141,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           hintText: 'Your Email',
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_passwordFocusNode);
+                            FocusScope.of(context)
+                                .requestFocus(_passwordFocusNode);
                           },
                         ),
                         TextFormFieldPasswordUiWidget(
@@ -148,7 +151,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           onChanged: cubit.setPassword,
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_confirmPasswordFocusNode);
+                            FocusScope.of(context)
+                                .requestFocus(_confirmPasswordFocusNode);
                           },
                           labelSuffix: buildPasswordMatchIcon(),
                           isRequired: true,
@@ -261,7 +265,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                   activeColor: Theme.of(context).colorScheme.secondary,
                   color: Colors.black26,
                   spacing: const EdgeInsets.symmetric(horizontal: 3.0),
-                  activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                  activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0)),
                 ),
               ),
             );
@@ -274,7 +279,9 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   Widget? buildPasswordMatchIcon() {
     return cubit.isShowIconPasswordMath
         ? Icon(
-            cubit.passwordMatchConfirm ? Icons.check_circle_rounded : Icons.cancel_rounded,
+            cubit.passwordMatchConfirm
+                ? Icons.check_circle_rounded
+                : Icons.cancel_rounded,
             color: cubit.passwordMatchConfirm ? Colors.green : Colors.red,
           )
         : null;

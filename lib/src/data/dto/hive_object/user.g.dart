@@ -18,21 +18,21 @@ class UserAdapter extends TypeAdapter<User> {
     };
     return User(
       id: fields[1] as String,
-      storeId: fields[2] == null ? [] : (fields[2] as List?)?.cast<String>(),
-      firstName: fields[3] as String,
-      lastName: fields[4] as String,
-      phoneNumber: fields[5] as String?,
-      email: fields[6] as String,
-      username: fields[7] as String,
-      profilePictureUrl: fields[8] as String?,
-      password: fields[9] as String,
-      passwordSalt: fields[10] as String,
-      pin: fields[11] as String?,
-      pinSalt: fields[12] as String?,
-      createDate: fields[13] as DateTime?,
-      createBy: fields[14] as DateTime?,
-      updateDate: fields[15] as DateTime?,
-      updateBy: fields[16] as DateTime?,
+      createDate: fields[2] as DateTime?,
+      createBy: fields[3] as DateTime?,
+      updateDate: fields[4] as DateTime?,
+      updateBy: fields[5] as DateTime?,
+      storeId: fields[6] == null ? [] : (fields[6] as List?)?.cast<String>(),
+      firstName: fields[7] as String,
+      lastName: fields[8] as String,
+      phoneNumber: fields[9] as String?,
+      email: fields[10] as String,
+      username: fields[11] as String,
+      profilePictureUrl: fields[12] as String?,
+      password: fields[13] as String,
+      passwordSalt: fields[14] as String,
+      pin: fields[15] as String?,
+      pinSalt: fields[16] as String?,
     );
   }
 
@@ -40,38 +40,38 @@ class UserAdapter extends TypeAdapter<User> {
   void write(BinaryWriter writer, User obj) {
     writer
       ..writeByte(16)
-      ..writeByte(2)
-      ..write(obj.storeId)
-      ..writeByte(3)
-      ..write(obj.firstName)
-      ..writeByte(4)
-      ..write(obj.lastName)
-      ..writeByte(5)
-      ..write(obj.phoneNumber)
       ..writeByte(6)
-      ..write(obj.email)
+      ..write(obj.storeId)
       ..writeByte(7)
-      ..write(obj.username)
+      ..write(obj.firstName)
       ..writeByte(8)
-      ..write(obj.profilePictureUrl)
+      ..write(obj.lastName)
       ..writeByte(9)
-      ..write(obj.password)
+      ..write(obj.phoneNumber)
       ..writeByte(10)
-      ..write(obj.passwordSalt)
+      ..write(obj.email)
       ..writeByte(11)
-      ..write(obj.pin)
+      ..write(obj.username)
       ..writeByte(12)
-      ..write(obj.pinSalt)
+      ..write(obj.profilePictureUrl)
       ..writeByte(13)
-      ..write(obj.createDate)
+      ..write(obj.password)
       ..writeByte(14)
-      ..write(obj.createBy)
+      ..write(obj.passwordSalt)
       ..writeByte(15)
-      ..write(obj.updateDate)
+      ..write(obj.pin)
       ..writeByte(16)
-      ..write(obj.updateBy)
+      ..write(obj.pinSalt)
       ..writeByte(1)
-      ..write(obj.id);
+      ..write(obj.id)
+      ..writeByte(2)
+      ..write(obj.createDate)
+      ..writeByte(3)
+      ..write(obj.createBy)
+      ..writeByte(4)
+      ..write(obj.updateDate)
+      ..writeByte(5)
+      ..write(obj.updateBy);
   }
 
   @override
