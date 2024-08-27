@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
@@ -50,7 +53,7 @@ class _ProductPageState extends State<ProductPage> {
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         return BaseScaffolds(
           appBar: AppbarWidget(
-            title: 'Products${cubit.productCount}',
+            title: '${LocaleKeys.products.tr()}${cubit.productCount}',
             centerTitle: false,
             actions: [
               IconButton(
@@ -153,7 +156,7 @@ class _ProductPageState extends State<ProductPage> {
           child: EmptyDataWidget(
             height: size.height * 0.45,
             width: 200,
-            message: 'Your product is empty please create new product.',
+            message: LocaleKeys.productsEmpty.tr(),
           ),
         ),
       );

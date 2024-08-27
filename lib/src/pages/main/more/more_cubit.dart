@@ -1,17 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class MoreCubit extends Cubit<MoreState> {
   BaseCubit baseCubit;
-  bool isTh = false;
   List<Store> get stores => baseCubit.stores;
+  String? _appVersion;
+  late Locale locale;
 
   MoreCubit({
     required this.baseCubit,
-  }) : super(MoreInitial());
+  }) : super(MoreInitial()) {
+    getAppVersion();
+  }
 
   String get storeShortName =>
       baseCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
@@ -25,13 +33,30 @@ class MoreCubit extends Cubit<MoreState> {
 
   Store? get currentStore => baseCubit.store;
 
-  String get appVersion => '1.0.0';
+  String get appVersion => _appVersion ?? '';
 
   doLogout() {}
 
-  void changeLanguage(bool value) {
-    isTh = !isTh;
-    baseCubit.setLanguage();
+  Future<void> changeLanguage(BuildContext context, bool value) async {
+    emit(MoreLoading());
+    await context.setLocale(
+        value ? ApplicationConstance.localeTH : ApplicationConstance.localeEN);
+    emit(MoreSuccess());
+  }
+
+  Future<void> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    _appVersion = '$version ( $buildNumber )';
+
+    emit(MoreRefresh(DateTime.now()));
+  }
+
+  void setLocale(Locale value) {
+    locale = value;
     emit(MoreRefresh(DateTime.now()));
   }
 }

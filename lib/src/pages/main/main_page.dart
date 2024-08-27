@@ -1,5 +1,7 @@
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
@@ -66,31 +68,31 @@ class _MainPageState extends State<MainPage> {
                       [
                         TabItem(
                           CupertinoIcons.home,
-                          "Home",
+                          LocaleKeys.home.tr(),
                           ColorKeys.secondary,
                           circleStrokeColor: Colors.amber,
                         ),
                         TabItem(
                           CupertinoIcons.cube_box,
-                          "Products",
+                          LocaleKeys.products.tr(),
                           ColorKeys.secondary,
                           circleStrokeColor: Colors.amber,
                         ),
                         TabItem(
                           CupertinoIcons.money_dollar_circle,
-                          "Transaction",
+                          LocaleKeys.transactions.tr(),
                           ColorKeys.secondary,
                           circleStrokeColor: Colors.amber,
                         ),
                         TabItem(
                           Icons.history_rounded,
-                          "History",
+                          LocaleKeys.histories.tr(),
                           ColorKeys.secondary,
                           circleStrokeColor: Colors.amber,
                         ),
                         TabItem(
                           Icons.menu_rounded,
-                          "Menu",
+                          LocaleKeys.menu.tr(),
                           ColorKeys.secondary,
                           circleStrokeColor: Colors.amber,
                         ),

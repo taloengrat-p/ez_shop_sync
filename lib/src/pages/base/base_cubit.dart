@@ -181,8 +181,4 @@ class BaseCubit extends Cubit<BaseState> {
   Future<void> initialStoreData() async {
     await doGetProducts();
   }
-
-  void setLanguage() {
-    BuildContext? context = navigationService.navigatorKey.currentContext;
-  }
 }

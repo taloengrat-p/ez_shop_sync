@@ -16,6 +16,7 @@ class ButtonWidget extends StatefulWidget {
   final String label;
   final Function()? onPressed;
   final double? radius;
+  final double? innerRadius;
   final double? height;
   final double? elevation;
   final Color? backgroundColor;
@@ -33,6 +34,7 @@ class ButtonWidget extends StatefulWidget {
   const ButtonWidget({
     Key? key,
     this.type,
+    this.innerRadius,
     required this.label,
     this.onPressed,
     this.radius,
@@ -70,8 +72,9 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
   MaterialStateProperty<Color?>? getOverlayColor() {
     if (widget.ripple == true) {
-      return MaterialStatePropertyAll(
-          isPrimaryButton() ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2));
+      return MaterialStatePropertyAll(isPrimaryButton()
+          ? Colors.white.withOpacity(0.2)
+          : Colors.black.withOpacity(0.2));
     }
     return MaterialStateProperty.all(Colors.transparent);
   }
@@ -92,13 +95,16 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           overlayColor: getOverlayColor(),
           backgroundColor: widget.onPressed != null
               ? MaterialStatePropertyAll(
-                  widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.secondary : Colors.white),
+                  widget.backgroundColor ??
+                      (isPrimaryButton() ? ColorKeys.secondary : Colors.white),
                 )
               : null,
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.radius ?? 8),
-              side: BorderSide(color: widget.borderColor), // Set the border stroke color here
+              side: BorderSide(
+                  color:
+                      widget.borderColor), // Set the border stroke color here
             ),
           ),
         ),
@@ -127,7 +133,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                               TextStyle(
                                 color: isPressed
                                     ? ColorKeys.secondary
-                                    : widget.type == ButtonUiType.primary || widget.type == null
+                                    : widget.type == ButtonUiType.primary ||
+                                            widget.type == null
                                         ? Colors.white
                                         : Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -146,7 +153,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                           maxLines: 1,
                           style: widget.textStyle ??
                               TextStyle(
-                                color: widget.type == ButtonUiType.primary || widget.type == null
+                                color: widget.type == ButtonUiType.primary ||
+                                        widget.type == null
                                     ? Colors.white
                                     : Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -160,5 +168,57 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         ),
       ),
     );
+  }
+}
+
+class WeirdBorder extends ShapeBorder {
+  final double radius;
+  final double pathWidth;
+
+  WeirdBorder({required this.radius, this.pathWidth = 1});
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()
+      ..fillType = PathFillType.evenOdd
+      ..addPath(getOuterPath(rect, textDirection: textDirection!), Offset.zero);
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
+      _createPath(rect);
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => WeirdBorder(radius: radius);
+
+  Path _createPath(Rect rect) {
+    final innerRadius = radius + pathWidth;
+    final innerRect = Rect.fromLTRB(rect.left + pathWidth, rect.top + pathWidth,
+        rect.right - pathWidth, rect.bottom - pathWidth);
+
+    final outer = Path.combine(PathOperation.difference, Path()..addRect(rect),
+        _createBevels(rect, radius));
+    final inner = Path.combine(PathOperation.difference,
+        Path()..addRect(innerRect), _createBevels(rect, innerRadius));
+    return Path.combine(PathOperation.difference, outer, inner);
+  }
+
+  Path _createBevels(Rect rect, double radius) {
+    return Path()
+      ..addOval(
+          Rect.fromCircle(center: Offset(rect.left, rect.top), radius: radius))
+      ..addOval(Rect.fromCircle(
+          center: Offset(rect.left + rect.width, rect.top), radius: radius))
+      ..addOval(Rect.fromCircle(
+          center: Offset(rect.left, rect.top + rect.height), radius: radius))
+      ..addOval(Rect.fromCircle(
+          center: Offset(rect.left + rect.width, rect.top + rect.height),
+          radius: radius));
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
@@ -28,6 +30,7 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   late MoreCubit cubit;
   late BaseCubit baseCubit;
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +39,14 @@ class _MorePageState extends State<MorePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    cubit.setLocale(context.locale);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    log('${context.locale}', name: runtimeType.toString());
     return BlocProvider(
       create: (context) => cubit,
       child: BlocBuilder<MoreCubit, MoreState>(
@@ -44,7 +54,7 @@ class _MorePageState extends State<MorePage> {
           return BaseScaffolds(
             appBar: AppbarWidget(
               centerTitle: false,
-              title: 'Menu',
+              title: LocaleKeys.menu.tr(),
               actions: [
                 Text(
                   cubit.username,
@@ -93,7 +103,7 @@ class _MorePageState extends State<MorePage> {
             height: 32,
           ),
           ButtonWidget(
-            label: 'Log out',
+            label: LocaleKeys.logout.tr(),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: Colors.red,
             onPressed: cubit.doLogout,
@@ -191,10 +201,10 @@ class _MorePageState extends State<MorePage> {
 
   Widget _buildAppSettings() {
     return MenuGroupWidget(
-      title: 'App Settings',
+      title: LocaleKeys.appSetting.tr(),
       items: [
         MenuItemModel(
-          title: 'Language',
+          title: LocaleKeys.language.tr(),
           value: 1,
           trailing: Row(
             children: [
@@ -203,10 +213,10 @@ class _MorePageState extends State<MorePage> {
                 width: 4,
               ),
               Switch.adaptive(
-                value: cubit.isTh,
+                value: context.locale == const Locale('th'),
                 activeColor: Colors.orange.shade300,
                 inactiveTrackColor: Colors.orange.shade300,
-                onChanged: cubit.changeLanguage,
+                onChanged: (val) => cubit.changeLanguage(context, val),
               ),
               const SizedBox(
                 width: 4,
@@ -216,11 +226,9 @@ class _MorePageState extends State<MorePage> {
           ),
         ),
         MenuItemModel(
-          title: 'Theme',
+          title: LocaleKeys.theme.tr(),
           value: 1,
-          onPressed: () {
-            log('message');
-          },
+          onPressed: () {},
         ),
       ],
     );
@@ -228,17 +236,15 @@ class _MorePageState extends State<MorePage> {
 
   Widget _buildStoreManagement() {
     return MenuGroupWidget(
-      title: 'Store Settings',
+      title: LocaleKeys.storeSettings.tr(),
       items: [
         MenuItemModel(
-          title: 'Store Management',
+          title: LocaleKeys.storeManagement.tr(),
           value: 1,
-          onPressed: () {
-            log('message');
-          },
+          onPressed: () {},
         ),
         MenuItemModel(
-          title: 'User Management',
+          title: LocaleKeys.userManagement.tr(),
           value: 1,
           disabled: true,
           onPressed: () {
@@ -251,30 +257,24 @@ class _MorePageState extends State<MorePage> {
 
   Widget _buildUserManagement() {
     return MenuGroupWidget(
-      title: 'User Settings',
+      title: LocaleKeys.userSettings.tr(),
       items: [
         MenuItemModel(
-          title: 'Profile Settings',
+          title: LocaleKeys.profileSettings.tr(),
           value: 1,
-          onPressed: () {
-            log('message');
-          },
+          onPressed: () {},
         ),
         MenuItemModel(
-          title: 'Password Setting',
+          title: LocaleKeys.passwordSetting.tr(),
           value: 1,
           disabled: true,
-          onPressed: () {
-            log('message');
-          },
+          onPressed: () {},
         ),
         MenuItemModel(
-          title: 'Pin Setting',
+          title: LocaleKeys.pinSetting.tr(),
           value: 1,
           disabled: true,
-          onPressed: () {
-            log('message');
-          },
+          onPressed: () {},
         ),
       ],
     );

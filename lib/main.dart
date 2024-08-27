@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/flavors.dart';
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
@@ -21,6 +23,7 @@ import 'app.dart';
 
 FutureOr<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
 
   await initialHiveDB();
 
@@ -37,7 +40,17 @@ FutureOr<void> main() async {
       navigationService: GetIt.I<NavigationService>(),
     ),
   );
-  runApp(const App());
+  runApp(
+    EasyLocalization(
+      path: 'assets/translations',
+      supportedLocales: const [
+        ApplicationConstance.localeEN,
+        ApplicationConstance.localeTH
+      ],
+      fallbackLocale: ApplicationConstance.localeEN,
+      child: const App(),
+    ),
+  );
 }
 
 Future<void> setupConfiguration() async {

@@ -1,0 +1,23 @@
+{
+    "locale": "en",
+    "createYourStoreName": "Create Your Store Name",
+    "storeSettings": "Store Settings",
+    "menu": "Menu",
+    "histories": "Histories",
+    "transactions": "Transactions",
+    "products": "Products",
+    "productsEmpty": "Your product is empty please create new product.",
+    "createInvoice": "Create Invoice",
+    "invoiceHistory": "Invoice History",
+    "storeManagement": "Store Management",
+    "userManagement": "User Management",
+    "userSettings": "User Settings",
+    "profileSettings": "Profile Settings",
+    "passwordSetting": "Password Setting",
+    "pinSetting": "Pin Setting",
+    "appSetting": "App Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "logout": "Log out",
+    "home": "Home"
+}

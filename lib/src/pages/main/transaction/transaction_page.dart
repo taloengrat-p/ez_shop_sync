@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -20,8 +22,26 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(title: 'Transactions', centerTitle: false).build(),
-      body: buildBody(),
+      appBar: AppbarWidget(
+        title: LocaleKeys.transactions.tr(),
+        centerTitle: false,
+      ).build(),
+      body: Stack(
+        children: [
+          buildBody(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 28),
+              child: const CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 36,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -33,33 +53,45 @@ class _TransactionPageState extends State<TransactionPage> {
       child: Column(
         children: [
           Expanded(
-            child: ButtonWidget(
-              label: 'Create Invoice',
-              textStyle: textStyle,
-              backgroundColor: ColorKeys.accent,
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 40,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [],
               ),
-              onPressed: onCreateInvoice,
             ),
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          Expanded(
-            child: ButtonWidget(
-              label: 'Invoice History',
-              textStyle: textStyle,
-              backgroundColor: ColorKeys.accent,
-              icon: const Icon(
-                Icons.history_rounded,
-                color: Colors.white,
-                size: 40,
+          Row(
+            children: [
+              Expanded(
+                child: ButtonWidget(
+                  label: 'Create Invoice',
+                  textStyle: textStyle,
+                  innerRadius: 12,
+                  backgroundColor: ColorKeys.accent,
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  onPressed: onCreateInvoice,
+                ),
               ),
-              onPressed: () {},
-            ),
+              const SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: ButtonWidget(
+                  label: 'Invoice History',
+                  textStyle: textStyle,
+                  backgroundColor: ColorKeys.accent,
+                  icon: const Icon(
+                    Icons.history_rounded,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ],
           ),
         ],
       ),
