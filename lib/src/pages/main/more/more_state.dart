@@ -38,3 +38,24 @@ class MoreFailure extends MoreState {
   @override
   String toString() => 'MoreFailure';
 }
+
+class MoreClickPinSetting extends MoreState {
+  final PinType type;
+
+  const MoreClickPinSetting(this.type);
+  @override
+  String toString() => 'MoreClickPinSetting $type';
+
+  @override
+  List<Object?> get props => [type];
+}
+
+class MoreSetupPinSuccess extends MoreState {
+  @override
+  String toString() => 'MoreSetupPinSuccess';
+}
+
+enum PinType {
+  setting,
+  create;
+}

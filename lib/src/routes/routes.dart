@@ -5,7 +5,8 @@ import 'package:ez_shop_sync/src/pages/create_store/create_store_page.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_page.dart';
-import 'package:ez_shop_sync/src/pages/pin_setting/pin_setting_page.dart';
+import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_page.dart';
+import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_page.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_page.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_page.dart';
@@ -23,8 +24,9 @@ class Routes {
   static const String ROUTE_PROFILESETTINGS = '/ROUTE_PROFILESETTINGS';
   static const String ROUTE_USERMANAGEMENT = '/ROUTE_USERMANAGEMENT';
   static const String ROUTE_PASSWORDSETTING = '/ROUTE_PASSWORDSETTING';
-  static const String ROUTE_PINSETTING = '/ROUTE_PINSETTING';
   static const String ROUTE_THEMESETTING = '/ROUTE_THEMESETTING';
+  static const String ROUTE_PINVERIFY = '/ROUTE_PINVERIFY';
+  static const String ROUTE_PINSETUP = '/ROUTE_PINSETUP';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -36,7 +38,8 @@ class Routes {
     ROUTE_PROFILESETTINGS: (context) => const ProfileSettingsPage(),
     ROUTE_USERMANAGEMENT: (context) => const UserManagementPage(),
     ROUTE_PASSWORDSETTING: (context) => const PasswordSettingPage(),
-    ROUTE_PINSETTING: (context) => const PinSettingPage(),
     ROUTE_THEMESETTING: (context) => const ThemeSettingPage(),
+    ROUTE_PINVERIFY: (context) => const PinVerifyPage(),
+    ROUTE_PINSETUP: (context) => const PinSetupPage(),
   };
 }

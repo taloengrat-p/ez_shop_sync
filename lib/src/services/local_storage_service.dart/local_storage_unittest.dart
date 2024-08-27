@@ -39,4 +39,16 @@ class LocalStorageUnittest extends LocalStorageService {
     // TODO: implement setPref
     throw UnimplementedError();
   }
+
+  @override
+  getSecure(String key) {
+    // TODO: implement getSecure
+    throw UnimplementedError();
+  }
+
+  @override
+  setSecure(String key, String? value) {
+    // TODO: implement setSecure
+    throw UnimplementedError();
+  }
 }

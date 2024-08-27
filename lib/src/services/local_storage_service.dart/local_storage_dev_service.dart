@@ -2,6 +2,7 @@ import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 @Injectable(as: LocalStorageService, env: [Flavor.DEV, Flavor.PROD])
 class LocalStorageDevService implements LocalStorageService {
   SharedPreferences? prefs;
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Future<void> init() async {
@@ -78,5 +80,15 @@ class LocalStorageDevService implements LocalStorageService {
     }
 
     return result;
+  }
+
+  @override
+  Future<String?> getSecure(String key) async {
+    return await secureStorage.read(key: key);
+  }
+
+  @override
+  Future<void> setSecure(String key, String? value) async {
+    return await secureStorage.write(key: key, value: value);
   }
 }

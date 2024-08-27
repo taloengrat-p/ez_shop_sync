@@ -53,8 +53,6 @@ class AuthRepository implements IAuthRepository {
         email: request.email,
         username: '${request.firstName}.${request.lastName.substring(0, 1)}'
             .toLowerCase(),
-        password: request.password,
-        passwordSalt: request.salt,
       );
 
       await authLocalRepository.create(

@@ -5,22 +5,21 @@ import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();
 
-class PasswordEncryp {
-  final String password;
+class ResultEncryp {
+  final String value;
   final String salt;
 
-  PasswordEncryp({
-    required this.password,
+  ResultEncryp({
+    required this.value,
     required this.salt,
   });
 
   @override
-  String toString() => 'PasswordEncryp(password: $password, salt: $salt)';
+  String toString() => 'PasswordEncryp(password: $value, salt: $salt)';
 }
 
 class CryptoUtils {
-  
-  static PasswordEncryp encrypPassword(
+  static ResultEncryp encrypPassword(
     String value, {
     int lengthSalt = 5,
     String? saltInput,
@@ -30,7 +29,7 @@ class CryptoUtils {
     var bytes = utf8.encode(valueAndSalt);
     var digest = crypto.md5.convert(bytes);
 
-    return PasswordEncryp(password: digest.toString(), salt: salt);
+    return ResultEncryp(value: digest.toString(), salt: salt);
   }
 
   static bool verifyPassword({

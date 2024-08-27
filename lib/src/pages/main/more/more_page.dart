@@ -11,11 +11,15 @@ import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/widgets/menu_group_widget.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_router.dart';
-import 'package:ez_shop_sync/src/pages/pin_setting/pin_setting_router.dart';
+import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_router.dart';
+import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
+import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_router.dart';
+import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
+import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -42,7 +46,10 @@ class _MorePageState extends State<MorePage> {
   void initState() {
     super.initState();
     baseCubit = GetIt.I<BaseCubit>();
-    cubit = MoreCubit(baseCubit: baseCubit);
+    cubit = MoreCubit(
+      baseCubit: baseCubit,
+      localStorageService: GetIt.I<LocalStorageService>(),
+    );
   }
 
   @override
@@ -56,34 +63,63 @@ class _MorePageState extends State<MorePage> {
     log('${context.locale}', name: runtimeType.toString());
     return BlocProvider(
       create: (context) => cubit,
-      child: BlocBuilder<MoreCubit, MoreState>(
-        builder: (context, state) {
-          return BaseScaffolds(
-            appBar: AppbarWidget(
-              centerTitle: false,
-              title: LocaleKeys.menu.tr(),
-              actions: [
-                Text(
-                  cubit.username,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                CircleProfileWidget(
-                  title: cubit.userShortName,
-                  radius: 18,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-              ],
-            ).build(),
-            body: SingleChildScrollView(
-              child: buildBody(),
-            ),
-          );
+      child: BlocListener<MoreCubit, MoreState>(
+        listener: (context, state) async {
+          log('state $state', name: runtimeType.toString());
+          if (state is MoreClickPinSetting) {
+            if (state.type == PinType.create) {
+              final result = await PinSetupRouter(context).navigate();
+
+              cubit.refresh();
+            } else if (state.type == PinType.setting) {
+              final result = await PinVerifyRouter(context).navigate();
+
+              if (result is PinVerifySuccess) {
+                await Future.delayed(Duration.zero, () async {
+                  PinSetupRouter(context).navigate(
+                    argruments: PinSetupArgruments(
+                      title: 'Create New PIN',
+                      desc: 'Enter the code for new PIN',
+                    ),
+                  );
+                });
+
+                cubit.refresh();
+              } else {
+                cubit.refresh();
+              }
+            }
+          }
         },
+        child: BlocBuilder<MoreCubit, MoreState>(
+          builder: (context, state) {
+            return BaseScaffolds(
+              appBar: AppbarWidget(
+                centerTitle: false,
+                title: LocaleKeys.menu.tr(),
+                actions: [
+                  Text(
+                    cubit.username,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  CircleProfileWidget(
+                    title: cubit.userShortName,
+                    radius: 18,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
+              ).build(),
+              body: SingleChildScrollView(
+                child: buildBody(),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -268,10 +304,7 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.pinSetting.tr(),
           value: 1,
-          disabled: true,
-          onPressed: () {
-            PinSettingRouter(context).navigate();
-          },
+          onPressed: cubit.clickPinSetting,
         ),
       ],
     );

@@ -1,8 +1,10 @@
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_state.dart';
+import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/crypto_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +15,6 @@ class IntroduceCubit extends Cubit<IntroduceState> {
   String firstName = '';
   String lastName = '';
   String email = '';
-  String password = '';
-  String confirmPassword = '';
 
   BaseCubit baseCubit;
   AuthRepository authRepository;
@@ -26,10 +26,7 @@ class IntroduceCubit extends Cubit<IntroduceState> {
       return storeName.isNotEmpty &&
           firstName.isNotEmpty &&
           lastName.isNotEmpty &&
-          email.isNotEmpty &&
-          password.isNotEmpty &&
-          confirmPassword.isNotEmpty &&
-          passwordMatchConfirm;
+          email.isNotEmpty;
     } else if (currentStep == 2) {
       return true;
     }
@@ -37,14 +34,11 @@ class IntroduceCubit extends Cubit<IntroduceState> {
     return true;
   }
 
-  bool get isShowIconPasswordMath => password.isNotEmpty && confirmPassword.isNotEmpty;
   IntroduceCubit({
     required this.authRepository,
     required this.baseCubit,
     required this.localStorageService,
   }) : super(IntroduceInitial());
-
-  bool get passwordMatchConfirm => password == confirmPassword;
 
   void onStepChange(int value) {
     currentStep = value;
@@ -71,36 +65,24 @@ class IntroduceCubit extends Cubit<IntroduceState> {
     emitRefresh();
   }
 
-  void setPassword(String? value) {
-    password = value ?? '';
-    emitRefresh();
-  }
-
-  void setConfirmPassword(String? value) {
-    confirmPassword = value ?? '';
-    emitRefresh();
-  }
-
   void emitRefresh() {
     emit(IntroduceRefresh(DateTime.now()));
   }
 
   void doSubmit() async {
-    PasswordEncryp passwordEncryp = CryptoUtils.encrypPassword(password);
-
     final userRegister = await authRepository.register(
       CreateRegisterRequest(
         storeName: storeName.trim(),
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
-        password: passwordEncryp.password.trim(),
-        salt: passwordEncryp.salt.trim(),
       ),
     );
 
-    final updateIntroduceFlow = await localStorageService.setPref(SharedPrefKeys.isIntroduceFlowDone, true);
-    await localStorageService.setPref(SharedPrefKeys.currentUsername, userRegister.username);
+    final updateIntroduceFlow = await localStorageService.setPref(
+        SharedPrefKeys.isIntroduceFlowDone, true);
+    await localStorageService.setPref(
+        SharedPrefKeys.currentUsername, userRegister.username);
     if (updateIntroduceFlow) {
       baseCubit.doLogin(userForceLogin: userRegister);
       emit(IntroduceSuccess(userRegister.username));

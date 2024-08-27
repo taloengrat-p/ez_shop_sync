@@ -26,18 +26,6 @@ class User extends BaseHiveObject {
   @HiveField(12, defaultValue: null)
   String? profilePictureUrl;
 
-  @HiveField(13)
-  String password;
-
-  @HiveField(14)
-  String passwordSalt;
-
-  @HiveField(15)
-  String? pin;
-
-  @HiveField(16)
-  String? pinSalt;
-
   User({
     required super.id,
     super.createDate,
@@ -51,9 +39,5 @@ class User extends BaseHiveObject {
     required this.email,
     required this.username,
     this.profilePictureUrl,
-    required this.password,
-    required this.passwordSalt,
-    this.pin,
-    this.pinSalt,
   });
 }

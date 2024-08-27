@@ -79,6 +79,7 @@ class _AppState extends State<App> {
           child: BlocBuilder<BaseCubit, BaseState>(
             builder: (context, state) {
               log('base state : $state');
+
               return Stack(
                 children: [
                   baseCubit.isIntroduceFlowDone.isNull

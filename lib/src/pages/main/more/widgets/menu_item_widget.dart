@@ -5,27 +5,33 @@ class MenuItemWidget extends StatelessWidget {
   final MenuItemModel model;
 
   const MenuItemWidget({
-    Key? key,
+    super.key,
     required this.model,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: model.onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 50,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                model.title,
-                style: const TextStyle(fontSize: 14),
-              ),
+    return Opacity(
+      opacity: model.disabled ? 0.25 : 1,
+      child: IgnorePointer(
+        ignoring: model.disabled,
+        child: InkWell(
+          onTap: model.onPressed,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            height: 50,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    model.title,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+                if (model.trailing != null) model.trailing!,
+              ],
             ),
-            if (model.trailing != null) model.trailing!,
-          ],
+          ),
         ),
       ),
     );

@@ -37,6 +37,12 @@ class IntroduceSuccess extends IntroduceState {
   String toString() => 'IntroduceSuccess $username';
 }
 
+class IntroduceCreatePINSuccess extends IntroduceState {
+  const IntroduceCreatePINSuccess();
+  @override
+  String toString() => 'IntroduceCreatePINSuccess';
+}
+
 class IntroduceFailure extends IntroduceState {
   @override
   String toString() => 'IntroduceFailure';
