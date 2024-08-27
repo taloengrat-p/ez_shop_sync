@@ -106,6 +106,10 @@ class _MorePageState extends State<MorePage> {
             label: LocaleKeys.logout.tr(),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: Colors.red,
+            leading: const Icon(
+              Icons.power_settings_new_rounded,
+              color: Colors.white,
+            ),
             onPressed: cubit.doLogout,
           ),
           const SizedBox(
