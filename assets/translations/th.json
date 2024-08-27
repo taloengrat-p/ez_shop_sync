@@ -19,5 +19,8 @@
     "language": "ภาษา",
     "theme": "ธีม",
     "logout": "ออกจากระบบ",
-    "home": "หน้าหลัก"
+    "home": "หน้าหลัก",
+    "languageTh": "ไทย",
+    "languageEn": "English",
+    "appVersion": "เวอร์ชัน {} ( {} )"
 }

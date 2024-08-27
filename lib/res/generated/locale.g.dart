@@ -22,5 +22,8 @@ abstract class  LocaleKeys {
   static const theme = 'theme';
   static const logout = 'logout';
   static const home = 'home';
+  static const languageTh = 'languageTh';
+  static const languageEn = 'languageEn';
+  static const appVersion = 'appVersion';
 
 }

@@ -115,7 +115,8 @@ class _MorePageState extends State<MorePage> {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text('Version ${cubit.appVersion}'),
+              child: Text(LocaleKeys.appVersion
+                  .tr(args: [cubit.version, cubit.buildNumber])),
             ),
           ),
           const SizedBox(
@@ -208,7 +209,7 @@ class _MorePageState extends State<MorePage> {
           value: 1,
           trailing: Row(
             children: [
-              const Text('English'),
+              Text(LocaleKeys.languageEn.tr()),
               const SizedBox(
                 width: 4,
               ),
@@ -221,7 +222,7 @@ class _MorePageState extends State<MorePage> {
               const SizedBox(
                 width: 4,
               ),
-              const Text('ไทย'),
+              Text(LocaleKeys.languageTh.tr()),
             ],
           ),
         ),

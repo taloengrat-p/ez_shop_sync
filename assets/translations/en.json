@@ -19,5 +19,8 @@
     "language": "Language",
     "theme": "Theme",
     "logout": "Log out",
-    "home": "Home"
+    "home": "Home",
+    "languageTh": "ไทย",
+    "languageEn": "English",
+    "appVersion": "Version {} ( {} )"
 }

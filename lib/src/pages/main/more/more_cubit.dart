@@ -12,8 +12,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 class MoreCubit extends Cubit<MoreState> {
   BaseCubit baseCubit;
   List<Store> get stores => baseCubit.stores;
-  String? _appVersion;
   late Locale locale;
+  String version = '';
+  String buildNumber = '';
 
   MoreCubit({
     required this.baseCubit,
@@ -33,8 +34,6 @@ class MoreCubit extends Cubit<MoreState> {
 
   Store? get currentStore => baseCubit.store;
 
-  String get appVersion => _appVersion ?? '';
-
   doLogout() {}
 
   Future<void> changeLanguage(BuildContext context, bool value) async {
@@ -47,10 +46,8 @@ class MoreCubit extends Cubit<MoreState> {
   Future<void> getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    String version = packageInfo.version;
-    String buildNumber = packageInfo.buildNumber;
-
-    _appVersion = '$version ( $buildNumber )';
+    version = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
 
     emit(MoreRefresh(DateTime.now()));
   }
