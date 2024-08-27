@@ -1,27 +1,27 @@
 import 'package:ez_shop_sync/res/colors.dart';
-import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
-import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';   
+import 'package:ez_shop_sync/src/pages/pin_setting/pin_setting_cubit.dart';
+import 'package:ez_shop_sync/src/pages/pin_setting/pin_setting_state.dart';   
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 
-class UserManagementPage extends StatefulWidget {
-  const UserManagementPage({
+class PinSettingPage extends StatefulWidget {
+  const PinSettingPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  _UserManagementState createState() => _UserManagementState();
+  _PinSettingState createState() => _PinSettingState();
 }
 
-class _UserManagementState extends State<UserManagementPage> {
-  late UserManagementCubit _cubit;
+class _PinSettingState extends State<PinSettingPage> {
+  late PinSettingCubit _cubit;
 
   @override
   void initState() {
     super.initState();
-    _cubit = UserManagementCubit();
+    _cubit = PinSettingCubit();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -38,14 +38,14 @@ class _UserManagementState extends State<UserManagementPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _cubit,
-      child: BlocListener<UserManagementCubit, UserManagementState>(
+      child: BlocListener<PinSettingCubit, PinSettingState>(
         listener: (context, state) {},
-        child: BlocBuilder<UserManagementCubit, UserManagementState>(
+        child: BlocBuilder<PinSettingCubit, PinSettingState>(
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppbarWidget(
                 centerTitle: false,
-                title: "UserManagement",
+                title: "PinSetting",
                 actions: [],
               ).build(),
               body: SingleChildScrollView(
@@ -58,7 +58,7 @@ class _UserManagementState extends State<UserManagementPage> {
     );
   }
 
-  Widget _buildPage(BuildContext context, UserManagementState state) {
+  Widget _buildPage(BuildContext context, PinSettingState state) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
     );

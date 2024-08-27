@@ -4,6 +4,9 @@ gen-build:
 gen-locale:
 	dart pub run easy_localization:generate -f keys -o locale.g.dart -S assets/translations -O lib/res/generated
 
+gen-page:
+	flutter pub run ez_shop_sync generate --bloc-cubit --name $(NAME)
+
 init-native-splash-screen:
 	dart run flutter_native_splash:create
 

@@ -5,10 +5,17 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/widgets/menu_group_widget.dart';
+import 'package:ez_shop_sync/src/pages/password_setting/password_setting_router.dart';
+import 'package:ez_shop_sync/src/pages/pin_setting/pin_setting_router.dart';
+import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
+import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
+import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
+import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -152,20 +159,32 @@ class _MorePageState extends State<MorePage> {
               ),
               const Spacer(),
               IconButton(
-                onPressed: onHandleChangeStore,
-                icon: const Icon(
-                  Icons.add_circle_rounded,
-                  color: Colors.yellow,
-                  size: 36,
+                onPressed: () {
+                  CreateStoreRouter(context).navigate();
+                },
+                icon: const Material(
+                  elevation: 0.05,
+                  color: Colors.transparent,
+                  shape: CircleBorder(),
+                  child: Icon(
+                    Icons.add_circle_rounded,
+                    color: Colors.yellow,
+                    size: 36,
+                  ),
                 ),
               ),
               if (cubit.stores.isNotEmpty)
                 IconButton(
                   onPressed: onHandleChangeStore,
-                  icon: const Icon(
-                    Icons.expand_circle_down_rounded,
-                    color: Colors.white,
-                    size: 36,
+                  icon: const Material(
+                    elevation: 0.05,
+                    shape: CircleBorder(),
+                    color: Colors.transparent,
+                    child: Icon(
+                      Icons.expand_circle_down_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    ),
                   ),
                 ),
             ],
@@ -204,6 +223,60 @@ class _MorePageState extends State<MorePage> {
     }
   }
 
+  Widget _buildStoreManagement() {
+    return MenuGroupWidget(
+      title: LocaleKeys.storeSettings.tr(),
+      items: [
+        MenuItemModel(
+          title: LocaleKeys.storeManagement.tr(),
+          value: 1,
+          onPressed: () {
+            StoreManagementRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.userManagement.tr(),
+          value: 1,
+          disabled: true,
+          onPressed: () {
+            UserManagementRouter(context).navigate();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUserManagement() {
+    return MenuGroupWidget(
+      title: LocaleKeys.userSettings.tr(),
+      items: [
+        MenuItemModel(
+          title: LocaleKeys.profileSettings.tr(),
+          value: 1,
+          onPressed: () {
+            ProfileSettingsRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.passwordSetting.tr(),
+          value: 1,
+          disabled: true,
+          onPressed: () {
+            PasswordSettingRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.pinSetting.tr(),
+          value: 1,
+          disabled: true,
+          onPressed: () {
+            PinSettingRouter(context).navigate();
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildAppSettings() {
     return MenuGroupWidget(
       title: LocaleKeys.appSetting.tr(),
@@ -233,53 +306,9 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.theme.tr(),
           value: 1,
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStoreManagement() {
-    return MenuGroupWidget(
-      title: LocaleKeys.storeSettings.tr(),
-      items: [
-        MenuItemModel(
-          title: LocaleKeys.storeManagement.tr(),
-          value: 1,
-          onPressed: () {},
-        ),
-        MenuItemModel(
-          title: LocaleKeys.userManagement.tr(),
-          value: 1,
-          disabled: true,
           onPressed: () {
-            log('message');
+            ThemeSettingRouter(context).navigate();
           },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUserManagement() {
-    return MenuGroupWidget(
-      title: LocaleKeys.userSettings.tr(),
-      items: [
-        MenuItemModel(
-          title: LocaleKeys.profileSettings.tr(),
-          value: 1,
-          onPressed: () {},
-        ),
-        MenuItemModel(
-          title: LocaleKeys.passwordSetting.tr(),
-          value: 1,
-          disabled: true,
-          onPressed: () {},
-        ),
-        MenuItemModel(
-          title: LocaleKeys.pinSetting.tr(),
-          value: 1,
-          disabled: true,
-          onPressed: () {},
         ),
       ],
     );
