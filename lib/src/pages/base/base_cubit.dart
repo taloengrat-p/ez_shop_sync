@@ -50,6 +50,10 @@ class BaseCubit extends Cubit<BaseState> {
     doGetUserAppLocalSession();
   }
 
+  setCurrentStoreById(String id) {
+    _store = _stores.where((e) => e.id == id).firstOrNull;
+  }
+
   setCurrentStore(Store? value) {
     _store = value;
   }

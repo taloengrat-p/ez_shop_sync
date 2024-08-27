@@ -35,7 +35,7 @@ class ProductLocalUnittestRepository implements ProductLocalRepository {
   }
 
   @override
-  Product update(String id, Product updated) {
+  Future<Product> update(String id, Product updated) {
     // TODO: implement update
     throw UnimplementedError();
   }

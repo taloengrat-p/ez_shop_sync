@@ -8,7 +8,7 @@ abstract class IProductRepository {
   List<Product> getAll();
   Product? getById(String id);
   Future<Product> create(Product request);
-  Product update(String id, Product updated);
+  Future<Product> update(String id, Product updated);
   delete(String id);
   deleteAll(List<String> ids);
 }
@@ -72,7 +72,7 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  Product update(String id, Product updated,
+  Future<Product> update(String id, Product updated,
       {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return productLocalRepository.update(id, updated);

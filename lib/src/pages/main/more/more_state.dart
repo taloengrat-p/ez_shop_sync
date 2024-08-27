@@ -12,6 +12,17 @@ class MoreInitial extends MoreState {
   String toString() => 'MoreInitial';
 }
 
+class MoreChangeStore extends MoreState {
+  final String id;
+  const MoreChangeStore(this.id);
+
+  @override
+  String toString() => 'MoreChangeStore $id';
+
+  @override
+  List<Object?> get props => [id];
+}
+
 class MoreRefresh extends MoreState {
   final DateTime dateTime;
 

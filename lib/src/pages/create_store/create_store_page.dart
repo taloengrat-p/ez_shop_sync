@@ -1,10 +1,17 @@
-import 'package:ez_shop_sync/res/colors.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_cubit.dart';
-import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';   
+import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
+import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:get_it/get_it.dart';
 
 class CreateStorePage extends StatefulWidget {
   const CreateStorePage({
@@ -21,12 +28,15 @@ class _CreateStoreState extends State<CreateStorePage> {
   @override
   void initState() {
     super.initState();
-    _cubit = CreateStoreCubit();
+    _cubit = CreateStoreCubit(
+      storeRepository: GetIt.I<StoreRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
+      userRepository: GetIt.I<UserRepository>(),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
     });
- 
   }
 
   @override
@@ -39,7 +49,11 @@ class _CreateStoreState extends State<CreateStorePage> {
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<CreateStoreCubit, CreateStoreState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is CreateStoreSuccess) {
+            CreateStoreRouter(context).pop();
+          }
+        },
         child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
           builder: (context, state) {
             return BaseScaffolds(
@@ -49,18 +63,42 @@ class _CreateStoreState extends State<CreateStorePage> {
                 actions: [],
               ).build(),
               body: SingleChildScrollView(
-                child: _buildPage(context, state),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        TextFormFieldUiWidget(
+                          label: 'Name',
+                          onChanged: _cubit.setName,
+                        ),
+                        TextFormFieldUiWidget(
+                          label: 'Description',
+                          onChanged: _cubit.setDescription,
+                        ),
+                        TextFormFieldUiWidget(
+                          label: 'Category',
+                          onChanged: _cubit.setCategory,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              bottomNavigationBar: ButtonWidget(
+                margin: const EdgeInsets.all(16),
+                label: 'CREATE',
+                onPressed: () {
+                  _cubit.submit();
+                },
               ),
             );
           },
         ),
       ),
-    );
-  }
-
-  Widget _buildPage(BuildContext context, CreateStoreState state) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
     );
   }
 }

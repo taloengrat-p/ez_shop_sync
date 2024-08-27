@@ -256,6 +256,7 @@ class _MorePageState extends State<MorePage> {
         ));
     if (result != null) {
       // TO DO
+      cubit.changeStore(result);
     }
   }
 

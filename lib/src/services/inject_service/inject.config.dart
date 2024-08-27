@@ -31,6 +31,7 @@ import '../../data/repository/store/_local/store_local_repository.dart'
 import '../../data/repository/store/_server/store_server_repository.dart'
     as _i325;
 import '../../data/repository/store/store_repository.dart' as _i882;
+import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../utils/image_picker_utils.dart' as _i286;
 import '../hivedb_service/hivedb_dev_service.dart' as _i1036;
 import '../hivedb_service/hivedb_service.dart' as _i535;
@@ -61,6 +62,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
+    gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
     gh.singleton<_i265.ProductLocalRepository>(
       () => _i1065.ProductLocalDevRepository(),
       registerFor: {

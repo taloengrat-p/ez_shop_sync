@@ -73,4 +73,9 @@ class MoreCubit extends Cubit<MoreState> {
   void refresh() {
     emit(MoreRefresh(DateTime.now()));
   }
+
+  void changeStore(String id) {
+    baseCubit.setCurrentStoreById(id);
+    emit(MoreChangeStore(id));
+  }
 }

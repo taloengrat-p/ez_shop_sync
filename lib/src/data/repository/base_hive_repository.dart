@@ -45,8 +45,8 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     await box.deleteAll(ids);
   }
 
-  T update(I id, T updated) {
-    box.put(id, updated);
+  Future<T> update(I id, T updated) async {
+    await box.put(id, updated);
     return updated;
   }
 

@@ -22,6 +22,7 @@ class BottomMenuItem extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.only(bottom: 8),
         height: 50,
         child: Row(
           children: [
