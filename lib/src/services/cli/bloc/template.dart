@@ -59,9 +59,15 @@ class _%{name}State extends State<%{name}Page> {
     );
   }
 
-  Widget _buildPage(BuildContext context, %{name}State state) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+  Widget _buildPage(BuildContext context, TagManagementState state) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            height: DimensionsKeys.heightBts,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -84,6 +90,17 @@ abstract class %{name}State extends Equatable {
 
   @override
   List<Object> get props => [];
+}
+
+class %{name}Refresh extends %{name}State {
+  final DateTime dateTime;
+
+  const %{name}Refresh(this.dateTime);
+  @override
+  String toString() => '%{name}Refresh';
+
+  @override
+  List<Object?> get props => [dateTime.toIso8601String()];
 }
 
 class %{name}Initial extends %{name}State {

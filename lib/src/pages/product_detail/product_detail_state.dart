@@ -33,9 +33,9 @@ class ProductDetailDelete extends ProductDetailState {
 }
 
 class ProductDetailRefresh extends ProductDetailState {
-  DateTime dateTime;
+  final DateTime dateTime;
 
-  ProductDetailRefresh(this.dateTime);
+  const ProductDetailRefresh(this.dateTime);
   @override
   String toString() => 'ProductDetailRefresh';
 

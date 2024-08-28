@@ -1,7 +1,5 @@
 import 'package:ez_shop_sync/app.dart';
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 enum RouteAwareType {
   pop,

@@ -9,7 +9,7 @@ abstract class IStoreRepository {
   List<Store> getAllByIds(List<String> ids);
   Store? getById(String id);
   Future<Store> create(Store request);
-  Store update(String id, Store updated);
+  Future<Store> update(String id, Store updated);
   delete(String id);
   deleteAll(List<String> ids);
 }
@@ -41,8 +41,9 @@ class StoreRepository implements IStoreRepository {
   }
 
   @override
-  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
+  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
+      await storeLocalRepository.deleteAll(ids);
     } else {}
   }
 
@@ -62,14 +63,16 @@ class StoreRepository implements IStoreRepository {
   }
 
   @override
-  Store update(String id, Store updated) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<Store> update(String id, Store updated, {AppMode? appMode = AppMode.local}) async {
+    if (appMode == AppMode.local) {
+      return storeLocalRepository.update(id, updated);
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override
-  List<Store> getAllByIds(List<String> ids,
-      {AppMode? appMode = AppMode.local}) {
+  List<Store> getAllByIds(List<String> ids, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return storeLocalRepository.getAllById(ids);
     } else {

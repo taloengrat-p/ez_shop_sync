@@ -1,3 +1,7 @@
+init:
+	flutter clean
+	flutter pub get
+	
 gen-build:
 	dart run build_runner build
 

@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -43,10 +44,7 @@ FutureOr<void> main() async {
   runApp(
     EasyLocalization(
       path: 'assets/translations',
-      supportedLocales: const [
-        ApplicationConstance.localeEN,
-        ApplicationConstance.localeTH
-      ],
+      supportedLocales: const [ApplicationConstance.localeEN, ApplicationConstance.localeTH],
       fallbackLocale: ApplicationConstance.localeEN,
       child: const App(),
     ),
@@ -65,6 +63,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(StoreAdapter());
   Hive.registerAdapter(ProductStatusAdapter());
   Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(TagAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<Store>(HiveBoxConstance.store);

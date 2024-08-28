@@ -61,8 +61,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i300.StoreLocalRepository>(() => _i300.StoreLocalRepository());
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
-    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
+    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i265.ProductLocalRepository>(
       () => _i1065.ProductLocalDevRepository(),
       registerFor: {

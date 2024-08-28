@@ -30,13 +30,14 @@ class StoreAdapter extends TypeAdapter<Store> {
       website: fields[11] as String?,
       description: fields[12] as String?,
       images: (fields[13] as List?)?.cast<String>(),
+      tags: fields[14] == null ? [] : (fields[14] as List?)?.cast<Tag>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(6)
       ..write(obj.ownerId)
       ..writeByte(7)
@@ -53,6 +54,8 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..write(obj.description)
       ..writeByte(13)
       ..write(obj.images)
+      ..writeByte(14)
+      ..write(obj.tags)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

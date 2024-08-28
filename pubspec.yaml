@@ -61,6 +61,10 @@ dependencies:
   easy_localization: ^3.0.7
   pinput: ^5.0.0
   flutter_secure_storage: ^4.2.1
+  fl_chart: ^0.69.0
+  textfield_tags: ^3.0.1
+  flutter_iconpicker: ^3.4.6
+  flutter_colorpicker: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

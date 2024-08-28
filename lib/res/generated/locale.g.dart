@@ -25,5 +25,6 @@ abstract class  LocaleKeys {
   static const languageTh = 'languageTh';
   static const languageEn = 'languageEn';
   static const appVersion = 'appVersion';
+  static const tagManagement = 'tagManagement';
 
 }

@@ -17,6 +17,7 @@ import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
+import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -133,11 +134,11 @@ class _MorePageState extends State<MorePage> {
           const SizedBox(
             height: 16,
           ),
-          _buildStoreManagement(),
+          _buildStoreSettings(),
           const SizedBox(
             height: 16,
           ),
-          _buildUserManagement(),
+          _buildUserSettings(),
           const SizedBox(
             height: 16,
           ),
@@ -162,8 +163,7 @@ class _MorePageState extends State<MorePage> {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(LocaleKeys.appVersion
-                  .tr(args: [cubit.version, cubit.buildNumber])),
+              child: Text(LocaleKeys.appVersion.tr(args: [cubit.version, cubit.buildNumber])),
             ),
           ),
           const SizedBox(
@@ -260,7 +260,7 @@ class _MorePageState extends State<MorePage> {
     }
   }
 
-  Widget _buildStoreManagement() {
+  Widget _buildStoreSettings() {
     return MenuGroupWidget(
       title: LocaleKeys.storeSettings.tr(),
       items: [
@@ -273,17 +273,25 @@ class _MorePageState extends State<MorePage> {
         ),
         MenuItemModel(
           title: LocaleKeys.userManagement.tr(),
-          value: 1,
+          value: 2,
           disabled: true,
           onPressed: () {
             UserManagementRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.tagManagement.tr(),
+          value: 3,
+          disabled: false,
+          onPressed: () {
+            TagManagementRouter(context).navigate();
           },
         ),
       ],
     );
   }
 
-  Widget _buildUserManagement() {
+  Widget _buildUserSettings() {
     return MenuGroupWidget(
       title: LocaleKeys.userSettings.tr(),
       items: [

@@ -2,6 +2,7 @@
 
 import 'package:ez_shop_sync/src/pages/create_product/create_product_page.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_page.dart';
+import 'package:ez_shop_sync/src/pages/create_tag/create_tag_page.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_page.dart';
@@ -10,6 +11,7 @@ import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_page.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_page.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_page.dart';
+import 'package:ez_shop_sync/src/pages/tag_management/tag_management_page.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_page.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_page.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,8 @@ class Routes {
   static const String ROUTE_THEMESETTING = '/ROUTE_THEMESETTING';
   static const String ROUTE_PINVERIFY = '/ROUTE_PINVERIFY';
   static const String ROUTE_PINSETUP = '/ROUTE_PINSETUP';
+  static const String ROUTE_TAGMANAGEMENT = '/ROUTE_TAGMANAGEMENT';
+  static const String ROUTE_CREATETAG = '/ROUTE_CREATETAG';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -41,5 +45,7 @@ class Routes {
     ROUTE_THEMESETTING: (context) => const ThemeSettingPage(),
     ROUTE_PINVERIFY: (context) => const PinVerifyPage(),
     ROUTE_PINSETUP: (context) => const PinSetupPage(),
+    ROUTE_TAGMANAGEMENT: (context) => const TagManagementPage(),
+    ROUTE_CREATETAG: (context) => const CreateTagPage(),
   };
 }
