@@ -112,7 +112,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             ),
           ),
         ),
-        onPressed: widget.onPressed,
+        onPressed: widget.disabled ? null : widget.onPressed,
         child: Padding(
           padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(

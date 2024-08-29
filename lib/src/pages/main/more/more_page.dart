@@ -152,7 +152,7 @@ class _MorePageState extends State<MorePage> {
             margin: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: Colors.red,
             leading: const Icon(
-              Icons.power_settings_new_rounded,
+              Icons.logout_rounded,
               color: Colors.white,
             ),
             onPressed: cubit.doLogout,
