@@ -20,6 +20,7 @@ class TagAdapter extends TypeAdapter<Tag> {
       id: fields[1] as String,
       name: fields[6] as String,
       color: fields[7] as String?,
+      borderColor: fields[8] as String?,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as DateTime?
@@ -30,11 +31,13 @@ class TagAdapter extends TypeAdapter<Tag> {
   @override
   void write(BinaryWriter writer, Tag obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(6)
       ..write(obj.name)
       ..writeByte(7)
       ..write(obj.color)
+      ..writeByte(8)
+      ..write(obj.borderColor)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

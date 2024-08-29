@@ -23,5 +23,8 @@
   "languageTh": "ไทย",
   "languageEn": "English",
   "appVersion": "Version {} ( {} )",
-  "tagManagement": "Tags Management"
+  "tagManagement": "Tags Management",
+  "requiredErrorMessage": "Please enter your {}",
+  "name": "Name",
+  "tagEmpty": "Your tags is empty please create new tag."
 }

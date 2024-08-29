@@ -147,6 +147,7 @@ class _MorePageState extends State<MorePage> {
             height: 32,
           ),
           ButtonWidget(
+            disabled: true,
             label: LocaleKeys.logout.tr(),
             margin: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: Colors.red,
@@ -163,7 +164,8 @@ class _MorePageState extends State<MorePage> {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(LocaleKeys.appVersion.tr(args: [cubit.version, cubit.buildNumber])),
+              child: Text(LocaleKeys.appVersion
+                  .tr(args: [cubit.version, cubit.buildNumber])),
             ),
           ),
           const SizedBox(
@@ -265,6 +267,7 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.storeSettings.tr(),
       items: [
         MenuItemModel(
+          disabled: true,
           title: LocaleKeys.storeManagement.tr(),
           value: 1,
           onPressed: () {
@@ -296,6 +299,7 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.userSettings.tr(),
       items: [
         MenuItemModel(
+          disabled: true,
           title: LocaleKeys.profileSettings.tr(),
           value: 1,
           onPressed: () {
@@ -346,6 +350,7 @@ class _MorePageState extends State<MorePage> {
           ),
         ),
         MenuItemModel(
+          disabled: true,
           title: LocaleKeys.theme.tr(),
           value: 1,
           onPressed: () {

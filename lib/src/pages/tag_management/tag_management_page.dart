@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -8,6 +10,7 @@ import 'package:ez_shop_sync/src/pages/tag_management/tag_management_cubit.dart'
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_state.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_select_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +19,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
-import 'package:textfield_tags/textfield_tags.dart';
 
 class TagManagementPage extends StatefulWidget {
   const TagManagementPage({
@@ -91,7 +93,7 @@ class _TagManagementState extends State<TagManagementPage> {
             child: EmptyDataWidget(
               height: size.height * 0.45,
               width: 200,
-              message: 'Your tags is empty please create new tag.',
+              message: LocaleKeys.tagEmpty.tr(),
             ),
           )
         : SingleChildScrollView(
@@ -123,8 +125,12 @@ class _TagManagementState extends State<TagManagementPage> {
 
   Widget _buildButtom(BuildContext context, TagManagementState state) {
     return ButtonWidget(
+      disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty
+          ? true
+          : false,
       margin: const EdgeInsets.all(8),
-      backgroundColor: _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
+      backgroundColor:
+          _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
       label: _cubit.screenMode == ScreenMode.delete ? 'DELETE' : 'ADD TAG',
       onPressed: () async {
         if (_cubit.screenMode == ScreenMode.display) {
@@ -134,8 +140,16 @@ class _TagManagementState extends State<TagManagementPage> {
             _cubit.refresh();
           }
         } else if (_cubit.screenMode == ScreenMode.delete) {
-          // TO DO DELETE TAG
-          _cubit.deleteSelected();
+          ConfirmDialogUiWidget(
+            context,
+            title: 'Confirm Delete',
+            confirmLabel: 'Confirm',
+            cancelLabel: 'Cancel',
+          ).show().then((value) {
+            if (value == ConfirmDialogUiResult.ok) {
+              _cubit.deleteSelected();
+            }
+          });
         }
       },
     );

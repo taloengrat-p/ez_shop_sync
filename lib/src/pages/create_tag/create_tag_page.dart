@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -10,6 +14,7 @@ import 'package:ez_shop_sync/src/utils/color_picker_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +33,7 @@ class CreateTagPage extends StatefulWidget {
 
 class _CreateTagState extends State<CreateTagPage> {
   late CreateTagCubit _cubit;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -70,7 +76,10 @@ class _CreateTagState extends State<CreateTagPage> {
                 margin: const EdgeInsets.all(8),
                 label: 'CREATE',
                 onPressed: () {
-                  _cubit.doSubmit();
+                  log('_formKey.currentState?.validate() ${_formKey.currentState?.validate()} : ${_cubit.name.length}');
+                  if (_formKey.currentState?.validate() ?? false) {
+                    _cubit.doSubmit();
+                  }
                 },
               ),
             );
@@ -83,81 +92,65 @@ class _CreateTagState extends State<CreateTagPage> {
   Widget _buildPage(BuildContext context, CreateTagState state) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 140,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Stack(
-                children: [
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text('Preview'),
-                  ),
-                  Center(
-                    child: TagWidget(
-                      model: Tag(
-                        id: 'id',
-                        name: _cubit.name.isEmpty ? '         ' : _cubit.name,
-                        color: _cubit.color.toHex(),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text('Preview'),
+                    ),
+                    Center(
+                      child: TagWidget(
+                        model: Tag(
+                          id: 'id',
+                          name: _cubit.name.isEmpty ? '         ' : _cubit.name,
+                          color: _cubit.backgroundColor.toHex(),
+                          borderColor: _cubit.borderColor.toHex(),
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            TextFormFieldUiWidget(
-              label: 'Name',
-              onChanged: _cubit.setName,
-              autofocus: true,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextFormFieldUiWidget(
-              label: 'Color',
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: _cubit.color,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(DimensionsKeys.radius),
-                    ),
-                  ),
-                  const Spacer(),
-                  Flexible(
-                    child: ButtonWidget(
-                      height: 50,
-                      label: 'Choose',
-                      onPressed: () async {
-                        final color = await ColorPickerUtils.showDialogPicker(context);
-
-                        _cubit.setColor(color);
-                      },
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 16,
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Container(
-              height: DimensionsKeys.heightBts,
-            ),
-          ],
+              TextFormFieldUiWidget(
+                label: LocaleKeys.name.tr(),
+                onChanged: _cubit.setName,
+                autofocus: true,
+                isRequired: true,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextFormFieldColorPickerWidget(
+                label: 'Background Color',
+                onSelected: _cubit.setColor,
+              ),
+              TextFormFieldColorPickerWidget(
+                label: 'Border Color',
+                onSelected: _cubit.setBorderColor,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Container(
+                height: DimensionsKeys.heightBts,
+              ),
+            ],
+          ),
         ),
       ),
     );

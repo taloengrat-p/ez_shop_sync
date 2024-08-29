@@ -20,6 +20,8 @@ class TagWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: model.color?.toColor(),
         borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+            color: (model.borderColor?.toColor() ?? Colors.transparent)),
         boxShadow: const [
           BoxShadow(
             color: Colors.black,
@@ -31,7 +33,10 @@ class TagWidget extends StatelessWidget {
       child: Text(
         model.name,
         textAlign: TextAlign.center,
-        style: TextStyle(color: (color ?? Colors.transparent).computeLuminance() < 0.5 ? Colors.white : Colors.black),
+        style: TextStyle(
+            color: (color ?? Colors.transparent).computeLuminance() < 0.5
+                ? Colors.white
+                : Colors.black),
       ),
     );
   }

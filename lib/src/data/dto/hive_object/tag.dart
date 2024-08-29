@@ -11,9 +11,13 @@ class Tag extends BaseHiveObject {
   @HiveField(7)
   final String? color;
 
+  @HiveField(8)
+  final String? borderColor;
+
   Tag({
     required super.id,
     required this.name,
     this.color,
+    this.borderColor,
   });
 }

@@ -23,5 +23,8 @@
   "languageTh": "ไทย",
   "languageEn": "English",
   "appVersion": "เวอร์ชัน {} ( {} )",
-  "tagManagement": "การจัดการแท็ก"
+  "tagManagement": "การจัดการแท็ก",
+  "requiredErrorMessage": "กรุณากรอกข้อมูล {}",
+  "name": "ชื่อ",
+  "tagEmpty": "Your tags is empty please create new tag."
 }

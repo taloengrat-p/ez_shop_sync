@@ -12,7 +12,10 @@ class TagManagementCubit extends Cubit<TagManagementState> {
   ScreenMode screenMode = ScreenMode.display;
   BaseCubit baseCubit;
   StoreRepository storeRepository;
+
   Map<String, bool> selected = {};
+  bool get selectedEmpty =>
+      selected.isEmpty || selected.values.every((e) => e == false);
 
   TagManagementCubit({
     required this.baseCubit,
@@ -22,7 +25,9 @@ class TagManagementCubit extends Cubit<TagManagementState> {
   List<Tag> get tags => baseCubit.store?.tags ?? [];
 
   void toggleDeleteMode() {
-    screenMode = screenMode == ScreenMode.delete ? ScreenMode.display : ScreenMode.delete;
+    screenMode = screenMode == ScreenMode.delete
+        ? ScreenMode.display
+        : ScreenMode.delete;
     if (screenMode == ScreenMode.display) {
       selected.clear();
     }
@@ -49,7 +54,9 @@ class TagManagementCubit extends Cubit<TagManagementState> {
     log('remove ${selected.keys}');
 
     Store storeUpdated = baseCubit.store!
-      ..tags = baseCubit.store?.tags?.where((e) => !selected.keys.toList().contains(e.id)).toList();
+      ..tags = baseCubit.store?.tags
+          ?.where((e) => !selected.keys.toList().contains(e.id))
+          .toList();
     await storeRepository.update(baseCubit.store!.id, storeUpdated);
     toggleDeleteMode();
     emit(TagManagementDeleteSuccess());

@@ -8,14 +8,14 @@ abstract class CreateTagState extends Equatable {
 }
 
 class CreateTagRefresh extends CreateTagState {
-  final DateTime dateTime;
+  final dynamic value;
 
-  const CreateTagRefresh(this.dateTime);
+  const CreateTagRefresh(this.value);
   @override
   String toString() => 'CreateTagRefresh';
 
   @override
-  List<Object> get props => [dateTime.toIso8601String()];
+  List<Object> get props => [value];
 }
 
 class CreateTagInitial extends CreateTagState {

@@ -3,7 +3,7 @@ init:
 	flutter pub get
 	
 gen-build:
-	dart run build_runner build
+	dart run build_runner build --delete-conflicting-outputs
 
 gen-locale:
 	dart pub run easy_localization:generate -f keys -o locale.g.dart -S assets/translations -O lib/res/generated

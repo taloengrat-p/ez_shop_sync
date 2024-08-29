@@ -10,7 +10,8 @@ import 'package:uuid/uuid.dart';
 
 class CreateTagCubit extends Cubit<CreateTagState> {
   String name = '';
-  Color color = Colors.white;
+  Color backgroundColor = Colors.white;
+  Color borderColor = Colors.white;
   BaseCubit baseCubit;
   StoreRepository storeRepository;
 
@@ -27,7 +28,7 @@ class CreateTagCubit extends Cubit<CreateTagState> {
   }
 
   setColor(Color? value) {
-    color = value ?? Colors.transparent;
+    backgroundColor = value ?? Colors.transparent;
     emit(CreateTagRefresh(DateTime.now()));
   }
 
@@ -40,11 +41,17 @@ class CreateTagCubit extends Cubit<CreateTagState> {
           Tag(
             id: const Uuid().v1(),
             name: name,
-            color: color.toHex(),
+            color: backgroundColor.toHex(),
+            borderColor: borderColor.toHex(),
           ),
         ),
     );
 
     emit(CreateTagSuccess());
+  }
+
+  setBorderColor(Color value) {
+    borderColor = value;
+    emit(CreateTagRefresh(DateTime.now()));
   }
 }

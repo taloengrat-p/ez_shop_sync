@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +8,7 @@ enum TextFormFieldUiType { password, normal, email }
 
 class TextFormFieldUiWidget extends StatefulWidget {
   final Widget? labelSuffix;
-  final String? label;
+  final String label;
   final String? hintText;
   final String? textInitial;
   final bool? obscureText;
@@ -163,7 +165,9 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     keyboardType: widget.keyboardType ?? TextInputType.text,
                     textAlign: widget.textAlign ?? TextAlign.start,
                     autofocus: widget.autofocus ?? false,
-                    autovalidateMode: isBlured ? AutovalidateMode.always : AutovalidateMode.disabled,
+                    autovalidateMode: isBlured
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
                     readOnly: widget.readOnly ?? false,
                     autofillHints: widget.autofillHints,
                     focusNode: widget.focusNode,
@@ -175,7 +179,9 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     maxLines: widget.maxLines!.toInt(),
                     validator: (value) {
                       if ((value?.isEmpty ?? true) && widget.isRequired) {
-                        return widget.customMessageRequired;
+                        return widget.customMessageRequired ??
+                            LocaleKeys.requiredErrorMessage
+                                .tr(args: [widget.label.toLowerCase()]);
                       }
 
                       return widget.validator?.call(doValiedate(value));
@@ -184,8 +190,11 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
-                      contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-                      suffixIcon: widget.autoCompleteType == TextFormFieldUiType.password
+                      contentPadding: widget.contentPadding ??
+                          const EdgeInsets.symmetric(
+                              vertical: 13, horizontal: 8),
+                      suffixIcon: widget.autoCompleteType ==
+                              TextFormFieldUiType.password
                           ? getSuffixPasswordType()
                           : widget.suffixIcon,
                       border: OutlineInputBorder(
@@ -244,7 +253,8 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
           _isVisible = !_isVisible;
         });
       },
-      icon: Icon(_isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      icon: Icon(
+          _isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
     );
   }
 
