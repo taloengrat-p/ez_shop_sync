@@ -29,6 +29,13 @@ class ThemeSettingFailure extends ThemeSettingState {
   String toString() => 'ThemeSettingFailure';
 }
 
+class ThemeSettingReset extends ThemeSettingState {
+  const ThemeSettingReset();
+
+  @override
+  String toString() => 'ThemeSettingReset';
+}
+
 class ThemeSettingRefresh extends ThemeSettingState {
   final dynamic value;
   const ThemeSettingRefresh(this.value);

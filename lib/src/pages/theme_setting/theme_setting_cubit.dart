@@ -9,10 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ThemeSettingCubit extends Cubit<ThemeSettingState> {
-  Color primary = ColorKeys.primary;
-  Color secondary = ColorKeys.secondary;
-  Color accent = ColorKeys.accent;
-  Color backgroundColor = ColorKeys.brightness;
+  late Color primary;
+  late Color secondary;
+  late Color accent;
+  late Color backgroundColor;
+
   StoreRepository storeRepository;
   BaseCubit baseCubit;
 
@@ -27,7 +28,16 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   ThemeSettingCubit({
     required this.baseCubit,
     required this.storeRepository,
-  }) : super(ThemeSettingInitial());
+  }) : super(ThemeSettingInitial()) {
+    initColor();
+  }
+
+  initColor() {
+    primary = ColorKeys.primary;
+    secondary = ColorKeys.secondary;
+    accent = ColorKeys.accent;
+    backgroundColor = ColorKeys.brightness;
+  }
 
   setPrimary(Color p1) {
     primary = p1;
@@ -67,5 +77,10 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
     ColorKeys.accent = accent;
     ColorKeys.brightness = backgroundColor;
     emit(ThemeSettingSuccess());
+  }
+
+  void reset() {
+    initColor();
+    emit(const ThemeSettingReset());
   }
 }

@@ -17,18 +17,24 @@ class TextFormFieldColorPickerWidget extends StatefulWidget {
 
   @override
   State<TextFormFieldColorPickerWidget> createState() =>
-      _TextFormFieldColorPickerWidgetState();
+      TextFormFieldColorPickerWidgetState();
 }
 
-class _TextFormFieldColorPickerWidgetState
+class TextFormFieldColorPickerWidgetState
     extends State<TextFormFieldColorPickerWidget> {
   Color? _color;
+  Color? _originalColor;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _color = widget.initialColor;
+    _originalColor = _color;
+  }
+
+  reset() {
+    _color = _originalColor;
+    setState(() {});
   }
 
   @override

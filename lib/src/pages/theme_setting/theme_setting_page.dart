@@ -6,6 +6,8 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';
@@ -26,7 +28,10 @@ class ThemeSettingPage extends StatefulWidget {
 
 class _ThemeSettingState extends State<ThemeSettingPage> {
   late ThemeSettingCubit _cubit;
-
+  final primaryController = GlobalKey<TextFormFieldColorPickerWidgetState>();
+  final secondaryController = GlobalKey<TextFormFieldColorPickerWidgetState>();
+  final accentController = GlobalKey<TextFormFieldColorPickerWidgetState>();
+  final backgroundController = GlobalKey<TextFormFieldColorPickerWidgetState>();
   @override
   void initState() {
     super.initState();
@@ -54,6 +59,11 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
         listener: (context, state) {
           if (state is ThemeSettingSuccess) {
             ThemeSettingRouter(context).pop(state);
+          } else if (state is ThemeSettingReset) {
+            primaryController.currentState?.reset();
+            secondaryController.currentState?.reset();
+            accentController.currentState?.reset();
+            backgroundController.currentState?.reset();
           }
         },
         child: BlocBuilder<ThemeSettingCubit, ThemeSettingState>(
@@ -62,7 +72,23 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
               appBar: AppbarWidget(
                 centerTitle: false,
                 title: LocaleKeys.themeSettings.tr(),
-                actions: [],
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _cubit.reset();
+                    },
+                    child: Text(
+                      'Reset',
+                      style: TextStyle(
+                        color: GetIt.I<BaseCubit>()
+                            .appTheme
+                            ?.primaryColor
+                            .toColor()
+                            .getContrast(),
+                      ),
+                    ),
+                  )
+                ],
               ).build(),
               body: _buildPage(context, state),
               bottomNavigationBar: ButtonWidget(
@@ -194,21 +220,25 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
               height: 16,
             ),
             TextFormFieldColorPickerWidget(
+              key: primaryController,
               label: 'Primary Color',
               initialColor: _cubit.primary,
               onSelected: _cubit.setPrimary,
             ),
             TextFormFieldColorPickerWidget(
+              key: secondaryController,
               label: 'Secondary Color',
               initialColor: _cubit.secondary,
               onSelected: _cubit.setSecondary,
             ),
             TextFormFieldColorPickerWidget(
+              key: accentController,
               label: 'Third Color',
               initialColor: _cubit.accent,
               onSelected: _cubit.setAccent,
             ),
             TextFormFieldColorPickerWidget(
+              key: backgroundController,
               label: 'Background Color',
               initialColor: _cubit.backgroundColor,
               onSelected: _cubit.setBackgroundColor,
