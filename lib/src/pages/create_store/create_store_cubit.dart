@@ -47,6 +47,4 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
   setDescription(String? value) {
     desc = value ?? '';
   }
-
-  setCategory(String? value) {}
 }

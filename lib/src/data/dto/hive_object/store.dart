@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:hive/hive.dart';
 
 part 'store.g.dart';
@@ -33,6 +34,9 @@ class Store extends BaseHiveObject {
   @HiveField(14, defaultValue: [])
   List<Tag>? tags;
 
+  @HiveField(15, defaultValue: null)
+  AppTheme? storeTheme;
+
   Store({
     required super.id,
     super.createDate,
@@ -48,5 +52,6 @@ class Store extends BaseHiveObject {
     this.description,
     this.images,
     this.tags,
+    this.storeTheme,
   });
 }

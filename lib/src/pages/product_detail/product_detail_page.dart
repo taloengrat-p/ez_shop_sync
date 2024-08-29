@@ -103,7 +103,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         "\$${cubit.product?.price.toString() ?? ''}",
                         style: TextStyle(
                           fontSize: 18,
-                          color: ColorKeys.orangeBtn,
+                          color: ColorKeys.accent,
                         ),
                       ),
                     )
@@ -119,7 +119,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       child: ButtonWidget(
                         label: 'Add Stock',
                         radius: 0,
-                        textStyle: TextStyle(color: ColorKeys.labelNormal),
+                        textStyle: const TextStyle(color: Colors.grey),
                         backgroundColor: ColorKeys.white,
                         icon: Icon(
                           CupertinoIcons.cube_box,

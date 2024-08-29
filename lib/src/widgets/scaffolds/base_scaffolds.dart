@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/app.dart';
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:flutter/material.dart';
 
 enum RouteAwareType {
@@ -76,12 +77,12 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: Colors.white,
+      color: ColorKeys.brightness,
       child: SafeArea(
         top: false,
         bottom: true,
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: ColorKeys.brightness,
           appBar: widget.appBar,
           body: widget.body,
           bottomNavigationBar: widget.bottomNavigationBar,

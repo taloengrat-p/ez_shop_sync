@@ -19,9 +19,11 @@ import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
+import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
+import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/bottom_menu_item.dart';
@@ -193,7 +195,11 @@ class _MorePageState extends State<MorePage> {
               ),
               Text(
                 cubit.storeName,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: cubit.baseCubit.appTheme?.secondaryColor
+                      .toColor()
+                      .getContrast(),
+                ),
               ),
               const Spacer(),
               IconButton(
@@ -350,11 +356,14 @@ class _MorePageState extends State<MorePage> {
           ),
         ),
         MenuItemModel(
-          disabled: true,
           title: LocaleKeys.theme.tr(),
           value: 1,
-          onPressed: () {
-            ThemeSettingRouter(context).navigate();
+          onPressed: () async {
+            final result = await ThemeSettingRouter(context).navigate();
+
+            if (result is ThemeSettingSuccess) {
+              cubit.refresh();
+            }
           },
         ),
       ],

@@ -29,5 +29,7 @@ abstract class  LocaleKeys {
   static const requiredErrorMessage = 'requiredErrorMessage';
   static const name = 'name';
   static const tagEmpty = 'tagEmpty';
+  static const themeSettings = 'themeSettings';
+  static const preview = 'preview';
 
 }

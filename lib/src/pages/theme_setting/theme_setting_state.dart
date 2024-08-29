@@ -28,3 +28,14 @@ class ThemeSettingFailure extends ThemeSettingState {
   @override
   String toString() => 'ThemeSettingFailure';
 }
+
+class ThemeSettingRefresh extends ThemeSettingState {
+  final dynamic value;
+  const ThemeSettingRefresh(this.value);
+
+  @override
+  String toString() => 'ThemeSettingRefresh $value';
+
+  @override
+  List<Object> get props => [value];
+}

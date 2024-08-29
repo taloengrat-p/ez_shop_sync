@@ -21,27 +21,16 @@ import 'package:flutter/material.dart';
 
 // Foggy White (#F8F8FF): A nearly white tone with a hint of blue, similar to a foggy morning sky, perfect for a minimalist and clean look.
 class ColorKeys {
-  static Color get screenBgColor => const Color.fromARGB(255, 243, 243, 243);
   static Color get white => const Color(0xFFFFFFFF);
   static Color get black => const Color(0xFF000000);
 
-  static Color get secondary => Colors.grey;
-  static Color get primary => const Color(0xFF000000);
-  static Color get accent => Colors.orange;
+  static Color secondary = Colors.grey;
+  static Color primary = const Color(0xFF000000);
+  static Color accent = Colors.orange;
+  static Color brightness = Colors.white;
 
-  static Color get dawnLight2 => const Color.fromRGBO(255, 255, 204, 1);
-  static Color get dawnLight => const Color(0xFFFFE7C6);
-  static Color get dawnDark => const Color.fromARGB(255, 255, 190, 99);
-  static Color get cloudGray => const Color(0xFFD3D3D3);
-  static Color get twilightPurple => const Color(0xFF6A5ACD);
-
-  static Color get sunsetCoral => const Color(0xFFFF6F61);
-
-  static Color get cloudyGray => const Color(0xFFE0E0E0);
-  static Color get paleBlue => const Color(0xFFB0E0E6);
-  static Color get foggyWhite => const Color(0xFFF8F8FF);
-
-  static Color get orangeBtn => Colors.orange;
-
-  static Color get labelNormal => Colors.black87;
+  static Color defaultSecondary = Colors.grey;
+  static Color defaultPrimary = const Color(0xFF000000);
+  static Color defaultAccent = Colors.orange;
+  static Color defaultBrightness = Colors.white;
 }

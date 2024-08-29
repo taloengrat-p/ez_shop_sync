@@ -34,13 +34,11 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    baseCubit = GetIt.I<BaseCubit>();
+    baseCubit = BlocProvider.of<BaseCubit>(context);
 
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) {
-      baseCubit = GetIt.I<BaseCubit>();
-
       // if (result.contains(ConnectivityResult.none)) {
       //   baseCubit.changeMode(AppMode.local);
       // } else {
@@ -57,8 +55,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    log('context.supportedLocales ${context.supportedLocales}',
-        name: runtimeType.toString());
     return MaterialApp(
       title: F.title,
       localizationsDelegates: context.localizationDelegates,
@@ -74,12 +70,14 @@ class _AppState extends State<App> {
       navigatorObservers: [routeAware],
       routes: Routes.values,
       home: _flavorBanner(
-        child: BlocProvider(
-          create: (context) => baseCubit,
+        child: BlocListener<BaseCubit, BaseState>(
+          bloc: baseCubit,
+          listener: (context, state) {
+            log('[CUBIT][BASE] state : $state');
+          },
           child: BlocBuilder<BaseCubit, BaseState>(
+            bloc: baseCubit,
             builder: (context, state) {
-              log('base state : $state');
-
               return Stack(
                 children: [
                   baseCubit.isIntroduceFlowDone.isNull

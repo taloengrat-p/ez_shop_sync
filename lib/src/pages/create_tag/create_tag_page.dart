@@ -13,6 +13,7 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/utils/color_picker_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
@@ -97,30 +98,14 @@ class _CreateTagState extends State<CreateTagPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                height: 140,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Stack(
-                  children: [
-                    const Align(
-                      alignment: Alignment.topLeft,
-                      child: Text('Preview'),
-                    ),
-                    Center(
-                      child: TagWidget(
-                        model: Tag(
-                          id: 'id',
-                          name: _cubit.name.isEmpty ? '         ' : _cubit.name,
-                          color: _cubit.backgroundColor.toHex(),
-                          borderColor: _cubit.borderColor.toHex(),
-                        ),
-                      ),
-                    )
-                  ],
+              ContainerPreviewWidget(
+                child: TagWidget(
+                  model: Tag(
+                    id: 'id',
+                    name: _cubit.name.isEmpty ? '         ' : _cubit.name,
+                    color: _cubit.backgroundColor.toHex(),
+                    borderColor: _cubit.borderColor.toHex(),
+                  ),
                 ),
               ),
               const SizedBox(

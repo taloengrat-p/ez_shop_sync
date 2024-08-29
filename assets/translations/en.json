@@ -26,5 +26,7 @@
   "tagManagement": "Tags Management",
   "requiredErrorMessage": "Please enter your {}",
   "name": "Name",
-  "tagEmpty": "Your tags is empty please create new tag."
+  "tagEmpty": "Your tags is empty please create new tag.",
+  "themeSettings": "Theme Settings",
+  "preview": "Preview"
 }

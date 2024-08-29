@@ -15,7 +15,9 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
+import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -44,9 +46,19 @@ FutureOr<void> main() async {
   runApp(
     EasyLocalization(
       path: 'assets/translations',
-      supportedLocales: const [ApplicationConstance.localeEN, ApplicationConstance.localeTH],
+      supportedLocales: const [
+        ApplicationConstance.localeEN,
+        ApplicationConstance.localeTH
+      ],
       fallbackLocale: ApplicationConstance.localeEN,
-      child: const App(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => GetIt.I<BaseCubit>(),
+          ),
+        ],
+        child: const App(),
+      ),
     ),
   );
 }
@@ -64,6 +76,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(ProductStatusAdapter());
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(TagAdapter());
+  Hive.registerAdapter(AppThemeAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<Store>(HiveBoxConstance.store);

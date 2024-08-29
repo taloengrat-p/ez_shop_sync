@@ -79,10 +79,6 @@ class _CreateStoreState extends State<CreateStorePage> {
                           label: 'Description',
                           onChanged: _cubit.setDescription,
                         ),
-                        TextFormFieldUiWidget(
-                          label: 'Category',
-                          onChanged: _cubit.setCategory,
-                        ),
                       ],
                     ),
                   ),

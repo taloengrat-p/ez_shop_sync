@@ -1,5 +1,5 @@
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:flutter/material.dart';
 
@@ -34,9 +34,8 @@ class TagWidget extends StatelessWidget {
         model.name,
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: (color ?? Colors.transparent).computeLuminance() < 0.5
-                ? Colors.white
-                : Colors.black),
+          color: (color ?? Colors.transparent).getContrast(),
+        ),
       ),
     );
   }

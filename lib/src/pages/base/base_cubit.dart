@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
@@ -13,11 +13,13 @@ import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
+import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:flutter/material.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BaseCubit extends Cubit<BaseState> {
+  AppTheme? _appTheme;
   LocalStorageService localStorageService;
   AuthLocalRepository authLocalRepository;
   StoreRepository storeRepository;
@@ -37,6 +39,7 @@ class BaseCubit extends Cubit<BaseState> {
   Store? get store => _store;
   List<Product> get products => _products;
   List<Store> get stores => _stores;
+  AppTheme? get appTheme => _appTheme;
 
   BaseCubit({
     required this.localStorageService,
@@ -50,12 +53,27 @@ class BaseCubit extends Cubit<BaseState> {
     doGetUserAppLocalSession();
   }
 
+  loadAppTheme(AppTheme? value) {
+    _appTheme = value;
+    ColorKeys.primary =
+        _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
+    ColorKeys.secondary =
+        _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
+    ColorKeys.accent =
+        _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
+    ColorKeys.brightness =
+        _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
+    emit(BaseLoadAppThemeSuccess(appTheme));
+  }
+
   setCurrentStoreById(String id) {
-    _store = _stores.where((e) => e.id == id).firstOrNull;
+    final store = _stores.where((e) => e.id == id).firstOrNull;
+    setCurrentStore(store);
   }
 
   setCurrentStore(Store? value) {
     _store = value;
+    loadAppTheme(_store?.storeTheme);
   }
 
   setCurrentUser(User? value) {

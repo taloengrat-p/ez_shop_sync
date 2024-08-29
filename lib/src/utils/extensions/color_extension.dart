@@ -16,5 +16,9 @@ extension HexExtension on Color {
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
 
+  Color getContrast() {
+    return computeLuminance() < 0.5 ? Colors.white : Colors.black;
+  }
+
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
 }

@@ -8,12 +8,12 @@ class ActionButtonGroupWidget extends StatelessWidget {
   final Function()? onConfirm;
   final Color? confirmColor;
   final Color? cancelColor;
-  final bool? enableConfirm;
-  final bool? enableCancel;
+  final bool enableConfirm;
+  final bool enableCancel;
   final Axis direction;
   final double? heightButton;
   final double gap;
-
+  final EdgeInsets? margin;
   const ActionButtonGroupWidget({
     super.key,
     this.cancelLabel,
@@ -22,16 +22,18 @@ class ActionButtonGroupWidget extends StatelessWidget {
     this.onConfirm,
     this.cancelColor,
     this.confirmColor,
-    this.enableCancel,
-    this.enableConfirm,
+    this.enableCancel = true,
+    this.enableConfirm = true,
     this.heightButton,
     this.direction = Axis.horizontal,
     this.gap = 16,
+    this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      margin: margin,
       width: double.infinity,
       child: direction == Axis.horizontal
           ? Row(
@@ -50,39 +52,36 @@ class ActionButtonGroupWidget extends StatelessWidget {
 
   List<Widget> buildChildrenHorizon() {
     return [
-      if (cancelLabel != null)
-        Expanded(
-          flex: 1,
-          child: ButtonWidget(
-            label: cancelLabel ?? 'Cancel',
-            type: ButtonUiType.secondary,
-            textStyle: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-              color: Colors.black,
-            ),
-            onPressed: enableCancel ?? true ? onCancel : null,
+      Expanded(
+        flex: 1,
+        child: ButtonWidget(
+          label: cancelLabel ?? 'Cancel',
+          type: ButtonUiType.secondary,
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+            color: Colors.black,
+          ),
+          onPressed: enableCancel ? onCancel : null,
+        ),
+      ),
+      SizedBox(
+        width: gap,
+      ),
+      Expanded(
+        flex: 1,
+        child: ButtonWidget(
+          isFittedLabel: false,
+          backgroundColor: confirmColor,
+          label: confirmLabel ?? 'Confirm',
+          onPressed: enableConfirm ? onConfirm : null,
+          textStyle: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
-      if (confirmLabel != null && cancelLabel != null)
-        SizedBox(
-          width: gap,
-        ),
-      if (confirmLabel != null)
-        Expanded(
-          flex: 1,
-          child: ButtonWidget(
-            isFittedLabel: false,
-            backgroundColor: confirmColor,
-            label: confirmLabel ?? 'Confirm',
-            onPressed: enableConfirm ?? true ? onConfirm : null,
-            textStyle: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ),
+      ),
     ];
   }
 
@@ -96,7 +95,7 @@ class ActionButtonGroupWidget extends StatelessWidget {
             isFittedLabel: false,
             backgroundColor: confirmColor,
             label: confirmLabel ?? 'Confirm',
-            onPressed: enableConfirm ?? true ? onConfirm : null,
+            onPressed: onConfirm,
             textStyle: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,

@@ -26,5 +26,7 @@
   "tagManagement": "การจัดการแท็ก",
   "requiredErrorMessage": "กรุณากรอกข้อมูล {}",
   "name": "ชื่อ",
-  "tagEmpty": "Your tags is empty please create new tag."
+  "tagEmpty": "Your tags is empty please create new tag.",
+  "themeSettings": "ตั้งค่าธีม",
+  "preview": "ดูตัวอย่าง"
 }
