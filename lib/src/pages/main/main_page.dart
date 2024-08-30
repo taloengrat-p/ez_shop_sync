@@ -69,35 +69,53 @@ class _MainPageState extends State<MainPage> {
                         TabItem(
                           CupertinoIcons.home,
                           LocaleKeys.home.tr(),
-                          ColorKeys.secondary,
-                          circleStrokeColor: Colors.amber,
+                          ColorKeys.white,
+                          circleStrokeColor: ColorKeys.primary,
+                          labelStyle: TextStyle(
+                            color: ColorKeys.text,
+                          ),
                         ),
                         TabItem(
                           CupertinoIcons.cube_box,
                           LocaleKeys.products.tr(),
-                          ColorKeys.secondary,
-                          circleStrokeColor: Colors.amber,
+                          ColorKeys.white,
+                          circleStrokeColor: ColorKeys.primary,
+                          labelStyle: TextStyle(
+                            color: ColorKeys.text,
+                          ),
                         ),
                         TabItem(
                           CupertinoIcons.money_dollar_circle,
                           LocaleKeys.transactions.tr(),
-                          ColorKeys.secondary,
-                          circleStrokeColor: Colors.amber,
+                          ColorKeys.white,
+                          circleStrokeColor: ColorKeys.primary,
+                          labelStyle: TextStyle(
+                            color: ColorKeys.text,
+                          ),
                         ),
                         TabItem(
                           Icons.history_rounded,
                           LocaleKeys.histories.tr(),
-                          ColorKeys.secondary,
-                          circleStrokeColor: Colors.amber,
+                          ColorKeys.white,
+                          circleStrokeColor: ColorKeys.primary,
+                          labelStyle: TextStyle(
+                            color: ColorKeys.text,
+                          ),
                         ),
                         TabItem(
                           Icons.menu_rounded,
                           LocaleKeys.menu.tr(),
-                          ColorKeys.secondary,
-                          circleStrokeColor: Colors.amber,
+                          ColorKeys.white,
+                          circleStrokeColor: ColorKeys.primary,
+                          labelStyle: TextStyle(
+                            color: ColorKeys.text,
+                          ),
                         ),
                       ],
+                      circleStrokeWidth: 1.5,
                       iconsSize: 24,
+                      normalIconColor: ColorKeys.primary,
+                      selectedIconColor: ColorKeys.primary,
                       controller: _navigationController,
                       selectedCallback: (int? selectedPos) {
                         if (selectedPos == null) {

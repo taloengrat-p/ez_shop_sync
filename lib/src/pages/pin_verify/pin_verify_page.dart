@@ -57,7 +57,7 @@ class _PinVerifyState extends State<PinVerifyPage> {
         child: BlocBuilder<PinVerifyCubit, PinVerifyState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 color: Colors.transparent,
                 iconThemeColor: Colors.black,
                 actions: [],

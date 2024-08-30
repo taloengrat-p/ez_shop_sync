@@ -43,7 +43,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
         child: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "ProfileSettings",
                 actions: [],

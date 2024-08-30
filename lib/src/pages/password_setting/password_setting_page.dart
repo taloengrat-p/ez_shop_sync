@@ -43,7 +43,7 @@ class _PasswordSettingState extends State<PasswordSettingPage> {
         child: BlocBuilder<PasswordSettingCubit, PasswordSettingState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "PasswordSetting",
                 actions: [],

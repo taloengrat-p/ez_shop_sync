@@ -4,6 +4,7 @@ class MenuItemModel {
   final String title;
   final dynamic value;
   final Widget? trailing;
+  final Widget? leading;
   final bool disabled;
   final Function()? onPressed;
 
@@ -13,5 +14,6 @@ class MenuItemModel {
     this.onPressed,
     this.trailing,
     this.disabled = false,
+    this.leading,
   });
 }

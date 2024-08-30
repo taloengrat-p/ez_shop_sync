@@ -1,3 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -55,9 +58,9 @@ class ActionButtonGroupWidget extends StatelessWidget {
       Expanded(
         flex: 1,
         child: ButtonWidget(
-          label: cancelLabel ?? 'Cancel',
+          label: cancelLabel ?? LocaleKeys.cancel.tr(),
           type: ButtonUiType.secondary,
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 15,
             color: Colors.black,
@@ -113,7 +116,7 @@ class ActionButtonGroupWidget extends StatelessWidget {
             height: heightButton ?? 44,
             width: double.infinity,
             type: ButtonUiType.secondary,
-            label: cancelLabel ?? 'Cancel',
+            label: cancelLabel ?? LocaleKeys.cancel.tr(),
             textStyle: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,

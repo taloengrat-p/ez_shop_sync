@@ -59,7 +59,7 @@ class _TagManagementState extends State<TagManagementPage> {
         child: BlocBuilder<TagManagementCubit, TagManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "Tag Management",
                 actions: [

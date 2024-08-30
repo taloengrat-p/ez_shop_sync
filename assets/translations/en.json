@@ -28,5 +28,16 @@
   "name": "Name",
   "tagEmpty": "Your tags is empty please create new tag.",
   "themeSettings": "Theme Settings",
-  "preview": "Preview"
+  "preview": "Preview",
+  "qty": "{} {}",
+  "units": {
+    "piece": "piece"
+  },
+  "confirmDeleteTitle": "Confirm Delete",
+  "confirmDeleteDesc": "Are your confirm delete this product",
+  "delete": "Delete",
+  "edit": "Edit",
+  "cancel": "Cancel",
+  "inventory": "Inventory",
+  "addStock": "Add Stock"
 }

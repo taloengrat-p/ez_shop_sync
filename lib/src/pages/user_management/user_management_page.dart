@@ -43,7 +43,7 @@ class _UserManagementState extends State<UserManagementPage> {
         child: BlocBuilder<UserManagementCubit, UserManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "UserManagement",
                 actions: [],

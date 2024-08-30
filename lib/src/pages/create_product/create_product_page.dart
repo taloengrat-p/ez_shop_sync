@@ -47,7 +47,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
         child: BlocBuilder<CreateProductCubit, CreateProductState>(
             builder: (context, state) {
           return BaseScaffolds(
-            appBar: AppbarWidget(title: 'Create Product', actions: []).build(),
+            appBar: AppbarWidget(context, title: 'Create Product', actions: [])
+                .build(),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -79,16 +80,13 @@ class _CreateProductPageState extends State<CreateProductPage> {
                         onChanged: cubit.setPrice,
                       ),
                       TextFormFieldUiWidget(
+                        label: 'Quantity',
+                        keyboardType: TextInputType.number,
+                        onChanged: cubit.setQuantity,
+                      ),
+                      TextFormFieldUiWidget(
                         label: 'Category',
                         onChanged: cubit.setCategory,
-                      ),
-                      TextFormFieldUiWidget(
-                        label: 'Brand',
-                        onChanged: cubit.setBrand,
-                      ),
-                      TextFormFieldUiWidget(
-                        label: 'Status',
-                        onChanged: cubit.setStatus,
                       ),
                     ],
                   ),

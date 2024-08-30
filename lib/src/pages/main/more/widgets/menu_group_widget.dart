@@ -1,5 +1,7 @@
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/widgets/menu_item_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:flutter/material.dart';
 
 class MenuGroupWidget extends StatelessWidget {
@@ -13,29 +15,45 @@ class MenuGroupWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
-          const SizedBox(
-            height: 16,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        ContainerScrollableWidget(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...items
+                  .asMap()
+                  .map(
+                    (i, v) => MapEntry(
+                      i,
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          MenuItemWidget(model: v),
+                          if (i != items.length - 1)
+                            Divider(
+                              color: ColorKeys.primary.withOpacity(0.3),
+                            ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .values
+            ],
           ),
-          ...items.map(
-            (e) => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                MenuItemWidget(model: e),
-                const Divider(),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

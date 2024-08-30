@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCubit extends Cubit<ProductState> {

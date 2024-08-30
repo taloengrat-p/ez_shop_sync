@@ -90,7 +90,6 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return Container(
       margin: widget.margin,
       width: widget.width,
-      height: widget.height,
       child: ElevatedButton(
         style: ButtonStyle(
           elevation: MaterialStatePropertyAll(widget.elevation),
@@ -99,8 +98,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               ? null
               : widget.onPressed != null
                   ? MaterialStatePropertyAll(
+                      // widget.backgroundColor ??
                       widget.backgroundColor ??
-                          (isPrimaryButton() ? ColorKeys.accent : Colors.white),
+                          (isPrimaryButton()
+                              ? ColorKeys.primary
+                              : Colors.white),
                     )
                   : null,
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(

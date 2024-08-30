@@ -25,7 +25,7 @@ class ColorKeys {
   static Color get black => const Color(0xFF000000);
 
   static Color secondary = Colors.grey;
-  static Color primary = const Color(0xFF000000);
+  static Color primary = Colors.black;
   static Color accent = Colors.orange;
   static Color brightness = Colors.white;
 
@@ -33,4 +33,6 @@ class ColorKeys {
   static Color defaultPrimary = const Color(0xFF000000);
   static Color defaultAccent = Colors.orange;
   static Color defaultBrightness = Colors.white;
+
+  static Color text = Colors.black;
 }

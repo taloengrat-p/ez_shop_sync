@@ -45,6 +45,9 @@ class Product extends BaseHiveObject {
   @HiveField(18)
   String storeId;
 
+  @HiveField(19, defaultValue: null)
+  num? quantity;
+
   Product({
     required super.id,
     required this.name,
@@ -60,6 +63,7 @@ class Product extends BaseHiveObject {
     this.imageName,
     required this.storeId,
     required this.status,
+    this.quantity,
   });
 }
 

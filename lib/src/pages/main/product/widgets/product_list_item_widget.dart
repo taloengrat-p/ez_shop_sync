@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,12 @@ class ProductListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
+    return AppContainerWidget(
+      radius: DimensionsKeys.radius + 2,
+      backgroundColor: Colors.white,
       child: Slidable(
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
           children: [
             SlidableAction(
               onPressed: (context) {
@@ -30,6 +32,10 @@ class ProductListItemWidget extends StatelessWidget {
               foregroundColor: Colors.white,
               icon: CupertinoIcons.delete,
               label: 'Delete',
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
             ),
           ],
         ),
@@ -38,8 +44,8 @@ class ProductListItemWidget extends StatelessWidget {
             ImageWidget(
               imageUrl: product.image,
               imageFullName: product.imageName,
-              width: 60,
-              height: 100,
+              width: 120,
+              height: 120,
               borderRadius: BorderRadius.circular(DimensionsKeys.radius),
             ),
             const SizedBox(

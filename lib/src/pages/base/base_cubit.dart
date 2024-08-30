@@ -203,4 +203,8 @@ class BaseCubit extends Cubit<BaseState> {
   Future<void> initialStoreData() async {
     await doGetProducts();
   }
+
+  void refresh() {
+    emit(BaseRefresh(DateTime.now()));
+  }
 }

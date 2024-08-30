@@ -57,7 +57,7 @@ class _CreateStoreState extends State<CreateStorePage> {
         child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "CreateStore",
                 actions: [],

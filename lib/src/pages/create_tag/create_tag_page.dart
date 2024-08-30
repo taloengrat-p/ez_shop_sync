@@ -67,7 +67,7 @@ class _CreateTagState extends State<CreateTagPage> {
         child: BlocBuilder<CreateTagCubit, CreateTagState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "CreateTag",
                 actions: [],

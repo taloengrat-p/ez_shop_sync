@@ -8,16 +8,18 @@ class ImageCarouselPreviewWidget extends StatefulWidget {
   final List<String> imagesUrl;
   final double height;
   const ImageCarouselPreviewWidget({
-    Key? key,
+    super.key,
     required this.imagesUrl,
     this.height = 200,
-  }) : super(key: key);
+  });
 
   @override
-  State<ImageCarouselPreviewWidget> createState() => _ImageCarouselPreviewWidgetState();
+  State<ImageCarouselPreviewWidget> createState() =>
+      _ImageCarouselPreviewWidgetState();
 }
 
-class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget> {
+class _ImageCarouselPreviewWidgetState
+    extends State<ImageCarouselPreviewWidget> {
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
@@ -47,13 +49,13 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               margin: const EdgeInsets.only(right: 8, bottom: 8),
-              child: Text(
-                '${currentPage + 1}/${widget.imagesUrl.length}',
-                style: TextStyle(color: Colors.white),
-              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                 color: Colors.grey.withOpacity(0.8),
+              ),
+              child: Text(
+                '${currentPage + 1}/${widget.imagesUrl.length}',
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           )

@@ -21,6 +21,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   String? productImage;
   List<String>? productDetalImages;
   num? price;
+  num? quantity;
   // List<String> tags = [];
   CreateProductCubit({
     required this.productRepository,
@@ -94,11 +95,20 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         image: productImageUrl,
         imageDetail: productDetalImages,
         imageName: imageFullName,
+        quantity: quantity,
       ),
     );
 
     Future.delayed(Duration.zero, () {
       emit(CreateProductSuccess(result));
     });
+  }
+
+  setQuantity(String? value) {
+    if (value == null) {
+      quantity = null;
+      return;
+    }
+    quantity = num.tryParse(value);
   }
 }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:ez_shop_sync/res/image_constance.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/utils/extensions/list_string_extensions.dart';
+import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/empty_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,15 +15,19 @@ class ImageWidget extends StatefulWidget {
   final double? width;
   final String? imageFullName;
   final BorderRadiusGeometry? borderRadius;
+  final EdgeInsets? margin;
+  final EdgeInsets? padding;
 
   const ImageWidget({
-    Key? key,
+    super.key,
     this.borderRadius,
     this.imageUrl,
     this.width,
     this.height,
     this.imageFullName,
-  }) : super(key: key);
+    this.margin = const EdgeInsets.all(4),
+    this.padding = const EdgeInsets.all(4),
+  });
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
@@ -38,7 +43,6 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((time) async {
       final document = await getApplicationDocumentsDirectory();
@@ -49,17 +53,19 @@ class _ImageWidgetState extends State<ImageWidget> {
           _imageFile = File(filePath);
         });
       } else {
-        print('File not found at path: $filePath');
+        // print('File not found at path: $filePath');
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AppContainerWidget(
+      margin: widget.margin,
+      padding: widget.padding,
+      backgroundColor: Colors.white,
       width: widget.width ?? double.infinity,
       height: widget.height ?? 200,
-      decoration: containerDecoration(Colors.grey.shade200),
       child: _imageFile != null
           ? Image.file(
               _imageFile!,

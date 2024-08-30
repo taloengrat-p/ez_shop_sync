@@ -31,5 +31,15 @@ abstract class  LocaleKeys {
   static const tagEmpty = 'tagEmpty';
   static const themeSettings = 'themeSettings';
   static const preview = 'preview';
+  static const qty = 'qty';
+  static const units_piece = 'units.piece';
+  static const units = 'units';
+  static const confirmDeleteTitle = 'confirmDeleteTitle';
+  static const confirmDeleteDesc = 'confirmDeleteDesc';
+  static const delete = 'delete';
+  static const edit = 'edit';
+  static const cancel = 'cancel';
+  static const inventory = 'inventory';
+  static const addStock = 'addStock';
 
 }

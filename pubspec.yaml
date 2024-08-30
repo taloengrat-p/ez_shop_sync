@@ -65,6 +65,8 @@ dependencies:
   textfield_tags: ^3.0.1
   flutter_iconpicker: ^3.4.6
   flutter_colorpicker: ^1.1.0
+  currency_picker: ^2.0.21
+  glassmorphism: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

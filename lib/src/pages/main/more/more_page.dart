@@ -29,6 +29,7 @@ import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/bottom_menu_item.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,7 +69,6 @@ class _MorePageState extends State<MorePage> {
       create: (context) => cubit,
       child: BlocListener<MoreCubit, MoreState>(
         listener: (context, state) async {
-          log('state $state', name: runtimeType.toString());
           if (state is MoreClickPinSetting) {
             if (state.type == PinType.create) {
               final result = await PinSetupRouter(context).navigate();
@@ -98,12 +98,15 @@ class _MorePageState extends State<MorePage> {
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: LocaleKeys.menu.tr(),
                 actions: [
                   Text(
                     cubit.username,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: ColorKeys.brightness.getContrast(),
+                    ),
                   ),
                   const SizedBox(
                     width: 8,
@@ -128,111 +131,104 @@ class _MorePageState extends State<MorePage> {
   }
 
   Widget buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildStoreProfile(),
-          const SizedBox(
-            height: 16,
-          ),
-          _buildStoreSettings(),
-          const SizedBox(
-            height: 16,
-          ),
-          _buildUserSettings(),
-          const SizedBox(
-            height: 16,
-          ),
-          _buildAppSettings(),
-          const SizedBox(
-            height: 32,
-          ),
-          ButtonWidget(
-            disabled: true,
-            label: LocaleKeys.logout.tr(),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            backgroundColor: Colors.red,
-            leading: const Icon(
-              Icons.logout_rounded,
-              color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: DimensionsKeys.pagePaddingHzt,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildStoreProfile(),
+            const SizedBox(
+              height: 16,
             ),
-            onPressed: cubit.doLogout,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(LocaleKeys.appVersion
-                  .tr(args: [cubit.version, cubit.buildNumber])),
+            _buildStoreSettings(),
+            const SizedBox(
+              height: 16,
             ),
-          ),
-          const SizedBox(
-            height: DimensionsKeys.heightBts * 1.75,
-          ),
-        ],
+            _buildUserSettings(),
+            const SizedBox(
+              height: 16,
+            ),
+            _buildAppSettings(),
+            const SizedBox(
+              height: 32,
+            ),
+            ButtonWidget(
+              disabled: true,
+              label: LocaleKeys.logout.tr(),
+              backgroundColor: Colors.red,
+              leading: const Icon(
+                Icons.logout_rounded,
+                color: Colors.white,
+              ),
+              onPressed: cubit.doLogout,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(LocaleKeys.appVersion
+                    .tr(args: [cubit.version, cubit.buildNumber])),
+              ),
+            ),
+            const SizedBox(
+              height: DimensionsKeys.heightBts * 1.75,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildStoreProfile() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        color: ColorKeys.secondary,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              CircleProfileWidget(
-                title: cubit.storeShortName,
+    return Card(
+      color: ColorKeys.primary.withOpacity(0.6),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            CircleProfileWidget(
+              title: cubit.storeShortName,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              cubit.storeName,
+              style: TextStyle(
+                color: cubit.baseCubit.appTheme?.secondaryColor
+                    .toColor()
+                    .getContrast(),
               ),
-              const SizedBox(
-                width: 8,
+            ),
+            const Spacer(),
+            ContainerCircleWidget(
+              color: ColorKeys.secondary.getContrast(),
+              child: const Icon(
+                Icons.add_business_rounded,
               ),
-              Text(
-                cubit.storeName,
-                style: TextStyle(
-                  color: cubit.baseCubit.appTheme?.secondaryColor
-                      .toColor()
-                      .getContrast(),
+              onPressed: () {
+                CreateStoreRouter(context).navigate();
+              },
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            if (cubit.stores.isNotEmpty)
+              ContainerCircleWidget(
+                color: ColorKeys.secondary.getContrast(),
+                child: const Icon(
+                  Icons.swap_horiz_rounded,
+                  color: Colors.white,
                 ),
+                onPressed: onHandleChangeStore,
               ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  CreateStoreRouter(context).navigate();
-                },
-                icon: const Material(
-                  elevation: 0.05,
-                  color: Colors.transparent,
-                  shape: CircleBorder(),
-                  child: Icon(
-                    Icons.add_circle_rounded,
-                    color: Colors.yellow,
-                    size: 36,
-                  ),
-                ),
-              ),
-              if (cubit.stores.isNotEmpty)
-                IconButton(
-                  onPressed: onHandleChangeStore,
-                  icon: const Material(
-                    elevation: 0.05,
-                    shape: CircleBorder(),
-                    color: Colors.transparent,
-                    child: Icon(
-                      Icons.expand_circle_down_rounded,
-                      color: Colors.white,
-                      size: 36,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -273,7 +269,7 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.storeSettings.tr(),
       items: [
         MenuItemModel(
-          disabled: true,
+          // disabled: true,
           title: LocaleKeys.storeManagement.tr(),
           value: 1,
           onPressed: () {
@@ -344,8 +340,8 @@ class _MorePageState extends State<MorePage> {
               ),
               Switch.adaptive(
                 value: context.locale == const Locale('th'),
-                activeColor: Colors.orange.shade300,
-                inactiveTrackColor: Colors.orange.shade300,
+                activeColor: ColorKeys.primary,
+                inactiveTrackColor: ColorKeys.primary,
                 onChanged: (val) => cubit.changeLanguage(context, val),
               ),
               const SizedBox(

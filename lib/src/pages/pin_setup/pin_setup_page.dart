@@ -56,7 +56,7 @@ class _PinSetupState extends State<PinSetupPage> {
         child: BlocBuilder<PinSetupCubit, PinSetupState>(
           builder: (context, state) {
             return BaseScaffolds(
-                appBar: AppbarWidget(
+                appBar: AppbarWidget(context, 
                   color: Colors.transparent,
                   iconThemeColor: Colors.black,
                 ).build(),

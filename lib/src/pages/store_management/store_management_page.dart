@@ -1,6 +1,8 @@
-import 'package:ez_shop_sync/res/colors.dart';
+import 'package:currency_picker/currency_picker.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -42,7 +44,7 @@ class _StoreManagementState extends State<StoreManagementPage> {
         child: BlocBuilder<StoreManagementCubit, StoreManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "StoreManagement",
                 actions: [],
@@ -58,8 +60,29 @@ class _StoreManagementState extends State<StoreManagementPage> {
   }
 
   Widget _buildPage(BuildContext context, StoreManagementState state) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    return Column(
+      children: [
+        TextFormFieldUiWidget(
+          label: 'Currency',
+          child: ButtonWidget(
+            label: 'pick',
+            onPressed: () {
+              showCurrencyPicker(
+                context: context,
+                showFlag: true,
+                showCurrencyName: true,
+                showCurrencyCode: true,
+                onSelect: (Currency currency) {
+                  print('Select currency: ${currency.symbol}');
+                },
+              );
+            },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        ),
+      ],
     );
   }
 }

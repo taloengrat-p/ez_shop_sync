@@ -77,6 +77,7 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
     ColorKeys.accent = accent;
     ColorKeys.brightness = backgroundColor;
     emit(ThemeSettingSuccess());
+    baseCubit.refresh();
   }
 
   void reset() {

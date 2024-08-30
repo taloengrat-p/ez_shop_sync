@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/app.dart';
 import 'package:ez_shop_sync/res/colors.dart';
+import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:flutter/material.dart';
 
 enum RouteAwareType {
@@ -74,20 +75,16 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: ColorKeys.brightness,
-      child: SafeArea(
-        top: false,
-        bottom: true,
-        child: Scaffold(
-          backgroundColor: ColorKeys.brightness,
-          appBar: widget.appBar,
-          body: widget.body,
-          bottomNavigationBar: widget.bottomNavigationBar,
-          floatingActionButton: widget.floatingActionButton,
-        ),
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        drawerScrimColor: Colors.transparent,
+        appBar: widget.appBar,
+        body: widget.body,
+        bottomNavigationBar: widget.bottomNavigationBar,
+        floatingActionButton: widget.floatingActionButton,
       ),
     );
   }

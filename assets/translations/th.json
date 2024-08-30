@@ -28,5 +28,16 @@
   "name": "ชื่อ",
   "tagEmpty": "Your tags is empty please create new tag.",
   "themeSettings": "ตั้งค่าธีม",
-  "preview": "ดูตัวอย่าง"
+  "preview": "ดูตัวอย่าง",
+  "qty": "{} {}",
+  "units": {
+    "piece": "ชิ้น"
+  },
+  "confirmDeleteTitle": "ยืนยันลบ",
+  "confirmDeleteDesc": "คุณยืนยันการลบผลิตภัณฑ์นี้หรือไม่",
+  "delete": "ลบ",
+  "edit": "แก้ไข",
+  "cancel": "ยกเลิก",
+  "inventory": "รายการสินค้า",
+  "addStock": "เพื่มสินค้าในคลัง"
 }

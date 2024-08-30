@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
@@ -15,6 +15,10 @@ import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_wi
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_list_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,18 +27,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  const ProductPage({super.key});
 
   @override
-  _ProductPageState createState() => _ProductPageState();
+  ProductPageState createState() => ProductPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class ProductPageState extends State<ProductPage> {
   late ProductCubit cubit;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     log('init', name: runtimeType.toString());
     cubit = ProductCubit(
@@ -53,19 +56,40 @@ class _ProductPageState extends State<ProductPage> {
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         return BaseScaffolds(
           appBar: AppbarWidget(
-            title: '${LocaleKeys.products.tr()}${cubit.productCount}',
+            context,
             centerTitle: false,
             actions: [
-              IconButton(
+              ActionAppbarButtonWidget(
+                child: const Icon(
+                  CupertinoIcons.search,
+                ),
+                // onPressed: () {},
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              ActionAppbarButtonWidget(
+                child: const Icon(
+                  CupertinoIcons.add,
+                ),
                 onPressed: () async {
                   final result = await CreateProductRouter(context).navigate();
                   if (result is BaseArgrument && result.refresh) {
                     cubit.init();
                   }
                 },
-                icon: Icon(
-                  CupertinoIcons.add,
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              ActionAppbarButtonWidget(
+                child: const Icon(
+                  CupertinoIcons.bag_badge_plus,
                 ),
+                // onPressed: () async {},
+              ),
+              SizedBox(
+                width: 8,
               ),
             ],
           ).build(),
@@ -76,31 +100,45 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget buildBody() {
-    var size = MediaQuery.of(context).size;
-
-    return Column(
-      children: [
-        buildDisplayView(),
-        buildContent(),
-        Container(
-          height: 60,
+    return BodyWidget(
+      title: '${LocaleKeys.inventory.tr()}${cubit.productCount}',
+      actions: [
+        IconButton(
+          onPressed: () {
+            cubit.changeSortType();
+          },
+          icon: Icon(
+            cubit.sortType == ProductSortType.asc
+                ? CupertinoIcons.sort_up
+                : CupertinoIcons.sort_down,
+          ),
         ),
+        IconButton(
+          onPressed: () {
+            cubit.changeDisplayType();
+          },
+          icon: Icon(cubit.displayType == ProductDisplayType.grid
+              ? Icons.list_rounded
+              : Icons.grid_view),
+        ),
+      ],
+      children: [
+        buildContent(),
       ],
     );
   }
 
   Widget buildGridViewProduct() {
     return OrientationBuilder(builder: (context, orientation) {
-      double itemHeight = 280;
+      double itemHeight = 310;
       var size = MediaQuery.of(context).size;
       final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
       final double itemWidth = size.width / crossAxisCount;
       return GridView.count(
-        padding: const EdgeInsets.all(8),
         crossAxisCount: crossAxisCount,
+        childAspectRatio: (itemWidth / itemHeight),
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
-        childAspectRatio: (itemWidth / itemHeight),
         children: cubit.products
             .map(
               (e) => GestureDetector(
@@ -115,6 +153,9 @@ class _ProductPageState extends State<ProductPage> {
                 child: ProductGridItemWidget(
                   key: ValueKey(e.id),
                   product: e,
+                  onDelete: () {
+                    cubit.deleteProduct(e.id);
+                  },
                 ),
               ),
             )
@@ -124,21 +165,35 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget buildListProduct() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemCount: cubit.products.length,
-        itemBuilder: (context, index) {
-          final product = cubit.products.elementAt(index);
+    return ListView.separated(
+      itemCount: cubit.products.length,
+      itemBuilder: (context, index) {
+        final product = cubit.products.elementAt(index);
 
-          return ProductListItemWidget(
-            product: product,
-            onDeleteProduct: () {
-              cubit.deleteProduct(product.id);
-            },
-          );
-        },
-      ),
+        return ProductListItemWidget(
+          product: product,
+          onDeleteProduct: () {
+            ConfirmDialogUiWidget(
+              context,
+              title: LocaleKeys.confirmDeleteTitle.tr(),
+              desc: LocaleKeys.confirmDeleteDesc.tr(),
+              confirmLabel: LocaleKeys.delete.tr(),
+              confirmColor: Colors.red,
+            ).show().then(
+              (val) {
+                if (val == ConfirmDialogUiResult.ok) {
+                  cubit.deleteProduct(product.id);
+                }
+              },
+            );
+          },
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(
+          height: DimensionsKeys.gap,
+        );
+      },
     );
   }
 
@@ -147,9 +202,15 @@ class _ProductPageState extends State<ProductPage> {
 
     if (cubit.products.isNotEmpty) {
       return Expanded(
+        child: ContainerScrollableWidget(
+          radius: DimensionsKeys.radius + 4,
+          paddingAll: 4,
+          margin: const EdgeInsets.all(16),
           child: cubit.displayType == ProductDisplayType.grid
               ? buildGridViewProduct()
-              : buildListProduct());
+              : buildListProduct(),
+        ),
+      );
     } else {
       return Expanded(
         child: Center(
@@ -163,35 +224,35 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  Widget buildDisplayView() {
-    return Visibility(
-      visible: cubit.products.isNotEmpty,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              onPressed: () {
-                cubit.changeSortType();
-              },
-              icon: Icon(
-                cubit.sortType == ProductSortType.asc
-                    ? CupertinoIcons.sort_up
-                    : CupertinoIcons.sort_down,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                cubit.changeDisplayType();
-              },
-              icon: Icon(cubit.displayType == ProductDisplayType.grid
-                  ? Icons.list_rounded
-                  : Icons.grid_view),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget buildDisplayView() {
+  //   return Visibility(
+  //     visible: cubit.products.isNotEmpty,
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.end,
+  //         children: [
+  //           IconButton(
+  //             onPressed: () {
+  //               cubit.changeSortType();
+  //             },
+  //             icon: Icon(
+  //               cubit.sortType == ProductSortType.asc
+  //                   ? CupertinoIcons.sort_up
+  //                   : CupertinoIcons.sort_down,
+  //             ),
+  //           ),
+  //           IconButton(
+  //             onPressed: () {
+  //               cubit.changeDisplayType();
+  //             },
+  //             icon: Icon(cubit.displayType == ProductDisplayType.grid
+  //                 ? Icons.list_rounded
+  //                 : Icons.grid_view),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

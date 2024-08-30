@@ -22,7 +22,7 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(
+      appBar: AppbarWidget(context, 
         title: LocaleKeys.transactions.tr(),
         centerTitle: false,
       ).build(),

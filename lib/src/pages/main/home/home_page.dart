@@ -13,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(title: 'Ez Shop Sync').build(),
+      appBar: AppbarWidget(context, title: 'Ez Shop Sync').build(),
     );
   }
 }

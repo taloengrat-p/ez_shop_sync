@@ -44,7 +44,7 @@ class _%{name}State extends State<%{name}Page> {
         child: BlocBuilder<%{name}Cubit, %{name}State>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(
+              appBar: AppbarWidget(context, 
                 centerTitle: false,
                 title: "%{name}",
                 actions: [],

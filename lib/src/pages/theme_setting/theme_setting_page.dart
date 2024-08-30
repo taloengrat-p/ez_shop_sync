@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -70,6 +69,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: LocaleKeys.themeSettings.tr(),
                 actions: [
