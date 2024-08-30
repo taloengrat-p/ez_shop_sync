@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
@@ -25,13 +27,36 @@ class ProductListItemWidget extends StatelessWidget {
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
+              onPressed: (context) {},
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.grey,
+              foregroundColor: Colors.white,
+              icon: CupertinoIcons.bag_badge_plus,
+              // label: LocaleKeys.edit.tr(),
+            ),
+            SizedBox(
+              width: 0.5,
+            ),
+            SlidableAction(
+              onPressed: (context) {},
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.grey,
+              foregroundColor: Colors.white,
+              icon: CupertinoIcons.pencil,
+              // label: LocaleKeys.edit.tr(),
+            ),
+            SizedBox(
+              width: 0.5,
+            ),
+            SlidableAction(
               onPressed: (context) {
                 onDeleteProduct?.call();
               },
+              padding: EdgeInsets.zero,
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: CupertinoIcons.delete,
-              label: 'Delete',
+              // label: LocaleKeys.delete.tr(),
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(8),
                 bottomRight: Radius.circular(8),
