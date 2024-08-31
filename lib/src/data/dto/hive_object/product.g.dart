@@ -36,6 +36,7 @@ class ProductAdapter extends TypeAdapter<Product> {
           ? ProductStatus.undefined
           : fields[15] as ProductStatus,
       quantity: fields[19] as num?,
+      ownerId: fields[20] as String,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as DateTime?
@@ -46,7 +47,7 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(6)
       ..write(obj.name)
       ..writeByte(7)
@@ -75,6 +76,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.storeId)
       ..writeByte(19)
       ..write(obj.quantity)
+      ..writeByte(20)
+      ..write(obj.ownerId)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

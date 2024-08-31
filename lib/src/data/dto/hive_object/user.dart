@@ -26,6 +26,9 @@ class User extends BaseHiveObject {
   @HiveField(12, defaultValue: null)
   String? profilePictureUrl;
 
+  @HiveField(13, defaultValue: null)
+  String? storeLatest;
+
   User({
     required super.id,
     super.createDate,
@@ -39,5 +42,6 @@ class User extends BaseHiveObject {
     required this.email,
     required this.username,
     this.profilePictureUrl,
+    this.storeLatest,
   });
 }

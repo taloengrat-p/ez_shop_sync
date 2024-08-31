@@ -11,6 +11,7 @@ abstract class IProductRepository {
   Future<Product> update(String id, Product updated);
   delete(String id);
   deleteAll(List<String> ids);
+  List<Product> getAllByStoreId(String id);
 }
 
 @Singleton()
@@ -78,6 +79,15 @@ class ProductRepository implements IProductRepository {
       return productLocalRepository.update(id, updated);
     } else {
       return productServerRepository.update(id, updated);
+    }
+  }
+
+  @override
+  List<Product> getAllByStoreId(String id, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return productLocalRepository.getAllByStoreId(id);
+    } else {
+      throw ('no implement');
     }
   }
 }

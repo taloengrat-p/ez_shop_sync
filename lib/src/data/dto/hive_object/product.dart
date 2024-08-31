@@ -48,6 +48,9 @@ class Product extends BaseHiveObject {
   @HiveField(19, defaultValue: null)
   num? quantity;
 
+  @HiveField(20, defaultValue: null)
+  String ownerId;
+
   Product({
     required super.id,
     required this.name,
@@ -64,7 +67,13 @@ class Product extends BaseHiveObject {
     required this.storeId,
     required this.status,
     this.quantity,
+    required this.ownerId,
   });
+
+  @override
+  String toString() {
+    return 'Product(name: $name, description: $description, price: $price, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId)';
+  }
 }
 
 @HiveType(typeId: 2)

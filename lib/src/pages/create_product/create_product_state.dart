@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 
 abstract class CreateProductState extends Equatable {
@@ -16,6 +17,31 @@ class CreateProductInitial extends CreateProductState {
 class CreateProductLoading extends CreateProductState {
   @override
   String toString() => 'CreateProductLoading';
+}
+
+class CreateProductAddCustomField extends CreateProductState {
+  final String name;
+  final String value;
+
+  const CreateProductAddCustomField(this.name, this.value);
+
+  @override
+  String toString() => 'CreateProductAddCustomField(name: $name, value: $value)';
+
+  @override
+  List<Object?> get props => [name, value];
+}
+
+class CreateProductRemoveCustomField extends CreateProductState {
+  final String name;
+
+  const CreateProductRemoveCustomField(this.name);
+
+  @override
+  String toString() => 'CreateProductAddCustomField(name: $name)';
+
+  @override
+  List<Object?> get props => [name];
 }
 
 class CreateProductSuccess extends CreateProductState {

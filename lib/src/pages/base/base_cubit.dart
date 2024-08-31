@@ -71,15 +71,15 @@ class BaseCubit extends Cubit<BaseState> {
     setCurrentStore(store);
   }
 
-  setCurrentStore(Store? value) {
+  setCurrentStore(Store? value) async {
     _store = value;
+    await authLocalRepository.update(user!.id, user!..storeLatest = store!.id);
     loadAppTheme(_store?.storeTheme);
   }
 
   setCurrentUser(User? value) {
     _user = value;
 
-    log('_user?.storeId : ${_user?.storeId}');
     if (_user?.storeId?.isEmpty ?? true) {
       return;
     }
@@ -150,8 +150,6 @@ class BaseCubit extends Cubit<BaseState> {
       User? userFinded =
           authLocalRepository.getByUsername(currentLocalUsername!);
       setCurrentUser(userFinded);
-      // Store? storeFinded = storeRepository.getById(userFinded!.storeId!.first);
-      // setCurrentStore(storeFinded);
 
       await initialStoreData();
       emit(BaseRefresh(DateTime.now()));
@@ -170,7 +168,12 @@ class BaseCubit extends Cubit<BaseState> {
     _stores = allStore;
 
     if (stores.isNotEmpty) {
-      setCurrentStore(_stores.first);
+      final storeInit = user?.storeLatest != null
+          ? stores.where((e) => e.id == user?.storeLatest).firstOrNull ??
+              _stores.first
+          : _stores.first;
+
+      setCurrentStore(storeInit);
     } else {
       setCurrentStore(null);
     }
@@ -179,9 +182,8 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> doGetProducts() async {
     emit(BaseLoading());
-    final allProduct = productRepository.getAll();
+    final allProduct = productRepository.getAllByStoreId(store!.id);
 
-    log('get all Product : $allProduct');
     setCurrentProduct(allProduct);
     sortProduct(productSortType);
     emit(BaseSuccess());
@@ -207,4 +209,6 @@ class BaseCubit extends Cubit<BaseState> {
   void refresh() {
     emit(BaseRefresh(DateTime.now()));
   }
+
+  void addProductToStock(String id, num value) {}
 }

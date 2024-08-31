@@ -22,7 +22,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final Function()? onBlur;
   final Function()? onTap;
   final String? customMessageRequired;
-  final bool? readOnly;
+  final bool readOnly;
   final String? errorText;
   final TextAlign? textAlign;
   final TextInputType? keyboardType;
@@ -168,7 +168,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     autovalidateMode: isBlured
                         ? AutovalidateMode.always
                         : AutovalidateMode.disabled,
-                    readOnly: widget.readOnly ?? false,
+                    readOnly: widget.readOnly,
                     autofillHints: widget.autofillHints,
                     focusNode: widget.focusNode,
                     controller: _controller,
@@ -188,7 +188,9 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     },
                     obscureText: getObscureText(),
                     decoration: InputDecoration(
-                      fillColor: Colors.white,
+                      fillColor: widget.readOnly
+                          ? Colors.grey.withOpacity(0.3)
+                          : Colors.white,
                       filled: true,
                       contentPadding: widget.contentPadding ??
                           const EdgeInsets.symmetric(
@@ -202,7 +204,8 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: borderRadius,
-                        borderSide: BorderSide(color: Colors.black, width: 1.5),
+                        borderSide:
+                            const BorderSide(color: Colors.black, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: borderRadius,

@@ -224,35 +224,7 @@ class ProductPageState extends State<ProductPage> {
     }
   }
 
-  // Widget buildDisplayView() {
-  //   return Visibility(
-  //     visible: cubit.products.isNotEmpty,
-  //     child: Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           IconButton(
-  //             onPressed: () {
-  //               cubit.changeSortType();
-  //             },
-  //             icon: Icon(
-  //               cubit.sortType == ProductSortType.asc
-  //                   ? CupertinoIcons.sort_up
-  //                   : CupertinoIcons.sort_down,
-  //             ),
-  //           ),
-  //           IconButton(
-  //             onPressed: () {
-  //               cubit.changeDisplayType();
-  //             },
-  //             icon: Icon(cubit.displayType == ProductDisplayType.grid
-  //                 ? Icons.list_rounded
-  //                 : Icons.grid_view),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  onAddStock(String id, num value) {
+    cubit.addProductToStock(id, value);
+  }
 }

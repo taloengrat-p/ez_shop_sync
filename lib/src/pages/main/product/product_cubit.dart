@@ -41,4 +41,8 @@ class ProductCubit extends Cubit<ProductState> {
     await baseCubit.doGetProducts();
     emit(ProductRefresh(DateTime.now()));
   }
+
+  void addProductToStock(String id, num value) {
+    baseCubit.addProductToStock(id, value);
+  }
 }

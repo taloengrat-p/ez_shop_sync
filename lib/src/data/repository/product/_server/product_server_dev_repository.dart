@@ -40,4 +40,10 @@ class ProductServerDevRepository implements ProductServerRepository {
     // TODO: implement update
     throw UnimplementedError();
   }
+
+  @override
+  List<Product> getAllByStoreId(String id) {
+    // TODO: implement getAllByStoreId
+    throw UnimplementedError();
+  }
 }

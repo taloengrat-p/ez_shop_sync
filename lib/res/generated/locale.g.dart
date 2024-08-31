@@ -41,5 +41,13 @@ abstract class  LocaleKeys {
   static const cancel = 'cancel';
   static const inventory = 'inventory';
   static const addStock = 'addStock';
+  static const customName = 'customName';
+  static const customValue = 'customValue';
+  static const createProduct = 'createProduct';
+  static const description = 'description';
+  static const price = 'price';
+  static const category = 'category';
+  static const quantity = 'quantity';
+  static const tags = 'tags';
 
 }

@@ -31,8 +31,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     cubit = MainCubit();
-    _navigationController =
-        CircularBottomNavigationController(cubit.currentPage);
+    _navigationController = CircularBottomNavigationController(cubit.currentPage);
     _pageController = PageController(initialPage: cubit.currentPage);
   }
 
@@ -49,6 +48,7 @@ class _MainPageState extends State<MainPage> {
                 fit: StackFit.expand,
                 children: [
                   PageView(
+                    physics: NeverScrollableScrollPhysics(),
                     controller: _pageController,
                     onPageChanged: (value) {
                       _navigationController.value = value;
@@ -126,8 +126,7 @@ class _MainPageState extends State<MainPage> {
                           _pageController.jumpToPage(selectedPos);
                         } else {
                           _pageController.animateToPage(selectedPos,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.linear);
+                              duration: const Duration(milliseconds: 300), curve: Curves.linear);
                         }
                       },
                     ),

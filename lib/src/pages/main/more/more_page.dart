@@ -201,9 +201,7 @@ class _MorePageState extends State<MorePage> {
             Text(
               cubit.storeName,
               style: TextStyle(
-                color: cubit.baseCubit.appTheme?.secondaryColor
-                    .toColor()
-                    .getContrast(),
+                color: ColorKeys.primary.withOpacity(0.6).getContrast(),
               ),
             ),
             const Spacer(),

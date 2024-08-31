@@ -14,7 +14,6 @@ class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
     Iterable<String>? autofillHints,
     Function(String? value)? onChanged,
     String? errorText,
-    bool? readOnly,
     final String? textInitial,
     Function(String? value)? additionalValidator,
     super.onFieldSubmitted,
@@ -24,7 +23,8 @@ class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
           controller: controller,
           label: label,
           validator: (value) {
-            final resultDefaultValidate = _defaultMobileNumberValidator(value, isRequired);
+            final resultDefaultValidate =
+                _defaultMobileNumberValidator(value, isRequired);
             if (resultDefaultValidate != null) {
               return resultDefaultValidate;
             }
@@ -44,7 +44,6 @@ class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
           onBlur: onBlur,
           errorText: errorText,
           isRequired: isRequired,
-          readOnly: readOnly,
           textInitial: textInitial,
           textValue: textValue,
         );

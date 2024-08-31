@@ -22,6 +22,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   List<String>? productDetalImages;
   num? price;
   num? quantity;
+  Map<String, dynamic> customField = {};
+
+  String tempCustomName = '';
+  String tempCustomValue = '';
   // List<String> tags = [];
   CreateProductCubit({
     required this.productRepository,
@@ -71,17 +75,19 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     createProduct(id: productId, productImageUrl: productImage);
   }
 
-  Future<void> createProduct(
-      {required String id, String? productImageUrl}) async {
+  Future<void> createProduct({required String id, String? productImageUrl}) async {
     String? imageFullName;
     if (productImageUrl.isNotNull) {
-      final fileBytes =
-          await FolderFileUtils.getFileBytes(File(productImageUrl!));
+      final fileBytes = await FolderFileUtils.getFileBytes(File(productImageUrl!));
       final imageName = const Uuid().v1().substring(0, 10);
-      final imageSaveModel =
-          (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+      final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
       imageFullName = imageSaveModel.fileName;
     }
+
+    if (tempCustomName.isNotEmpty && tempCustomValue.isNotEmpty) {
+      customField[tempCustomName] = tempCustomValue;
+    }
+
     final result = await productRepository.create(
       Product(
         id: id,
@@ -96,9 +102,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         imageDetail: productDetalImages,
         imageName: imageFullName,
         quantity: quantity,
+        ownerId: baseCubit.user!.id,
+        attributes: customField,
       ),
     );
 
+    log('create product success $result');
     Future.delayed(Duration.zero, () {
       emit(CreateProductSuccess(result));
     });
@@ -110,5 +119,34 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       return;
     }
     quantity = num.tryParse(value);
+  }
+
+  void addCustomField(String tempCustomName, String tempCustomValue) {
+    customField[tempCustomName] = tempCustomValue;
+    log('[add] $customField');
+    clearTempCustomField();
+    emit(CreateProductAddCustomField(tempCustomName, tempCustomValue));
+  }
+
+  void changedCustomField(String k, v) {
+    customField[k] = v;
+  }
+
+  void removeCustomField(String k) {
+    customField.remove(k);
+    emit(CreateProductRemoveCustomField(k));
+  }
+
+  setTempCustomName(String? value) {
+    tempCustomName = value ?? '';
+  }
+
+  setTempCustomValue(String? value) {
+    tempCustomValue = value ?? '';
+  }
+
+  clearTempCustomField() {
+    tempCustomName = '';
+    tempCustomValue = '';
   }
 }

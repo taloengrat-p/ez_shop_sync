@@ -34,7 +34,7 @@ class ProductListItemWidget extends StatelessWidget {
               icon: CupertinoIcons.bag_badge_plus,
               // label: LocaleKeys.edit.tr(),
             ),
-            SizedBox(
+            const SizedBox(
               width: 0.5,
             ),
             SlidableAction(
@@ -45,7 +45,7 @@ class ProductListItemWidget extends StatelessWidget {
               icon: CupertinoIcons.pencil,
               // label: LocaleKeys.edit.tr(),
             ),
-            SizedBox(
+            const SizedBox(
               width: 0.5,
             ),
             SlidableAction(

@@ -10,4 +10,9 @@ import 'package:injectable/injectable.dart';
 class ProductLocalDevRepository extends BaseHiveRepository<String, Product>
     implements ProductLocalRepository {
   ProductLocalDevRepository() : super(boxName: HiveBoxConstance.product);
+
+  @override
+  List<Product> getAllByStoreId(String id) {
+    return getAll().where((e) => e.storeId == id).toList();
+  }
 }

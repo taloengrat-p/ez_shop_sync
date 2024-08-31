@@ -39,5 +39,13 @@
   "edit": "แก้ไข",
   "cancel": "ยกเลิก",
   "inventory": "รายการสินค้า",
-  "addStock": "เพื่มสินค้าในคลัง"
+  "addStock": "เพื่มสินค้าในคลัง",
+  "customName": "ชื่อที่กำหนด",
+  "customValue": "ข้อมูลที่กำหนด",
+  "createProduct": "สร้างสินค้า",
+  "description": "คำอธิบาย",
+  "price": "ราคา",
+  "category": "ประเภท",
+  "quantity": "จำนวน",
+  "tags": "แท็ก"
 }

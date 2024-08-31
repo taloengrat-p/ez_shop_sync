@@ -22,7 +22,8 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(context, 
+      appBar: AppbarWidget(
+        context,
         title: LocaleKeys.transactions.tr(),
         centerTitle: false,
       ).build(),
@@ -66,7 +67,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   label: 'Create Invoice',
                   textStyle: textStyle,
                   innerRadius: 12,
-                  backgroundColor: ColorKeys.accent,
+                  backgroundColor: ColorKeys.primary,
                   icon: const Icon(
                     Icons.add,
                     color: Colors.white,
@@ -82,7 +83,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 child: ButtonWidget(
                   label: 'Invoice History',
                   textStyle: textStyle,
-                  backgroundColor: ColorKeys.accent,
+                  backgroundColor: ColorKeys.primary,
                   icon: const Icon(
                     Icons.history_rounded,
                     color: Colors.white,

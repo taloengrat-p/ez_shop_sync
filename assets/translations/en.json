@@ -39,5 +39,13 @@
   "edit": "Edit",
   "cancel": "Cancel",
   "inventory": "Inventory",
-  "addStock": "Add Stock"
+  "addStock": "Add Stock",
+  "customName": "Custom Name",
+  "customValue": "Custom Value",
+  "createProduct": "Create Product",
+  "description": "Description",
+  "price": "Price",
+  "category": "Category",
+  "quantity": "Quantity",
+  "tags": "Tags"
 }
