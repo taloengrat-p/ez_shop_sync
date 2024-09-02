@@ -31,6 +31,9 @@ import '../../data/repository/store/_local/store_local_repository.dart'
 import '../../data/repository/store/_server/store_server_repository.dart'
     as _i325;
 import '../../data/repository/store/store_repository.dart' as _i882;
+import '../../data/repository/tag/tag_local_repository.dart' as _i558;
+import '../../data/repository/tag/tag_repository.dart' as _i505;
+import '../../data/repository/tag/tag_server_repository.dart' as _i1035;
 import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../utils/image_picker_utils.dart' as _i286;
 import '../hivedb_service/hivedb_dev_service.dart' as _i1036;
@@ -63,6 +66,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
+    gh.singleton<_i1035.TagServerRepository>(
+        () => _i1035.TagServerRepository());
+    gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i265.ProductLocalRepository>(
       () => _i1065.ProductLocalDevRepository(),
       registerFor: {
@@ -78,6 +84,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i233.HiveDBUnittestService(),
       registerFor: {_tests},
     );
+    gh.singleton<_i505.TagRepository>(() => _i505.TagRepository(
+          tagLocalRepository: gh<_i558.TagLocalRepository>(),
+          tagServerRepository: gh<_i1035.TagServerRepository>(),
+        ));
     gh.singleton<_i461.LocalStorageService>(
       () => _i79.LocalStorageUnittest(),
       registerFor: {_tests},

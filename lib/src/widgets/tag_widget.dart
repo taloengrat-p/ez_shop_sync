@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
@@ -15,13 +17,13 @@ class TagWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color? color = model.color?.toColor();
 
+    log('asdf ${model.color}');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: model.color?.toColor(),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-            color: (model.borderColor?.toColor() ?? Colors.transparent)),
+        border: Border.all(color: (model.borderColor?.toColor() ?? Colors.transparent)),
         boxShadow: const [
           BoxShadow(
             color: Colors.black,

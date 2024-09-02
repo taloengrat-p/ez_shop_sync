@@ -1,4 +1,5 @@
-import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -15,8 +16,8 @@ import 'package:get_it/get_it.dart';
 
 class CreateStorePage extends StatefulWidget {
   const CreateStorePage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CreateStoreState createState() => _CreateStoreState();
@@ -57,7 +58,8 @@ class _CreateStoreState extends State<CreateStorePage> {
         child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "CreateStore",
                 actions: [],

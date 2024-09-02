@@ -1,16 +1,15 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
-import 'package:ez_shop_sync/src/utils/color_picker_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
@@ -42,6 +41,7 @@ class _CreateTagState extends State<CreateTagPage> {
     _cubit = CreateTagCubit(
       storeRepository: GetIt.I<StoreRepository>(),
       baseCubit: GetIt.I<BaseCubit>(),
+      tagRepository: GetIt.I<TagRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -67,7 +67,8 @@ class _CreateTagState extends State<CreateTagPage> {
         child: BlocBuilder<CreateTagCubit, CreateTagState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "CreateTag",
                 actions: [],

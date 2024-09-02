@@ -30,7 +30,7 @@ class StoreAdapter extends TypeAdapter<Store> {
       website: fields[11] as String?,
       description: fields[12] as String?,
       images: (fields[13] as List?)?.cast<String>(),
-      tags: fields[14] == null ? [] : (fields[14] as List?)?.cast<Tag>(),
+      tags: fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
       storeTheme: fields[15] as AppTheme?,
     );
   }

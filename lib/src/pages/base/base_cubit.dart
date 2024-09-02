@@ -1,12 +1,15 @@
 import 'dart:developer';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
@@ -20,10 +23,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BaseCubit extends Cubit<BaseState> {
   AppTheme? _appTheme;
+
+  // repositories
   LocalStorageService localStorageService;
   AuthLocalRepository authLocalRepository;
   StoreRepository storeRepository;
   ProductRepository productRepository;
+  ITagRepository tagRepository;
+  //
+
   NavigationService navigationService;
   AppMode _appMode = AppMode.local;
   ProductDisplayType productDisplayType = ProductDisplayType.grid;
@@ -34,11 +42,17 @@ class BaseCubit extends Cubit<BaseState> {
   Store? _store;
   List<Product> _products = [];
   List<Store> _stores = [];
+  List<Tag> _tags = [];
+  List<Category> _categories = [];
+
   AppMode get appMode => _appMode;
   User? get user => _user;
   Store? get store => _store;
+
   List<Product> get products => _products;
   List<Store> get stores => _stores;
+  List<Tag> get tags => _tags;
+  List<Category> get categories => _categories;
   AppTheme? get appTheme => _appTheme;
 
   BaseCubit({
@@ -47,6 +61,7 @@ class BaseCubit extends Cubit<BaseState> {
     required this.storeRepository,
     required this.productRepository,
     required this.navigationService,
+    required this.tagRepository,
   }) : super(BaseInitial()) {
     onCheckFirstRun();
     onCheckIntroduceFlowDone();
@@ -55,14 +70,10 @@ class BaseCubit extends Cubit<BaseState> {
 
   loadAppTheme(AppTheme? value) {
     _appTheme = value;
-    ColorKeys.primary =
-        _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
-    ColorKeys.secondary =
-        _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
-    ColorKeys.accent =
-        _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
-    ColorKeys.brightness =
-        _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
+    ColorKeys.primary = _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
+    ColorKeys.secondary = _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
+    ColorKeys.accent = _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
+    ColorKeys.brightness = _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
     emit(BaseLoadAppThemeSuccess(appTheme));
   }
 
@@ -75,6 +86,7 @@ class BaseCubit extends Cubit<BaseState> {
     _store = value;
     await authLocalRepository.update(user!.id, user!..storeLatest = store!.id);
     loadAppTheme(_store?.storeTheme);
+    loadTagsByCurrentStore();
   }
 
   setCurrentUser(User? value) {
@@ -93,26 +105,21 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   changeDisplayType() {
-    productDisplayType = productDisplayType == ProductDisplayType.grid
-        ? ProductDisplayType.list
-        : ProductDisplayType.grid;
+    productDisplayType =
+        productDisplayType == ProductDisplayType.grid ? ProductDisplayType.list : ProductDisplayType.grid;
   }
 
   changeSortType() {
-    productSortType = productSortType == ProductSortType.asc
-        ? ProductSortType.desc
-        : ProductSortType.asc;
+    productSortType = productSortType == ProductSortType.asc ? ProductSortType.desc : ProductSortType.asc;
 
     sortProduct(productSortType);
   }
 
   sortProduct(ProductSortType sortType) {
     if (sortType == ProductSortType.asc) {
-      products.sort((a, b) => a.createDate!.millisecondsSinceEpoch
-          .compareTo(b.createDate!.millisecondsSinceEpoch));
+      products.sort((a, b) => a.createDate!.millisecondsSinceEpoch.compareTo(b.createDate!.millisecondsSinceEpoch));
     } else {
-      products.sort((a, b) => b.createDate!.millisecondsSinceEpoch
-          .compareTo(a.createDate!.millisecondsSinceEpoch));
+      products.sort((a, b) => b.createDate!.millisecondsSinceEpoch.compareTo(a.createDate!.millisecondsSinceEpoch));
     }
   }
 
@@ -121,8 +128,7 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   Future<void> onCheckIntroduceFlowDone() async {
-    isIntroduceFlowDone =
-        await localStorageService.doCheckIsIntroduceFlowDone();
+    isIntroduceFlowDone = await localStorageService.doCheckIsIntroduceFlowDone();
     log('isIntroduceFlowDone : $isIntroduceFlowDone');
 
     emit(BaseRefresh(DateTime.now()));
@@ -139,16 +145,14 @@ class BaseCubit extends Cubit<BaseState> {
   doLogout() {}
 
   Future<void> doGetUserAppLocalSession() async {
-    String? currentLocalUsername =
-        localStorageService.getPref<String>(SharedPrefKeys.currentUsername);
+    String? currentLocalUsername = localStorageService.getPref<String>(SharedPrefKeys.currentUsername);
 
     if (currentLocalUsername.isNull) {
       return;
     }
 
     if (currentLocalUsername?.isNotEmpty ?? false) {
-      User? userFinded =
-          authLocalRepository.getByUsername(currentLocalUsername!);
+      User? userFinded = authLocalRepository.getByUsername(currentLocalUsername!);
       setCurrentUser(userFinded);
 
       await initialStoreData();
@@ -169,8 +173,7 @@ class BaseCubit extends Cubit<BaseState> {
 
     if (stores.isNotEmpty) {
       final storeInit = user?.storeLatest != null
-          ? stores.where((e) => e.id == user?.storeLatest).firstOrNull ??
-              _stores.first
+          ? stores.where((e) => e.id == user?.storeLatest).firstOrNull ?? _stores.first
           : _stores.first;
 
       setCurrentStore(storeInit);
@@ -211,4 +214,14 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   void addProductToStock(String id, num value) {}
+
+  void loadTagsByCurrentStore() {
+    emit(BaseLoading());
+    if (store?.tags?.isEmpty ?? true) {
+      return;
+    }
+    _tags = tagRepository.getAllByIds(store?.tags ?? []);
+
+    emit(BaseLoadTagsByStoreSuccess(store?.tags ?? []));
+  }
 }

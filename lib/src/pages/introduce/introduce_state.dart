@@ -15,10 +15,10 @@ class IntroduceInitial extends IntroduceState {
 class IntroduceRefresh extends IntroduceState {
   final DateTime dateTime;
 
-  IntroduceRefresh(this.dateTime);
+  const IntroduceRefresh(this.dateTime);
 
   @override
-  String toString() => 'IntroduceRefresh';
+  String toString() => 'IntroduceRefresh $dateTime';
 
   @override
   List<Object?> get props => [dateTime];

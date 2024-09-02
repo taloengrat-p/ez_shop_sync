@@ -1,3 +1,5 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -16,7 +18,7 @@ class Product extends BaseHiveObject {
   num? price;
 
   @HiveField(9, defaultValue: null)
-  String? category;
+  Category? category;
 
   @HiveField(10, defaultValue: null)
   String? brand;

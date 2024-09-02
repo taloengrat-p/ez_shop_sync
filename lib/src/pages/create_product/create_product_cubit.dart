@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
@@ -26,7 +27,9 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   String tempCustomName = '';
   String tempCustomValue = '';
-  // List<String> tags = [];
+
+  List<Tag> get tags => baseCubit.tags;
+  List<Tag> tagsSelected = [];
   CreateProductCubit({
     required this.productRepository,
     required this.baseCubit,
@@ -95,7 +98,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         name: name,
         description: description,
         price: price,
-        category: category,
         brand: brand,
         status: status,
         image: productImageUrl,
@@ -104,6 +106,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         quantity: quantity,
         ownerId: baseCubit.user!.id,
         attributes: customField,
+        tag: tagsSelected.map((e) => e.id).toList(),
       ),
     );
 
@@ -148,5 +151,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   clearTempCustomField() {
     tempCustomName = '';
     tempCustomValue = '';
+  }
+
+  void setTag(Tag? tag) {
+    if (tag == null) {
+      return;
+    }
+    tagsSelected.add(tag);
   }
 }

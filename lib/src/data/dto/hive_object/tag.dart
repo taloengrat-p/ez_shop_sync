@@ -1,5 +1,6 @@
-import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 
 part 'tag.g.dart';
 
@@ -20,4 +21,7 @@ class Tag extends BaseHiveObject {
     this.color,
     this.borderColor,
   });
+
+  @override
+  String toString() => 'Tag(name: $name, color: $color, borderColor: $borderColor)';
 }

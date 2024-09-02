@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
@@ -37,10 +38,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    cubit = ProductDetailCubit(productRepository: GetIt.I<ProductRepository>());
+    cubit = ProductDetailCubit(
+      productRepository: GetIt.I<ProductRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
@@ -71,7 +74,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: const Icon(
                       CupertinoIcons.pencil,
                     ),
-                    onPressed: () {},
+                    // onPressed: () {},
                   ),
                   const SizedBox(
                     width: 4,
@@ -184,7 +187,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ],
             ),
             Text(
-              '${cubit.product?.quantity} ${LocaleKeys.units_piece.tr()}',
+              '${cubit.product?.quantity ?? '--'} ${LocaleKeys.units_piece.tr()}',
               style: TextStyle(fontSize: 18),
             ),
           ],
@@ -218,13 +221,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.category.tr(),
-          value: cubit.product?.category,
+          value: 'cubit.product?.category',
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.tags.tr(),
-          widgetValues: cubit.product?.tag
-              ?.map((e) => TagWidget(
-                    model: Tag(id: 'id', name: e),
+          widgetValues: cubit.tags
+              .map((e) => TagWidget(
+                    model: e,
                   ))
               .toList(),
         ),

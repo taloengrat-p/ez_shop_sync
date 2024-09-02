@@ -9,6 +9,7 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_state.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
@@ -59,21 +60,29 @@ class _TagManagementState extends State<TagManagementPage> {
         child: BlocBuilder<TagManagementCubit, TagManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "Tag Management",
                 actions: [
                   if (_cubit.tags.isNotEmpty)
-                    IconButton(
-                      onPressed: () {
-                        _cubit.toggleDeleteMode();
-                      },
-                      icon: _cubit.screenMode == ScreenMode.delete
-                          ? const Text(
-                              'Cancel',
-                              style: TextStyle(color: Colors.white),
+                    SizedBox(
+                      child: _cubit.screenMode == ScreenMode.delete
+                          ? TextButton(
+                              onPressed: () {
+                                _cubit.toggleDeleteMode();
+                              },
+                              child: const Text(
+                                'Cancel',
+                              ),
                             )
-                          : const Icon(CupertinoIcons.delete),
+                          : ContainerCircleWidget(
+                              color: Colors.red,
+                              onPressed: () {
+                                _cubit.toggleDeleteMode();
+                              },
+                              child: const Icon(CupertinoIcons.delete),
+                            ),
                     )
                 ],
               ).build(),
@@ -125,12 +134,9 @@ class _TagManagementState extends State<TagManagementPage> {
 
   Widget _buildButtom(BuildContext context, TagManagementState state) {
     return ButtonWidget(
-      disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty
-          ? true
-          : false,
+      disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty ? true : false,
       margin: const EdgeInsets.all(8),
-      backgroundColor:
-          _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
+      backgroundColor: _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
       label: _cubit.screenMode == ScreenMode.delete ? 'DELETE' : 'ADD TAG',
       onPressed: () async {
         if (_cubit.screenMode == ScreenMode.display) {

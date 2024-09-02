@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -165,9 +166,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     keyboardType: widget.keyboardType ?? TextInputType.text,
                     textAlign: widget.textAlign ?? TextAlign.start,
                     autofocus: widget.autofocus ?? false,
-                    autovalidateMode: isBlured
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
+                    autovalidateMode: isBlured ? AutovalidateMode.always : AutovalidateMode.disabled,
                     readOnly: widget.readOnly,
                     autofillHints: widget.autofillHints,
                     focusNode: widget.focusNode,
@@ -180,60 +179,66 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     validator: (value) {
                       if ((value?.isEmpty ?? true) && widget.isRequired) {
                         return widget.customMessageRequired ??
-                            LocaleKeys.requiredErrorMessage
-                                .tr(args: [widget.label.toLowerCase()]);
+                            LocaleKeys.requiredErrorMessage.tr(args: [widget.label.toLowerCase()]);
                       }
 
                       return widget.validator?.call(doValiedate(value));
                     },
                     obscureText: getObscureText(),
-                    decoration: InputDecoration(
-                      fillColor: widget.readOnly
-                          ? Colors.grey.withOpacity(0.3)
-                          : Colors.white,
-                      filled: true,
-                      contentPadding: widget.contentPadding ??
-                          const EdgeInsets.symmetric(
-                              vertical: 13, horizontal: 8),
-                      suffixIcon: widget.autoCompleteType ==
-                              TextFormFieldUiType.password
+                    // decoration: InputDecoration(
+                    //   fillColor: widget.readOnly
+                    //       ? Colors.grey.withOpacity(0.3)
+                    //       : Colors.white,
+                    //   filled: true,
+                    //   contentPadding: widget.contentPadding ??
+                    //       const EdgeInsets.symmetric(
+                    //           vertical: 13, horizontal: 8),
+                    //   suffixIcon: widget.autoCompleteType ==
+                    //           TextFormFieldUiType.password
+                    //       ? getSuffixPasswordType()
+                    //       : widget.suffixIcon,
+                    //   border: OutlineInputBorder(
+                    //     borderRadius: borderRadius,
+                    //   ),
+                    //   focusedBorder: OutlineInputBorder(
+                    //     borderRadius: borderRadius,
+                    //     borderSide:
+                    //         const BorderSide(color: Colors.black, width: 1),
+                    //   ),
+                    //   enabledBorder: OutlineInputBorder(
+                    //     borderRadius: borderRadius,
+                    //     borderSide: BorderSide(
+                    //       color: Colors.grey,
+                    //       width: 1.0,
+                    //     ),
+                    //   ),
+                    //   labelStyle: const TextStyle(fontSize: 17),
+                    //   // hintStyle: TextStyle(color: ColorKeys.defaultWeak),
+                    //   hintText: widget.hintText,
+                    //   errorStyle: TextStyle(
+                    //     // color: ColorKeys.error,
+                    //     fontSize: 15,
+                    //     fontWeight: FontWeight.w400,
+                    //   ),
+                    //   errorMaxLines: 4,
+                    //   errorText: widget.errorText,
+                    //   errorBorder: OutlineInputBorder(
+                    //     gapPadding: 0,
+                    //     borderRadius: borderRadius,
+                    //     borderSide: BorderSide(color: Colors.red, width: 1.0),
+                    //   ),
+                    //   focusedErrorBorder: OutlineInputBorder(
+                    //     borderRadius: borderRadius,
+                    //     borderSide: BorderSide(color: Colors.red, width: 1.5),
+                    //   ),
+                    // ),
+                    decoration: AppInputDecoration(
+                      contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                      readOnly: widget.readOnly,
+                      suffixIcon: widget.autoCompleteType == TextFormFieldUiType.password
                           ? getSuffixPasswordType()
                           : widget.suffixIcon,
-                      border: OutlineInputBorder(
-                        borderRadius: borderRadius,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: borderRadius,
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: borderRadius,
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                      ),
-                      labelStyle: const TextStyle(fontSize: 17),
-                      // hintStyle: TextStyle(color: ColorKeys.defaultWeak),
-                      hintText: widget.hintText,
-                      errorStyle: TextStyle(
-                        // color: ColorKeys.error,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      errorMaxLines: 4,
-                      errorText: widget.errorText,
-                      errorBorder: OutlineInputBorder(
-                        gapPadding: 0,
-                        borderRadius: borderRadius,
-                        borderSide: BorderSide(color: Colors.red, width: 1.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: borderRadius,
-                        borderSide: BorderSide(color: Colors.red, width: 1.5),
-                      ),
-                    ),
+                    ).build(),
                     onChanged: (value) {
                       widget.onChanged?.call(value);
                     },
@@ -256,8 +261,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
           _isVisible = !_isVisible;
         });
       },
-      icon: Icon(
-          _isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      icon: Icon(_isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
     );
   }
 

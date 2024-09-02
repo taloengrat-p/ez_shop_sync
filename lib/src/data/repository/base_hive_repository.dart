@@ -32,8 +32,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
 
   List<T> getAll() {
     List<T> result = box.values.toList();
-    result.sort((a, b) => a.createDate!.millisecondsSinceEpoch
-        .compareTo(b.createDate!.millisecondsSinceEpoch));
+    result.sort((a, b) => a.createDate!.millisecondsSinceEpoch.compareTo(b.createDate!.millisecondsSinceEpoch));
     return result;
   }
 
@@ -46,6 +45,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   Future<T> update(I id, T updated) async {
+    log('updated: $updated');
     await box.put(id, updated);
     return updated;
   }

@@ -94,7 +94,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         TabItem(
-                          Icons.history_rounded,
+                          Icons.data_usage_rounded,
                           LocaleKeys.histories.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,

@@ -1,6 +1,5 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -32,8 +31,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
     );
 
     User userUpdated = baseCubit.user!..storeId?.add(storeCreated.id);
-    User resultUserUpdated =
-        await userRepository.update(baseCubit.user!.id, userUpdated);
+    User resultUserUpdated = await userRepository.update(baseCubit.user!.id, userUpdated);
 
     baseCubit.setCurrentUser(resultUserUpdated);
     baseCubit.setCurrentStoreById(storeCreated.id);

@@ -1,18 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
-import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class CreateProductPageState extends State<CreateProductPage> {
   late CreateProductCubit cubit;
   final _textCustomFieldNameInput = TextEditingController();
   final _textCustomFieldValueInput = TextEditingController();
-
+  final _tagController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -104,6 +105,63 @@ class CreateProductPageState extends State<CreateProductPage> {
                       TextFormFieldUiWidget(
                         label: LocaleKeys.category.tr(),
                         onChanged: cubit.setCategory,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      TextFormFieldUiWidget(
+                        label: 'Tags',
+                        child: DropdownMenu<Tag>(
+                          width: double.infinity,
+                          controller: _tagController,
+                          enableFilter: true,
+                          menuHeight: 220,
+                          menuStyle: const MenuStyle(backgroundColor: WidgetStatePropertyAll(Colors.white)),
+                          filterCallback: (entries, filter) {
+                            return entries
+                                .where(
+                                  (e) => e.value.name.toLowerCase().contains(
+                                        filter.toLowerCase(),
+                                      ),
+                                )
+                                .toList();
+                          },
+                          requestFocusOnTap: true,
+                          inputDecorationTheme: InputDecorationTheme(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(color: ColorKeys.primary, width: 2.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(color: ColorKeys.primary, width: 2),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                              )),
+                          onSelected: (Tag? tag) {
+                            _tagController.text = tag?.name ?? '';
+                            cubit.setTag(tag);
+                          },
+                          dropdownMenuEntries: cubit.tags.map<DropdownMenuEntry<Tag>>(
+                            (Tag tag) {
+                              return DropdownMenuEntry<Tag>(
+                                value: tag,
+                                label: '',
+                                leadingIcon: Container(
+                                    margin: EdgeInsets.only(left: 8, top: 4, bottom: 4), child: TagWidget(model: tag)),
+                              );
+                            },
+                          ).toList(),
+                        ),
                       ),
                       const SizedBox(
                         height: 8,

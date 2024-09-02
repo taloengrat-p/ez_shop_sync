@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
-import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 
 abstract class BaseState extends Equatable {
   const BaseState() : super();
@@ -45,8 +45,7 @@ class BaseLoadAppThemeSuccess extends BaseState {
   String toString() => 'BaseLoadAppThemeSuccess $appTheme';
 
   @override
-  List<Object?> get props =>
-      [appTheme?.primaryColor, appTheme?.secondaryColor, appTheme?.accentColor];
+  List<Object?> get props => [appTheme?.primaryColor, appTheme?.secondaryColor, appTheme?.accentColor];
 }
 
 class BaseRefresh extends BaseState {
@@ -61,9 +60,9 @@ class BaseRefresh extends BaseState {
 }
 
 class BaseChangeAppMode extends BaseState {
-  AppMode mode;
+  final AppMode mode;
 
-  BaseChangeAppMode(this.mode);
+  const BaseChangeAppMode(this.mode);
 
   @override
   String toString() => 'BaseChangeAppMode';
@@ -75,4 +74,18 @@ class BaseChangeAppMode extends BaseState {
 class BaseInitialLocalStorageServiceSuccess extends BaseState {
   @override
   String toString() => 'BaseInitialLocalStorageServiceSuccess';
+}
+
+class BaseLoadTagsByStoreSuccess extends BaseState {
+  final List<String> tagIds;
+
+  const BaseLoadTagsByStoreSuccess(
+    this.tagIds,
+  );
+
+  @override
+  List<Object?> get props => [...tagIds];
+
+  @override
+  String toString() => 'BaseLoadTagsByStoreSuccess(tagIds: $tagIds)';
 }
