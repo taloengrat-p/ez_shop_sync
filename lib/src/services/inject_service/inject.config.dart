@@ -13,6 +13,10 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../data/repository/auth/_local/auth_local_repository.dart' as _i900;
 import '../../data/repository/auth/auth_repository.dart' as _i214;
+import '../../data/repository/category/category_local_repository.dart' as _i334;
+import '../../data/repository/category/category_repository.dart' as _i635;
+import '../../data/repository/category/category_server_repository.dart'
+    as _i442;
 import '../../data/repository/product/_local/product_local_dev_repository.dart'
     as _i1065;
 import '../../data/repository/product/_local/product_local_repository.dart'
@@ -63,12 +67,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i325.StoreServerRepository());
     gh.factory<_i300.StoreLocalRepository>(() => _i300.StoreLocalRepository());
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
+    gh.singleton<_i334.CategoryLocalRepository>(
+        () => _i334.CategoryLocalRepository());
+    gh.singleton<_i442.CategoryServerRepository>(
+        () => _i442.CategoryServerRepository());
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
-    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i1035.TagServerRepository>(
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
+    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i265.ProductLocalRepository>(
       () => _i1065.ProductLocalDevRepository(),
       registerFor: {
@@ -120,6 +128,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
           storeLocalRepository: gh<_i300.StoreLocalRepository>(),
           storeServerRepository: gh<_i325.StoreServerRepository>(),
+        ));
+    gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
+          categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
+          categoryServerRepository: gh<_i442.CategoryServerRepository>(),
         ));
     gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
           productLocalRepository: gh<_i265.ProductLocalRepository>(),

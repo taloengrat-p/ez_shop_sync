@@ -26,7 +26,7 @@
   "tagManagement": "การจัดการแท็ก",
   "requiredErrorMessage": "กรุณากรอกข้อมูล {}",
   "name": "ชื่อ",
-  "tagEmpty": "Your tags is empty please create new tag.",
+  "tagEmpty": "แท็กของคุณว่างเปล่า โปรดสร้างแท็กใหม่",
   "themeSettings": "ตั้งค่าธีม",
   "preview": "ดูตัวอย่าง",
   "qty": "{} {}",
@@ -47,5 +47,16 @@
   "price": "ราคา",
   "category": "ประเภท",
   "quantity": "จำนวน",
-  "tags": "แท็ก"
+  "tags": "แท็ก",
+  "categoryManagement": "การจัดการหมวดหมู่",
+  "createTag": "สร้างแท็ก",
+  "create": "สร้าง",
+  "confirm": "ยืนยัน",
+  "backgroundColor": "สีพื้นหลัง",
+  "borderColor": "สีขอบเส้น",
+  "createCategory": "สร้างหมวดหมู่",
+  "categoryEmpty": "หมวดหมู่ของคุณว่างเปล่า โปรดสร้างหมวดหมู่ใหม่",
+  "icon": "ไอคอน",
+  "search": "ค้นหา",
+  "noItemsFound": "ไม่พบรายการ"
 }

@@ -76,7 +76,7 @@ class ActionButtonGroupWidget extends StatelessWidget {
         child: ButtonWidget(
           isFittedLabel: false,
           backgroundColor: confirmColor,
-          label: confirmLabel ?? 'Confirm',
+          label: confirmLabel ?? LocaleKeys.confirm.tr(),
           onPressed: enableConfirm ? onConfirm : null,
           textStyle: const TextStyle(
             fontSize: 15,
@@ -97,7 +97,7 @@ class ActionButtonGroupWidget extends StatelessWidget {
             height: heightButton ?? 44,
             isFittedLabel: false,
             backgroundColor: confirmColor,
-            label: confirmLabel ?? 'Confirm',
+            label: confirmLabel ?? LocaleKeys.confirm.tr(),
             onPressed: onConfirm,
             textStyle: const TextStyle(
               fontSize: 15,

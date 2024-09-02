@@ -10,6 +10,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
@@ -44,6 +45,7 @@ FutureOr<void> main() async {
       productRepository: GetIt.I<ProductRepository>(),
       navigationService: GetIt.I<NavigationService>(),
       tagRepository: GetIt.I<TagRepository>(),
+      categoryRepository: GetIt.I<CategoryRepository>(),
     ),
   );
   runApp(

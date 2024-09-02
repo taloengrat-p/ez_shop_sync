@@ -1,44 +1,49 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
-import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
-import 'package:ez_shop_sync/src/pages/tag_management/tag_management_cubit.dart';
-import 'package:ez_shop_sync/src/pages/tag_management/tag_management_state.dart';
+import 'package:ez_shop_sync/src/pages/category_management/category_management_cubit.dart';
+import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
+import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
+import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
+import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
-import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
 
-class TagManagementPage extends StatefulWidget {
-  const TagManagementPage({
+class CategoryManagementPage extends StatefulWidget {
+  const CategoryManagementPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  _TagManagementState createState() => _TagManagementState();
+  _CategoryManagementState createState() => _CategoryManagementState();
 }
 
-class _TagManagementState extends State<TagManagementPage> {
-  late TagManagementCubit _cubit;
+class _CategoryManagementState extends State<CategoryManagementPage> {
+  late CategoryManagementCubit _cubit;
 
   @override
   void initState() {
     super.initState();
-    _cubit = TagManagementCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+    _cubit = CategoryManagementCubit(
       storeRepository: GetIt.I<StoreRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
+      categoryRepository: GetIt.I<CategoryRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -55,15 +60,15 @@ class _TagManagementState extends State<TagManagementPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _cubit,
-      child: BlocListener<TagManagementCubit, TagManagementState>(
+      child: BlocListener<CategoryManagementCubit, CategoryManagementState>(
         listener: (context, state) {},
-        child: BlocBuilder<TagManagementCubit, TagManagementState>(
+        child: BlocBuilder<CategoryManagementCubit, CategoryManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: LocaleKeys.tagManagement.tr(),
+                title: LocaleKeys.categoryManagement.tr(),
                 actions: [
                   if (_cubit.tags.isNotEmpty)
                     SizedBox(
@@ -96,14 +101,14 @@ class _TagManagementState extends State<TagManagementPage> {
     );
   }
 
-  Widget _buildPage(BuildContext context, TagManagementState state) {
+  Widget _buildPage(BuildContext context, CategoryManagementState state) {
     final size = MediaQuery.of(context).size;
     return _cubit.tags.isEmpty
         ? Center(
             child: EmptyDataWidget(
               height: size.height * 0.45,
               width: 200,
-              message: LocaleKeys.tagEmpty.tr(),
+              message: LocaleKeys.categoryEmpty.tr(),
             ),
           )
         : SingleChildScrollView(
@@ -120,7 +125,10 @@ class _TagManagementState extends State<TagManagementPage> {
                           onChange: () {
                             _cubit.setSelect(e.id);
                           },
-                          child: TagWidget(model: e),
+                          child: CategoryWidget(
+                            icon: IconPickerUtils.getIcon(e.iconData),
+                            model: e,
+                          ),
                         ),
                       )
                       .toList(),
@@ -133,17 +141,19 @@ class _TagManagementState extends State<TagManagementPage> {
           );
   }
 
-  Widget _buildButtom(BuildContext context, TagManagementState state) {
+  Widget _buildButtom(BuildContext context, CategoryManagementState state) {
     return ButtonWidget(
       disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty ? true : false,
       margin: const EdgeInsets.all(8),
       backgroundColor: _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
-      label: _cubit.screenMode == ScreenMode.delete ? LocaleKeys.delete.tr() : LocaleKeys.createTag.tr().toUpperCase(),
+      label: _cubit.screenMode == ScreenMode.delete
+          ? LocaleKeys.delete.tr()
+          : LocaleKeys.createCategory.tr().toUpperCase(),
       onPressed: () async {
         if (_cubit.screenMode == ScreenMode.display) {
-          final result = await CreateTagRouter(context).navigate();
+          final result = await CreateCategoryRouter(context).navigate();
 
-          if (result is CreateTagSuccess) {
+          if (result is CreateCategorySuccess) {
             _cubit.refresh();
           }
         } else if (_cubit.screenMode == ScreenMode.delete) {

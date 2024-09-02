@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
+import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_page.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_page.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_page.dart';
@@ -31,6 +33,8 @@ class Routes {
   static const String ROUTE_PINSETUP = '/ROUTE_PINSETUP';
   static const String ROUTE_TAGMANAGEMENT = '/ROUTE_TAGMANAGEMENT';
   static const String ROUTE_CREATETAG = '/ROUTE_CREATETAG';
+  static const String ROUTE_CATEGORYMANAGEMENT = '/ROUTE_CATEGORYMANAGEMENT';
+  static const String ROUTE_CREATECATEGORY = '/ROUTE_CREATECATEGORY';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -47,5 +51,7 @@ class Routes {
     ROUTE_PINSETUP: (context) => const PinSetupPage(),
     ROUTE_TAGMANAGEMENT: (context) => const TagManagementPage(),
     ROUTE_CREATETAG: (context) => const CreateTagPage(),
+    ROUTE_CATEGORYMANAGEMENT: (context) => const CategoryManagementPage(),
+    ROUTE_CREATECATEGORY: (context) => const CreateCategoryPage(),
   };
 }

@@ -42,7 +42,14 @@ class AuthRepository implements IAuthRepository {
       final userId = const Uuid().v1();
       final storeId = const Uuid().v1();
 
-      final store = Store(id: storeId, ownerId: userId, name: request.storeName, tags: []);
+      final store = Store(
+        id: storeId,
+        ownerId: userId,
+        name: request.storeName,
+        tags: [],
+        categories: [],
+      );
+
       final user = User(
         id: userId,
         storeId: [store.id],

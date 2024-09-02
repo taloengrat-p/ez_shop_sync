@@ -55,7 +55,7 @@ class CreateTagCubit extends Cubit<CreateTagState> {
 
     baseCubit.loadTagsByCurrentStore();
     log('storeUpdated ${storeUpdated.tags}');
-    emit(CreateTagSuccess());
+    emit(CreateTagSuccess(tagCreated));
   }
 
   setBorderColor(Color value) {

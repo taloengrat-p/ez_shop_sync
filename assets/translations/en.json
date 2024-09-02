@@ -47,5 +47,16 @@
   "price": "Price",
   "category": "Category",
   "quantity": "Quantity",
-  "tags": "Tags"
+  "tags": "Tags",
+  "categoryManagement": "Category Management",
+  "createTag": "Create Tag",
+  "create": "Create",
+  "confirm": "Confirm",
+  "backgroundColor": "Background Color",
+  "borderColor": "Border Color",
+  "createCategory": "Create Category",
+  "categoryEmpty": "Your categories is empty please create new category.",
+  "icon": "Icon",
+  "search": "Search",
+  "noItemsFound": "No items found"
 }

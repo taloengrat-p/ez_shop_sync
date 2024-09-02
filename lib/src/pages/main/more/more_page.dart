@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
@@ -172,8 +173,7 @@ class _MorePageState extends State<MorePage> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(LocaleKeys.appVersion
-                    .tr(args: [cubit.version, cubit.buildNumber])),
+                child: Text(LocaleKeys.appVersion.tr(args: [cubit.version, cubit.buildNumber])),
               ),
             ),
             const SizedBox(
@@ -288,6 +288,14 @@ class _MorePageState extends State<MorePage> {
           disabled: false,
           onPressed: () {
             TagManagementRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.categoryManagement.tr(),
+          value: 3,
+          disabled: false,
+          onPressed: () {
+            CategoryManagementRouter(context).navigate();
           },
         ),
       ],

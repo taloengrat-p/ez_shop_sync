@@ -18,7 +18,7 @@ class Product extends BaseHiveObject {
   num? price;
 
   @HiveField(9, defaultValue: null)
-  Category? category;
+  String? category;
 
   @HiveField(10, defaultValue: null)
   String? brand;

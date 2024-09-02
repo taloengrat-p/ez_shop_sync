@@ -10,7 +10,9 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
+import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_carousel_preview_widget.dart';
@@ -221,7 +223,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.category.tr(),
-          value: 'cubit.product?.category',
+          widgetValues: cubit.category == null
+              ? []
+              : [
+                  CategoryWidget(
+                    model: cubit.category!,
+                    icon: IconPickerUtils.getIcon(cubit.category!.iconData),
+                  )
+                ],
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.tags.tr(),

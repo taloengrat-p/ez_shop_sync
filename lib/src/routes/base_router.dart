@@ -8,10 +8,10 @@ abstract class BaseRouter {
     required this.name,
   });
 
-  Future<dynamic> navigate({
+  Future<T?> navigate<T extends Object?>({
     Object? argruments,
   }) async {
-    return await Navigator.of(context).pushNamed(name, arguments: argruments);
+    return await Navigator.of(context).pushNamed<T>(name, arguments: argruments);
   }
 
   Future<dynamic> replace({

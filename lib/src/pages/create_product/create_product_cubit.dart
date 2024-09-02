@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -16,7 +17,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   BaseCubit baseCubit;
   String name = '';
   String description = '';
-  String category = '';
+  String? category;
   String brand = '';
   ProductStatus status = ProductStatus.active;
   String? productImage;
@@ -28,8 +29,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   String tempCustomName = '';
   String tempCustomValue = '';
 
+  List<Category> get categories => baseCubit.categories;
   List<Tag> get tags => baseCubit.tags;
-  List<Tag> tagsSelected = [];
+  List<String> tagsSelected = [];
+
   CreateProductCubit({
     required this.productRepository,
     required this.baseCubit,
@@ -49,8 +52,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     } catch (e) {}
   }
 
-  setCategory(String? value) {
-    category = value ?? '';
+  setCategory(List<Category>? list) {
+    category = list?.first.id;
+
+    log('setCategory $category');
   }
 
   setBrand(String? value) {
@@ -106,7 +111,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         quantity: quantity,
         ownerId: baseCubit.user!.id,
         attributes: customField,
-        tag: tagsSelected.map((e) => e.id).toList(),
+        category: category,
+        tag: tagsSelected,
       ),
     );
 
@@ -153,10 +159,16 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     tempCustomValue = '';
   }
 
-  void setTag(Tag? tag) {
-    if (tag == null) {
-      return;
-    }
-    tagsSelected.add(tag);
+  setTags(List<Tag> tags) {
+    tagsSelected = tags
+        .map(
+          (e) => e.id,
+        )
+        .toList();
+  }
+
+  void refresh() {
+    log('check:: ${baseCubit.categories.map((e) => e.name).toList()}');
+    emit(CreateProductRefresh(DateTime.now()));
   }
 }

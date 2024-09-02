@@ -49,5 +49,16 @@ abstract class  LocaleKeys {
   static const category = 'category';
   static const quantity = 'quantity';
   static const tags = 'tags';
+  static const categoryManagement = 'categoryManagement';
+  static const createTag = 'createTag';
+  static const create = 'create';
+  static const confirm = 'confirm';
+  static const backgroundColor = 'backgroundColor';
+  static const borderColor = 'borderColor';
+  static const createCategory = 'createCategory';
+  static const categoryEmpty = 'categoryEmpty';
+  static const icon = 'icon';
+  static const search = 'search';
+  static const noItemsFound = 'noItemsFound';
 
 }

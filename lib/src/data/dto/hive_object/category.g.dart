@@ -20,6 +20,9 @@ class CategoryAdapter extends TypeAdapter<Category> {
       name: fields[6] as String,
       id: fields[1] as String,
       parentId: fields[7] as String?,
+      borderColor: fields[9] as String?,
+      color: fields[8] as String?,
+      iconData: (fields[10] as Map?)?.cast<String, dynamic>(),
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as DateTime?
@@ -30,11 +33,17 @@ class CategoryAdapter extends TypeAdapter<Category> {
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(10)
       ..writeByte(6)
       ..write(obj.name)
       ..writeByte(7)
       ..write(obj.parentId)
+      ..writeByte(8)
+      ..write(obj.color)
+      ..writeByte(9)
+      ..write(obj.borderColor)
+      ..writeByte(10)
+      ..write(obj.iconData)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

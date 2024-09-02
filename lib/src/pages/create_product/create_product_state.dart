@@ -60,3 +60,14 @@ class CreateProductFailure extends CreateProductState {
   @override
   String toString() => 'CreateProductFailure';
 }
+
+class CreateProductRefresh extends CreateProductState {
+  final dynamic value;
+
+  const CreateProductRefresh(this.value);
+  @override
+  String toString() => 'CreateProductRefresh $value';
+
+  @override
+  List<Object?> get props => [value];
+}

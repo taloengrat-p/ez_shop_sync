@@ -37,6 +37,9 @@ class Store extends BaseHiveObject {
   @HiveField(15, defaultValue: null)
   AppTheme? storeTheme;
 
+  @HiveField(16, defaultValue: [])
+  List<String>? categories;
+
   Store({
     required super.id,
     super.createDate,
@@ -53,10 +56,11 @@ class Store extends BaseHiveObject {
     this.images,
     this.tags,
     this.storeTheme,
+    this.categories,
   });
 
   @override
   String toString() {
-    return 'Store(ownerId: $ownerId, name: $name, address: $address, phoneNumbers: $phoneNumbers, email: $email, website: $website, description: $description, images: $images, tags: $tags, storeTheme: $storeTheme)';
+    return 'Store(ownerId: $ownerId, name: $name, address: $address, phoneNumbers: $phoneNumbers, email: $email, website: $website, description: $description, images: $images, tags: $tags, storeTheme: $storeTheme, categories: $categories)';
   }
 }

@@ -89,3 +89,17 @@ class BaseLoadTagsByStoreSuccess extends BaseState {
   @override
   String toString() => 'BaseLoadTagsByStoreSuccess(tagIds: $tagIds)';
 }
+
+class BaseLoadCategoriesByStoreSuccess extends BaseState {
+  final List<String> categories;
+
+  const BaseLoadCategoriesByStoreSuccess(
+    this.categories,
+  );
+
+  @override
+  List<Object?> get props => [...categories];
+
+  @override
+  String toString() => 'BaseLoadCategoriesByStoreSuccess(categories: $categories)';
+}

@@ -16,12 +16,10 @@ class TextFormFieldColorPickerWidget extends StatefulWidget {
   });
 
   @override
-  State<TextFormFieldColorPickerWidget> createState() =>
-      TextFormFieldColorPickerWidgetState();
+  State<TextFormFieldColorPickerWidget> createState() => TextFormFieldColorPickerWidgetState();
 }
 
-class TextFormFieldColorPickerWidgetState
-    extends State<TextFormFieldColorPickerWidget> {
+class TextFormFieldColorPickerWidgetState extends State<TextFormFieldColorPickerWidget> {
   Color? _color;
   Color? _originalColor;
 
@@ -48,8 +46,7 @@ class TextFormFieldColorPickerWidgetState
         children: [
           GestureDetector(
             onTap: () async {
-              final color = await ColorPickerUtils.showDialogPicker(context,
-                  initialColor: _color);
+              final color = await ColorPickerUtils.showDialogPicker(context, initialColor: _color);
 
               if (color != null) {
                 _color = color;

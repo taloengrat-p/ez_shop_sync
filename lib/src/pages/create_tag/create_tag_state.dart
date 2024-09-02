@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 
 abstract class CreateTagState extends Equatable {
   const CreateTagState([List props = const []]) : super();
@@ -29,8 +30,14 @@ class CreateTagLoading extends CreateTagState {
 }
 
 class CreateTagSuccess extends CreateTagState {
+  final Tag tag;
+
+  const CreateTagSuccess(this.tag);
   @override
   String toString() => 'CreateTagSuccess';
+
+  @override
+  List<Object> get props => [tag.id];
 }
 
 class CreateTagFailure extends CreateTagState {

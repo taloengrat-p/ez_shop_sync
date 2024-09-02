@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
@@ -29,7 +30,8 @@ class BaseCubit extends Cubit<BaseState> {
   AuthLocalRepository authLocalRepository;
   StoreRepository storeRepository;
   ProductRepository productRepository;
-  ITagRepository tagRepository;
+  TagRepository tagRepository;
+  CategoryRepository categoryRepository;
   //
 
   NavigationService navigationService;
@@ -62,6 +64,7 @@ class BaseCubit extends Cubit<BaseState> {
     required this.productRepository,
     required this.navigationService,
     required this.tagRepository,
+    required this.categoryRepository,
   }) : super(BaseInitial()) {
     onCheckFirstRun();
     onCheckIntroduceFlowDone();
@@ -87,6 +90,7 @@ class BaseCubit extends Cubit<BaseState> {
     await authLocalRepository.update(user!.id, user!..storeLatest = store!.id);
     loadAppTheme(_store?.storeTheme);
     loadTagsByCurrentStore();
+    loadCategoryByCurrentStore();
   }
 
   setCurrentUser(User? value) {
@@ -217,11 +221,15 @@ class BaseCubit extends Cubit<BaseState> {
 
   void loadTagsByCurrentStore() {
     emit(BaseLoading());
-    if (store?.tags?.isEmpty ?? true) {
-      return;
-    }
     _tags = tagRepository.getAllByIds(store?.tags ?? []);
 
     emit(BaseLoadTagsByStoreSuccess(store?.tags ?? []));
+  }
+
+  void loadCategoryByCurrentStore() {
+    emit(BaseLoading());
+    _categories = categoryRepository.getAllByIds(store?.categories ?? []);
+
+    emit(BaseLoadCategoriesByStoreSuccess(store?.categories ?? []));
   }
 }

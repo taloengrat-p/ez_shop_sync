@@ -74,9 +74,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
   MaterialStateProperty<Color?>? getOverlayColor() {
     if (widget.ripple == true) {
-      return MaterialStatePropertyAll(isPrimaryButton()
-          ? Colors.white.withOpacity(0.2)
-          : Colors.black.withOpacity(0.2));
+      return MaterialStatePropertyAll(
+          isPrimaryButton() ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2));
     }
     return MaterialStateProperty.all(Colors.transparent);
   }
@@ -99,18 +98,13 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               : widget.onPressed != null
                   ? MaterialStatePropertyAll(
                       // widget.backgroundColor ??
-                      widget.backgroundColor ??
-                          (isPrimaryButton()
-                              ? ColorKeys.primary
-                              : Colors.white),
+                      widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.primary : Colors.white),
                     )
                   : null,
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.radius ?? 8),
-              side: BorderSide(
-                  color:
-                      widget.borderColor), // Set the border stroke color here
+              side: BorderSide(color: widget.borderColor), // Set the border stroke color here
             ),
           ),
         ),
@@ -133,7 +127,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          widget.label,
+                          widget.label.toUpperCase(),
                           textAlign: TextAlign.center,
                           style: widget.textStyle ??
                               TextStyle(
@@ -141,8 +135,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                                     ? Colors.grey
                                     : isPressed
                                         ? ColorKeys.secondary
-                                        : widget.type == ButtonUiType.primary ||
-                                                widget.type == null
+                                        : widget.type == ButtonUiType.primary || widget.type == null
                                             ? Colors.white
                                             : Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -155,7 +148,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          widget.label,
+                          widget.label.toUpperCase(),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -163,8 +156,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                               TextStyle(
                                 color: widget.disabled
                                     ? Colors.grey
-                                    : widget.type == ButtonUiType.primary ||
-                                            widget.type == null
+                                    : widget.type == ButtonUiType.primary || widget.type == null
                                         ? Colors.white
                                         : Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -198,8 +190,7 @@ class WeirdBorder extends ShapeBorder {
   }
 
   @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
-      _createPath(rect);
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) => _createPath(rect);
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
@@ -209,26 +200,19 @@ class WeirdBorder extends ShapeBorder {
 
   Path _createPath(Rect rect) {
     final innerRadius = radius + pathWidth;
-    final innerRect = Rect.fromLTRB(rect.left + pathWidth, rect.top + pathWidth,
-        rect.right - pathWidth, rect.bottom - pathWidth);
+    final innerRect =
+        Rect.fromLTRB(rect.left + pathWidth, rect.top + pathWidth, rect.right - pathWidth, rect.bottom - pathWidth);
 
-    final outer = Path.combine(PathOperation.difference, Path()..addRect(rect),
-        _createBevels(rect, radius));
-    final inner = Path.combine(PathOperation.difference,
-        Path()..addRect(innerRect), _createBevels(rect, innerRadius));
+    final outer = Path.combine(PathOperation.difference, Path()..addRect(rect), _createBevels(rect, radius));
+    final inner = Path.combine(PathOperation.difference, Path()..addRect(innerRect), _createBevels(rect, innerRadius));
     return Path.combine(PathOperation.difference, outer, inner);
   }
 
   Path _createBevels(Rect rect, double radius) {
     return Path()
-      ..addOval(
-          Rect.fromCircle(center: Offset(rect.left, rect.top), radius: radius))
-      ..addOval(Rect.fromCircle(
-          center: Offset(rect.left + rect.width, rect.top), radius: radius))
-      ..addOval(Rect.fromCircle(
-          center: Offset(rect.left, rect.top + rect.height), radius: radius))
-      ..addOval(Rect.fromCircle(
-          center: Offset(rect.left + rect.width, rect.top + rect.height),
-          radius: radius));
+      ..addOval(Rect.fromCircle(center: Offset(rect.left, rect.top), radius: radius))
+      ..addOval(Rect.fromCircle(center: Offset(rect.left + rect.width, rect.top), radius: radius))
+      ..addOval(Rect.fromCircle(center: Offset(rect.left, rect.top + rect.height), radius: radius))
+      ..addOval(Rect.fromCircle(center: Offset(rect.left + rect.width, rect.top + rect.height), radius: radius));
   }
 }
