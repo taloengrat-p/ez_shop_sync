@@ -68,6 +68,7 @@ dependencies:
   glassmorphism: ^3.0.0
   flutter_iconpicker_plus: ^3.2.3
   multi_dropdown: ^3.0.1
+  toastification: ^2.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

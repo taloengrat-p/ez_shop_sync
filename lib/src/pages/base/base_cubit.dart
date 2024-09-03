@@ -85,6 +85,8 @@ class BaseCubit extends Cubit<BaseState> {
     setCurrentStore(store);
   }
 
+  setCurrentStoreByLastCreate() {}
+
   setCurrentStore(Store? value) async {
     _store = value;
     await authLocalRepository.update(user!.id, user!..storeLatest = store!.id);
@@ -201,12 +203,10 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   void doDeleteProduct(String? id) {
-    if (id.isNotNull) {
-      emit(BaseLoading());
-      productRepository.delete(id!);
-      _products.removeWhere((elelment) => elelment.id == id);
-      emit(BaseRefresh(DateTime.now()));
-    }
+    emit(BaseLoading());
+    productRepository.delete(id!);
+    _products.removeWhere((elelment) => elelment.id == id);
+    emit(BaseRefresh(DateTime.now()));
   }
 
   Future<void> initialStoreData() async {

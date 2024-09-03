@@ -5,7 +5,7 @@ abstract class  LocaleKeys {
   static const createYourStoreName = 'createYourStoreName';
   static const storeSettings = 'storeSettings';
   static const menu = 'menu';
-  static const histories = 'histories';
+  static const statistic = 'statistic';
   static const transactions = 'transactions';
   static const products = 'products';
   static const productsEmpty = 'productsEmpty';
@@ -60,5 +60,25 @@ abstract class  LocaleKeys {
   static const icon = 'icon';
   static const search = 'search';
   static const noItemsFound = 'noItemsFound';
+  static const owner = 'owner';
+  static const notification_deleteSuccess = 'notification.deleteSuccess';
+  static const notification_deleteSuccessNoProp = 'notification.deleteSuccessNoProp';
+  static const notification_updateSuccess = 'notification.updateSuccess';
+  static const notification_createProductSuccessTitle = 'notification.createProductSuccessTitle';
+  static const notification_createProductSuccessDesc = 'notification.createProductSuccessDesc';
+  static const notification_createStoreSuccessTitle = 'notification.createStoreSuccessTitle';
+  static const notification_createStoreSuccessDesc = 'notification.createStoreSuccessDesc';
+  static const notification_createNewPINTitle = 'notification.createNewPINTitle';
+  static const notification = 'notification';
+  static const createPINTitle = 'createPINTitle';
+  static const createPINDesc = 'createPINDesc';
+  static const confirmPINTitle = 'confirmPINTitle';
+  static const confirmPINDesc = 'confirmPINDesc';
+  static const PINNotMatch = 'PINNotMatch';
+  static const verificationTitle = 'verificationTitle';
+  static const verifyIsInvalid = 'verifyIsInvalid';
+  static const createStore = 'createStore';
+  static const dateTimeCreated = 'dateTimeCreated';
+  static const dateTimeUpdated = 'dateTimeUpdated';
 
 }

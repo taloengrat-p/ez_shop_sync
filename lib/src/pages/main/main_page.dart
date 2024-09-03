@@ -94,8 +94,8 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         TabItem(
-                          Icons.data_usage_rounded,
-                          LocaleKeys.histories.tr(),
+                          CupertinoIcons.chart_bar_square,
+                          LocaleKeys.statistic.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
                           labelStyle: TextStyle(

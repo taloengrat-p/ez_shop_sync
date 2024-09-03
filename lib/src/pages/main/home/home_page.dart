@@ -1,6 +1,9 @@
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/main/home/home_cubit.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,10 +13,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late HomeCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = HomeCubit(
+      baseCubit: GetIt.I<BaseCubit>(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(context, title: 'Ez Shop Sync').build(),
+      appBar: AppbarWidget(
+        context,
+        title: cubit.baseCubit.store?.name,
+      ).build(),
     );
   }
 }

@@ -35,7 +35,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
 
     baseCubit.setCurrentUser(resultUserUpdated);
     baseCubit.setCurrentStoreById(storeCreated.id);
-    emit(CreateStoreSuccess());
+    emit(CreateStoreSuccess(storeCreated));
   }
 
   setName(String? value) {

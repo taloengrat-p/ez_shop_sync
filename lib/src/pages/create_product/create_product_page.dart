@@ -16,6 +16,9 @@ import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
+import 'package:ez_shop_sync/src/services/navigation_service.dart';
+import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -67,7 +70,6 @@ class CreateProductPageState extends State<CreateProductPage> {
       },
       child: BlocListener<CreateProductCubit, CreateProductState>(
         listener: (context, state) {
-          log('cubit.categories ${cubit.categories.map((e) => e.name)}');
           if (state is CreateProductSuccess) {
             CreateProductRouter(context).pop(BaseArgrument(refresh: true));
           }

@@ -18,11 +18,6 @@ class ProductLocalUnittestRepository implements ProductLocalRepository {
   }
 
   @override
-  deleteAll(List<String> ids) {
-    return ['1', '2', '3'];
-  }
-
-  @override
   List<Product> getAll() {
     // TODO: implement getAll
     throw UnimplementedError();
@@ -43,6 +38,12 @@ class ProductLocalUnittestRepository implements ProductLocalRepository {
   @override
   List<Product> getAllByStoreId(String id) {
     // TODO: implement getAllByStoreId
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteAll(List<String> ids) {
+    // TODO: implement deleteAll
     throw UnimplementedError();
   }
 }

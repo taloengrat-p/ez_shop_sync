@@ -15,7 +15,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(context, title: LocaleKeys.histories.tr(), centerTitle: false).build(),
+      appBar: AppbarWidget(context, title: LocaleKeys.statistic.tr(), centerTitle: false).build(),
     );
   }
 }

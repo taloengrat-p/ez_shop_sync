@@ -1,7 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/store/_local/store_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/_server/store_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
+import 'package:ez_shop_sync/src/services/navigation_service.dart';
+import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class IStoreRepository {
@@ -10,7 +16,7 @@ abstract class IStoreRepository {
   Store? getById(String id);
   Future<Store> create(Store request);
   Future<Store> update(String id, Store updated);
-  delete(String id);
+  Future<void> delete(String id);
   deleteAll(List<String> ids);
 }
 
@@ -26,25 +32,45 @@ class StoreRepository implements IStoreRepository {
   });
 
   @override
-  Future<Store> create(Store request, {AppMode? appMode = AppMode.local}) {
+  Future<Store> create(Store request, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      return storeLocalRepository.create(request);
+      final storeCreated = await storeLocalRepository.create(request);
+      ToastNotificationService.show(
+        title: LocaleKeys.notification_createStoreSuccessTitle.tr(
+          args: [storeCreated.name],
+        ),
+        desc: LocaleKeys.notification_createStoreSuccessDesc.tr(),
+        onTap: (value) {
+          StoreManagementRouter(GetIt.I<NavigationService>().navigatorKey.currentContext!).navigate();
+        },
+      );
+      return storeCreated;
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  delete(String id, {AppMode? appMode = AppMode.local}) {
+  Future<void> delete(String id, {AppMode? appMode = AppMode.local, String? name}) async {
     if (appMode == AppMode.local) {
-    } else {}
+      ToastNotificationService.show(
+        title: LocaleKeys.notification_deleteSuccess.tr(
+          args: [name ?? ''],
+        ),
+      );
+      await storeLocalRepository.delete(id);
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override
   deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       await storeLocalRepository.deleteAll(ids);
-    } else {}
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override

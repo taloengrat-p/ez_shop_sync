@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_cubit.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_state.dart';
@@ -46,7 +48,6 @@ class _PinVerifyState extends State<PinVerifyPage> {
       create: (context) => _cubit,
       child: BlocListener<PinVerifyCubit, PinVerifyState>(
         listener: (context, state) {
-          log('state : $state', name: runtimeType.toString());
           if (state is PinVerifySuccess) {
             PinVerifyRouter(context).pop(state);
           } else if (state is PinVerifyClearByFailure) {
@@ -57,21 +58,20 @@ class _PinVerifyState extends State<PinVerifyPage> {
         child: BlocBuilder<PinVerifyCubit, PinVerifyState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 color: Colors.transparent,
                 iconThemeColor: Colors.black,
                 actions: [],
               ).build(),
               body: AppPinWidget(
                 controller: pinController,
-                title: 'Verification',
-                desc: 'Enter your current PIN',
+                title: LocaleKeys.verificationTitle.tr(),
                 onCompleted: _cubit.doVerify,
                 onChanged: (value) {
                   _cubit.refresh();
                 },
-                errorText:
-                    state is PinVerifyFailure ? 'Verify is invalid' : null,
+                errorText: state is PinVerifyFailure ? LocaleKeys.verifyIsInvalid.tr() : null,
               ),
             );
           },

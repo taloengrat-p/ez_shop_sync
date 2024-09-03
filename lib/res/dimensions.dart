@@ -6,7 +6,7 @@ class DimensionsKeys {
   static const double l = 16;
   static const double xl = 32;
 
-  static const double heightBts = 60;
+  static const double heightBts = 70;
 
   static const double pagePaddingHzt = 16;
   static const double pagePaddingVt = 16;

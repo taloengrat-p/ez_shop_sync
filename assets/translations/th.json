@@ -3,7 +3,7 @@
   "createYourStoreName": "สร้างชื่อร้านค้าของคุณ",
   "storeSettings": "ตั้งค่าร้านค้า",
   "menu": "เมนู",
-  "histories": "ประวัติ",
+  "statistic": "สถิติ",
   "transactions": "ธุรกรรม",
   "products": "สินค้า",
   "productsEmpty": "สินค้าของคุณว่างเปล่า กรุณาสร้างสินค้าขึ้นมาใหม่",
@@ -58,5 +58,25 @@
   "categoryEmpty": "หมวดหมู่ของคุณว่างเปล่า โปรดสร้างหมวดหมู่ใหม่",
   "icon": "ไอคอน",
   "search": "ค้นหา",
-  "noItemsFound": "ไม่พบรายการ"
+  "noItemsFound": "ไม่พบรายการ",
+  "owner": "เจ้าของ",
+  "notification": {
+    "deleteSuccess": "ลบสินค้าสำเร็จ",
+    "updateSuccess": "อัพเดต {} สำเร็จ",
+    "createProductSuccessTitle": "สร้าง {} สำเร็จ",
+    "createProductSuccessDesc": "กดเพื่อดูรายละเอียด",
+    "createStoreSuccessTitle": "สร้าง {} สำเร็จ",
+    "createStoreSuccessDesc": "กดเพื่อดูรายละเอียด",
+    "createNewPINTitle": "สร้าง PIN ใหม่สำเร็จ"
+  },
+  "createPINTitle": "สร้าง PIN",
+  "createPINDesc": "ป้อนรหัสสำหรับการตั้งค่า PIN",
+  "confirmPINTitle": "ยืนยัน PIN",
+  "confirmPINDesc": "กรอกรหัสยืนยัน PIN",
+  "PINNotMatch": "กรอกรหัสยืนยัน PIN ไม่ตรงกัน",
+  "verificationTitle": "ใส่รหัส PIN",
+  "verifyIsInvalid": "ตรวจสอบไม่ถูกต้อง",
+  "createStore": "สร้างร้านค้า",
+  "dateTimeCreated": "วันและเวลาที่สร้าง",
+  "dateTimeUpdated": "วันและเวลาที่อัพเดต"
 }

@@ -58,6 +58,7 @@ class ProductPageState extends State<ProductPage> {
           appBar: AppbarWidget(
             context,
             centerTitle: false,
+            title: cubit.baseCubit.store?.name,
             actions: [
               ActionAppbarButtonWidget(
                 child: const Icon(
@@ -108,18 +109,14 @@ class ProductPageState extends State<ProductPage> {
             cubit.changeSortType();
           },
           icon: Icon(
-            cubit.sortType == ProductSortType.asc
-                ? CupertinoIcons.sort_up
-                : CupertinoIcons.sort_down,
+            cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down,
           ),
         ),
         IconButton(
           onPressed: () {
             cubit.changeDisplayType();
           },
-          icon: Icon(cubit.displayType == ProductDisplayType.grid
-              ? Icons.list_rounded
-              : Icons.grid_view),
+          icon: Icon(cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
         ),
       ],
       children: [
@@ -130,7 +127,7 @@ class ProductPageState extends State<ProductPage> {
 
   Widget buildGridViewProduct() {
     return OrientationBuilder(builder: (context, orientation) {
-      double itemHeight = 310;
+      double itemHeight = 330;
       var size = MediaQuery.of(context).size;
       final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
       final double itemWidth = size.width / crossAxisCount;
@@ -143,8 +140,7 @@ class ProductPageState extends State<ProductPage> {
             .map(
               (e) => GestureDetector(
                 onTap: () async {
-                  final result = await ProductDetailRouter(context)
-                      .navigate(argruments: e);
+                  final result = await ProductDetailRouter(context).navigate(argruments: e);
 
                   if (result is BaseArgrument && result.refresh) {
                     cubit.init();
@@ -205,10 +201,7 @@ class ProductPageState extends State<ProductPage> {
         child: ContainerScrollableWidget(
           radius: DimensionsKeys.radius + 4,
           paddingAll: 4,
-          margin: const EdgeInsets.all(16),
-          child: cubit.displayType == ProductDisplayType.grid
-              ? buildGridViewProduct()
-              : buildListProduct(),
+          child: cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct(),
         ),
       );
     } else {

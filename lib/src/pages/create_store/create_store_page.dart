@@ -1,11 +1,17 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
+import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
+import 'package:ez_shop_sync/src/services/navigation_service.dart';
+import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +67,7 @@ class _CreateStoreState extends State<CreateStorePage> {
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: "CreateStore",
+                title: LocaleKeys.createStore.tr(),
                 actions: [],
               ).build(),
               body: SingleChildScrollView(
@@ -74,11 +80,11 @@ class _CreateStoreState extends State<CreateStorePage> {
                           height: 16,
                         ),
                         TextFormFieldUiWidget(
-                          label: 'Name',
+                          label: LocaleKeys.name.tr(),
                           onChanged: _cubit.setName,
                         ),
                         TextFormFieldUiWidget(
-                          label: 'Description',
+                          label: LocaleKeys.description.tr(),
                           onChanged: _cubit.setDescription,
                         ),
                       ],

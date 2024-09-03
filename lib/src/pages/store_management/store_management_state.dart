@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 
 abstract class StoreManagementState extends Equatable {
   const StoreManagementState([List props = const []]) : super();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class StoreManagementInitial extends StoreManagementState {
@@ -27,4 +28,17 @@ class StoreManagementFailure extends StoreManagementState {
 
   @override
   String toString() => 'StoreManagementFailure';
+}
+
+class StoreManagementDeleteSuccess extends StoreManagementState {
+  final Store? store;
+
+  const StoreManagementDeleteSuccess(
+    this.store,
+  );
+  @override
+  String toString() => 'StoreManagementDeleteSuccess';
+
+  @override
+  List<Object?> get props => [store?.id];
 }

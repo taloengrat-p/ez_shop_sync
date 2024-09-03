@@ -162,7 +162,6 @@ class _MorePageState extends State<MorePage> {
               backgroundColor: Colors.red,
               leading: const Icon(
                 Icons.logout_rounded,
-                color: Colors.white,
               ),
               onPressed: cubit.doLogout,
             ),

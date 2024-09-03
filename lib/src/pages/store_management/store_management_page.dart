@@ -1,15 +1,25 @@
-import 'package:currency_picker/currency_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
+import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
-import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
+import 'package:toastification/toastification.dart';
 
 class StoreManagementPage extends StatefulWidget {
   const StoreManagementPage({
@@ -29,10 +39,11 @@ class _StoreManagementState extends State<StoreManagementPage> {
     _cubit = StoreManagementCubit(
       storeRepository: GetIt.I<StoreRepository>(),
       baseCubit: GetIt.I<BaseCubit>(),
+      userRepository: GetIt.I<UserRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
-      setState(() {});
+      _cubit.initial();
     });
   }
 
@@ -46,19 +57,48 @@ class _StoreManagementState extends State<StoreManagementPage> {
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<StoreManagementCubit, StoreManagementState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is StoreManagementDeleteSuccess) {
+            StoreManagementRouter(context).pop(state);
+          }
+        },
         child: BlocBuilder<StoreManagementCubit, StoreManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: "StoreManagement",
-                actions: [],
+                title: LocaleKeys.storeManagement.tr(),
+                actions: [
+                  const ContainerCircleWidget(
+                    child: Icon(
+                      Icons.edit,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  ContainerCircleWidget(
+                    color: Colors.red,
+                    child: Icon(
+                      CupertinoIcons.delete,
+                    ),
+                    onPressed: () async {
+                      final result = await ConfirmDialogUiWidget(
+                        context,
+                        title: 'ลบร้านค้า',
+                        desc: 'ยืนยันการลบ',
+                        confirmColor: Colors.red,
+                      ).show();
+
+                      if (result == ConfirmDialogUiResult.ok) {
+                        _cubit.doDelete();
+                      }
+                    },
+                  ),
+                ],
               ).build(),
-              body: SingleChildScrollView(
-                child: _buildPage(context, state),
-              ),
+              body: _buildPage(context, state),
             );
           },
         ),
@@ -67,30 +107,52 @@ class _StoreManagementState extends State<StoreManagementPage> {
   }
 
   Widget _buildPage(BuildContext context, StoreManagementState state) {
-    return Column(
-      children: [
-        TextFormFieldUiWidget(
-          readOnly: true,
-          label: 'Name',
-          textInitial: _cubit.store?.name ?? '',
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: DimensionsKeys.pagePaddingVt,
+        horizontal: DimensionsKeys.pagePaddingHzt,
+      ),
+      child: SingleChildScrollView(
+        child: ColumnGapWidget(
+          gap: 8,
+          children: [
+            TextFormFieldUiWidget(
+              readOnly: true,
+              label: LocaleKeys.name.tr(),
+              textInitial: _cubit.store?.name ?? '',
+            ),
+            TextFormFieldUiWidget(
+              readOnly: true,
+              label: LocaleKeys.description.tr(),
+              textInitial: _cubit.storeDesc,
+            ),
+            TextFormFieldUiWidget(
+              readOnly: true,
+              label: LocaleKeys.owner.tr(),
+              textInitial: _cubit.ownerName,
+              textValue: _cubit.ownerName,
+            ),
+            TextFormFieldUiWidget(
+              readOnly: true,
+              label: LocaleKeys.dateTimeCreated.tr(),
+              textValue: _cubit.store?.createDate?.toDisplayDependLocale(context) ?? '',
+            ),
+            TextFormFieldUiWidget(
+              readOnly: true,
+              label: LocaleKeys.dateTimeUpdated.tr(),
+              textValue: _cubit.store?.updateDate?.toDisplayDependLocale(context) ?? '',
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            ),
+          ],
         ),
-        TextFormFieldUiWidget(
-          readOnly: true,
-          label: 'Description',
-          textInitial: _cubit.store?.description ?? '--',
-        ),
-        TextFormFieldUiWidget(
-          readOnly: true,
-          label: 'Name',
-          textInitial: _cubit.store?.createDate?.toIso8601String() ?? '',
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        ),
-      ],
+      ),
     );
   }
 }
+
+ 
 
 // child: ButtonWidget(
 //             label: 'pick',

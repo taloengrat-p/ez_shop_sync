@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 import 'flavors.dart';
 
@@ -36,9 +37,7 @@ class _AppState extends State<App> {
     super.initState();
     baseCubit = BlocProvider.of<BaseCubit>(context);
 
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) {
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       // if (result.contains(ConnectivityResult.none)) {
       //   baseCubit.changeMode(AppMode.local);
       // } else {
@@ -55,55 +54,57 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: F.title,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      theme: ThemeData(
-        textTheme: GoogleFonts.promptTextTheme(
-          Theme.of(context).textTheme,
+    return ToastificationWrapper(
+      child: MaterialApp(
+        title: F.title,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        theme: ThemeData(
+          textTheme: GoogleFonts.promptTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          primarySwatch: Colors.blue,
         ),
-        primarySwatch: Colors.blue,
-      ),
-      navigatorKey: GetIt.I<NavigationService>().navigatorKey,
-      navigatorObservers: [routeAware],
-      routes: Routes.values,
-      home: _flavorBanner(
-        child: BlocListener<BaseCubit, BaseState>(
-          bloc: baseCubit,
-          listener: (context, state) {
-            log('[CUBIT][BASE] state : $state');
-          },
-          child: BlocBuilder<BaseCubit, BaseState>(
+        navigatorKey: GetIt.I<NavigationService>().navigatorKey,
+        navigatorObservers: [routeAware],
+        routes: Routes.values,
+        home: _flavorBanner(
+          child: BlocListener<BaseCubit, BaseState>(
             bloc: baseCubit,
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  baseCubit.isIntroduceFlowDone.isNull
-                      ? Container(
-                          color: Colors.white,
-                        )
-                      : baseCubit.isIntroduceFlowDone!
-                          ? MainPage()
-                          : IntroduceFlowPage(),
-                  if (state is BaseLoading)
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.black.withOpacity(0.6),
-                      child: Center(
-                        child: CupertinoActivityIndicator(
-                          color: Colors.white,
+            listener: (context, state) {
+              log('[CUBIT][BASE] state : $state');
+            },
+            child: BlocBuilder<BaseCubit, BaseState>(
+              bloc: baseCubit,
+              builder: (context, state) {
+                return Stack(
+                  children: [
+                    baseCubit.isIntroduceFlowDone.isNull
+                        ? Container(
+                            color: Colors.white,
+                          )
+                        : baseCubit.isIntroduceFlowDone!
+                            ? MainPage()
+                            : IntroduceFlowPage(),
+                    if (state is BaseLoading)
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: Colors.black.withOpacity(0.6),
+                        child: Center(
+                          child: CupertinoActivityIndicator(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           ),
+          show: kDebugMode,
         ),
-        show: kDebugMode,
       ),
     );
   }
@@ -117,10 +118,7 @@ class _AppState extends State<App> {
               location: BannerLocation.topStart,
               message: F.name,
               color: Colors.green.withOpacity(0.6),
-              textStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                  letterSpacing: 1.0),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
               child: child,
             )
           : Container(

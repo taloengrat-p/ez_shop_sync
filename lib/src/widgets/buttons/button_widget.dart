@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/res/colors.dart';
+import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 
 enum ButtonUiEffect {
@@ -32,8 +33,12 @@ class ButtonWidget extends StatefulWidget {
   final double? width;
   final Color borderColor;
   final bool disabled;
+  final Axis axis;
+  final bool isLabelUpperCase;
+
   const ButtonWidget({
     Key? key,
+    this.isLabelUpperCase = true,
     this.type,
     this.innerRadius,
     required this.label,
@@ -54,6 +59,7 @@ class ButtonWidget extends StatefulWidget {
     this.width = double.infinity,
     this.borderColor = Colors.transparent,
     this.disabled = false,
+    this.axis = Axis.horizontal,
   }) : super(key: key);
 
   @override
@@ -93,14 +99,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         style: ButtonStyle(
           elevation: MaterialStatePropertyAll(widget.elevation),
           overlayColor: getOverlayColor(),
-          backgroundColor: widget.disabled
-              ? null
-              : widget.onPressed != null
-                  ? MaterialStatePropertyAll(
-                      // widget.backgroundColor ??
-                      widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.primary : Colors.white),
-                    )
-                  : null,
+          backgroundColor: getBackgroundColor(),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.radius ?? 8),
@@ -111,65 +110,79 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         onPressed: widget.disabled ? null : widget.onPressed,
         child: Padding(
           padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildIcon(),
-              if (widget.leading != null) ...[
-                widget.leading!,
-                SizedBox(
-                  width: widget.gap ?? 4,
+          child: widget.axis == Axis.horizontal
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...buildChildren(),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...buildChildren(),
+                  ],
                 ),
-              ],
-              widget.isFittedLabel
-                  ? Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          widget.label.toUpperCase(),
-                          textAlign: TextAlign.center,
-                          style: widget.textStyle ??
-                              TextStyle(
-                                color: widget.disabled
-                                    ? Colors.grey
-                                    : isPressed
-                                        ? ColorKeys.secondary
-                                        : widget.type == ButtonUiType.primary || widget.type == null
-                                            ? Colors.white
-                                            : Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                              ),
-                        ),
-                      ),
-                    )
-                  : Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          widget.label.toUpperCase(),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: widget.textStyle ??
-                              TextStyle(
-                                color: widget.disabled
-                                    ? Colors.grey
-                                    : widget.type == ButtonUiType.primary || widget.type == null
-                                        ? Colors.white
-                                        : Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                              ),
-                        ),
-                      ),
-                    ),
-            ],
-          ),
         ),
       ),
     );
+  }
+
+  List<Widget> buildChildren() {
+    return [
+      buildIcon(),
+      if (widget.leading != null) ...[
+        Theme(
+            data: ThemeData(
+              iconTheme: IconThemeData(color: widget.disabled ? Colors.grey : getColor().getContrast()),
+            ),
+            child: widget.leading!),
+        SizedBox(
+          width: widget.gap ?? 4,
+        ),
+      ],
+      widget.isFittedLabel
+          ? Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  widget.isLabelUpperCase ? widget.label.toUpperCase() : widget.label,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: widget.textStyle ??
+                      TextStyle(
+                        color: ColorKeys.primary.getContrast(),
+                      ),
+                ),
+              ),
+            )
+          : Text(
+              widget.isLabelUpperCase ? widget.label.toUpperCase() : widget.label,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: widget.textStyle ??
+                  TextStyle(
+                    color: ColorKeys.primary.getContrast(),
+                  ),
+            ),
+    ];
+  }
+
+  WidgetStateProperty<Color>? getBackgroundColor() {
+    return widget.disabled
+        ? null
+        : widget.onPressed != null
+            ? MaterialStatePropertyAll(
+                getColor(),
+              )
+            : null;
+  }
+
+  Color getColor() {
+    return widget.backgroundColor ?? (isPrimaryButton() ? ColorKeys.primary : Colors.white);
   }
 }
 

@@ -1,5 +1,6 @@
-import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+
+import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 
 part 'user.g.dart';
 
@@ -29,6 +30,8 @@ class User extends BaseHiveObject {
   @HiveField(13, defaultValue: null)
   String? storeLatest;
 
+  String get fullname => '$firstName $lastName';
+
   User({
     required super.id,
     super.createDate,
@@ -44,4 +47,9 @@ class User extends BaseHiveObject {
     this.profilePictureUrl,
     this.storeLatest,
   });
+
+  @override
+  String toString() {
+    return 'User(storeId: $storeId, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, email: $email, username: $username, profilePictureUrl: $profilePictureUrl, storeLatest: $storeLatest)';
+  }
 }

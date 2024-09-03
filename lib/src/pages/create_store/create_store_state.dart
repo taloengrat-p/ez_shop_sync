@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 
 abstract class CreateStoreState extends Equatable {
   const CreateStoreState([List props = const []]) : super();
@@ -18,8 +19,13 @@ class CreateStoreLoading extends CreateStoreState {
 }
 
 class CreateStoreSuccess extends CreateStoreState {
+  final Store store;
+
+  const CreateStoreSuccess(
+    this.store,
+  );
   @override
-  String toString() => 'CreateStoreSuccess';
+  String toString() => 'CreateStoreSuccess ${store.id}';
 }
 
 class CreateStoreFailure extends CreateStoreState {

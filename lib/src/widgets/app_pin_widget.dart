@@ -4,7 +4,7 @@ import 'package:pinput/pinput.dart';
 
 class AppPinWidget extends StatefulWidget {
   final String title;
-  final String desc;
+  final String? desc;
   final bool obscureText;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onCompleted;
@@ -15,7 +15,7 @@ class AppPinWidget extends StatefulWidget {
   const AppPinWidget({
     Key? key,
     required this.title,
-    required this.desc,
+    this.desc,
     this.obscureText = true,
     this.validator,
     this.onCompleted,
@@ -36,15 +36,11 @@ class _AppPinWidgetState extends State<AppPinWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle: const TextStyle(
-          fontSize: 20,
-          color: Color.fromRGBO(30, 60, 87, 1),
-          fontWeight: FontWeight.w600),
+      textStyle: const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
@@ -52,7 +48,7 @@ class _AppPinWidgetState extends State<AppPinWidget> {
     );
 
     focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: ColorKeys.accent),
+      border: Border.all(color: ColorKeys.primary),
       borderRadius: BorderRadius.circular(8),
     );
 
@@ -79,13 +75,11 @@ class _AppPinWidgetState extends State<AppPinWidget> {
           const SizedBox(
             height: 16,
           ),
-          Text(
-            widget.desc,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(color: Colors.grey),
-          ),
+          if (widget.desc != null)
+            Text(
+              widget.desc!,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.grey),
+            ),
           const SizedBox(
             height: 16,
           ),
