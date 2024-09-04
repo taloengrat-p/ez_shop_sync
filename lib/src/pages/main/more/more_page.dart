@@ -198,40 +198,55 @@ class _MorePageState extends State<MorePage> {
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-            CircleProfileWidget(
-              title: cubit.storeShortName,
+            Expanded(
+              child: Row(
+                children: [
+                  CircleProfileWidget(
+                    title: cubit.storeShortName,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Flexible(
+                    child: Text(
+                      cubit.storeName,
+                      style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             const SizedBox(
               width: 8,
             ),
-            Text(
-              cubit.storeName,
-              style: TextStyle(
-                color: ColorKeys.primary.withOpacity(0.6).getContrast(),
-              ),
-            ),
-            const Spacer(),
-            ContainerCircleWidget(
-              color: ColorKeys.secondary.getContrast(),
-              child: const Icon(
-                Icons.add_business_rounded,
-              ),
-              onPressed: () {
-                CreateStoreRouter(context).navigate();
-              },
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            if (cubit.stores.isNotEmpty)
-              ContainerCircleWidget(
-                color: ColorKeys.secondary.getContrast(),
-                child: const Icon(
-                  Icons.swap_horiz_rounded,
-                  color: Colors.white,
+            Row(
+              children: [
+                ContainerCircleWidget(
+                  color: ColorKeys.secondary.getContrast(),
+                  child: const Icon(
+                    Icons.add_business_rounded,
+                  ),
+                  onPressed: () {
+                    CreateStoreRouter(context).navigate();
+                  },
                 ),
-                onPressed: onHandleChangeStore,
-              ),
+                const SizedBox(
+                  width: 8,
+                ),
+                if (cubit.stores.isNotEmpty)
+                  ContainerCircleWidget(
+                    color: ColorKeys.secondary.getContrast(),
+                    child: const Icon(
+                      Icons.swap_horiz_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: onHandleChangeStore,
+                  )
+              ],
+            ),
           ],
         ),
       ),
