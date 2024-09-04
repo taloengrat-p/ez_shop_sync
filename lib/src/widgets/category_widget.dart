@@ -1,6 +1,6 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatelessWidget {

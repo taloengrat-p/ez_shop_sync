@@ -6,7 +6,7 @@ import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';

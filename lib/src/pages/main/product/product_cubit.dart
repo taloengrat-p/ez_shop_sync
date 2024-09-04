@@ -2,15 +2,27 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCubit extends Cubit<ProductState> {
   BaseCubit baseCubit;
   ProductRepository productRepository;
+  ScreenMode screenMode = ScreenMode.display;
+  String? searchText;
+  List<Product> get products => baseCubit.products
+      .where(
+        (product) => (searchText?.isEmpty ?? true)
+            ? true
+            : product.name.ignoreSpaceAndUpperCase().contains(
+                  searchText!.ignoreSpaceAndUpperCase(),
+                ),
+      )
+      .toList();
 
-  List<Product> get products => baseCubit.products;
   ProductCubit({
     required this.productRepository,
     required this.baseCubit,
@@ -44,5 +56,27 @@ class ProductCubit extends Cubit<ProductState> {
 
   void addProductToStock(String id, num value) {
     baseCubit.addProductToStock(id, value);
+  }
+
+  void setSearchText(String? value) {
+    searchText = value;
+
+    emit(ProductRefresh(DateTime.now()));
+  }
+
+  doSwitchToSearch() {
+    screenMode = ScreenMode.search;
+    emit(ProductChangeScreenMode(screenMode));
+  }
+
+  void clearSearchText() {
+    searchText = '';
+    emit(ProductRefresh(DateTime.now()));
+  }
+
+  doSwitchToDisplay() {
+    clearSearchText();
+    screenMode = ScreenMode.display;
+    emit(ProductChangeScreenMode(screenMode));
   }
 }

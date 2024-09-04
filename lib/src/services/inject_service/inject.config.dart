@@ -17,19 +17,9 @@ import '../../data/repository/category/category_local_repository.dart' as _i334;
 import '../../data/repository/category/category_repository.dart' as _i635;
 import '../../data/repository/category/category_server_repository.dart'
     as _i442;
-import '../../data/repository/product/_local/product_local_dev_repository.dart'
-    as _i1065;
-import '../../data/repository/product/_local/product_local_repository.dart'
-    as _i265;
-import '../../data/repository/product/_local/product_local_unittest_repository.dart'
-    as _i346;
-import '../../data/repository/product/_server/product_server_dev_repository.dart'
-    as _i258;
-import '../../data/repository/product/_server/product_server_repository.dart'
-    as _i960;
-import '../../data/repository/product/_server/product_server_unittest_repository.dart'
-    as _i468;
+import '../../data/repository/product/product_local_repository.dart' as _i1011;
 import '../../data/repository/product/product_repository.dart' as _i846;
+import '../../data/repository/product/product_server_repository.dart' as _i920;
 import '../../data/repository/store/_local/store_local_repository.dart'
     as _i300;
 import '../../data/repository/store/_server/store_server_repository.dart'
@@ -48,9 +38,9 @@ import '../local_storage_service.dart/local_storage_service.dart' as _i461;
 import '../local_storage_service.dart/local_storage_unittest.dart' as _i79;
 import '../navigation_service.dart' as _i892;
 
+const String _tests = 'tests';
 const String _dev = 'dev';
 const String _prod = 'prod';
-const String _tests = 'tests';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -77,38 +67,24 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
-    gh.singleton<_i265.ProductLocalRepository>(
-      () => _i1065.ProductLocalDevRepository(),
-      registerFor: {
-        _dev,
-        _prod,
-      },
-    );
-    gh.singleton<_i960.ProductServerRepository>(
-      () => _i468.ProductServerUnittestRepository(),
-      registerFor: {_tests},
-    );
+    gh.singleton<_i1011.ProductLocalRepository>(
+        () => _i1011.ProductLocalRepository());
+    gh.singleton<_i920.ProductServerRepository>(
+        () => _i920.ProductServerRepository());
     gh.singleton<_i535.HiveDBService>(
       () => _i233.HiveDBUnittestService(),
       registerFor: {_tests},
     );
+    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
+          productLocalRepository: gh<_i1011.ProductLocalRepository>(),
+          productServerRepository: gh<_i920.ProductServerRepository>(),
+        ));
     gh.singleton<_i505.TagRepository>(() => _i505.TagRepository(
           tagLocalRepository: gh<_i558.TagLocalRepository>(),
           tagServerRepository: gh<_i1035.TagServerRepository>(),
         ));
     gh.singleton<_i461.LocalStorageService>(
       () => _i79.LocalStorageUnittest(),
-      registerFor: {_tests},
-    );
-    gh.singleton<_i960.ProductServerRepository>(
-      () => _i258.ProductServerDevRepository(),
-      registerFor: {
-        _dev,
-        _prod,
-      },
-    );
-    gh.factory<_i265.ProductLocalRepository>(
-      () => _i346.ProductLocalUnittestRepository(),
       registerFor: {_tests},
     );
     gh.singleton<_i535.HiveDBService>(
@@ -132,10 +108,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
           categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i442.CategoryServerRepository>(),
-        ));
-    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
-          productLocalRepository: gh<_i265.ProductLocalRepository>(),
-          productServerRepository: gh<_i960.ProductServerRepository>(),
         ));
     gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
           authLocalRepository: gh<_i900.AuthLocalRepository>(),

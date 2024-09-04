@@ -25,9 +25,9 @@ class CategoryAdapter extends TypeAdapter<Category> {
       iconData: (fields[10] as Map?)?.cast<String, dynamic>(),
     )
       ..createDate = fields[2] as DateTime?
-      ..createBy = fields[3] as DateTime?
+      ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as DateTime?;
+      ..updateBy = fields[5] as String?;
   }
 
   @override

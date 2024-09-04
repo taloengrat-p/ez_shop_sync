@@ -19,7 +19,7 @@ import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_stora
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BaseCubit extends Cubit<BaseState> {
@@ -231,5 +231,9 @@ class BaseCubit extends Cubit<BaseState> {
     _categories = categoryRepository.getAllByIds(store?.categories ?? []);
 
     emit(BaseLoadCategoriesByStoreSuccess(store?.categories ?? []));
+  }
+
+  void updateCurrentUser(User resultUpdated) {
+    setCurrentUser(resultUpdated);
   }
 }

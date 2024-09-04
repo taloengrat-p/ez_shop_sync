@@ -3,6 +3,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
@@ -10,6 +11,7 @@ import 'package:ez_shop_sync/src/pages/store_management/store_management_state.d
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -70,35 +72,55 @@ class _StoreManagementState extends State<StoreManagementPage> {
                 centerTitle: false,
                 title: LocaleKeys.storeManagement.tr(),
                 actions: [
-                  const ContainerCircleWidget(
-                    child: Icon(
-                      Icons.edit,
+                  if (_cubit.screenMode == ScreenMode.edit)
+                    TextButton(
+                      child: Text(LocaleKeys.cancel.tr()),
+                      onPressed: () {
+                        _cubit.doCancelEdit();
+                      },
                     ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  ContainerCircleWidget(
-                    color: Colors.red,
-                    child: Icon(
-                      CupertinoIcons.delete,
+                  if (_cubit.screenMode == ScreenMode.display) ...[
+                    ContainerCircleWidget(
+                      onPressed: _cubit.doEdit,
+                      child: const Icon(
+                        Icons.edit,
+                      ),
                     ),
-                    onPressed: () async {
-                      final result = await ConfirmDialogUiWidget(
-                        context,
-                        title: 'ลบร้านค้า',
-                        desc: 'ยืนยันการลบ',
-                        confirmColor: Colors.red,
-                      ).show();
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    ContainerCircleWidget(
+                      color: Colors.red,
+                      child: const Icon(
+                        CupertinoIcons.delete,
+                      ),
+                      onPressed: () async {
+                        final result = await ConfirmDialogUiWidget(
+                          context,
+                          title: 'ลบร้านค้า',
+                          desc: 'ยืนยันการลบ',
+                          confirmColor: Colors.red,
+                        ).show();
 
-                      if (result == ConfirmDialogUiResult.ok) {
-                        _cubit.doDelete();
-                      }
-                    },
-                  ),
+                        if (result == ConfirmDialogUiResult.ok) {
+                          _cubit.doDelete();
+                        }
+                      },
+                    ),
+                  ],
                 ],
               ).build(),
               body: _buildPage(context, state),
+              bottomNavigationBar: ButtonWidget(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: DimensionsKeys.pagePaddingHzt,
+                  vertical: DimensionsKeys.l,
+                ),
+                label: LocaleKeys.button_save.tr(),
+                onPressed: () {
+                  _cubit.doSave();
+                },
+              ),
             );
           },
         ),
@@ -117,14 +139,16 @@ class _StoreManagementState extends State<StoreManagementPage> {
           gap: 8,
           children: [
             TextFormFieldUiWidget(
-              readOnly: true,
+              readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),
-              textInitial: _cubit.store?.name ?? '',
+              textValue: _cubit.nameEditor,
+              onChanged: _cubit.doSetName,
             ),
             TextFormFieldUiWidget(
-              readOnly: true,
+              readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.description.tr(),
-              textInitial: _cubit.storeDesc,
+              textValue: _cubit.descEditor,
+              onChanged: _cubit.doSetDesc,
             ),
             TextFormFieldUiWidget(
               readOnly: true,
@@ -142,9 +166,6 @@ class _StoreManagementState extends State<StoreManagementPage> {
               label: LocaleKeys.dateTimeUpdated.tr(),
               textValue: _cubit.store?.updateDate?.toDisplayDependLocale(context) ?? '',
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            ),
           ],
         ),
       ),
@@ -152,7 +173,6 @@ class _StoreManagementState extends State<StoreManagementPage> {
   }
 }
 
- 
 
 // child: ButtonWidget(
 //             label: 'pick',

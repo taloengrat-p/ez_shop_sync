@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -27,10 +29,17 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   void initState() {
     super.initState();
+    log('[init]', name: runtimeType.toString());
 
     cubit = TransactionCubit(
       baseCubit: GetIt.I<BaseCubit>(),
     );
+  }
+
+  @override
+  void dispose() {
+    log('[dispose]', name: runtimeType.toString());
+    super.dispose();
   }
 
   @override

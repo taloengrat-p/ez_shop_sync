@@ -64,6 +64,23 @@ class _AppState extends State<App> {
           textTheme: GoogleFonts.promptTextTheme(
             Theme.of(context).textTheme,
           ),
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: MaterialColor(
+              Colors.black.value,
+              <int, Color>{
+                50: Colors.black.withOpacity(0.05),
+                100: Colors.black.withOpacity(0.1),
+                200: Colors.black.withOpacity(0.2),
+                300: Colors.black.withOpacity(0.3),
+                400: Colors.black.withOpacity(0.4),
+                500: Colors.black.withOpacity(0.5),
+                600: Colors.black.withOpacity(0.6),
+                700: Colors.black.withOpacity(0.7),
+                800: Colors.black.withOpacity(0.8),
+                900: Colors.black.withOpacity(0.9),
+              },
+            ),
+          ).copyWith(),
           primarySwatch: Colors.blue,
         ),
         navigatorKey: GetIt.I<NavigationService>().navigatorKey,

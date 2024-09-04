@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -12,6 +14,18 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  @override
+  void initState() {
+    super.initState();
+    log('[init]', name: runtimeType.toString());
+  }
+
+  @override
+  void dispose() {
+    log('[dispose]', name: runtimeType.toString());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(

@@ -25,7 +25,7 @@ import 'package:ez_shop_sync/src/pages/user_management/user_management_router.da
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/bottom_menu_item.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -49,12 +49,19 @@ class _MorePageState extends State<MorePage> {
 
   @override
   void initState() {
+    log('[init]', name: runtimeType.toString());
     super.initState();
     baseCubit = GetIt.I<BaseCubit>();
     cubit = MoreCubit(
       baseCubit: baseCubit,
       localStorageService: GetIt.I<LocalStorageService>(),
     );
+  }
+
+  @override
+  void dispose() {
+    log('[dispose]', name: runtimeType.toString());
+    super.dispose();
   }
 
   @override
@@ -306,7 +313,6 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.userSettings.tr(),
       items: [
         MenuItemModel(
-          disabled: true,
           title: LocaleKeys.profileSettings.tr(),
           value: 1,
           onPressed: () {

@@ -6,6 +6,7 @@ class AppInputDecoration {
   bool readOnly;
   EdgeInsetsGeometry? contentPadding;
   Widget? suffixIcon;
+  Widget? suffix;
   TextFormFieldUiType autoCompleteType;
   double borderRadius;
   String? hintText;
@@ -15,6 +16,7 @@ class AppInputDecoration {
     this.readOnly = false,
     this.contentPadding,
     this.suffixIcon,
+    this.suffix,
     this.autoCompleteType = TextFormFieldUiType.normal,
     this.borderRadius = 8,
     this.hintText,
@@ -29,6 +31,7 @@ class AppInputDecoration {
       filled: true,
       contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
       suffixIcon: suffixIcon,
+      suffix: suffix,
       border: OutlineInputBorder(
         borderRadius: border,
       ),

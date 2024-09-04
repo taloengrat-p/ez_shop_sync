@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_cubit.dart';
@@ -17,10 +18,12 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,15 +38,21 @@ class ProductPage extends StatefulWidget {
 
 class ProductPageState extends State<ProductPage> {
   late ProductCubit cubit;
-
+  final _searchTextController = TextEditingController();
   @override
   void initState() {
+    log('[init]', name: runtimeType.toString());
     super.initState();
-    log('init', name: runtimeType.toString());
     cubit = ProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
       baseCubit: GetIt.I.get<BaseCubit>(),
     );
+  }
+
+  @override
+  void dispose() {
+    log('[dispose]', name: runtimeType.toString());
+    super.dispose();
   }
 
   @override
@@ -54,44 +63,75 @@ class ProductPageState extends State<ProductPage> {
         return cubit;
       },
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
+        log('state :L $state');
         return BaseScaffolds(
           appBar: AppbarWidget(
             context,
             centerTitle: false,
             title: cubit.baseCubit.store?.name,
+            titleWidget: cubit.screenMode == ScreenMode.search
+                ? TextField(
+                    controller: _searchTextController,
+                    autofocus: true,
+                    decoration: AppInputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                      suffixIcon: IconButton(
+                        icon: const Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          _searchTextController.clear();
+                          cubit.clearSearchText();
+                        },
+                      ),
+                    ).build(),
+                    onChanged: cubit.setSearchText,
+                  )
+                : null,
             actions: [
-              ActionAppbarButtonWidget(
-                child: const Icon(
-                  CupertinoIcons.search,
+              if (cubit.screenMode == ScreenMode.search)
+                TextButton(
+                  onPressed: () {
+                    _searchTextController.clear();
+                    cubit.doSwitchToDisplay();
+                  },
+                  child: Text(LocaleKeys.cancel.tr()),
                 ),
-                // onPressed: () {},
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              ActionAppbarButtonWidget(
-                child: const Icon(
-                  CupertinoIcons.add,
+              if (cubit.screenMode == ScreenMode.display) ...[
+                ActionAppbarButtonWidget(
+                  onPressed: cubit.doSwitchToSearch,
+                  child: const Icon(
+                    CupertinoIcons.search,
+                  ),
                 ),
-                onPressed: () async {
-                  final result = await CreateProductRouter(context).navigate();
-                  if (result is BaseArgrument && result.refresh) {
-                    cubit.init();
-                  }
-                },
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              ActionAppbarButtonWidget(
-                child: const Icon(
-                  CupertinoIcons.bag_badge_plus,
+                const SizedBox(
+                  width: 5,
                 ),
-                // onPressed: () async {},
-              ),
-              SizedBox(
-                width: 8,
-              ),
+                ActionAppbarButtonWidget(
+                  child: const Icon(
+                    CupertinoIcons.add,
+                  ),
+                  onPressed: () async {
+                    final result = await CreateProductRouter(context).navigate();
+                    if (result is BaseArgrument && result.refresh) {
+                      cubit.init();
+                    }
+                  },
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                ActionAppbarButtonWidget(
+                  child: const Icon(
+                    CupertinoIcons.bag_badge_plus,
+                  ),
+                  // onPressed: () async {},
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+              ]
             ],
           ).build(),
           body: buildBody(),

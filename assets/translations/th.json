@@ -63,10 +63,8 @@
   "notification": {
     "deleteSuccess": "ลบสินค้าสำเร็จ",
     "updateSuccess": "อัพเดต {} สำเร็จ",
-    "createProductSuccessTitle": "สร้าง {} สำเร็จ",
-    "createProductSuccessDesc": "กดเพื่อดูรายละเอียด",
-    "createStoreSuccessTitle": "สร้าง {} สำเร็จ",
-    "createStoreSuccessDesc": "กดเพื่อดูรายละเอียด",
+    "createSuccess": "สร้าง {} สำเร็จ",
+    "createSuccessSeeDetail": "กดเพื่อดูรายละเอียด",
     "createNewPINTitle": "สร้าง PIN ใหม่สำเร็จ"
   },
   "createPINTitle": "สร้าง PIN",
@@ -78,5 +76,10 @@
   "verifyIsInvalid": "ตรวจสอบไม่ถูกต้อง",
   "createStore": "สร้างร้านค้า",
   "dateTimeCreated": "วันและเวลาที่สร้าง",
-  "dateTimeUpdated": "วันและเวลาที่อัพเดต"
+  "dateTimeUpdated": "วันและเวลาที่อัพเดต",
+  "button": {
+    "save": "บันทึก"
+  },
+  "phoneNumber": "หมายเลขโทรศัพท์",
+  "email": "อีเมล"
 }

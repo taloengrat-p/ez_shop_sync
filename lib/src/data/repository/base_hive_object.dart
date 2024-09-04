@@ -8,13 +8,16 @@ abstract class BaseHiveObject {
   DateTime? createDate;
 
   @HiveField(3, defaultValue: null)
-  DateTime? createBy;
+  String? createBy;
 
   @HiveField(4, defaultValue: null)
   DateTime? updateDate;
 
   @HiveField(5, defaultValue: null)
-  DateTime? updateBy;
+  String? updateBy;
+
+  @HiveField(6, defaultValue: null)
+  DateTime? syncDatetime;
 
   BaseHiveObject({
     required this.id,
@@ -22,5 +25,6 @@ abstract class BaseHiveObject {
     this.createBy,
     this.updateDate,
     this.updateBy,
+    this.syncDatetime,
   });
 }

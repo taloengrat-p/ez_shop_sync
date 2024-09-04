@@ -48,7 +48,7 @@ class _MainPageState extends State<MainPage> {
                 fit: StackFit.expand,
                 children: [
                   PageView(
-                    physics: NeverScrollableScrollPhysics(),
+                    // physics: NeverScrollableScrollPhysics(),
                     controller: _pageController,
                     onPageChanged: (value) {
                       _navigationController.value = value;

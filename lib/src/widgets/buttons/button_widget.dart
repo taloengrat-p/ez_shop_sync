@@ -136,7 +136,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       if (widget.leading != null) ...[
         Theme(
             data: ThemeData(
-              iconTheme: IconThemeData(color: widget.disabled ? Colors.grey : getColor().getContrast()),
+              iconTheme: IconThemeData(color: getColor().getContrast()),
             ),
             child: widget.leading!),
         SizedBox(
@@ -154,7 +154,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                   maxLines: 1,
                   style: widget.textStyle ??
                       TextStyle(
-                        color: ColorKeys.primary.getContrast(),
+                        color: getColor().getContrast(),
                       ),
                 ),
               ),
@@ -165,7 +165,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               overflow: TextOverflow.ellipsis,
               style: widget.textStyle ??
                   TextStyle(
-                    color: ColorKeys.primary.getContrast(),
+                    color: getColor().getContrast(),
                   ),
             ),
     ];

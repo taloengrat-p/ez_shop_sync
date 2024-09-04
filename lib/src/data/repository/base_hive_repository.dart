@@ -45,8 +45,8 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   Future<T> update(I id, T updated) async {
-    log('updated: $updated');
-    await box.put(id, updated);
+    await box.put(id, updated..updateDate = DateTime.now());
+
     return updated;
   }
 

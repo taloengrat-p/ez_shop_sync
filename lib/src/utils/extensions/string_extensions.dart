@@ -11,4 +11,14 @@ extension StringExtendsions on String {
     buffer.write(replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+
+  String ignoreSpaceAndUpperCase() {
+    return toLowerCase().replaceAll(" ", "");
+  }
+}
+
+extension StringNullableExtendsions on String? {
+  String defaultDash() {
+    return this ?? '--';
+  }
 }

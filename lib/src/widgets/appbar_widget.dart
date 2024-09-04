@@ -46,15 +46,17 @@ class AppbarWidget {
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: systemUiOverlayStyle ?? SystemUiOverlayStyle.dark,
       centerTitle: centerTitle,
-      title: title != null
-          ? Text(
+      title: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: titleWidget ??
+            Text(
               title!,
               style: TextStyle(
                 color: (color ?? Colors.white).getContrast(),
                 fontSize: 18,
               ),
-            )
-          : titleWidget,
+            ),
+      ),
       actions: actions,
       elevation: 0,
     );

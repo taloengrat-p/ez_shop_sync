@@ -11,13 +11,13 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class IStoreRepository {
-  List<Store> getAll();
-  List<Store> getAllByIds(List<String> ids);
-  Store? getById(String id);
-  Future<Store> create(Store request);
-  Future<Store> update(String id, Store updated);
-  Future<void> delete(String id);
-  deleteAll(List<String> ids);
+  List<Store> getAll({AppMode appMode = AppMode.local});
+  List<Store> getAllByIds(List<String> ids, {AppMode appMode = AppMode.local});
+  Store? getById(String id, {AppMode appMode = AppMode.local});
+  Future<Store> create(Store request, {AppMode appMode = AppMode.local});
+  Future<Store> update(String id, Store updated, {AppMode appMode = AppMode.local});
+  Future<void> delete(String id, {AppMode appMode = AppMode.local});
+  deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
@@ -36,10 +36,10 @@ class StoreRepository implements IStoreRepository {
     if (appMode == AppMode.local) {
       final storeCreated = await storeLocalRepository.create(request);
       ToastNotificationService.show(
-        title: LocaleKeys.notification_createStoreSuccessTitle.tr(
+        title: LocaleKeys.notification_createSuccess.tr(
           args: [storeCreated.name],
         ),
-        desc: LocaleKeys.notification_createStoreSuccessDesc.tr(),
+        desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
         onTap: (value) {
           StoreManagementRouter(GetIt.I<NavigationService>().navigatorKey.currentContext!).navigate();
         },
@@ -74,9 +74,12 @@ class StoreRepository implements IStoreRepository {
   }
 
   @override
-  List<Store> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  List<Store> getAll({AppMode appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return storeLocalRepository.getAll();
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override
@@ -91,6 +94,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<Store> update(String id, Store updated, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
       return storeLocalRepository.update(id, updated);
     } else {
       throw UnimplementedError();

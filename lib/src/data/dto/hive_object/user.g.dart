@@ -19,9 +19,9 @@ class UserAdapter extends TypeAdapter<User> {
     return User(
       id: fields[1] as String,
       createDate: fields[2] as DateTime?,
-      createBy: fields[3] as DateTime?,
+      createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
-      updateBy: fields[5] as DateTime?,
+      updateBy: fields[5] as String?,
       storeId: fields[6] == null ? [] : (fields[6] as List?)?.cast<String>(),
       firstName: fields[7] as String,
       lastName: fields[8] as String,

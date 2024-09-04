@@ -8,9 +8,9 @@ import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class IAuthRepository {
-  login();
-  logout();
-  Future<User> register(CreateRegisterRequest user);
+  login({AppMode appMode = AppMode.local});
+  logout({AppMode appMode = AppMode.local});
+  Future<User> register(CreateRegisterRequest user, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
@@ -25,15 +25,19 @@ class AuthRepository implements IAuthRepository {
   });
 
   @override
-  login() {
-    // TODO: implement login
-    throw UnimplementedError();
+  login({AppMode appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override
-  logout() {
-    // TODO: implement logout
-    throw UnimplementedError();
+  logout({AppMode appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+    } else {
+      throw UnimplementedError();
+    }
   }
 
   @override

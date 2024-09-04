@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extendsions.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 
 class TagWidget extends StatelessWidget {

@@ -1,18 +1,21 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/repository/base_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ICategoryRepository {
-  List<Category> getAll();
-  List<Category> getAllByIds(List<String> ids);
-  Category? getById(String id);
-  Future<Category> create(Category request);
-  Future<Category> update(String id, Category updated);
-  delete(String id);
-  deleteAll(List<String> ids);
+  List<Category> getAll({AppMode appMode = AppMode.local});
+  List<Category> getAllByIds(List<String> ids, {AppMode appMode = AppMode.local});
+  Category? getById(String id, {AppMode appMode = AppMode.local});
+  Future<Category> create(Category request, {AppMode appMode = AppMode.local});
+  Future<Category> update(String id, Category updated, {AppMode appMode = AppMode.local});
+  Future<void> delete(String id, {AppMode appMode = AppMode.local});
+  Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
@@ -27,7 +30,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   });
 
   @override
-  Future<Category> create(Category request) async {
+  Future<Category> create(Category request, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       return await categoryLocalRepository.create(request);
     } else {
@@ -36,7 +39,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  delete(String id) async {
+  Future<void> delete(String id, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       await categoryLocalRepository.delete(id);
     } else {
@@ -45,7 +48,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  deleteAll(List<String> ids) async {
+  Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       await categoryLocalRepository.deleteAll(ids);
     } else {
@@ -54,7 +57,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  List<Category> getAll() {
+  List<Category> getAll({AppMode appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return categoryLocalRepository.getAll();
     } else {
@@ -63,7 +66,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  List<Category> getAllByIds(List<String> ids) {
+  List<Category> getAllByIds(List<String> ids, {AppMode appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return categoryLocalRepository.getAllById(ids);
     } else {
@@ -72,7 +75,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  Category? getById(String id) {
+  Category? getById(String id, {AppMode appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return categoryLocalRepository.getById(id);
     } else {
@@ -81,8 +84,9 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   }
 
   @override
-  Future<Category> update(String id, Category updated) async {
+  Future<Category> update(String id, Category updated, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
       return await categoryLocalRepository.update(id, updated);
     } else {
       throw UnimplementedError();

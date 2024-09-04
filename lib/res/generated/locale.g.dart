@@ -62,12 +62,9 @@ abstract class  LocaleKeys {
   static const noItemsFound = 'noItemsFound';
   static const owner = 'owner';
   static const notification_deleteSuccess = 'notification.deleteSuccess';
-  static const notification_deleteSuccessNoProp = 'notification.deleteSuccessNoProp';
   static const notification_updateSuccess = 'notification.updateSuccess';
-  static const notification_createProductSuccessTitle = 'notification.createProductSuccessTitle';
-  static const notification_createProductSuccessDesc = 'notification.createProductSuccessDesc';
-  static const notification_createStoreSuccessTitle = 'notification.createStoreSuccessTitle';
-  static const notification_createStoreSuccessDesc = 'notification.createStoreSuccessDesc';
+  static const notification_createSuccess = 'notification.createSuccess';
+  static const notification_createSuccessSeeDetail = 'notification.createSuccessSeeDetail';
   static const notification_createNewPINTitle = 'notification.createNewPINTitle';
   static const notification = 'notification';
   static const createPINTitle = 'createPINTitle';
@@ -80,5 +77,9 @@ abstract class  LocaleKeys {
   static const createStore = 'createStore';
   static const dateTimeCreated = 'dateTimeCreated';
   static const dateTimeUpdated = 'dateTimeUpdated';
+  static const button_save = 'button.save';
+  static const button = 'button';
+  static const phoneNumber = 'phoneNumber';
+  static const email = 'email';
 
 }

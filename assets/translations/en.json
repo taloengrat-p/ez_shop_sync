@@ -61,13 +61,10 @@
   "noItemsFound": "No items found",
   "owner": "Owner",
   "notification": {
-    "deleteSuccess": "Delete Product Success",
-    "deleteSuccessNoProp": "Delete {} Success",
+    "deleteSuccess": "Delete Success",
     "updateSuccess": "Update {} Success",
-    "createProductSuccessTitle": "Create {} Success",
-    "createProductSuccessDesc": "Press for see detail",
-    "createStoreSuccessTitle": "Create {} Success",
-    "createStoreSuccessDesc": "Press for see detail",
+    "createSuccess": "Create {} Success",
+    "createSuccessSeeDetail": "Press for see detail",
     "createNewPINTitle": "Create new PIN Success"
   },
   "createPINTitle": "Create PIN",
@@ -79,5 +76,10 @@
   "verifyIsInvalid": "Verify is invalid",
   "createStore": "Create Store",
   "dateTimeCreated": "Date time created",
-  "dateTimeUpdated": "Date time updated"
+  "dateTimeUpdated": "Date time updated",
+  "button": {
+    "save": "Save"
+  },
+  "phoneNumber": "หมายเลขโทรศัพท์",
+  "email": "Email"
 }

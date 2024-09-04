@@ -19,9 +19,9 @@ class StoreAdapter extends TypeAdapter<Store> {
     return Store(
       id: fields[1] as String,
       createDate: fields[2] as DateTime?,
-      createBy: fields[3] as DateTime?,
+      createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
-      updateBy: fields[5] as DateTime?,
+      updateBy: fields[5] as String?,
       ownerId: fields[6] as String,
       name: fields[7] as String,
       address: fields[8] as String?,

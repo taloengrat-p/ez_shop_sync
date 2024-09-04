@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class StoreManagementState extends Equatable {
   const StoreManagementState([List props = const []]) : super();
@@ -41,4 +42,22 @@ class StoreManagementDeleteSuccess extends StoreManagementState {
 
   @override
   List<Object?> get props => [store?.id];
+}
+
+class StoreManagementScreenModeChange extends StoreManagementState {
+  final ScreenMode mode;
+  const StoreManagementScreenModeChange(
+    this.mode,
+  );
+
+  @override
+  String toString() => 'StoreManagementScreenModeChange $mode';
+
+  @override
+  List<Object?> get props => [mode];
+}
+
+class StoreManagementUpdateSuccess extends StoreManagementState {
+  @override
+  String toString() => 'StoreManagementUpdateSuccess';
 }
