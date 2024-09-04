@@ -30,6 +30,10 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
   String? nameEditor;
   String? descEditor;
 
+  bool get hasChange =>
+      ((nameEditor != nameOriginal) || (descEditor != descOriginal)) &&
+      ((nameEditor?.isNotEmpty ?? false) && (descEditor?.isNotEmpty ?? false));
+
   String get ownerName => owner?.fullname ?? '--';
   String get storeDesc => (store?.description?.isEmpty ?? true) ? '--' : store?.description ?? '';
 
@@ -80,9 +84,11 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
 
   doSetName(String? value) {
     nameEditor = value;
+    emit(StoreManagementRefresh(DateTime.now()));
   }
 
   doSetDesc(String? value) {
     descEditor = value;
+    emit(StoreManagementRefresh(DateTime.now()));
   }
 }

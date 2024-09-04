@@ -57,6 +57,19 @@ class StoreManagementScreenModeChange extends StoreManagementState {
   List<Object?> get props => [mode];
 }
 
+class StoreManagementRefresh extends StoreManagementState {
+  final dynamic value;
+  const StoreManagementRefresh(
+    this.value,
+  );
+
+  @override
+  String toString() => 'StoreManagementRefresh $value';
+
+  @override
+  List<Object?> get props => [value];
+}
+
 class StoreManagementUpdateSuccess extends StoreManagementState {
   @override
   String toString() => 'StoreManagementUpdateSuccess';

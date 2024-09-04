@@ -37,8 +37,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   String get profilePhoneNumber => user?.phoneNumber ?? '--';
 
   bool get hasEditChange =>
-      (phoneEditor != phoneOriginal) &&
-      (emailEditor != emailOriginal) &&
+      ((phoneEditor != phoneOriginal) || (emailEditor != emailOriginal)) &&
       ((phoneEditor?.isNotEmpty ?? false) && (emailEditor?.isNotEmpty ?? false));
 
   String get profileEmail => user?.email ?? '--';

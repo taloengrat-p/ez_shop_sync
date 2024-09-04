@@ -111,16 +111,18 @@ class _StoreManagementState extends State<StoreManagementPage> {
                 ],
               ).build(),
               body: _buildPage(context, state),
-              bottomNavigationBar: ButtonWidget(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: DimensionsKeys.pagePaddingHzt,
-                  vertical: DimensionsKeys.l,
-                ),
-                label: LocaleKeys.button_save.tr(),
-                onPressed: () {
-                  _cubit.doSave();
-                },
-              ),
+              bottomNavigationBar: _cubit.screenMode == ScreenMode.edit
+                  ? ButtonWidget(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: DimensionsKeys.pagePaddingHzt,
+                        vertical: DimensionsKeys.l,
+                      ),
+                      label: LocaleKeys.button_save.tr(),
+                      onPressed: _cubit.hasChange ? () {
+                        _cubit.doSave();
+                      } : null,
+                    )
+                  : null,
             );
           },
         ),
