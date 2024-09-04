@@ -50,7 +50,7 @@ class AppbarWidget {
         duration: const Duration(milliseconds: 500),
         child: titleWidget ??
             Text(
-              title!,
+              title ?? '',
               style: TextStyle(
                 color: (color ?? Colors.white).getContrast(),
                 fontSize: 18,
