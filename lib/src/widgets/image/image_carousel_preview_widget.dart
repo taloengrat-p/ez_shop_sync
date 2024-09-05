@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:flutter/material.dart';
 
 class ImageCarouselPreviewWidget extends StatefulWidget {
@@ -14,12 +15,10 @@ class ImageCarouselPreviewWidget extends StatefulWidget {
   });
 
   @override
-  State<ImageCarouselPreviewWidget> createState() =>
-      _ImageCarouselPreviewWidgetState();
+  State<ImageCarouselPreviewWidget> createState() => _ImageCarouselPreviewWidgetState();
 }
 
-class _ImageCarouselPreviewWidgetState
-    extends State<ImageCarouselPreviewWidget> {
+class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget> {
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,16 @@ class _ImageCarouselPreviewWidgetState
             ),
             items: widget.imagesUrl.map(
               (e) {
-                return Image.file(File(e));
+                return ImageWidget(
+                  imageUrl: e,
+                  imageFullName: e,
+                  margin: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(DimensionsKeys.radius),
+                    topRight: Radius.circular(DimensionsKeys.radius),
+                  ),
+                );
               },
             ).toList(),
           ),

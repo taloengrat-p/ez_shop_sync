@@ -84,12 +84,23 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   Future<void> createProduct({required String id, String? productImageUrl}) async {
+    emit(CreateProductLoading());
     String? imageFullName;
+    List<String> imageDetailFileName = [];
     if (productImageUrl.isNotNull) {
       final fileBytes = await FolderFileUtils.getFileBytes(File(productImageUrl!));
       final imageName = const Uuid().v1().substring(0, 10);
       final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
       imageFullName = imageSaveModel.fileName;
+    }
+
+    if (productDetalImages?.isNotEmpty ?? false) {
+      for (var element in productDetalImages!) {
+        final fileBytes = await FolderFileUtils.getFileBytes(File(element));
+        final imageName = const Uuid().v1().substring(0, 10);
+        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+        imageDetailFileName.add(imageSaveModel.fileName);
+      }
     }
 
     if (tempCustomName.isNotEmpty && tempCustomValue.isNotEmpty) {
@@ -106,7 +117,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         brand: brand,
         status: status,
         image: productImageUrl,
-        imageDetail: productDetalImages,
+        imageDetail: imageDetailFileName,
         imageName: imageFullName,
         quantity: quantity,
         ownerId: baseCubit.user!.id,

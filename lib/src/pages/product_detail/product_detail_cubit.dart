@@ -41,7 +41,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     List<String> images = [];
 
     if (product?.image?.isNotNull ?? false) {
-      images.add(product!.image!);
+      images.add(product!.imageName!);
     }
 
     if (product?.imageDetail?.isNotNull ?? false) {
