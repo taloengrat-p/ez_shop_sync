@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
+import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
@@ -15,6 +17,7 @@ import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/icon/drawable_icon_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_carousel_preview_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_detail_title_value.dart';
@@ -73,13 +76,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 context,
                 actions: [
                   ContainerCircleWidget(
+                    onPressed: cubit.product == null
+                        ? null
+                        : () {
+                            CreateProductRouter(context).navigate(argruments: ProductEditArgrument(cubit.product!));
+                          },
                     child: const Icon(
                       CupertinoIcons.pencil,
                     ),
-                    // onPressed: () {},
                   ),
                   const SizedBox(
-                    width: 4,
+                    width: 8,
                   ),
                   ContainerCircleWidget(
                     color: Colors.red,
@@ -123,33 +130,61 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               bottomNavigationBar: Container(
-                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(20)),
-                child: GlassmorphicContainer(
-                  width: double.infinity,
-                  height: 80,
-                  borderRadius: 20,
-                  blur: 20,
-                  alignment: Alignment.bottomCenter,
-                  border: 2,
-                  linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-                    Color(0xFFffffff).withOpacity(0.1),
-                    Color(0xFFFFFFFF).withOpacity(0.05),
-                  ], stops: [
-                    0.1,
-                    1,
-                  ]),
-                  borderGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFffffff).withOpacity(0.5),
-                      Color((0xFFFFFFFF)).withOpacity(0.5),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [],
-                  ),
+                height: 60,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {},
+                              child: Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    DrawableIconWidget(Drawables.settings),
+                                    Text('Settings'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {},
+                              child: Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    DrawableIconWidget(Drawables.addBills),
+                                    Text('Add Bill'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {},
+                        child: Container(
+                          color: Colors.amber,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                CupertinoIcons.bag_badge_plus,
+                              ),
+                              Text('Add Stock'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -219,7 +254,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       children: [
         ProductDetailTitleValue(
           title: LocaleKeys.description.tr(),
-          value: cubit.product?.description,
+          value: cubit.productDescription,
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.category.tr(),

@@ -1,7 +1,7 @@
 import 'dart:developer' as dev;
 import 'dart:io';
 
-import 'package:ez_shop_sync/res/image_constance.dart';
+import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/utils/extensions/list_string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';

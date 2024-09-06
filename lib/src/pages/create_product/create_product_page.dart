@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -7,8 +5,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
@@ -16,15 +14,12 @@ import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
-import 'package:ez_shop_sync/src/services/navigation_service.dart';
-import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
-import 'package:ez_shop_sync/src/widgets/custom/custom_multi_dropdown.dart';
+import 'package:ez_shop_sync/src/widgets/custom/custom_multi_dropdown.dart' as customMultiDropdown;
 import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -36,7 +31,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:ez_shop_sync/src/widgets/custom/custom_multi_dropdown.dart' as customMultiDropdown;
 
 class CreateProductPage extends StatefulWidget {
   const CreateProductPage({super.key});
@@ -59,6 +53,16 @@ class CreateProductPageState extends State<CreateProductPage> {
     cubit = CreateProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
       baseCubit: GetIt.I<BaseCubit>(),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timstamp) {
+        final args = ModalRoute.of(context)?.settings.arguments;
+
+        if (args is ProductEditArgrument) {
+          cubit.setArgruments(args);
+        }
+      },
     );
   }
 
@@ -96,6 +100,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 16,
                       ),
                       TextFormFieldUiWidget(
+                        textValue: cubit.name,
                         label: LocaleKeys.name.tr(),
                         onChanged: cubit.setName,
                       ),
@@ -103,6 +108,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
+                        textValue: cubit.description,
                         label: LocaleKeys.description.tr(),
                         onChanged: cubit.setDescription,
                       ),
@@ -110,6 +116,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
+                        textValue: cubit.price?.toString() ?? '',
                         label: LocaleKeys.price.tr(),
                         onChanged: cubit.setPrice,
                       ),
@@ -117,6 +124,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
+                        textValue: cubit.quantity?.toString() ?? '',
                         label: LocaleKeys.quantity.tr(),
                         keyboardType: TextInputType.number,
                         onChanged: cubit.setQuantity,

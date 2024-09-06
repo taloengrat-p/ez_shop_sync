@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class CreateProductState extends Equatable {
   const CreateProductState() : super();
@@ -59,6 +60,24 @@ class CreateProductSuccess extends CreateProductState {
 class CreateProductFailure extends CreateProductState {
   @override
   String toString() => 'CreateProductFailure';
+}
+
+class ProductEditArgrument extends CreateProductState {
+  final Product product;
+
+  const ProductEditArgrument(this.product);
+
+  @override
+  String toString() => 'ProductEditArgrument $product';
+}
+
+class ProductScreenModeChange extends CreateProductState {
+  final ScreenMode mode;
+
+  const ProductScreenModeChange(this.mode);
+
+  @override
+  String toString() => 'ProductScreenModeChange $mode';
 }
 
 class CreateProductRefresh extends CreateProductState {

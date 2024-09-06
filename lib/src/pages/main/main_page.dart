@@ -76,7 +76,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         TabItem(
-                          CupertinoIcons.cube_box,
+                          CupertinoIcons.bag,
                           LocaleKeys.products.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,

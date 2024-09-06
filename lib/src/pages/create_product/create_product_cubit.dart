@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
@@ -15,6 +16,8 @@ import 'package:uuid/uuid.dart';
 class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
   BaseCubit baseCubit;
+  //
+  ScreenMode _screenMode = ScreenMode.delete;
   String name = '';
   String description = '';
   String? category;
@@ -28,10 +31,11 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   String tempCustomName = '';
   String tempCustomValue = '';
+  List<String> tagsSelected = [];
 
   List<Category> get categories => baseCubit.categories;
   List<Tag> get tags => baseCubit.tags;
-  List<String> tagsSelected = [];
+  ScreenMode get screenMode => _screenMode;
 
   CreateProductCubit({
     required this.productRepository,
@@ -181,5 +185,21 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   void refresh() {
     log('check:: ${baseCubit.categories.map((e) => e.name).toList()}');
     emit(CreateProductRefresh(DateTime.now()));
+  }
+
+  void setScreenMode(ScreenMode mode) {
+    _screenMode = mode;
+
+    emit(ProductScreenModeChange(_screenMode));
+  }
+
+  void setArgruments(ProductEditArgrument args) {
+    final productArgs = args.product;
+    name = productArgs.name;
+    description = productArgs.description ?? '';
+    price = productArgs.price;
+    quantity = productArgs.quantity;
+    category = productArgs.category ?? '';
+    setScreenMode(ScreenMode.edit);
   }
 }

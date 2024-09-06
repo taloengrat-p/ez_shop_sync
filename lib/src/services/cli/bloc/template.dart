@@ -1,11 +1,11 @@
 String pageTemplate = '''
-import 'package:%{package}/res/colors.dart';
 import 'package:%{package}/src/pages/%{nameSnake}/%{nameSnake}_cubit.dart';
 import 'package:%{package}/src/pages/%{nameSnake}/%{nameSnake}_state.dart';   
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:%{package}/src/widgets/appbar_widget.dart';
 import 'package:%{package}/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:%{package}/res/dimensions.dart';
 
 class %{name}Page extends StatefulWidget {
   const %{name}Page({
@@ -49,9 +49,7 @@ class _%{name}State extends State<%{name}Page> {
                 title: "%{name}",
                 actions: [],
               ).build(),
-              body: SingleChildScrollView(
-                child: _buildPage(context, state),
-              ),
+              body: _buildPage(context, state),
             );
           },
         ),
@@ -59,7 +57,7 @@ class _%{name}State extends State<%{name}Page> {
     );
   }
 
-  Widget _buildPage(BuildContext context, TagManagementState state) {
+  Widget _buildPage(BuildContext context, %{name}State state) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -84,23 +82,33 @@ class %{name}Cubit extends Cubit<%{name}State> {
 
 String stateTemplate = '''
 import 'package:equatable/equatable.dart';
+import 'package:%{package}/src/models/screen_mode.dart';
 
 abstract class %{name}State extends Equatable {
   const %{name}State([List props = const []]) : super();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class %{name}Refresh extends %{name}State {
-  final DateTime dateTime;
+  final dynamic value;
 
-  const %{name}Refresh(this.dateTime);
+  const %{name}Refresh(this.value);
   @override
   String toString() => '%{name}Refresh';
 
   @override
-  List<Object?> get props => [dateTime.toIso8601String()];
+  List<Object?> get props => [value];
+}
+
+class %{name}ScreenModeChange extends %{name}State {
+  final ScreenMode mode;
+
+  const ScreenModeChange(this.mode);
+
+  @override
+  String toString() => '%{name}ScreenModeChange';
 }
 
 class %{name}Initial extends %{name}State {

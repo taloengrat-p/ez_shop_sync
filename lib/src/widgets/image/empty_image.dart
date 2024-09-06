@@ -1,4 +1,4 @@
-import 'package:ez_shop_sync/res/image_constance.dart';
+import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:flutter/material.dart';
 
 class EmptyImage extends StatelessWidget {

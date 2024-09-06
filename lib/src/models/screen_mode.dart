@@ -3,5 +3,6 @@ enum ScreenMode {
   delete,
   edit,
   search,
+  create,
   none,
 }

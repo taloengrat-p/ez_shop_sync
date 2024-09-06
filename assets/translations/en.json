@@ -81,5 +81,6 @@
     "save": "Save"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
-  "email": "Email"
+  "email": "Email",
+  "editProduct": "Edit Product"
 }

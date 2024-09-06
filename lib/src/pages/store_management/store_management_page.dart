@@ -8,7 +8,6 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
-import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -83,11 +82,11 @@ class _StoreManagementState extends State<StoreManagementPage> {
                     ContainerCircleWidget(
                       onPressed: _cubit.doEdit,
                       child: const Icon(
-                        Icons.edit,
+                        CupertinoIcons.pencil,
                       ),
                     ),
                     const SizedBox(
-                      width: 5,
+                      width: 8,
                     ),
                     ContainerCircleWidget(
                       color: Colors.red,
@@ -118,9 +117,11 @@ class _StoreManagementState extends State<StoreManagementPage> {
                         vertical: DimensionsKeys.l,
                       ),
                       label: LocaleKeys.button_save.tr(),
-                      onPressed: _cubit.hasChange ? () {
-                        _cubit.doSave();
-                      } : null,
+                      onPressed: _cubit.hasChange
+                          ? () {
+                              _cubit.doSave();
+                            }
+                          : null,
                     )
                   : null,
             );
