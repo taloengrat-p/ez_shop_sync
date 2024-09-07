@@ -20,6 +20,11 @@ class CreateProductLoading extends CreateProductState {
   String toString() => 'CreateProductLoading';
 }
 
+class CreateProductUpdateSuccess extends CreateProductState {
+  @override
+  String toString() => 'CreateProductUpdateSuccess';
+}
+
 class CreateProductAddCustomField extends CreateProductState {
   final String name;
   final String value;

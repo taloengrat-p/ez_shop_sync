@@ -45,24 +45,31 @@ class ProductGridItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(product.name),
-                      Text(
-                        '\฿${product.price?.toString() ?? '--'}',
-                        style: const TextStyle(color: Colors.orange),
-                      ),
-                      if (product.quantity != null)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          LocaleKeys.qty.tr(
-                            args: [
-                              product.quantity?.toString() ?? '',
-                              LocaleKeys.units_piece.tr(),
-                            ],
-                          ),
-                        )
-                    ],
+                          product.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '฿${product.price?.toString() ?? '--'}',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.orange),
+                        ),
+                        if (product.quantity != null)
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            LocaleKeys.qty.tr(
+                              args: [
+                                product.quantity?.toString() ?? '',
+                                LocaleKeys.units_piece.tr(),
+                              ],
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                   PopupMenuButton(
                     color: Colors.white,

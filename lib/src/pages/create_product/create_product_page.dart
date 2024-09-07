@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
@@ -72,7 +73,7 @@ class CreateProductPageState extends State<CreateProductPage> {
       },
       child: BlocListener<CreateProductCubit, CreateProductState>(
         listener: (context, state) {
-          if (state is CreateProductSuccess) {
+          if (state is CreateProductSuccess || state is CreateProductUpdateSuccess) {
             CreateProductRouter(context).pop(BaseArgrument(refresh: true));
           }
         },
@@ -98,7 +99,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 16,
                       ),
                       TextFormFieldUiWidget(
-                        textValue: cubit.name,
+                        textValue: cubit.productEditor?.name,
                         label: LocaleKeys.name.tr(),
                         onChanged: cubit.setName,
                       ),
@@ -106,7 +107,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
-                        textValue: cubit.description,
+                        textValue: cubit.productEditor?.description,
                         label: LocaleKeys.description.tr(),
                         onChanged: cubit.setDescription,
                       ),
@@ -114,7 +115,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
-                        textValue: cubit.price?.toString() ?? '',
+                        textValue: cubit.productEditor?.price?.toString() ?? '',
                         label: LocaleKeys.price.tr(),
                         onChanged: cubit.setPrice,
                       ),
@@ -122,7 +123,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldUiWidget(
-                        textValue: cubit.quantity?.toString() ?? '',
+                        textValue: cubit.productEditor?.quantity?.toString() ?? '',
                         label: LocaleKeys.quantity.tr(),
                         keyboardType: TextInputType.number,
                         onChanged: cubit.setQuantity,
@@ -139,7 +140,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                               (e) => DropdownItem<Category>(
                                 label: e.name,
                                 value: e,
-                                selected: cubit.category == e.id,
+                                selected: cubit.productEditor?.category == e.id,
                               ),
                             )
                             .toList(),
@@ -182,7 +183,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         itemSelectd: cubit.tagsModelSelected,
                         items: cubit.tags.map(
                           (e) {
-                            final isSelect = cubit.tagsSelected.contains(e.id);
+                            final isSelect = cubit.productEditor?.tag?.contains(e.id) ?? false;
 
                             return DropdownItem<Tag>(
                               label: e.name,
@@ -232,9 +233,13 @@ class CreateProductPageState extends State<CreateProductPage> {
             ),
             bottomNavigationBar: ButtonWidget(
               margin: const EdgeInsets.all(16),
-              label: LocaleKeys.create.tr(),
+              label: cubit.screenMode == ScreenMode.create ? LocaleKeys.create.tr() : LocaleKeys.button_save.tr(),
               onPressed: () {
-                cubit.submit();
+                if (cubit.screenMode == ScreenMode.create) {
+                  cubit.submit();
+                } else {
+                  cubit.saveEdit();
+                }
               },
             ),
           );
@@ -245,38 +250,39 @@ class CreateProductPageState extends State<CreateProductPage> {
 
   List<Widget> buildCustomField() {
     return [
-      ...cubit.customField
-          .map(
-            (k, v) => MapEntry(
-              k,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextFormFieldUiWidget(
-                      key: ValueKey(k),
-                      label: k,
-                      textInitial: v,
-                      onChanged: (value) {
-                        cubit.changedCustomField(k, v);
-                      },
-                    ),
+      ...cubit.productEditor?.attributes
+              ?.map(
+                (k, v) => MapEntry(
+                  k,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: TextFormFieldUiWidget(
+                          key: ValueKey(k),
+                          label: k,
+                          textInitial: v,
+                          onChanged: (value) {
+                            cubit.changedCustomField(k, v);
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      ContainerCircleWidget(
+                        color: Colors.red,
+                        child: const Icon(CupertinoIcons.delete),
+                        onPressed: () {
+                          cubit.removeCustomField(k);
+                        },
+                      )
+                    ],
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ContainerCircleWidget(
-                    color: Colors.red,
-                    child: const Icon(CupertinoIcons.delete),
-                    onPressed: () {
-                      cubit.removeCustomField(k);
-                    },
-                  )
-                ],
-              ),
-            ),
-          )
-          .values,
+                ),
+              )
+              .values ??
+          [],
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

@@ -67,4 +67,13 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   void loadCategory() {}
 
   void loadTags() {}
+
+  void refresh() {
+    if (product != null) {
+      product = productRepository.getById(product!.id);
+      emit(ProductDetailInitial());
+    } else {
+      throw ('Product data not found.');
+    }
+  }
 }

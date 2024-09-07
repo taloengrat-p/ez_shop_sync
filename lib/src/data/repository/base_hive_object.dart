@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 abstract class BaseHiveObject {
   @HiveField(1)
-  final String id;
+  String id;
 
   @HiveField(2, defaultValue: null)
   DateTime? createDate;
