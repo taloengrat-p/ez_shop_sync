@@ -23,8 +23,8 @@ import 'package:get_it/get_it.dart';
 
 class CreateCategoryPage extends StatefulWidget {
   const CreateCategoryPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CreateCategoryState createState() => _CreateCategoryState();

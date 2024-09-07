@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class ContainerGlassMorphisymWidget extends StatelessWidget {
   const ContainerGlassMorphisymWidget(
-      {Key? key,
+      {super.key,
       required this.child,
       required this.blur,
       required this.opacity,
       required this.color,
-      this.borderRadius})
-      : super(key: key);
+      this.borderRadius});
+
   final Widget child;
   final double blur;
   final double opacity;
@@ -22,8 +22,7 @@ class ContainerGlassMorphisymWidget extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
         child: Container(
-          decoration: BoxDecoration(
-              color: color.withOpacity(opacity), borderRadius: borderRadius),
+          decoration: BoxDecoration(color: color.withOpacity(opacity), borderRadius: borderRadius),
           child: child,
         ),
       ),

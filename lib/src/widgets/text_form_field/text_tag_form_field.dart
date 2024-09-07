@@ -1,6 +1,4 @@
-import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:textfield_tags/textfield_tags.dart';
 
 class TextTagFormField<T> extends StatefulWidget {
   // final TextfieldTagsController<T> textfieldTagsController;

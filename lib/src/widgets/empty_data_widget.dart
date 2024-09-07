@@ -8,11 +8,11 @@ class EmptyDataWidget extends StatelessWidget {
   final String? message;
 
   const EmptyDataWidget({
-    Key? key,
+    super.key,
     this.height,
     this.width,
     this.message,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

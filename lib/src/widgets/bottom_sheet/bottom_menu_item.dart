@@ -7,12 +7,12 @@ class BottomMenuItem extends StatelessWidget {
   final Widget? trailing;
 
   const BottomMenuItem({
-    Key? key,
+    super.key,
     required this.leading,
     required this.label,
     this.value,
     this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

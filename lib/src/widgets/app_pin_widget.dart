@@ -13,7 +13,7 @@ class AppPinWidget extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   const AppPinWidget({
-    Key? key,
+    super.key,
     required this.title,
     this.desc,
     this.obscureText = true,
@@ -23,7 +23,7 @@ class AppPinWidget extends StatefulWidget {
     this.controller,
     this.errorText,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _AppPinWidgetState createState() => _AppPinWidgetState();

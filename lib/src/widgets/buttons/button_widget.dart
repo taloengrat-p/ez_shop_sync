@@ -37,7 +37,7 @@ class ButtonWidget extends StatefulWidget {
   final bool isLabelUpperCase;
 
   const ButtonWidget({
-    Key? key,
+    super.key,
     this.isLabelUpperCase = true,
     this.type,
     this.innerRadius,
@@ -60,7 +60,7 @@ class ButtonWidget extends StatefulWidget {
     this.borderColor = Colors.transparent,
     this.disabled = false,
     this.axis = Axis.horizontal,
-  }) : super(key: key);
+  });
 
   @override
   State<ButtonWidget> createState() => _ButtonWidgetState();
@@ -78,12 +78,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return const SizedBox.shrink();
   }
 
-  MaterialStateProperty<Color?>? getOverlayColor() {
+  WidgetStateProperty<Color?>? getOverlayColor() {
     if (widget.ripple == true) {
-      return MaterialStatePropertyAll(
-          isPrimaryButton() ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2));
+      return WidgetStatePropertyAll(isPrimaryButton() ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.2));
     }
-    return MaterialStateProperty.all(Colors.transparent);
+    return WidgetStateProperty.all(Colors.transparent);
   }
 
   bool isPrimaryButton() {
@@ -97,10 +96,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       width: widget.width,
       child: ElevatedButton(
         style: ButtonStyle(
-          elevation: MaterialStatePropertyAll(widget.elevation),
+          elevation: WidgetStatePropertyAll(widget.elevation),
           overlayColor: getOverlayColor(),
           backgroundColor: getBackgroundColor(),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.radius ?? 8),
               side: BorderSide(color: widget.borderColor), // Set the border stroke color here
@@ -175,7 +174,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return widget.disabled
         ? null
         : widget.onPressed != null
-            ? MaterialStatePropertyAll(
+            ? WidgetStatePropertyAll(
                 getColor(),
               )
             : null;
@@ -190,7 +189,7 @@ class WeirdBorder extends ShapeBorder {
   final double radius;
   final double pathWidth;
 
-  WeirdBorder({required this.radius, this.pathWidth = 1});
+  const WeirdBorder({required this.radius, this.pathWidth = 1});
 
   @override
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;

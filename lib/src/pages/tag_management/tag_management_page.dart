@@ -23,8 +23,8 @@ import 'package:get_it/get_it.dart';
 
 class TagManagementPage extends StatefulWidget {
   const TagManagementPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _TagManagementState createState() => _TagManagementState();

@@ -18,8 +18,8 @@ import 'package:get_it/get_it.dart';
 
 class ThemeSettingPage extends StatefulWidget {
   const ThemeSettingPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _ThemeSettingState createState() => _ThemeSettingState();
@@ -80,11 +80,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                     child: Text(
                       'Reset',
                       style: TextStyle(
-                        color: GetIt.I<BaseCubit>()
-                            .appTheme
-                            ?.primaryColor
-                            .toColor()
-                            .getContrast(),
+                        color: GetIt.I<BaseCubit>().appTheme?.primaryColor.toColor().getContrast(),
                       ),
                     ),
                   )
@@ -146,10 +142,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                           ),
                           Text(
                             'data',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 7,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -202,10 +195,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                       label: 'Button',
                       height: 15,
                       backgroundColor: _cubit.accent,
-                      textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 7,
-                          fontWeight: FontWeight.bold),
+                      textStyle: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
                       margin: EdgeInsets.all(
                         3,
                       ),

@@ -5,10 +5,10 @@ class RowBetweenWidget extends StatelessWidget {
   final Widget? value;
 
   const RowBetweenWidget({
-    Key? key,
+    super.key,
     required this.title,
     this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

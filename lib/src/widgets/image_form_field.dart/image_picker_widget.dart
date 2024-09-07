@@ -13,14 +13,14 @@ class ImagePickerWidget extends StatefulWidget {
   final File? imageInit;
   final bool disablePreview;
   const ImagePickerWidget({
-    Key? key,
+    super.key,
     this.height,
     this.width,
     this.margin,
     this.onImagePicked,
     this.imageInit,
     this.disablePreview = false,
-  }) : super(key: key);
+  });
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -31,7 +31,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     if (widget.imageInit.isNotNull) {
       setState(() {

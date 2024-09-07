@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_cubit.dart';
@@ -16,8 +14,8 @@ import 'package:get_it/get_it.dart';
 
 class PinSetupPage extends StatefulWidget {
   const PinSetupPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _PinSetupState createState() => _PinSetupState();

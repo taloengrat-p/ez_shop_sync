@@ -13,11 +13,11 @@ class ImageFormField extends StatefulWidget {
   final dynamic Function(List<File>? images)? onProductDetailImageSelect;
 
   const ImageFormField({
-    Key? key,
+    super.key,
     required this.imageDetailLimit,
     required this.onProductImageSelect,
     required this.onProductDetailImageSelect,
-  }) : super(key: key);
+  });
 
   @override
   _ImageFormFieldState createState() => _ImageFormFieldState();
@@ -80,10 +80,8 @@ class _ImageFormFieldState extends State<ImageFormField> {
                       setState(() {
                         productDetailImages.add(file!);
                       });
-                      _carouselController
-                          .animateToPage(productDetailImages.length);
-                      widget.onProductDetailImageSelect
-                          ?.call(productDetailImages);
+                      _carouselController.animateToPage(productDetailImages.length);
+                      widget.onProductDetailImageSelect?.call(productDetailImages);
                     }
                   },
                 ),
@@ -113,8 +111,7 @@ class _ImageFormFieldState extends State<ImageFormField> {
                       setState(() {
                         productDetailImages[index] = file!;
                       });
-                      widget.onProductDetailImageSelect
-                          ?.call(productDetailImages);
+                      widget.onProductDetailImageSelect?.call(productDetailImages);
                     }
                   },
                 ),

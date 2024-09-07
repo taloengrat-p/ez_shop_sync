@@ -5,10 +5,10 @@ class OpacityWidget extends StatelessWidget {
   final Widget child;
 
   const OpacityWidget({
-    Key? key,
+    super.key,
     this.disabled = false,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,6 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
-import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';

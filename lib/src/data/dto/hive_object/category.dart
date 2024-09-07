@@ -1,7 +1,5 @@
-import 'package:flutter/src/widgets/icon_data.dart';
-import 'package:hive/hive.dart';
-
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:hive/hive.dart';
 
 part 'category.g.dart';
 

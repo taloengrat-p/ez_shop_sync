@@ -18,7 +18,6 @@ import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
-import 'package:ez_shop_sync/src/widgets/custom/custom_multi_dropdown.dart' as customMultiDropdown;
 import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';

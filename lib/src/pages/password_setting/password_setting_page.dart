@@ -1,6 +1,5 @@
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_cubit.dart';
-import 'package:ez_shop_sync/src/pages/password_setting/password_setting_state.dart';   
+import 'package:ez_shop_sync/src/pages/password_setting/password_setting_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -8,8 +7,8 @@ import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 
 class PasswordSettingPage extends StatefulWidget {
   const PasswordSettingPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _PasswordSettingState createState() => _PasswordSettingState();
@@ -26,7 +25,6 @@ class _PasswordSettingState extends State<PasswordSettingPage> {
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
     });
- 
   }
 
   @override
@@ -43,7 +41,8 @@ class _PasswordSettingState extends State<PasswordSettingPage> {
         child: BlocBuilder<PasswordSettingCubit, PasswordSettingState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "PasswordSetting",
                 actions: [],

@@ -23,7 +23,7 @@ import 'flavors.dart';
 RouteObserver<PageRoute> routeAware = RouteObserver<PageRoute>();
 
 class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
+  const App({super.key});
 
   @override
   State<App> createState() => _AppState();
@@ -102,14 +102,14 @@ class _AppState extends State<App> {
                             color: Colors.white,
                           )
                         : baseCubit.isIntroduceFlowDone!
-                            ? MainPage()
-                            : IntroduceFlowPage(),
+                            ? const MainPage()
+                            : const IntroduceFlowPage(),
                     if (state is BaseLoading)
                       Container(
                         width: double.infinity,
                         height: double.infinity,
                         color: Colors.black.withOpacity(0.6),
-                        child: Center(
+                        child: const Center(
                           child: CupertinoActivityIndicator(
                             color: Colors.white,
                           ),

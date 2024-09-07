@@ -1,6 +1,5 @@
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
-import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';   
+import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -8,8 +7,8 @@ import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _UserManagementState createState() => _UserManagementState();
@@ -26,7 +25,6 @@ class _UserManagementState extends State<UserManagementPage> {
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
     });
- 
   }
 
   @override
@@ -43,7 +41,8 @@ class _UserManagementState extends State<UserManagementPage> {
         child: BlocBuilder<UserManagementCubit, UserManagementState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "UserManagement",
                 actions: [],

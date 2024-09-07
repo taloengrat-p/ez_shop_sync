@@ -37,7 +37,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class MorePage extends StatefulWidget {
-  const MorePage({Key? key}) : super(key: key);
+  const MorePage({super.key});
 
   @override
   _MorePageState createState() => _MorePageState();

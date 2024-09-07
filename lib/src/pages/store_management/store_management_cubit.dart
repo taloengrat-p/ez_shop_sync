@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';

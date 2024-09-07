@@ -18,14 +18,14 @@ class BaseScaffolds extends StatefulWidget {
   final Colors? textSystemUiOverlayStyleColor;
   final Function(RouteAwareType type)? onRouteAware;
   const BaseScaffolds({
-    Key? key,
+    super.key,
     this.bottomNavigationBar,
     this.body,
     this.appBar,
     this.floatingActionButton,
     this.textSystemUiOverlayStyleColor,
     this.onRouteAware,
-  }) : super(key: key);
+  });
 
   @override
   _BaseScaffoldsState createState() => _BaseScaffoldsState();
@@ -34,7 +34,7 @@ class BaseScaffolds extends StatefulWidget {
 class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
   }
 

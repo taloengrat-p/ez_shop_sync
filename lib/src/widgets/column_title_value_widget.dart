@@ -5,11 +5,11 @@ class ColumnTitleValueWidget extends StatelessWidget {
   final Widget? value;
   final TextStyle? textStyle;
   const ColumnTitleValueWidget({
-    Key? key,
+    super.key,
     required this.title,
     this.value,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

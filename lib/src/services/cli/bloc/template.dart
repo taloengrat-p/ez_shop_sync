@@ -9,8 +9,8 @@ import 'package:%{package}/res/dimensions.dart';
 
 class %{name}Page extends StatefulWidget {
   const %{name}Page({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  }) 
 
   @override
   _%{name}State createState() => _%{name}State();

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -27,8 +25,8 @@ import 'package:get_it/get_it.dart';
 
 class CategoryManagementPage extends StatefulWidget {
   const CategoryManagementPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CategoryManagementState createState() => _CategoryManagementState();

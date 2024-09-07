@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class RowGapWidget extends StatelessWidget {
-  const RowGapWidget({Key? key}) : super(key: key);
+  const RowGapWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

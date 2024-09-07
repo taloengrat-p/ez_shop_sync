@@ -24,8 +24,8 @@ import 'package:get_it/get_it.dart';
 
 class CreateTagPage extends StatefulWidget {
   const CreateTagPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CreateTagState createState() => _CreateTagState();

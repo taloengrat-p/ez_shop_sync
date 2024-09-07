@@ -1,6 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
@@ -12,10 +10,10 @@ class ProductListItemWidget extends StatelessWidget {
   final Product product;
   final Function()? onDeleteProduct;
   const ProductListItemWidget({
-    Key? key,
+    super.key,
     required this.product,
     this.onDeleteProduct,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

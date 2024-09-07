@@ -30,9 +30,9 @@ class AppBottomSheet extends StatelessWidget {
   final AppBottomSheetProps props;
 
   const AppBottomSheet({
-    Key? key,
+    super.key,
     required this.props,
-  }) : super(key: key);
+  });
 
   double get marginBodyTop => 44;
 
@@ -46,13 +46,10 @@ class AppBottomSheet extends StatelessWidget {
       child: GestureDetector(
         onTap: () {},
         child: DraggableScrollableSheet(
-            initialChildSize: props.initialChildSize ??
-                (size.height - props.sizeReduce) /
-                    size.height, // ขนาดแสดงเริ่มต้น 50%
-            minChildSize: props.minChildSize ??
-                0.25, // ปรับขนาดน้อยสุด 25% น้อยกว่านี้จะเป็นการปิด
-            maxChildSize: (size.height - props.sizeReduce) /
-                size.height, // ขยายสูงสุดแค่ 90%
+            initialChildSize:
+                props.initialChildSize ?? (size.height - props.sizeReduce) / size.height, // ขนาดแสดงเริ่มต้น 50%
+            minChildSize: props.minChildSize ?? 0.25, // ปรับขนาดน้อยสุด 25% น้อยกว่านี้จะเป็นการปิด
+            maxChildSize: (size.height - props.sizeReduce) / size.height, // ขยายสูงสุดแค่ 90%
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 height: props.maxChildSize ?? 0.9,
@@ -88,12 +85,9 @@ class AppBottomSheet extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    height:
-                                        5, // Set the height of the drag handle here
-                                    width:
-                                        63, // Set the width of the drag handle here
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 14), // Adjust as needed
+                                    height: 5, // Set the height of the drag handle here
+                                    width: 63, // Set the width of the drag handle here
+                                    margin: const EdgeInsets.symmetric(vertical: 14), // Adjust as needed
                                     decoration: BoxDecoration(
                                       color: Colors.grey,
                                       borderRadius: BorderRadius.circular(3),
@@ -139,8 +133,7 @@ class AppBottomSheet extends StatelessWidget {
                               child: Container(
                                 height: double.infinity,
                                 margin: const EdgeInsets.only(top: 16),
-                                padding: EdgeInsets.only(
-                                    bottom: 0, top: marginBodyTop),
+                                padding: EdgeInsets.only(bottom: 0, top: marginBodyTop),
                                 child: props.body,
                               ),
                             ),
@@ -148,16 +141,13 @@ class AppBottomSheet extends StatelessWidget {
                             Container(
                               height: double.infinity,
                               margin: const EdgeInsets.only(top: 16),
-                              padding: EdgeInsets.only(
-                                  bottom: 0, top: marginBodyTop),
+                              padding: EdgeInsets.only(bottom: 0, top: marginBodyTop),
                               child: props.body,
                             ),
                           if (props.bottom != null)
                             Align(
                               alignment: Alignment.bottomCenter,
-                              child: Container(
-                                  color: Colors.white,
-                                  child: SafeArea(child: props.bottom!)),
+                              child: Container(color: Colors.white, child: SafeArea(child: props.bottom!)),
                             ),
                         ],
                       ),

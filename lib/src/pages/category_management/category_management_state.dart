@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 
 abstract class CategoryManagementState extends Equatable {
   const CategoryManagementState([List props = const []]) : super();
