@@ -51,7 +51,6 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   List<T> getAllById(List<I> ids) {
-    log('box.values $T : ${box.values.map((e) => e.id)}');
     return box.values.where((e) => ids.contains(e.id)).toList();
   }
 }

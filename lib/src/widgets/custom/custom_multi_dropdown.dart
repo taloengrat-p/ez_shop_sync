@@ -306,11 +306,11 @@ class MultiSelectController<T> extends ChangeNotifier {
   void selectAll() {
     _items = _items
         .map(
-          (element) => !element.selected ? element.copyWith(selected: true) : element,
+          (element) => element.copyWith(selected: true),
         )
         .toList();
     notifyListeners();
-    _onSelectionChanged?.call(_selectedValues);
+    // _onSelectionChanged?.call(_selectedValues);
   }
 
   /// select the item at the specified index.

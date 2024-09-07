@@ -5,7 +5,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
-import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
@@ -45,8 +44,8 @@ class CreateProductPageState extends State<CreateProductPage> {
   final _textCustomFieldValueInput = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  customMultiDropdown.MultiSelectController<Tag>? _tagController;
-  customMultiDropdown.MultiSelectController<Category>? _categoryController;
+  final _tagController = MultiSelectController<Tag>();
+  final _categoryController = MultiSelectController<Category>();
   @override
   void initState() {
     super.initState();
@@ -133,7 +132,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldDropdownSelectWidget<Category>(
-                        initialized: (controller) => _categoryController = controller,
+                        controller: _categoryController,
                         singleSelect: true,
                         label: LocaleKeys.category.tr(),
                         items: cubit.categories
@@ -141,6 +140,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                               (e) => DropdownItem<Category>(
                                 label: e.name,
                                 value: e,
+                                selected: cubit.category == e.id,
                               ),
                             )
                             .toList(),
@@ -167,7 +167,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                             final result = await CreateCategoryRouter(context).navigate();
 
                             if (result is CreateCategorySuccess) {
-                              _categoryController?.closeDropdown();
+                              _categoryController.closeDropdown();
                               cubit.refresh();
                             }
                           },
@@ -177,17 +177,21 @@ class CreateProductPageState extends State<CreateProductPage> {
                         height: 8,
                       ),
                       TextFormFieldDropdownSelectWidget<Tag>(
-                        initialized: (controller) => _tagController = controller,
+                        controller: _tagController,
                         singleSelect: false,
-                        itemSeparator: Divider(),
-                        items: cubit.tags
-                            .map(
-                              (e) => DropdownItem<Tag>(
-                                label: e.name,
-                                value: e,
-                              ),
-                            )
-                            .toList(),
+                        itemSeparator: const Divider(),
+                        itemSelectd: cubit.tagsModelSelected,
+                        items: cubit.tags.map(
+                          (e) {
+                            final isSelect = cubit.tagsSelected.contains(e.id);
+
+                            return DropdownItem<Tag>(
+                              label: e.name,
+                              value: e,
+                              selected: isSelect,
+                            );
+                          },
+                        ).toList(),
                         itemBuilder: (item, index, onTap) {
                           return DropdownSelectItemWidget(
                             selected: item.selected,
@@ -197,7 +201,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         },
                         selectedItemBuilder: (item) {
                           return Container(
-                            margin: EdgeInsets.only(top: 3),
+                            margin: const EdgeInsets.only(top: 3),
                             child: TagWidget(model: item.value),
                           );
                         },
@@ -209,7 +213,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                             final result = await CreateTagRouter(context).navigate();
 
                             if (result is CreateTagSuccess) {
-                              _tagController?.closeDropdown();
+                              _tagController.closeDropdown();
                               cubit.refresh();
                             }
                           },

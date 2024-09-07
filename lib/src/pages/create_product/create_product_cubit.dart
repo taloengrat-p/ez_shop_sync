@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
@@ -33,6 +32,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   String tempCustomValue = '';
   List<String> tagsSelected = [];
 
+  List<Tag> get tagsModelSelected => tagsSelected
+      .map(
+        (e) => tags.where((tag) => tag.id == e).first,
+      )
+      .toList();
+
   List<Category> get categories => baseCubit.categories;
   List<Tag> get tags => baseCubit.tags;
   ScreenMode get screenMode => _screenMode;
@@ -57,9 +62,11 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   setCategory(List<Category>? list) {
-    category = list?.first.id;
-
-    log('setCategory $category');
+    if (list?.isEmpty ?? true) {
+      category = null;
+    } else {
+      category = list?.first.id;
+    }
   }
 
   setBrand(String? value) {
@@ -76,7 +83,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   setProductImageSelect(File? value) {
     productImage = value?.path;
-    log('setProductImageSelect $productImage');
   }
 
   void submit() async {
@@ -131,7 +137,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       ),
     );
 
-    log('create product success $result');
     Future.delayed(Duration.zero, () {
       emit(CreateProductSuccess(result));
     });
@@ -147,7 +152,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   void addCustomField(String tempCustomName, String tempCustomValue) {
     customField[tempCustomName] = tempCustomValue;
-    log('[add] $customField');
     clearTempCustomField();
     emit(CreateProductAddCustomField(tempCustomName, tempCustomValue));
   }
@@ -183,7 +187,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   void refresh() {
-    log('check:: ${baseCubit.categories.map((e) => e.name).toList()}');
     emit(CreateProductRefresh(DateTime.now()));
   }
 
@@ -200,6 +203,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     price = productArgs.price;
     quantity = productArgs.quantity;
     category = productArgs.category ?? '';
+    tagsSelected = productArgs.tag ?? [];
+    customField = productArgs.attributes ?? {};
+    emit(CreateProductUpdateCategorySelect(category ?? ''));
+    emit(CreateProductUpdateTagsSelect(tagsSelected));
     setScreenMode(ScreenMode.edit);
   }
 }

@@ -136,15 +136,16 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
 
   @override
   void didUpdateWidget(covariant TextFormFieldUiWidget oldWidget) {
-    if (widget.textValue != null) {
-      _controller.text = widget.textValue!;
-    }
     super.didUpdateWidget(oldWidget);
+    Future.delayed(Duration.zero, () async {
+      if (widget.textValue != null) {
+        _controller.text = widget.textValue!;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(8);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Column(

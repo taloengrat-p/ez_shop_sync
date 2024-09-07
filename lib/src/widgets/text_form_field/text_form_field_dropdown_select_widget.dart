@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/widgets/custom/custom_multi_dropdown.dart' as customMultiDropdown;
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
 class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget {
   final String label;
+  final MultiSelectController<T> controller;
   final Function(T? value)? onSelected;
   final List<DropdownItem<T>> items;
   final Widget Function(DropdownItem<T>, int, void Function())? itemBuilder;
@@ -18,7 +18,8 @@ class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget
   final String? hintText;
   final bool singleSelect;
   final Widget? footerMenu;
-  final Function(customMultiDropdown.MultiSelectController<T> controller)? initialized;
+  final List<T>? itemSelectd;
+
   const TextFormFieldDropdownSelectWidget({
     super.key,
     required this.label,
@@ -32,7 +33,8 @@ class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget
     this.hintText,
     required this.singleSelect,
     this.footerMenu,
-    this.initialized,
+    this.itemSelectd,
+    required this.controller,
   });
 
   @override
@@ -40,30 +42,30 @@ class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget
 }
 
 class _TextFormFieldDropdownSelectWidgetState<T extends Object> extends State<TextFormFieldDropdownSelectWidget<T>> {
-  final _textController = customMultiDropdown.MultiSelectController<T>();
-
   @override
   void initState() {
     super.initState();
-    widget.initialized?.call(_textController);
+    // widget.initialized?.call(_multiSelectController);
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {});
   }
 
   @override
   void didUpdateWidget(covariant TextFormFieldDropdownSelectWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    Future.delayed(Duration.zero, () async {
-      _textController.setItems(widget.items);
-    });
+    Future.delayed(
+      Duration.zero,
+      () async {
+        widget.controller.setItems(widget.items);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final item = [];
-    item.addAll(widget.items);
     return TextFormFieldUiWidget(
       label: widget.label,
-      child: customMultiDropdown.CustomMultiDropdown<T>(
-        controller: _textController,
+      child: MultiDropdown<T>(
+        controller: widget.controller,
         closeOnBackButton: true,
         searchDecoration: SearchFieldDecoration(
           hintText: LocaleKeys.search.tr(),

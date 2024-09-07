@@ -174,7 +174,6 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseLoading());
     final allStore = storeRepository.getAllByIds(ids);
 
-    log('get all Stores : $allStore');
     _stores = allStore;
 
     if (stores.isNotEmpty) {
