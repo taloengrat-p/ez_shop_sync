@@ -80,6 +80,24 @@ class ProductScreenModeChange extends CreateProductState {
   String toString() => 'ProductScreenModeChange $mode';
 }
 
+class CreateProductUpdateCategorySelect extends CreateProductState {
+  final String name;
+
+  const CreateProductUpdateCategorySelect(this.name);
+
+  @override
+  String toString() => 'ProductScreenModeChange $name';
+}
+
+class CreateProductUpdateTagsSelect extends CreateProductState {
+  final List<String> names;
+
+  const CreateProductUpdateTagsSelect(this.names);
+
+  @override
+  String toString() => 'CreateProductUpdateTagsSelect $names';
+}
+
 class CreateProductRefresh extends CreateProductState {
   final dynamic value;
 

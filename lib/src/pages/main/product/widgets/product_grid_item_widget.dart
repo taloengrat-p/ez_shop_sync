@@ -66,8 +66,7 @@ class ProductGridItemWidget extends StatelessWidget {
                   ),
                   PopupMenuButton(
                     color: Colors.white,
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                       PopupMenuItem(
                         child: OpacityWidget(
                           disabled: true,
@@ -83,7 +82,7 @@ class ProductGridItemWidget extends StatelessWidget {
                           disabled: true,
                           child: RowBetweenWidget(
                             title: Text(LocaleKeys.edit.tr()),
-                            value: Icon(Icons.edit),
+                            value: const Icon(CupertinoIcons.pencil),
                           ),
                         ),
                         onTap: () {},

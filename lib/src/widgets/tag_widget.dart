@@ -17,7 +17,6 @@ class TagWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color? color = model.color?.toColor();
 
-    log('asdf ${model.color}');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(

@@ -63,7 +63,6 @@ class ProductPageState extends State<ProductPage> {
         return cubit;
       },
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
-        log('state :L $state');
         return BaseScaffolds(
           appBar: AppbarWidget(
             context,

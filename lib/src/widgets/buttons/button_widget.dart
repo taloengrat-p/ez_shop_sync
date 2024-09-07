@@ -148,7 +148,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  widget.isLabelUpperCase ? widget.label.toUpperCase() : widget.label,
+                  widget.isLabelUpperCase ? widget.label : widget.label,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -160,7 +160,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               ),
             )
           : Text(
-              widget.isLabelUpperCase ? widget.label.toUpperCase() : widget.label,
+              widget.isLabelUpperCase ? widget.label : widget.label,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: widget.textStyle ??
