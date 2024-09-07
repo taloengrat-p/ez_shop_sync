@@ -77,8 +77,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ContainerCircleWidget(
                     onPressed: cubit.product == null
                         ? null
-                        : () {
-                            CreateProductRouter(context).navigate(argruments: ProductEditArgrument(cubit.product!));
+                        : () async {
+                            final result = await CreateProductRouter(context)
+                                .navigate(argruments: ProductEditArgrument(cubit.product!));
+
+                            if (result is BaseArgrument && result.refresh) {
+                              cubit.refresh();
+                            }
                           },
                     child: const Icon(
                       CupertinoIcons.pencil,
