@@ -80,7 +80,7 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
       bottom: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        drawerScrimColor: Colors.transparent,
+        drawerScrimColor: Colors.white,
         appBar: widget.appBar,
         body: widget.body,
         bottomNavigationBar: widget.bottomNavigationBar,

@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
-import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/opacity_widget.dart';
@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 
 class ProductGridItemWidget extends StatelessWidget {
   final Product product;
-  final Function()? onDelete;
+  final IProductPage? iProductItem;
 
   const ProductGridItemWidget({
     super.key,
     required this.product,
-    this.onDelete,
+    this.iProductItem,
   });
 
   @override
@@ -75,24 +75,36 @@ class ProductGridItemWidget extends StatelessWidget {
                     color: Colors.white,
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                       PopupMenuItem(
+                        onTap: () {
+                          iProductItem?.onAddCart(product.id);
+                        },
                         child: OpacityWidget(
-                          disabled: true,
                           child: RowBetweenWidget(
-                            title: Text(LocaleKeys.addStock.tr()),
-                            value: Icon(CupertinoIcons.bag_badge_plus),
+                            title: Text(LocaleKeys.addCart.tr()),
+                            value: const Icon(CupertinoIcons.cart_badge_plus),
                           ),
                         ),
-                        onTap: () {},
                       ),
                       PopupMenuItem(
                         child: OpacityWidget(
                           disabled: true,
                           child: RowBetweenWidget(
+                            title: Text(LocaleKeys.addStock.tr()),
+                            value: const Icon(CupertinoIcons.bag_badge_plus),
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                      PopupMenuItem(
+                        onTap: () {
+                          iProductItem?.onEdit(product.id);
+                        },
+                        child: OpacityWidget(
+                          child: RowBetweenWidget(
                             title: Text(LocaleKeys.edit.tr()),
                             value: const Icon(CupertinoIcons.pencil),
                           ),
                         ),
-                        onTap: () {},
                       ),
                       PopupMenuItem<String>(
                         child: RowBetweenWidget(
@@ -105,19 +117,7 @@ class ProductGridItemWidget extends StatelessWidget {
                           ),
                         ),
                         onTap: () {
-                          ConfirmDialogUiWidget(
-                            context,
-                            title: LocaleKeys.confirmDeleteTitle.tr(),
-                            desc: LocaleKeys.confirmDeleteDesc.tr(),
-                            confirmLabel: LocaleKeys.delete.tr(),
-                            confirmColor: Colors.red,
-                          ).show().then(
-                            (val) {
-                              if (val == ConfirmDialogUiResult.ok) {
-                                onDelete?.call();
-                              }
-                            },
-                          );
+                          iProductItem?.onDelete(product.id);
                         },
                       ),
                     ],

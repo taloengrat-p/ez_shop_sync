@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BaseCubit extends Cubit<BaseState> {
   AppTheme? _appTheme;
 
+  Size deviceSize = const Size(0, 0);
   // repositories
   LocalStorageService localStorageService;
   AuthLocalRepository authLocalRepository;
@@ -33,7 +35,7 @@ class BaseCubit extends Cubit<BaseState> {
   TagRepository tagRepository;
   CategoryRepository categoryRepository;
   //
-
+  final durationAddCart = const Duration(milliseconds: 700);
   NavigationService navigationService;
   AppMode _appMode = AppMode.local;
   ProductDisplayType productDisplayType = ProductDisplayType.grid;
@@ -46,7 +48,6 @@ class BaseCubit extends Cubit<BaseState> {
   List<Store> _stores = [];
   List<Tag> _tags = [];
   List<Category> _categories = [];
-
   AppMode get appMode => _appMode;
   User? get user => _user;
   Store? get store => _store;
@@ -234,5 +235,12 @@ class BaseCubit extends Cubit<BaseState> {
 
   void updateCurrentUser(User resultUpdated) {
     setCurrentUser(resultUpdated);
+  }
+
+  void addCart({Offset? offset}) {
+    emit(BaseAddCartSuccess());
+    Future.delayed(durationAddCart).then((value) {
+      emit(BaseAddCartAnimationSuccess());
+    });
   }
 }

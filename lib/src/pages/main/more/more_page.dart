@@ -109,24 +109,7 @@ class _MorePageState extends State<MorePage> {
                 context,
                 centerTitle: false,
                 title: LocaleKeys.menu.tr(),
-                actions: [
-                  Text(
-                    cubit.username,
-                    style: TextStyle(
-                      color: ColorKeys.brightness.getContrast(),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  CircleProfileWidget(
-                    title: cubit.userShortName,
-                    radius: 18,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                ],
+                actions: [],
               ).build(),
               body: SingleChildScrollView(
                 child: buildBody(),

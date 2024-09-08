@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,11 +9,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProductListItemWidget extends StatelessWidget {
   final Product product;
-  final Function()? onDeleteProduct;
+  final IProductPage iProductItem;
+
   const ProductListItemWidget({
     super.key,
     required this.product,
-    this.onDeleteProduct,
+    required this.iProductItem,
   });
 
   @override
@@ -21,9 +23,23 @@ class ProductListItemWidget extends StatelessWidget {
       radius: DimensionsKeys.radius + 2,
       backgroundColor: Colors.white,
       child: Slidable(
+        closeOnScroll: true,
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
+            SlidableAction(
+              onPressed: (context) {
+                iProductItem.onDelete(product.id);
+              },
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: CupertinoIcons.delete,
+              // label: LocaleKeys.delete.tr(),
+            ),
+            const SizedBox(
+              width: 0.5,
+            ),
             SlidableAction(
               onPressed: (context) {},
               padding: EdgeInsets.zero,
@@ -36,11 +52,13 @@ class ProductListItemWidget extends StatelessWidget {
               width: 0.5,
             ),
             SlidableAction(
-              onPressed: (context) {},
               padding: EdgeInsets.zero,
               backgroundColor: Colors.grey,
               foregroundColor: Colors.white,
               icon: CupertinoIcons.pencil,
+              onPressed: (context) {
+                iProductItem.onEdit(product.id);
+              },
               // label: LocaleKeys.edit.tr(),
             ),
             const SizedBox(
@@ -48,17 +66,17 @@ class ProductListItemWidget extends StatelessWidget {
             ),
             SlidableAction(
               onPressed: (context) {
-                onDeleteProduct?.call();
+                iProductItem.onAddCart(product.id);
               },
               padding: EdgeInsets.zero,
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.grey,
               foregroundColor: Colors.white,
-              icon: CupertinoIcons.delete,
-              // label: LocaleKeys.delete.tr(),
+              icon: CupertinoIcons.cart_badge_plus,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(8),
                 bottomRight: Radius.circular(8),
               ),
+              // label: LocaleKeys.edit.tr(),
             ),
           ],
         ),

@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCubit extends Cubit<ProductState> {
@@ -78,5 +79,9 @@ class ProductCubit extends Cubit<ProductState> {
     clearSearchText();
     screenMode = ScreenMode.display;
     emit(ProductChangeScreenMode(screenMode));
+  }
+
+  void addCart({Offset? offset}) {
+    baseCubit.addCart(offset: offset);
   }
 }

@@ -22,10 +22,8 @@ class ContainerScrollableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(paddingAll ?? 0),
-      margin: margin ?? EdgeInsets.all(paddingAll ?? 0),
       decoration: BoxDecoration(
-        color: backgroundColor?.withOpacity(0.1) ??
-            ColorKeys.primary.withOpacity(0.1),
+        color: backgroundColor?.withOpacity(0.1) ?? ColorKeys.primary.withOpacity(0.1),
         border: Border.all(
           color: backgroundColor ?? ColorKeys.primary.withOpacity(0.3),
         ),

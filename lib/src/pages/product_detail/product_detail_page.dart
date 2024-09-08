@@ -7,12 +7,14 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
+import 'package:ez_shop_sync/src/widgets/add_cart_animation_position_widget.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
@@ -39,14 +41,15 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   late ProductDetailCubit cubit;
-
+  late BaseCubit baseCubit;
   @override
   void initState() {
     super.initState();
 
+    baseCubit = GetIt.I<BaseCubit>();
     cubit = ProductDetailCubit(
       productRepository: GetIt.I<ProductRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: baseCubit,
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
@@ -116,23 +119,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   const SizedBox(
                     width: 8,
                   ),
+                  ContainerCircleWidget(
+                    child: const Icon(
+                      CupertinoIcons.cart,
+                    ),
+                    onPressed: () {
+                      ConfirmDialogUiWidget(
+                        context,
+                        title: LocaleKeys.confirmDeleteTitle.tr(),
+                        desc: LocaleKeys.confirmDeleteDesc.tr(),
+                        confirmLabel: LocaleKeys.delete.tr(),
+                      ).show().then(
+                            (val) {},
+                          );
+                    },
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
                 ],
               ).build(),
-              body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ..._buildTitle(),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: _buildContent(),
-                    ),
-                  ],
-                ),
-              ),
+              body: buildBody(),
               bottomNavigationBar: Container(
                 height: 60,
                 child: Row(
@@ -156,13 +163,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                           Expanded(
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                cubit.addCart();
+                              },
                               child: Container(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    DrawableIconWidget(Drawables.addBills),
-                                    Text('Add Bill'),
+                                    Icon(CupertinoIcons.cart_badge_plus),
+                                    Text(LocaleKeys.addCart.tr()),
                                   ],
                                 ),
                               ),
@@ -280,6 +289,47 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               .toList(),
         ),
         ...data,
+      ],
+    );
+  }
+
+  Widget buildBody() {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ..._buildTitle(),
+              const SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: _buildContent(),
+              ),
+            ],
+          ),
+        ),
+        BlocBuilder(
+          bloc: baseCubit,
+          builder: (context, baseState) {
+            final size = MediaQuery.of(context).size;
+
+            return AnimatedPositioned(
+              duration: baseCubit.durationAddCart,
+              top: baseState is BaseAddCartSuccess ? 0 : size.height,
+              right: baseState is BaseAddCartSuccess ? 20 : (size.width - 100),
+              child: baseState is BaseAddCartSuccess
+                  ? const Icon(
+                      CupertinoIcons.bag,
+                      color: Colors.black,
+                    )
+                  : Container(),
+            );
+          },
+        ),
       ],
     );
   }

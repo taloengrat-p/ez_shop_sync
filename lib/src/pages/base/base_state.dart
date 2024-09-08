@@ -76,6 +76,16 @@ class BaseInitialLocalStorageServiceSuccess extends BaseState {
   String toString() => 'BaseInitialLocalStorageServiceSuccess';
 }
 
+class BaseAddCartSuccess extends BaseState {
+  @override
+  String toString() => 'BaseAddCartSuccess';
+}
+
+class BaseAddCartAnimationSuccess extends BaseState {
+  @override
+  String toString() => 'BaseAddCartAnimationSuccess';
+}
+
 class BaseLoadTagsByStoreSuccess extends BaseState {
   final List<String> tagIds;
 

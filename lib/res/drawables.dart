@@ -7,4 +7,5 @@ class Drawables {
   static const String addStock = 'assets/images/add-stock.png';
   static const String addProduct = 'assets/images/add-product.png';
   static const String settings = 'assets/images/settings.png';
+  static const String orders = 'assets/images/order.png';
 }

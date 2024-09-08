@@ -24,11 +24,7 @@ class MoreCubit extends Cubit<MoreState> {
     getAppVersion();
   }
 
-  String get storeShortName =>
-      baseCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
-
-  String get userShortName =>
-      baseCubit.user?.username.toSubStringFirstToIndex(2) ?? '';
+  String get storeShortName => baseCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
 
   String get storeName => baseCubit.store?.name ?? '';
 
@@ -40,8 +36,7 @@ class MoreCubit extends Cubit<MoreState> {
 
   Future<void> changeLanguage(BuildContext context, bool value) async {
     emit(MoreLoading());
-    await context.setLocale(
-        value ? ApplicationConstance.localeTH : ApplicationConstance.localeEN);
+    await context.setLocale(value ? ApplicationConstance.localeTH : ApplicationConstance.localeEN);
     emit(MoreSuccess());
   }
 
@@ -60,8 +55,7 @@ class MoreCubit extends Cubit<MoreState> {
   }
 
   Future<void> clickPinSetting() async {
-    final securePINKey =
-        await localStorageService.getSecure(ApplicationConstance.securePINKey);
+    final securePINKey = await localStorageService.getSecure(ApplicationConstance.securePINKey);
 
     if (securePINKey?.isNotEmpty ?? false) {
       emit(const MoreClickPinSetting(PinType.setting));

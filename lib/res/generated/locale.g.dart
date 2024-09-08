@@ -82,5 +82,6 @@ abstract class  LocaleKeys {
   static const phoneNumber = 'phoneNumber';
   static const email = 'email';
   static const editProduct = 'editProduct';
+  static const addCart = 'addCart';
 
 }

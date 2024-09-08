@@ -19,7 +19,8 @@ class BodyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
+        Container(
+          color: Colors.white,
           child: Column(
             children: [
               Padding(

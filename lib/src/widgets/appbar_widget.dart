@@ -54,6 +54,7 @@ class AppbarWidget {
               style: TextStyle(
                 color: (color ?? Colors.white).getContrast(),
                 fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
       ),

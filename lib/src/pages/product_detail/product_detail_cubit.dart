@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductDetailCubit extends Cubit<ProductDetailState> {
@@ -75,5 +76,9 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     } else {
       throw ('Product data not found.');
     }
+  }
+
+  void addCart() {
+    baseCubit.addCart(offset: Offset.zero);
   }
 }

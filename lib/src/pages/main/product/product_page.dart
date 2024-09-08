@@ -10,6 +10,7 @@ import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
+import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_widget.dart';
@@ -18,6 +19,7 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
@@ -35,7 +37,7 @@ class ProductPage extends StatefulWidget {
   ProductPageState createState() => ProductPageState();
 }
 
-class ProductPageState extends State<ProductPage> {
+class ProductPageState extends State<ProductPage> implements IProductPage {
   late ProductCubit cubit;
   final _searchTextController = TextEditingController();
   @override
@@ -66,7 +68,7 @@ class ProductPageState extends State<ProductPage> {
           appBar: AppbarWidget(
             context,
             centerTitle: false,
-            title: cubit.baseCubit.store?.name,
+            title: '${LocaleKeys.inventory.tr()}${cubit.productCount}',
             titleWidget: cubit.screenMode == ScreenMode.search
                 ? TextField(
                     controller: _searchTextController,
@@ -120,7 +122,7 @@ class ProductPageState extends State<ProductPage> {
                 const SizedBox(
                   width: 5,
                 ),
-                ActionAppbarButtonWidget(
+                ContainerCircleWidget(
                   child: const Icon(
                     CupertinoIcons.bag_badge_plus,
                   ),
@@ -140,7 +142,6 @@ class ProductPageState extends State<ProductPage> {
 
   Widget buildBody() {
     return BodyWidget(
-      title: '${LocaleKeys.inventory.tr()}${cubit.productCount}',
       actions: [
         IconButton(
           onPressed: () {
@@ -187,9 +188,7 @@ class ProductPageState extends State<ProductPage> {
                 child: ProductGridItemWidget(
                   key: ValueKey(e.id),
                   product: e,
-                  onDelete: () {
-                    cubit.deleteProduct(e.id);
-                  },
+                  iProductItem: this,
                 ),
               ),
             )
@@ -206,21 +205,7 @@ class ProductPageState extends State<ProductPage> {
 
         return ProductListItemWidget(
           product: product,
-          onDeleteProduct: () {
-            ConfirmDialogUiWidget(
-              context,
-              title: LocaleKeys.confirmDeleteTitle.tr(),
-              desc: LocaleKeys.confirmDeleteDesc.tr(),
-              confirmLabel: LocaleKeys.delete.tr(),
-              confirmColor: Colors.red,
-            ).show().then(
-              (val) {
-                if (val == ConfirmDialogUiResult.ok) {
-                  cubit.deleteProduct(product.id);
-                }
-              },
-            );
-          },
+          iProductItem: this,
         );
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -238,7 +223,7 @@ class ProductPageState extends State<ProductPage> {
       return Expanded(
         child: ContainerScrollableWidget(
           radius: DimensionsKeys.radius + 4,
-          paddingAll: 4,
+          paddingAll: 10,
           child: cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct(),
         ),
       );
@@ -255,7 +240,35 @@ class ProductPageState extends State<ProductPage> {
     }
   }
 
-  onAddStock(String id, num value) {
-    cubit.addProductToStock(id, value);
+  @override
+  onAddStock(String productId) {
+    cubit.addProductToStock(productId, 10);
+  }
+
+  @override
+  onAddCart(String productId) {
+    cubit.addCart();
+  }
+
+  @override
+  onDelete(String productId) {
+    ConfirmDialogUiWidget(
+      context,
+      title: LocaleKeys.confirmDeleteTitle.tr(),
+      desc: LocaleKeys.confirmDeleteDesc.tr(),
+      confirmLabel: LocaleKeys.delete.tr(),
+      confirmColor: Colors.red,
+    ).show().then(
+      (val) {
+        if (val == ConfirmDialogUiResult.ok) {
+          cubit.deleteProduct(productId);
+        }
+      },
+    );
+  }
+
+  @override
+  onEdit(String productId) async {
+    final result = await CreateProductRouter(context).navigate();
   }
 }

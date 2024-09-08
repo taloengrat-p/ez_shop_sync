@@ -54,9 +54,14 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    baseCubit.deviceSize = size;
+
     return ToastificationWrapper(
       child: MaterialApp(
         title: F.title,
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
@@ -115,6 +120,17 @@ class _AppState extends State<App> {
                           ),
                         ),
                       ),
+                    AnimatedPositioned(
+                      duration: baseCubit.durationAddCart,
+                      top: state is BaseAddCartSuccess ? 35 : size.height,
+                      right: state is BaseAddCartSuccess ? 20 : (size.width - 100),
+                      child: state is BaseAddCartSuccess
+                          ? const Icon(
+                              CupertinoIcons.bag,
+                              color: Colors.black,
+                            )
+                          : Container(),
+                    ),
                   ],
                 );
               },

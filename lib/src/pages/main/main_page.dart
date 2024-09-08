@@ -2,6 +2,7 @@ import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
@@ -10,6 +11,11 @@ import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/main/transaction/transaction_page.dart';
+import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
+import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +32,13 @@ class _MainPageState extends State<MainPage> {
   late CircularBottomNavigationController _navigationController;
   late PageController _pageController;
   late MainCubit cubit;
+  late BaseCubit baseCubit;
 
   @override
   void initState() {
     super.initState();
-    cubit = MainCubit();
+    baseCubit = BlocProvider.of<BaseCubit>(context);
+    cubit = MainCubit(baseCubit: baseCubit);
     _navigationController = CircularBottomNavigationController(cubit.currentPage);
     _pageController = PageController(initialPage: cubit.currentPage);
   }
@@ -44,6 +52,25 @@ class _MainPageState extends State<MainPage> {
         child: BlocBuilder<MainCubit, MainState>(
           builder: (context, state) {
             return BaseScaffolds(
+              appBar: AppbarWidget(
+                context,
+                titleWidget: Row(
+                  children: [
+                    ProfileWidget(
+                      name: cubit.username,
+                    ),
+                  ],
+                ),
+                actions: [
+                  ContainerCircleWidget(
+                    child: Icon(CupertinoIcons.cart),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
+              ).build(),
               body: Stack(
                 fit: StackFit.expand,
                 children: [

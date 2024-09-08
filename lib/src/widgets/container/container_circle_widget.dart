@@ -8,6 +8,7 @@ class ContainerCircleWidget extends StatelessWidget {
   final Color? backgroundColor;
   final EdgeInsets? margin;
   final EdgeInsets? padding;
+  final double iconSize;
 
   const ContainerCircleWidget({
     super.key,
@@ -17,6 +18,7 @@ class ContainerCircleWidget extends StatelessWidget {
     this.margin,
     this.padding,
     this.backgroundColor,
+    this.iconSize = 24,
   });
 
   @override
@@ -26,19 +28,16 @@ class ContainerCircleWidget extends StatelessWidget {
       child: Container(
         padding: padding,
         margin: margin,
+        width: iconSize * 2,
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.transparent,
           shape: BoxShape.circle,
-          border: Border.all(
-              color: onPressed == null
-                  ? Colors.grey.withOpacity(0.4)
-                  : color ?? ColorKeys.primary),
+          border: Border.all(color: onPressed == null ? Colors.grey.withOpacity(0.4) : color ?? ColorKeys.primary),
         ),
         child: IconButton(
+          iconSize: iconSize ?? 20,
           onPressed: onPressed,
-          color: onPressed == null
-              ? Colors.grey.withOpacity(0.4)
-              : color ?? ColorKeys.primary,
+          color: onPressed == null ? Colors.grey.withOpacity(0.4) : color ?? ColorKeys.primary,
           icon: child,
         ),
       ),
