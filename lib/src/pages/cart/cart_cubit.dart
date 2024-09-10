@@ -37,6 +37,8 @@ class CartCubit extends Cubit<CartState> {
 
   num get subTotalPrice => totalPrice;
 
+  String? paymentMethod = 'qr-code';
+
   void increaseProductQtyByIndex(int index) {
     final item = _products[index];
     if (item.product?.quantity == null) {
@@ -71,5 +73,10 @@ class CartCubit extends Cubit<CartState> {
     await baseCubit.deleteItemFromCart(id);
     _products.removeWhere((e) => e.id == id);
     emit(CartRemoveItemSuccess(id));
+  }
+
+  void changePaymentMethod(String? val) {
+    paymentMethod = val;
+    emit(CartChangePaymentMethod(paymentMethod));
   }
 }

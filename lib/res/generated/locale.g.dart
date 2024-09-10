@@ -90,5 +90,11 @@ abstract class  LocaleKeys {
   static const items = 'items';
   static const serviceCharge = 'serviceCharge';
   static const paymentInfo = 'paymentInfo';
+  static const paymentMethod = 'paymentMethod';
+  static const discount = 'discount';
+  static const paymentMethodOptions_qrCode = 'paymentMethodOptions.qrCode';
+  static const paymentMethodOptions_cash = 'paymentMethodOptions.cash';
+  static const paymentMethodOptions = 'paymentMethodOptions';
+  static const settings = 'settings';
 
 }

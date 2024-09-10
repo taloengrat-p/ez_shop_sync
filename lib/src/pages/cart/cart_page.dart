@@ -15,6 +15,7 @@ import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -209,7 +210,11 @@ class _CartState extends State<CartPage> {
             );
           },
         ),
-        buildDetailPriceTotal(),
+        buildPaymentMethod(),
+        const SizedBox(
+          height: 16,
+        ),
+        buildPaymentInfo(),
       ],
     );
   }
@@ -225,7 +230,53 @@ class _CartState extends State<CartPage> {
     );
   }
 
-  Widget buildDetailPriceTotal() {
+  Widget buildPaymentMethod() {
+    return ContainerShadowGroupWidget(
+      title: LocaleKeys.paymentMethod.tr(),
+      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      color: Colors.white,
+      children: [
+        ColumnGapWidget(
+          mainAxisSize: MainAxisSize.min,
+          gap: 4,
+          children: [
+            RowBetweenWidget(
+              title: Text(
+                LocaleKeys.paymentMethodOptions_qrCode.tr(),
+              ),
+              value: CupertinoRadio(
+                activeColor: Colors.green,
+                value: 'qr-code',
+                groupValue: _cubit.paymentMethod,
+                onChanged: (val) {
+                  _cubit.changePaymentMethod(val);
+                },
+              ),
+            ),
+            Divider(
+              color: Colors.grey.shade200,
+            ),
+            RowBetweenWidget(
+              title: Text(
+                LocaleKeys.paymentMethodOptions_cash.tr(),
+              ),
+              value: CupertinoRadio(
+                value: 'cash',
+                activeColor: Colors.green,
+                groupValue: _cubit.paymentMethod,
+                onChanged: (val) {
+                  _cubit.changePaymentMethod(val);
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildPaymentInfo() {
     return ContainerShadowGroupWidget(
       margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),

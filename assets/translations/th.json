@@ -90,5 +90,12 @@
   "proceedToCheckout": "ดำเนินการชำระเงิน",
   "items": "รายการ",
   "serviceCharge": "ค่าบริการ ( {} % )",
-  "paymentInfo": "ข้อมูลการชำระเงิน"
+  "paymentInfo": "ข้อมูลการชำระเงิน",
+  "paymentMethod": "วิธีการชำระเงิน",
+  "discount": "ส่วนลด",
+  "paymentMethodOptions": {
+    "qrCode": "QR Code",
+    "cash": "เงินสด"
+  },
+  "settings": "ตั้งค่า"
 }

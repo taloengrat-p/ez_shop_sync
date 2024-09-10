@@ -90,5 +90,12 @@
   "proceedToCheckout": "Proceed To Checkout",
   "items": "Items",
   "serviceCharge": "Service Charge ( {} % )",
-  "paymentInfo": "Payment information"
+  "paymentInfo": "Payment information",
+  "paymentMethod": "Payment Method",
+  "discount": "Discount",
+  "paymentMethodOptions": {
+    "qrCode": "QR Code",
+    "cash": "Cash"
+  },
+  "settings": "Settings"
 }

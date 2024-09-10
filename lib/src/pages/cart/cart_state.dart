@@ -50,6 +50,17 @@ class CartFailure extends CartState {
   String toString() => 'CartFailure';
 }
 
+class CartChangePaymentMethod extends CartState {
+  final String? value;
+  const CartChangePaymentMethod(this.value);
+
+  @override
+  String toString() => 'CartChangePaymentMethod $value';
+
+  @override
+  List<Object?> get props => [value];
+}
+
 class CartIncrease extends CartState {
   final String productId;
   final num qty;

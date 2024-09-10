@@ -143,12 +143,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         children: [
                           Expanded(
                             child: InkWell(
-                              child: const SizedBox(
+                              child: SizedBox(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    DrawableIconWidget(Drawables.settings),
-                                    Text('Settings'),
+                                    const DrawableIconWidget(Drawables.settings),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(LocaleKeys.settings.tr()),
                                   ],
                                 ),
                               ),
@@ -167,7 +170,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(CupertinoIcons.cart_badge_plus),
-                                    Text(LocaleKeys.addCart.tr()),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: FittedBox(child: Text(LocaleKeys.addCart.tr())),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -184,10 +193,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 CupertinoIcons.bag_badge_plus,
                               ),
-                              Text('Add Stock'),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(LocaleKeys.addStock.tr()),
                             ],
                           ),
                         ),

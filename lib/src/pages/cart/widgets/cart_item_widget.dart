@@ -93,7 +93,7 @@ class CartItemWidget extends StatelessWidget {
                         if (cartItem.product?.price != null)
                           Text(
                             (cartItem.product!.price! * cartItem.product!.quantity!).toString().prefixCurrency(),
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context).textTheme.titleMedium,
                           )
                       ],
                     ),
