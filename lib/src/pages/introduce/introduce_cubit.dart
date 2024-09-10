@@ -12,18 +12,19 @@ class IntroduceCubit extends Cubit<IntroduceState> {
   String firstName = '';
   String lastName = '';
   String email = '';
+  String _phoneNumber = '';
 
   BaseCubit baseCubit;
   AuthRepository authRepository;
   LocalStorageService localStorageService;
+
+  String get phoneNumber => _phoneNumber;
+
   bool get enableNext {
     if (currentStep == 0) {
       return storeName.isNotEmpty;
     } else if (currentStep == 1) {
-      return storeName.isNotEmpty &&
-          firstName.isNotEmpty &&
-          lastName.isNotEmpty &&
-          email.isNotEmpty;
+      return storeName.isNotEmpty && firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty;
     } else if (currentStep == 2) {
       return true;
     }
@@ -73,16 +74,19 @@ class IntroduceCubit extends Cubit<IntroduceState> {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
+        phoneNumber: phoneNumber.trim(),
       ),
     );
 
-    final updateIntroduceFlow = await localStorageService.setPref(
-        SharedPrefKeys.isIntroduceFlowDone, true);
-    await localStorageService.setPref(
-        SharedPrefKeys.currentUsername, userRegister.username);
+    final updateIntroduceFlow = await localStorageService.setPref(SharedPrefKeys.isIntroduceFlowDone, true);
+    await localStorageService.setPref(SharedPrefKeys.currentUsername, userRegister.username);
     if (updateIntroduceFlow) {
       baseCubit.doLogin(userForceLogin: userRegister);
       emit(IntroduceSuccess(userRegister.username));
     }
+  }
+
+  setPhoneNumber(String? value) {
+    _phoneNumber = value ?? '';
   }
 }

@@ -13,6 +13,9 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../data/repository/auth/_local/auth_local_repository.dart' as _i900;
 import '../../data/repository/auth/auth_repository.dart' as _i214;
+import '../../data/repository/cart/cart_local_repository.dart' as _i222;
+import '../../data/repository/cart/cart_repository.dart' as _i999;
+import '../../data/repository/cart/cart_server_repository.dart' as _i808;
 import '../../data/repository/category/category_local_repository.dart' as _i334;
 import '../../data/repository/category/category_repository.dart' as _i635;
 import '../../data/repository/category/category_server_repository.dart'
@@ -63,14 +66,21 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i442.CategoryServerRepository());
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
-    gh.singleton<_i1035.TagServerRepository>(
-        () => _i1035.TagServerRepository());
-    gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
-    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i1011.ProductLocalRepository>(
         () => _i1011.ProductLocalRepository());
     gh.singleton<_i920.ProductServerRepository>(
         () => _i920.ProductServerRepository());
+    gh.singleton<_i222.CartLocalRepository>(() => _i222.CartLocalRepository());
+    gh.singleton<_i808.CartServerRepository>(
+        () => _i808.CartServerRepository());
+    gh.singleton<_i1035.TagServerRepository>(
+        () => _i1035.TagServerRepository());
+    gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
+    gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
+    gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
+          cartLocalRepository: gh<_i222.CartLocalRepository>(),
+          cartServerRepository: gh<_i808.CartServerRepository>(),
+        ));
     gh.singleton<_i535.HiveDBService>(
       () => _i233.HiveDBUnittestService(),
       registerFor: {_tests},

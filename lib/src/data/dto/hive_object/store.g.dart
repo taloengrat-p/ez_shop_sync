@@ -22,46 +22,46 @@ class StoreAdapter extends TypeAdapter<Store> {
       createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
       updateBy: fields[5] as String?,
-      ownerId: fields[6] as String,
-      name: fields[7] as String,
-      address: fields[8] as String?,
-      phoneNumbers: (fields[9] as List?)?.cast<String>(),
-      email: fields[10] as String?,
-      website: fields[11] as String?,
-      description: fields[12] as String?,
-      images: (fields[13] as List?)?.cast<String>(),
-      tags: fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
-      storeTheme: fields[15] as AppTheme?,
+      ownerId: fields[7] as String,
+      name: fields[8] as String,
+      address: fields[9] as String?,
+      phoneNumbers: (fields[10] as List?)?.cast<String>(),
+      email: fields[11] as String?,
+      website: fields[12] as String?,
+      description: fields[13] as String?,
+      images: (fields[14] as List?)?.cast<String>(),
+      tags: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
+      storeTheme: fields[16] as AppTheme?,
       categories:
-          fields[16] == null ? [] : (fields[16] as List?)?.cast<String>(),
-    );
+          fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
+    )..syncDatetime = fields[6] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(16)
-      ..writeByte(6)
-      ..write(obj.ownerId)
+      ..writeByte(17)
       ..writeByte(7)
-      ..write(obj.name)
+      ..write(obj.ownerId)
       ..writeByte(8)
-      ..write(obj.address)
+      ..write(obj.name)
       ..writeByte(9)
-      ..write(obj.phoneNumbers)
+      ..write(obj.address)
       ..writeByte(10)
-      ..write(obj.email)
+      ..write(obj.phoneNumbers)
       ..writeByte(11)
-      ..write(obj.website)
+      ..write(obj.email)
       ..writeByte(12)
-      ..write(obj.description)
+      ..write(obj.website)
       ..writeByte(13)
-      ..write(obj.images)
+      ..write(obj.description)
       ..writeByte(14)
-      ..write(obj.tags)
+      ..write(obj.images)
       ..writeByte(15)
-      ..write(obj.storeTheme)
+      ..write(obj.tags)
       ..writeByte(16)
+      ..write(obj.storeTheme)
+      ..writeByte(17)
       ..write(obj.categories)
       ..writeByte(1)
       ..write(obj.id)
@@ -72,7 +72,9 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..writeByte(4)
       ..write(obj.updateDate)
       ..writeByte(5)
-      ..write(obj.updateBy);
+      ..write(obj.updateBy)
+      ..writeByte(6)
+      ..write(obj.syncDatetime);
   }
 
   @override

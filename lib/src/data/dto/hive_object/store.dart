@@ -7,37 +7,37 @@ part 'store.g.dart';
 
 @HiveType(typeId: 3)
 class Store extends BaseHiveObject {
-  @HiveField(6)
+  @HiveField(7)
   String ownerId;
 
-  @HiveField(7)
+  @HiveField(8)
   String name;
 
-  @HiveField(8)
+  @HiveField(9)
   String? address;
 
-  @HiveField(9)
+  @HiveField(10)
   List<String>? phoneNumbers;
 
-  @HiveField(10)
+  @HiveField(11)
   String? email;
 
-  @HiveField(11)
+  @HiveField(12)
   String? website;
 
-  @HiveField(12)
+  @HiveField(13)
   String? description;
 
-  @HiveField(13)
+  @HiveField(14)
   List<String>? images;
 
-  @HiveField(14, defaultValue: [])
+  @HiveField(15, defaultValue: [])
   List<String>? tags;
 
-  @HiveField(15, defaultValue: null)
+  @HiveField(16, defaultValue: null)
   AppTheme? storeTheme;
 
-  @HiveField(16, defaultValue: [])
+  @HiveField(17, defaultValue: [])
   List<String>? categories;
 
   Store({

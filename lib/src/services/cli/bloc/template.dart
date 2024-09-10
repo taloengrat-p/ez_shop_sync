@@ -10,7 +10,7 @@ import 'package:%{package}/res/dimensions.dart';
 class %{name}Page extends StatefulWidget {
   const %{name}Page({
     super.key,
-  }) 
+  });
 
   @override
   _%{name}State createState() => _%{name}State();
@@ -105,7 +105,7 @@ class %{name}Refresh extends %{name}State {
 class %{name}ScreenModeChange extends %{name}State {
   final ScreenMode mode;
 
-  const ScreenModeChange(this.mode);
+  const %{name}ScreenModeChange(this.mode);
 
   @override
   String toString() => '%{name}ScreenModeChange';

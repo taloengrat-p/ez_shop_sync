@@ -4,16 +4,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -46,6 +50,8 @@ FutureOr<void> main() async {
       navigationService: GetIt.I<NavigationService>(),
       tagRepository: GetIt.I<TagRepository>(),
       categoryRepository: GetIt.I<CategoryRepository>(),
+      cartRepository: GetIt.I<CartRepository>(),
+      userRepository: GetIt.I<UserRepository>(),
     ),
   );
   runApp(
@@ -80,10 +86,13 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(AppThemeAdapter());
   Hive.registerAdapter(CategoryAdapter());
-
+  Hive.registerAdapter(CartAdapter());
+  Hive.registerAdapter(CartItemAdapter());
+  
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<Store>(HiveBoxConstance.store);
   await Hive.openBox<User>(HiveBoxConstance.user);
   await Hive.openBox<Tag>(HiveBoxConstance.tag);
   await Hive.openBox<Category>(HiveBoxConstance.category);
+  await Hive.openBox<Cart>(HiveBoxConstance.cart);
 }

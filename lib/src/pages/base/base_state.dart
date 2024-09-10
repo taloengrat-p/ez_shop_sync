@@ -113,3 +113,8 @@ class BaseLoadCategoriesByStoreSuccess extends BaseState {
   @override
   String toString() => 'BaseLoadCategoriesByStoreSuccess(categories: $categories)';
 }
+
+class BaseRemoveCartItem extends BaseState {
+  @override
+  String toString() => 'BaseRemoveCartItem';
+}

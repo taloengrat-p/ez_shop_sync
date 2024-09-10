@@ -34,7 +34,6 @@ class BaseScaffolds extends StatefulWidget {
 class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
   @override
   void initState() {
-    
     super.initState();
   }
 
@@ -79,7 +78,7 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
       top: false,
       bottom: true,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade100,
         drawerScrimColor: Colors.white,
         appBar: widget.appBar,
         body: widget.body,

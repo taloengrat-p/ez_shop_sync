@@ -1,5 +1,5 @@
 class DimensionsKeys {
-  static const double radius = 8;
+  static const double radius = 16;
   static const double xs = 2;
   static const double s = 4;
   static const double m = 8;
@@ -8,8 +8,8 @@ class DimensionsKeys {
 
   static const double heightBts = 70;
 
-  static const double pagePaddingHzt = 12;
-  static const double pagePaddingVt = 12;
+  static const double pagePaddingHzt = 16;
+  static const double pagePaddingVt = 16;
 
   static const double gap = 6;
 }

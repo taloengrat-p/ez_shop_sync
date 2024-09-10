@@ -15,10 +15,22 @@ extension StringExtendsions on String {
   String ignoreSpaceAndUpperCase() {
     return toLowerCase().replaceAll(" ", "");
   }
+
+  String prefixCurrency() {
+    return '฿ $this';
+  }
+
+  String suffuxCurrency() {
+    return '฿ $this';
+  }
 }
 
 extension StringNullableExtendsions on String? {
-  String defaultDash() {
-    return this ?? '--';
+  String elsePrefixCurrency() {
+    return '฿ ${this ?? '--'}';
+  }
+
+  String elseSuffuxCurrency() {
+    return '฿ ${this ?? '--'}';
   }
 }

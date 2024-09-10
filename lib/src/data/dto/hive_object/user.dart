@@ -1,3 +1,4 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -6,29 +7,32 @@ part 'user.g.dart';
 
 @HiveType(typeId: 4)
 class User extends BaseHiveObject {
-  @HiveField(6, defaultValue: [])
+  @HiveField(7, defaultValue: [])
   List<String>? storeId;
 
-  @HiveField(7)
+  @HiveField(8)
   String firstName;
 
-  @HiveField(8)
+  @HiveField(9)
   String lastName;
 
-  @HiveField(9, defaultValue: null)
+  @HiveField(10, defaultValue: null)
   String? phoneNumber;
 
-  @HiveField(10)
+  @HiveField(11)
   String email;
 
-  @HiveField(11)
+  @HiveField(12)
   String username;
 
-  @HiveField(12, defaultValue: null)
+  @HiveField(13, defaultValue: null)
   String? profilePictureUrl;
 
-  @HiveField(13, defaultValue: null)
+  @HiveField(14, defaultValue: null)
   String? storeLatest;
+
+  @HiveField(15, defaultValue: [])
+  List<String> carts;
 
   String get fullname => '$firstName $lastName';
 
@@ -46,6 +50,7 @@ class User extends BaseHiveObject {
     required this.username,
     this.profilePictureUrl,
     this.storeLatest,
+    required this.carts,
   });
 
   @override

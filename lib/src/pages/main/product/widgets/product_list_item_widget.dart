@@ -22,78 +22,81 @@ class ProductListItemWidget extends StatelessWidget {
     return AppContainerWidget(
       radius: DimensionsKeys.radius + 2,
       backgroundColor: Colors.white,
-      child: Slidable(
-        closeOnScroll: true,
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          children: [
-            SlidableAction(
-              onPressed: (context) {
-                iProductItem.onDelete(product.id);
-              },
-              padding: EdgeInsets.zero,
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              icon: CupertinoIcons.delete,
-              // label: LocaleKeys.delete.tr(),
-            ),
-            const SizedBox(
-              width: 0.5,
-            ),
-            SlidableAction(
-              onPressed: (context) {},
-              padding: EdgeInsets.zero,
-              backgroundColor: Colors.grey,
-              foregroundColor: Colors.white,
-              icon: CupertinoIcons.bag_badge_plus,
-              // label: LocaleKeys.edit.tr(),
-            ),
-            const SizedBox(
-              width: 0.5,
-            ),
-            SlidableAction(
-              padding: EdgeInsets.zero,
-              backgroundColor: Colors.grey,
-              foregroundColor: Colors.white,
-              icon: CupertinoIcons.pencil,
-              onPressed: (context) {
-                iProductItem.onEdit(product.id);
-              },
-              // label: LocaleKeys.edit.tr(),
-            ),
-            const SizedBox(
-              width: 0.5,
-            ),
-            SlidableAction(
-              onPressed: (context) {
-                iProductItem.onAddCart(product.id);
-              },
-              padding: EdgeInsets.zero,
-              backgroundColor: Colors.grey,
-              foregroundColor: Colors.white,
-              icon: CupertinoIcons.cart_badge_plus,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Slidable(
+          closeOnScroll: true,
+          endActionPane: ActionPane(
+            motion: const ScrollMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) {
+                  iProductItem.onDelete(product.id);
+                },
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.delete,
+                // label: LocaleKeys.delete.tr(),
               ),
-              // label: LocaleKeys.edit.tr(),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            ImageWidget(
-              imageUrl: product.image,
-              imageFullName: product.imageName,
-              width: 120,
-              height: 120,
-              borderRadius: BorderRadius.circular(DimensionsKeys.radius),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Text(product.name),
-          ],
+              const SizedBox(
+                width: 0.5,
+              ),
+              SlidableAction(
+                onPressed: (context) {},
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.grey,
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.bag_badge_plus,
+                // label: LocaleKeys.edit.tr(),
+              ),
+              const SizedBox(
+                width: 0.5,
+              ),
+              SlidableAction(
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.grey,
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.pencil,
+                onPressed: (context) {
+                  iProductItem.onEdit(product.id);
+                },
+                // label: LocaleKeys.edit.tr(),
+              ),
+              const SizedBox(
+                width: 0.5,
+              ),
+              SlidableAction(
+                onPressed: (context) {
+                  iProductItem.onAddCart(product);
+                },
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.grey,
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.cart_badge_plus,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                // label: LocaleKeys.edit.tr(),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              ImageWidget(
+                imageUrl: product.image,
+                imageFullName: product.imageName,
+                width: 120,
+                height: 120,
+                borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(product.name),
+            ],
+          ),
         ),
       ),
     );

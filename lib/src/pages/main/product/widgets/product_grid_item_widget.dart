@@ -3,6 +3,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
@@ -54,7 +55,7 @@ class ProductGridItemWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          '฿${product.price?.toString() ?? '--'}',
+                          product.price.elsePrefixCurrency(),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.orange),
                         ),
@@ -76,7 +77,7 @@ class ProductGridItemWidget extends StatelessWidget {
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                       PopupMenuItem(
                         onTap: () {
-                          iProductItem?.onAddCart(product.id);
+                          iProductItem?.onAddCart(product);
                         },
                         child: OpacityWidget(
                           child: RowBetweenWidget(

@@ -5,19 +5,19 @@ part 'category.g.dart';
 
 @HiveType(typeId: 7)
 class Category extends BaseHiveObject {
-  @HiveField(6)
+  @HiveField(7)
   String name;
 
-  @HiveField(7, defaultValue: null)
+  @HiveField(8, defaultValue: null)
   String? parentId;
 
-  @HiveField(8)
+  @HiveField(9)
   String? color;
 
-  @HiveField(9)
+  @HiveField(10)
   String? borderColor;
 
-  @HiveField(10)
+  @HiveField(11)
   Map<String, dynamic>? iconData;
 
   Category({

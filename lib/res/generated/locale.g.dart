@@ -83,5 +83,12 @@ abstract class  LocaleKeys {
   static const email = 'email';
   static const editProduct = 'editProduct';
   static const addCart = 'addCart';
+  static const cart = 'cart';
+  static const totalAmount = 'totalAmount';
+  static const subTotal = 'subTotal';
+  static const proceedToCheckout = 'proceedToCheckout';
+  static const items = 'items';
+  static const serviceCharge = 'serviceCharge';
+  static const paymentInfo = 'paymentInfo';
 
 }

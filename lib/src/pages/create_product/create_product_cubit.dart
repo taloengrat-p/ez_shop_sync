@@ -17,7 +17,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
   BaseCubit baseCubit;
   //
-  ScreenMode _screenMode = ScreenMode.delete;
+  ScreenMode _screenMode = ScreenMode.create;
 
   Product? _productOriginal;
   Product? _productEditor;

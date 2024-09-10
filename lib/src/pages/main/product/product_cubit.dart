@@ -1,3 +1,4 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ProductCubit extends Cubit<ProductState> {
   BaseCubit baseCubit;
   ProductRepository productRepository;
+
   ScreenMode screenMode = ScreenMode.display;
   String? searchText;
   List<Product> get products => baseCubit.products
@@ -81,7 +83,7 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductChangeScreenMode(screenMode));
   }
 
-  void addCart({Offset? offset}) {
-    baseCubit.addCart(offset: offset);
+  void addCart(Product product, {Offset? offset}) {
+    baseCubit.addCart(offset: offset, product: product);
   }
 }

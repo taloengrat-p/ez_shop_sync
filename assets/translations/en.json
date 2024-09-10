@@ -83,5 +83,12 @@
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "Email",
   "editProduct": "Edit Product",
-  "addCart": "Add Cart"
+  "addCart": "Add Cart",
+  "cart": "Cart",
+  "totalAmount": "Total amount",
+  "subTotal": "Sub Total",
+  "proceedToCheckout": "Proceed To Checkout",
+  "items": "Items",
+  "serviceCharge": "Service Charge ( {} % )",
+  "paymentInfo": "Payment information"
 }

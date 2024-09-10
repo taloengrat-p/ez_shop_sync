@@ -83,5 +83,12 @@
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "อีเมล",
   "editProduct": "แก้ไขสินค้า",
-  "addCart": "เพิ่มลงในรถเข็น"
+  "addCart": "เพิ่มลงในรถเข็น",
+  "cart": "รถเข็น",
+  "totalAmount": "ยอดรวมทั้งหมด",
+  "subTotal": "ยอดรวมสั่งซื้อ",
+  "proceedToCheckout": "ดำเนินการชำระเงิน",
+  "items": "รายการ",
+  "serviceCharge": "ค่าบริการ ( {} % )",
+  "paymentInfo": "ข้อมูลการชำระเงิน"
 }

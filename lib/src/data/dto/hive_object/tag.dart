@@ -6,13 +6,13 @@ part 'tag.g.dart';
 
 @HiveType(typeId: 5)
 class Tag extends BaseHiveObject {
-  @HiveField(6)
+  @HiveField(7)
   final String name;
 
-  @HiveField(7)
+  @HiveField(8)
   final String? color;
 
-  @HiveField(8)
+  @HiveField(9)
   final String? borderColor;
 
   Tag({

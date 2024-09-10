@@ -4,4 +4,5 @@ class HiveBoxConstance {
   static const user = 'user';
   static const tag = 'tag';
   static const category = 'category';
+  static const cart = 'cart';
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
@@ -9,6 +10,7 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart'
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductDetailCubit extends Cubit<ProductDetailState> {
   ProductRepository productRepository;
@@ -43,7 +45,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   List<String> get imageMerged {
     List<String> images = [];
 
-    if (product?.image?.isNotNull ?? false) {
+    if (product?.imageName?.isNotNull ?? false) {
       images.add(product!.imageName!);
     }
 
@@ -79,6 +81,9 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   }
 
   void addCart() {
-    baseCubit.addCart(offset: Offset.zero);
+    baseCubit.addCart(
+      offset: Offset.zero,
+      product: product,
+    );
   }
 }

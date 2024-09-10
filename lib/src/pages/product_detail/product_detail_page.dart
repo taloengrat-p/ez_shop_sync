@@ -8,13 +8,14 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
+import 'package:ez_shop_sync/src/pages/product_settings/product_settings_router.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
-import 'package:ez_shop_sync/src/widgets/add_cart_animation_position_widget.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
@@ -109,7 +110,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         confirmColor: Colors.red,
                       ).show().then(
                         (val) {
-                          if (val == ConfirmDialogUiResult.ok) {
+                          if (val == ConfirmDialogResult.ok) {
                             cubit.deleteProduct();
                           }
                         },
@@ -124,14 +125,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       CupertinoIcons.cart,
                     ),
                     onPressed: () {
-                      ConfirmDialogUiWidget(
-                        context,
-                        title: LocaleKeys.confirmDeleteTitle.tr(),
-                        desc: LocaleKeys.confirmDeleteDesc.tr(),
-                        confirmLabel: LocaleKeys.delete.tr(),
-                      ).show().then(
-                            (val) {},
-                          );
+                      CartRouter(context).navigate();
                     },
                   ),
                   const SizedBox(
@@ -149,8 +143,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         children: [
                           Expanded(
                             child: InkWell(
-                              onTap: () {},
-                              child: Container(
+                              child: const SizedBox(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -159,6 +152,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ],
                                 ),
                               ),
+                              onTap: () {
+                                ProductSettingsRouter(context).navigate();
+                              },
                             ),
                           ),
                           Expanded(
@@ -170,7 +166,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(CupertinoIcons.cart_badge_plus),
+                                    const Icon(CupertinoIcons.cart_badge_plus),
                                     Text(LocaleKeys.addCart.tr()),
                                   ],
                                 ),

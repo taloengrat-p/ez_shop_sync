@@ -5,12 +5,14 @@ class ColumnGapWidget extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
   final List<Widget> children;
   final double gap;
+  final MainAxisSize mainAxisSize;
   const ColumnGapWidget({
     super.key,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.mainAxisAlignment = MainAxisAlignment.start,
     required this.children,
     this.gap = 0,
+    this.mainAxisSize = MainAxisSize.max,
   });
 
   @override
@@ -18,6 +20,7 @@ class ColumnGapWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: mainAxisSize,
       children: children
           .asMap()
           .map((k, e) {

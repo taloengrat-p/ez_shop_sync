@@ -100,7 +100,7 @@ class _StoreManagementState extends State<StoreManagementPage> {
                           confirmColor: Colors.red,
                         ).show();
 
-                        if (result == ConfirmDialogUiResult.ok) {
+                        if (result == ConfirmDialogResult.ok) {
                           _cubit.doDelete();
                         }
                       },

@@ -1,19 +1,18 @@
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/pages/main/transaction/transaction_page.dart';
-import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -63,8 +62,15 @@ class _MainPageState extends State<MainPage> {
                 ),
                 actions: [
                   ContainerCircleWidget(
-                    child: Icon(CupertinoIcons.cart),
-                    onPressed: () {},
+                    child: cubit.baseCubit.cartCount != 0
+                        ? Badge.count(
+                            count: cubit.baseCubit.cartCount,
+                            child: const Icon(CupertinoIcons.cart),
+                          )
+                        : const Icon(CupertinoIcons.cart),
+                    onPressed: () {
+                      CartRouter(context).navigate();
+                    },
                   ),
                   const SizedBox(
                     width: 8,

@@ -34,6 +34,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   final _firstNameFocusNode = FocusNode();
   final _lastNameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
+  final _phoneNumber = FocusNode();
 
   final _storeNameFocusNode = FocusNode();
 
@@ -147,6 +148,17 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                 hintText: 'Your Email',
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
+                                  FocusScope.of(context).requestFocus(_phoneNumber);
+                                },
+                              ),
+                              TextFormFieldUiWidget(
+                                focusNode: _phoneNumber,
+                                label: 'Phone number',
+                                textInitial: cubit.phoneNumber,
+                                onChanged: cubit.setPhoneNumber,
+                                hintText: 'Your Phone number',
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (value) {
                                   if (cubit.enableNext) {
                                     _introKey.currentState?.next();
                                   }
@@ -184,6 +196,13 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               ),
                               Text(
                                 'Email : ${cubit.email}',
+                                style: labelInfomationTextStyle,
+                              ),
+                              const SizedBox(
+                                height: DimensionsKeys.m,
+                              ),
+                              Text(
+                                'Phone number : ${cubit.phoneNumber}',
                                 style: labelInfomationTextStyle,
                               ),
                             ],

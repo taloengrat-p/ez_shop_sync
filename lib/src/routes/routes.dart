@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ez_shop_sync/src/pages/cart/cart_page.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_page.dart';
@@ -11,6 +12,7 @@ import 'package:ez_shop_sync/src/pages/password_setting/password_setting_page.da
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_page.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_page.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
+import 'package:ez_shop_sync/src/pages/product_settings/product_settings_page.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_page.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_page.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_page.dart';
@@ -35,6 +37,8 @@ class Routes {
   static const String ROUTE_CREATETAG = '/ROUTE_CREATETAG';
   static const String ROUTE_CATEGORYMANAGEMENT = '/ROUTE_CATEGORYMANAGEMENT';
   static const String ROUTE_CREATECATEGORY = '/ROUTE_CREATECATEGORY';
+  static const String ROUTE_CART = '/ROUTE_CART';
+  static const String ROUTE_PRODUCTSETTINGS = '/ROUTE_PRODUCTSETTINGS';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -53,5 +57,7 @@ class Routes {
     ROUTE_CREATETAG: (context) => const CreateTagPage(),
     ROUTE_CATEGORYMANAGEMENT: (context) => const CategoryManagementPage(),
     ROUTE_CREATECATEGORY: (context) => const CreateCategoryPage(),
+    ROUTE_CART: (context) => const CartPage(),
+    ROUTE_PRODUCTSETTINGS: (context) => const ProductSettingsPage(),
   };
 }

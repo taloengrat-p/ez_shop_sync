@@ -18,65 +18,66 @@ class ProductAdapter extends TypeAdapter<Product> {
     };
     return Product(
       id: fields[1] as String,
-      name: fields[6] as String,
-      description: fields[7] as String?,
-      price: fields[8] as num?,
-      category: fields[9] as String?,
-      brand: fields[10] as String?,
-      imageDetail: (fields[11] as List?)?.cast<String>(),
-      imageThumbnail: fields[12] as String?,
-      attributes: fields[13] == null
+      name: fields[7] as String,
+      description: fields[8] as String?,
+      price: fields[9] as num?,
+      category: fields[10] as String?,
+      brand: fields[11] as String?,
+      imageDetail: (fields[12] as List?)?.cast<String>(),
+      imageThumbnail: fields[13] as String?,
+      attributes: fields[14] == null
           ? {}
-          : (fields[13] as Map?)?.cast<String, dynamic>(),
-      tag: fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
-      image: fields[16] as String?,
-      imageName: fields[17] as String?,
-      storeId: fields[18] as String,
-      status: fields[15] == null
+          : (fields[14] as Map?)?.cast<String, dynamic>(),
+      tag: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
+      image: fields[17] as String?,
+      imageName: fields[18] as String?,
+      storeId: fields[19] as String,
+      status: fields[16] == null
           ? ProductStatus.undefined
-          : fields[15] as ProductStatus,
-      quantity: fields[19] as num?,
-      ownerId: fields[20] as String,
+          : fields[16] as ProductStatus,
+      quantity: fields[20] as num?,
+      ownerId: fields[21] as String,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?;
+      ..updateBy = fields[5] as String?
+      ..syncDatetime = fields[6] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(20)
-      ..writeByte(6)
-      ..write(obj.name)
+      ..writeByte(21)
       ..writeByte(7)
-      ..write(obj.description)
+      ..write(obj.name)
       ..writeByte(8)
-      ..write(obj.price)
+      ..write(obj.description)
       ..writeByte(9)
-      ..write(obj.category)
+      ..write(obj.price)
       ..writeByte(10)
-      ..write(obj.brand)
+      ..write(obj.category)
       ..writeByte(11)
-      ..write(obj.imageDetail)
+      ..write(obj.brand)
       ..writeByte(12)
-      ..write(obj.imageThumbnail)
+      ..write(obj.imageDetail)
       ..writeByte(13)
-      ..write(obj.attributes)
+      ..write(obj.imageThumbnail)
       ..writeByte(14)
-      ..write(obj.tag)
+      ..write(obj.attributes)
       ..writeByte(15)
-      ..write(obj.status)
+      ..write(obj.tag)
       ..writeByte(16)
-      ..write(obj.image)
+      ..write(obj.status)
       ..writeByte(17)
-      ..write(obj.imageName)
+      ..write(obj.image)
       ..writeByte(18)
-      ..write(obj.storeId)
+      ..write(obj.imageName)
       ..writeByte(19)
-      ..write(obj.quantity)
+      ..write(obj.storeId)
       ..writeByte(20)
+      ..write(obj.quantity)
+      ..writeByte(21)
       ..write(obj.ownerId)
       ..writeByte(1)
       ..write(obj.id)
@@ -87,7 +88,9 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(4)
       ..write(obj.updateDate)
       ..writeByte(5)
-      ..write(obj.updateBy);
+      ..write(obj.updateBy)
+      ..writeByte(6)
+      ..write(obj.syncDatetime);
   }
 
   @override

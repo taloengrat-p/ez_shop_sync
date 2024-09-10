@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
@@ -16,6 +17,7 @@ import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_list_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
+import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
@@ -223,7 +225,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       return Expanded(
         child: ContainerScrollableWidget(
           radius: DimensionsKeys.radius + 4,
-          paddingAll: 10,
+          paddingAll: 8,
           child: cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct(),
         ),
       );
@@ -246,25 +248,21 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   @override
-  onAddCart(String productId) {
-    cubit.addCart();
+  onAddCart(Product product) {
+    cubit.addCart(
+      product.copyWith(
+        quantity: 10,
+      ),
+    );
   }
 
   @override
-  onDelete(String productId) {
-    ConfirmDialogUiWidget(
-      context,
-      title: LocaleKeys.confirmDeleteTitle.tr(),
-      desc: LocaleKeys.confirmDeleteDesc.tr(),
-      confirmLabel: LocaleKeys.delete.tr(),
-      confirmColor: Colors.red,
-    ).show().then(
-      (val) {
-        if (val == ConfirmDialogUiResult.ok) {
-          cubit.deleteProduct(productId);
-        }
-      },
-    );
+  onDelete(String productId) async {
+    final result = await DialogUtils.showConfirmDelete(context);
+
+    if (result == ConfirmDialogResult.ok) {
+      cubit.deleteProduct(productId);
+    }
   }
 
   @override

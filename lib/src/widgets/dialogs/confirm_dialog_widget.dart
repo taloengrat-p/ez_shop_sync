@@ -2,7 +2,7 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_button_group.dart';
 import 'package:flutter/material.dart';
 
-enum ConfirmDialogUiResult {
+enum ConfirmDialogResult {
   cancel,
   ok;
 }
@@ -33,8 +33,8 @@ class ConfirmDialogUiWidget {
     // this.htmlWidget,
   });
 
-  Future<ConfirmDialogUiResult?> show() async {
-    return await showDialog<ConfirmDialogUiResult?>(
+  Future<ConfirmDialogResult?> show() async {
+    return await showDialog<ConfirmDialogResult?>(
         context: context,
         barrierDismissible: barrierDismissible,
         builder: (builder) {
@@ -56,9 +56,7 @@ class ConfirmDialogUiWidget {
                       children: [
                         Flexible(
                           child: Container(
-                            constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.of(context).size.height * 0.6),
+                            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.6),
                             padding: const EdgeInsets.all(16),
                             child: SingleChildScrollView(
                               child: Column(
@@ -107,11 +105,10 @@ class ConfirmDialogUiWidget {
                             confirmColor: confirmColor,
                             cancelColor: cancelColor,
                             onCancel: () {
-                              Navigator.pop(
-                                  context, ConfirmDialogUiResult.cancel);
+                              Navigator.pop(context, ConfirmDialogResult.cancel);
                             },
                             onConfirm: () {
-                              Navigator.pop(context, ConfirmDialogUiResult.ok);
+                              Navigator.pop(context, ConfirmDialogResult.ok);
                             },
                           ),
                         )

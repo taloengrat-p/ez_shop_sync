@@ -154,7 +154,7 @@ class _TagManagementState extends State<TagManagementPage> {
             confirmLabel: LocaleKeys.confirm.tr(),
             cancelLabel: LocaleKeys.cancel.tr(),
           ).show().then((value) {
-            if (value == ConfirmDialogUiResult.ok) {
+            if (value == ConfirmDialogResult.ok) {
               _cubit.deleteSelected();
             }
           });
