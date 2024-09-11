@@ -7,4 +7,8 @@ class ApplicationConstance {
 
   static const String securePINKey = 'pin';
   static const String securePINsalt = 'pin-salt';
+
+  static const String currencyTHB = '฿';
+
+  static const String emptyData = '--';
 }

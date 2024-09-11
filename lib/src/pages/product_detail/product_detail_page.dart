@@ -15,11 +15,15 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart'
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
 import 'package:ez_shop_sync/src/pages/product_settings/product_settings_router.dart';
+import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/icon/button_icon_label_widget.dart';
 import 'package:ez_shop_sync/src/widgets/icon/drawable_icon_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_carousel_preview_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -121,9 +125,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     width: 8,
                   ),
                   ContainerCircleWidget(
-                    child: const Icon(
-                      CupertinoIcons.cart,
-                    ),
+                    child: cubit.baseCubit.cartCount != 0
+                        ? Badge.count(
+                            count: cubit.baseCubit.cartCount,
+                            child: const Icon(CupertinoIcons.cart),
+                          )
+                        : const Icon(CupertinoIcons.cart),
                     onPressed: () {
                       CartRouter(context).navigate();
                     },
@@ -142,67 +149,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: InkWell(
-                              child: SizedBox(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const DrawableIconWidget(Drawables.settings),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(LocaleKeys.settings.tr()),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
+                            child: ButtonIconLabelWidget(
+                              icon: const DrawableIconWidget(Drawables.settings),
+                              label: LocaleKeys.settings.tr(),
+                              onPressed: () {
                                 ProductSettingsRouter(context).navigate();
                               },
                             ),
                           ),
                           Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                cubit.addCart();
+                            child: ButtonIconLabelWidget(
+                              icon: const Icon(CupertinoIcons.cart_badge_plus),
+                              color: Colors.orange,
+                              label: LocaleKeys.addCart.tr(),
+                              onPressed: () async {
+                                final result = await DialogUtils.showAddCartDialog(context, cubit.product);
+
+                                if (result is num) {
+                                  cubit.addCart(cubit.product?.copyWith(quantity: result));
+                                }
                               },
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(CupertinoIcons.cart_badge_plus),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: FittedBox(child: Text(LocaleKeys.addCart.tr())),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Expanded(
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          color: Colors.amber,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                CupertinoIcons.bag_badge_plus,
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text(LocaleKeys.addStock.tr()),
-                            ],
-                          ),
+                      child: ButtonIconLabelWidget(
+                        icon: const Icon(
+                          CupertinoIcons.bag_badge_plus,
                         ),
+                        color: Colors.amber,
+                        label: LocaleKeys.addStock.tr(),
+                        onPressed: () async {
+                          final result = await DialogUtils.showAddStockDialog(context, cubit.product);
+
+                          if (result is num) {
+                            cubit.addStock(cubit.product?.copyWith(), result);
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -230,13 +215,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  cubit.product?.name ?? '',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
+                  cubit.product?.name.elseDisplay() ?? elseDisplay(),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  "\$${cubit.product?.price?.toString() ?? '--'}",
+                  cubit.product?.price?.elseDisplay().prefixCurrency() ?? elseDisplay().prefixCurrency(),
                   style: TextStyle(
                     fontSize: 18,
                     color: ColorKeys.accent,
@@ -245,8 +228,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ],
             ),
             Text(
-              '${cubit.product?.quantity ?? '--'} ${LocaleKeys.units_piece.tr()}',
-              style: TextStyle(fontSize: 18),
+              '${cubit.product?.quantity.toString().elseDisplay()} ${LocaleKeys.units_piece.tr()}',
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

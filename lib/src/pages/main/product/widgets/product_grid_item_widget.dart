@@ -82,19 +82,26 @@ class ProductGridItemWidget extends StatelessWidget {
                         child: OpacityWidget(
                           child: RowBetweenWidget(
                             title: Text(LocaleKeys.addCart.tr()),
-                            value: const Icon(CupertinoIcons.cart_badge_plus),
+                            value: const Icon(
+                              CupertinoIcons.cart_badge_plus,
+                              color: Colors.orange,
+                            ),
                           ),
                         ),
                       ),
                       PopupMenuItem(
                         child: OpacityWidget(
-                          disabled: true,
                           child: RowBetweenWidget(
                             title: Text(LocaleKeys.addStock.tr()),
-                            value: const Icon(CupertinoIcons.bag_badge_plus),
+                            value: const Icon(
+                              CupertinoIcons.bag_badge_plus,
+                              color: Colors.amber,
+                            ),
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          iProductItem?.onAddStock(product);
+                        },
                       ),
                       PopupMenuItem(
                         onTap: () {

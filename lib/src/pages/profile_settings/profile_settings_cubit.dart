@@ -4,7 +4,10 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
@@ -31,15 +34,15 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   String? emailOriginal;
   String? emailEditor;
 
-  String get profileName => user?.fullname ?? '--';
+  String get profileName => user?.fullname.elseDisplay() ?? elseDisplay();
 
-  String get profilePhoneNumber => user?.phoneNumber ?? '--';
+  String get profilePhoneNumber => user?.phoneNumber.elseDisplay() ?? elseDisplay();
 
   bool get hasEditChange =>
       ((phoneEditor != phoneOriginal) || (emailEditor != emailOriginal)) &&
       ((phoneEditor?.isNotEmpty ?? false) && (emailEditor?.isNotEmpty ?? false));
 
-  String get profileEmail => user?.email ?? '--';
+  String get profileEmail => user?.email.elseDisplay() ?? elseDisplay();
 
   void initial() {
     emit(ProfileSettingsLoading());

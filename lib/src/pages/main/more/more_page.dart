@@ -237,7 +237,7 @@ class _MorePageState extends State<MorePage> {
   }
 
   void onHandleChangeStore() async {
-    final result = await BottomSheetUtils.showMenu(context,
+    final result = await BottomSheetUtils.showDragable(context,
         title: 'Your Store',
         body: SingleChildScrollView(
           child: Column(

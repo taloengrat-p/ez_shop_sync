@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ extension DateTimeExtension on DateTime? {
     String? format,
   }) {
     if (this == null) {
-      return '--';
+      return ApplicationConstance.emptyData;
     }
 
     String formattedDate =

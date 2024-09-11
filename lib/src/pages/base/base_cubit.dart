@@ -262,8 +262,6 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseRefresh(DateTime.now()));
   }
 
-  void addProductToStock(String id, num value) {}
-
   void loadTagsByCurrentStore() {
     emit(BaseLoading());
     _tags = tagRepository.getAllByIds(store?.tags ?? []);
@@ -310,5 +308,19 @@ class BaseCubit extends Cubit<BaseState> {
     setCurrentCart(resultCartUpdated);
 
     emit(BaseRemoveCartItem());
+  }
+
+  Future<Product?> addStock({required Product? product, required num qty}) async {
+    if (product == null) {
+      throw ('addStock product is Null');
+    }
+    final newQuantity = (product.quantity ?? 0) + qty;
+    log('newQuantity $newQuantity');
+    emit(BaseLoading());
+    final productUpdated = await productRepository.update(product.id, product..quantity = newQuantity);
+    await doGetProducts();
+    emit(BaseAddStockSuccess(DateTime.now()));
+
+    return productUpdated;
   }
 }

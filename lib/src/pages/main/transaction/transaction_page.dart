@@ -132,7 +132,7 @@ class _TransactionPageState extends State<TransactionPage> {
         value: 3,
       ),
     ];
-    final result = await BottomSheetUtils.showMenu(
+    final result = await BottomSheetUtils.showDragable(
       context,
       title: 'Create Invoice',
       body: Padding(

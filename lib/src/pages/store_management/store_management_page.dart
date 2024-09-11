@@ -143,13 +143,13 @@ class _StoreManagementState extends State<StoreManagementPage> {
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),
-              textValue: _cubit.nameEditor,
+              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeName : _cubit.nameEditor,
               onChanged: _cubit.doSetName,
             ),
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.description.tr(),
-              textValue: _cubit.descEditor,
+              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeDesc : _cubit.descEditor,
               onChanged: _cubit.doSetDesc,
             ),
             TextFormFieldUiWidget(

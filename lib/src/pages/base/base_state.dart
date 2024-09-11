@@ -118,3 +118,15 @@ class BaseRemoveCartItem extends BaseState {
   @override
   String toString() => 'BaseRemoveCartItem';
 }
+
+class BaseAddStockSuccess extends BaseState {
+  final DateTime dateTime;
+
+  const BaseAddStockSuccess(this.dateTime);
+
+  @override
+  String toString() => 'BaseAddStockSuccess ${dateTime.toIso8601String()}';
+
+  @override
+  List<Object?> get props => [dateTime.toIso8601String()];
+}

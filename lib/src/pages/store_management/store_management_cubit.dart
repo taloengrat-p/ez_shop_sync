@@ -4,7 +4,10 @@ import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StoreManagementCubit extends Cubit<StoreManagementState> {
@@ -32,8 +35,9 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
       ((nameEditor != nameOriginal) || (descEditor != descOriginal)) &&
       ((nameEditor?.isNotEmpty ?? false) && (descEditor?.isNotEmpty ?? false));
 
-  String get ownerName => owner?.fullname ?? '--';
-  String get storeDesc => (store?.description?.isEmpty ?? true) ? '--' : store?.description ?? '';
+  String get ownerName => owner?.fullname.elseDisplay() ?? elseDisplay();
+  String get storeDesc => store?.description.elseDisplay() ?? elseDisplay();
+  String get storeName => store?.name.elseDisplay() ?? elseDisplay();
 
   void initial() {
     emit(StoreManagementLoading());

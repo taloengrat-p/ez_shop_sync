@@ -57,10 +57,6 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductRefresh(DateTime.now()));
   }
 
-  void addProductToStock(String id, num value) {
-    baseCubit.addProductToStock(id, value);
-  }
-
   void setSearchText(String? value) {
     searchText = value;
 
@@ -85,5 +81,9 @@ class ProductCubit extends Cubit<ProductState> {
 
   void addCart(Product product, {Offset? offset}) {
     baseCubit.addCart(offset: offset, product: product);
+  }
+
+  void addProductToStock(Product product, num value) {
+    baseCubit.addStock(product: product, qty: value);
   }
 }

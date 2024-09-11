@@ -243,17 +243,21 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   @override
-  onAddStock(String productId) {
-    cubit.addProductToStock(productId, 10);
+  onAddStock(Product product) async {
+    final result = await DialogUtils.showAddStockDialog(context, product);
+
+    if (result is num) {
+      cubit.addProductToStock(product, result);
+    }
   }
 
   @override
-  onAddCart(Product product) {
-    cubit.addCart(
-      product.copyWith(
-        quantity: 10,
-      ),
-    );
+  onAddCart(Product product) async {
+    final result = await DialogUtils.showAddCartDialog(context, product);
+
+    if (result is num) {
+      cubit.addCart(product.copyWith(quantity: result));
+    }
   }
 
   @override

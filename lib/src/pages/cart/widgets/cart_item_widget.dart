@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
+import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -64,39 +65,14 @@ class CartItemWidget extends StatelessWidget {
                   height: 120,
                   borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                 ),
-                const SizedBox(
-                  width: 8,
-                ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              cartItem.product?.name ?? '',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            Text(
-                              cartItem.product?.description ?? '',
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(),
-                            ),
-                          ],
-                        ),
-                        if (cartItem.product?.price != null)
-                          Text(
-                            (cartItem.product!.price! * cartItem.product!.quantity!).toString().prefixCurrency(),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          )
-                      ],
-                    ),
+                  child: ProductInfoListItem(
+                    padding: const EdgeInsets.all(8),
+                    name: cartItem.product?.name ?? '',
+                    desc: cartItem.product?.description,
+                    price: cartItem.product?.price == null || cartItem.product?.quantity == null
+                        ? null
+                        : cartItem.product!.price! * cartItem.product!.quantity!,
                   ),
                 ),
                 Column(

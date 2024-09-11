@@ -1,3 +1,5 @@
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/material.dart';
 
 extension StringExtendsions on String {
@@ -17,20 +19,20 @@ extension StringExtendsions on String {
   }
 
   String prefixCurrency() {
-    return '฿ $this';
+    return '${ApplicationConstance.currencyTHB} $this';
   }
 
   String suffuxCurrency() {
-    return '฿ $this';
+    return '${ApplicationConstance.currencyTHB} $this';
   }
 }
 
 extension StringNullableExtendsions on String? {
   String elsePrefixCurrency() {
-    return '฿ ${this ?? '--'}';
+    return '${ApplicationConstance.currencyTHB} ${this ?? ''.elseDisplay()}';
   }
 
   String elseSuffuxCurrency() {
-    return '฿ ${this ?? '--'}';
+    return '${ApplicationConstance.currencyTHB} ${this ?? ''.elseDisplay()}';
   }
 }

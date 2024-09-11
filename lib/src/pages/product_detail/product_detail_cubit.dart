@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
@@ -10,7 +9,6 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart'
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class ProductDetailCubit extends Cubit<ProductDetailState> {
   ProductRepository productRepository;
@@ -18,7 +16,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   Product? product;
   BaseCubit baseCubit;
 
-  String get productDescription => (product?.description?.isEmpty ?? true) ? '--' : product?.description ?? '--';
+  String get productDescription => product?.description?.elseDisplay() ?? elseDisplay();
   List<Tag> get tags => baseCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
   Category? get category => baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
   ProductDetailCubit({
@@ -80,10 +78,16 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     }
   }
 
-  void addCart() {
+  void addCart(Product? cartProduct) {
     baseCubit.addCart(
       offset: Offset.zero,
-      product: product,
+      product: cartProduct,
     );
+  }
+
+  void addStock(Product? copyWith, num qty) async {
+    emit(ProductDetailLoading());
+    product = await baseCubit.addStock(product: copyWith, qty: qty);
+    emit(ProductDetailRefresh(DateTime.now()));
   }
 }
