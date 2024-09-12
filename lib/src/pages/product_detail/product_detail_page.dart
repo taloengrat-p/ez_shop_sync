@@ -219,7 +219,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  cubit.product?.price?.elseDisplay().prefixCurrency() ?? elseDisplay().prefixCurrency(),
+                  cubit.product?.priceCategories?.elseDisplay().prefixCurrency() ?? elseDisplay().prefixCurrency(),
                   style: TextStyle(
                     fontSize: 18,
                     color: ColorKeys.accent,
@@ -228,7 +228,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ],
             ),
             Text(
-              '${cubit.product?.quantity.toString().elseDisplay()} ${LocaleKeys.units_piece.tr()}',
+              '${cubit.product?.quantity.elseDisplay()} ${LocaleKeys.units_piece.tr()}',
               style: const TextStyle(fontSize: 18),
             ),
           ],

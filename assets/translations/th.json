@@ -45,6 +45,7 @@
   "createProduct": "สร้างสินค้า",
   "description": "คำอธิบาย",
   "price": "ราคา",
+  "priceCategory": "ประเภทราคา",
   "category": "ประเภท",
   "quantity": "จำนวน",
   "tags": "แท็ก",
@@ -97,5 +98,8 @@
     "qrCode": "QR Code",
     "cash": "เงินสด"
   },
-  "settings": "ตั้งค่า"
+  "settings": "ตั้งค่า",
+  "optionalField": "{} (ไม่บังคับ)",
+  "priceCategoryName": "ชื่อประเภท",
+  "custom": "กำหนดเอง"
 }

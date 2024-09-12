@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -18,14 +20,13 @@ import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
-import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
+import 'package:ez_shop_sync/src/widgets/form/form_custom_field_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_dropdown_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -40,8 +41,7 @@ class CreateProductPage extends StatefulWidget {
 
 class CreateProductPageState extends State<CreateProductPage> {
   late CreateProductCubit cubit;
-  final _textCustomFieldNameInput = TextEditingController();
-  final _textCustomFieldValueInput = TextEditingController();
+
   final ScrollController _scrollController = ScrollController();
 
   final _tagController = MultiSelectController<Tag>();
@@ -73,6 +73,7 @@ class CreateProductPageState extends State<CreateProductPage> {
       },
       child: BlocListener<CreateProductCubit, CreateProductState>(
         listener: (context, state) {
+          log('create product state : $state, ${cubit.productEditor?.attributes}');
           if (state is CreateProductSuccess || state is CreateProductUpdateSuccess) {
             CreateProductRouter(context).pop(BaseArgrument(refresh: true));
           }
@@ -110,14 +111,6 @@ class CreateProductPageState extends State<CreateProductPage> {
                         textValue: cubit.productEditor?.description,
                         label: LocaleKeys.description.tr(),
                         onChanged: cubit.setDescription,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      TextFormFieldUiWidget(
-                        textValue: cubit.productEditor?.price?.toString() ?? '',
-                        label: LocaleKeys.price.tr(),
-                        onChanged: cubit.setPrice,
                       ),
                       const SizedBox(
                         height: 8,
@@ -225,7 +218,64 @@ class CreateProductPageState extends State<CreateProductPage> {
                       Divider(
                         color: ColorKeys.primary.withOpacity(0.6),
                       ),
-                      ...buildCustomField()
+                      TextFormFieldUiWidget(
+                        label: LocaleKeys.priceCategory.tr(),
+                        child: FormCustomFieldWidget(
+                          key: const ValueKey('form-create-price-category'),
+                          tag: 'form-create-price-category',
+                          keyLabel: LocaleKeys.priceCategoryName.tr(),
+                          valueLabel: LocaleKeys.price.tr(),
+                          keyboardType: const TextInputType.numberWithOptions(),
+                          items: cubit.productEditor?.priceCategories ?? {},
+                          onAddCustomField: (key, value) {
+                            cubit.addPriceCategory(key, value);
+                          },
+                          onRemoveField: (key) {
+                            cubit.removePriceCategory(key);
+                          },
+                          onFieldValueChange: (key, value) {
+                            cubit.changedPriceCategory(key, value);
+                          },
+                          onTempFieldChange: (key, value) {
+                            cubit.setTempPriceCategoryName(key);
+                            cubit.setTempPriceCategoryValue(key);
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Divider(
+                        color: ColorKeys.primary.withOpacity(0.6),
+                      ),
+                      TextFormFieldUiWidget(
+                        label: LocaleKeys.custom.tr(),
+                        child: FormCustomFieldWidget(
+                          key: const ValueKey('form-create-custom-field'),
+                          tag: 'form-create-custom-field',
+                          items: cubit.productEditor?.attributes ?? {},
+                          onAddCustomField: (key, value) {
+                            cubit.addCustomField(key, value);
+                            Future.delayed(const Duration(milliseconds: 200), () {
+                              _scrollController.animateTo(
+                                _scrollController.position.maxScrollExtent,
+                                curve: Curves.easeOut,
+                                duration: const Duration(milliseconds: 300),
+                              );
+                            });
+                          },
+                          onRemoveField: (key) {
+                            cubit.removeCustomField(key);
+                          },
+                          onFieldValueChange: (key, value) {
+                            cubit.changedCustomField(key, value);
+                          },
+                          onTempFieldChange: (key, value) {
+                            cubit.setTempCustomName(key);
+                            cubit.setTempCustomValue(key);
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -246,94 +296,5 @@ class CreateProductPageState extends State<CreateProductPage> {
         }),
       ),
     );
-  }
-
-  List<Widget> buildCustomField() {
-    return [
-      ...cubit.productEditor?.attributes
-              ?.map(
-                (k, v) => MapEntry(
-                  k,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: TextFormFieldUiWidget(
-                          key: ValueKey(k),
-                          label: k,
-                          textInitial: v,
-                          onChanged: (value) {
-                            cubit.changedCustomField(k, v);
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      ContainerCircleWidget(
-                        color: Colors.red,
-                        child: const Icon(CupertinoIcons.delete),
-                        onPressed: () {
-                          cubit.removeCustomField(k);
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              )
-              .values ??
-          [],
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextFormFieldUiWidget(
-                    controller: _textCustomFieldNameInput,
-                    label: LocaleKeys.customName.tr(),
-                    onChanged: cubit.setTempCustomName,
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: TextFormFieldUiWidget(
-                    controller: _textCustomFieldValueInput,
-                    label: LocaleKeys.customValue.tr(),
-                    onChanged: (value) {
-                      cubit.tempCustomValue = value ?? '';
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          ContainerCircleWidget(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              if (cubit.tempCustomValue.isEmpty || cubit.tempCustomName.isEmpty) {
-                return;
-              }
-              cubit.addCustomField(cubit.tempCustomName, cubit.tempCustomValue);
-              Future.delayed(const Duration(milliseconds: 350), () {
-                _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  curve: Curves.easeOut,
-                  duration: const Duration(milliseconds: 300),
-                );
-              });
-              _textCustomFieldValueInput.clear();
-              _textCustomFieldNameInput.clear();
-            },
-          )
-        ],
-      )
-    ];
   }
 }

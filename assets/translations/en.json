@@ -45,6 +45,7 @@
   "createProduct": "Create Product",
   "description": "Description",
   "price": "Price",
+  "priceCategory": "Price category",
   "category": "Category",
   "quantity": "Quantity",
   "tags": "Tags",
@@ -97,5 +98,8 @@
     "qrCode": "QR Code",
     "cash": "Cash"
   },
-  "settings": "Settings"
+  "settings": "Settings",
+  "optionalField": "{} (Optional)",
+  "priceCategoryName": "Category name",
+  "custom": "Custom"
 }

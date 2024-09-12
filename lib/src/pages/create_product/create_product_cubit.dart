@@ -21,21 +21,13 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   Product? _productOriginal;
   Product? _productEditor;
-  // String name = '';
-  // String description = '';
-  // String? category;
-  // String brand = '';
-  // ProductStatus status = ProductStatus.active;
-  // String? productImage;
-  // List<String>? productDetalImages;
-  // num? price;
-  // num? quantity;
-  // Map<String, dynamic> customField = {};
 
   String tempCustomName = '';
   String tempCustomValue = '';
-  // List<String> tagsSelected = [];
-  // Product? productArgs;
+
+  String tempPriceCategoryName = '';
+  String tempPriceCategoryValue = '';
+
   Store? get currentStore => baseCubit.store;
   List<Tag> get tagsModelSelected =>
       _productEditor?.tag
@@ -56,7 +48,14 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     required this.baseCubit,
   }) : super(CreateProductInitial()) {
     _productEditor = Product(
-        id: '', name: '', storeId: currentStore!.id, status: ProductStatus.undefined, ownerId: currentStore!.ownerId);
+      id: '',
+      name: '',
+      storeId: currentStore!.id,
+      status: ProductStatus.undefined,
+      ownerId: currentStore!.ownerId,
+      attributes: {},
+      priceCategories: {},
+    );
   }
 
   setName(String? value) {
@@ -67,26 +66,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     _productEditor?.description = value ?? '';
   }
 
-  setPrice(String? value) {
-    try {
-      _productEditor?.price = num.parse(value!);
-    } catch (e) {}
-  }
-
   setCategory(List<Category>? list) {
     if (list?.isEmpty ?? true) {
       _productEditor?.category = null;
     } else {
       _productEditor?.category = list?.first.id;
     }
-  }
-
-  setBrand(String? value) {
-    _productEditor?.brand = value ?? '';
-  }
-
-  setStatus(String? value) {
-    _productEditor?.status = ProductStatus.fromString(value);
   }
 
   setProductDetailImageSelect(List<File>? values) {
@@ -113,13 +98,16 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     _productEditor?.quantity = num.tryParse(value);
   }
 
-  void addCustomField(String tempCustomName, String tempCustomValue) {
-    _productEditor?.attributes?[tempCustomName] = tempCustomValue;
+  void addCustomField(String key, String value) {
+    _productEditor?.attributes?[key] = value;
     clearTempCustomField();
-    emit(CreateProductAddCustomField(tempCustomName, tempCustomValue));
+    emit(CreateProductAddCustomField(key, value));
   }
 
-  void changedCustomField(String k, v) {
+  void changedCustomField(String? k, String? v) {
+    if (k == null) {
+      throw ('changedCustomField key is Null');
+    }
     _productEditor?.attributes?[k] = v;
   }
 
@@ -189,6 +177,14 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       _productEditor?.attributes?[tempCustomName] = tempCustomValue;
     }
 
+    if (tempPriceCategoryName.isNotEmpty && tempPriceCategoryValue.isNotEmpty) {
+      num? priceTemp = num.tryParse(tempPriceCategoryValue);
+
+      if (priceTemp != null) {
+        _productEditor?.priceCategories?[tempPriceCategoryName] = priceTemp;
+      }
+    }
+
     if (_productEditor == null) {
       return;
     }
@@ -213,5 +209,45 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     emit(CreateProductLoading());
     await productRepository.update(_productEditor!.id, _productEditor!);
     emit(CreateProductUpdateSuccess());
+  }
+
+  void setTempPriceCategoryName(String? value) {
+    tempPriceCategoryName = value ?? '';
+  }
+
+  void setTempPriceCategoryValue(String? value) {
+    tempPriceCategoryValue = value ?? '';
+  }
+
+  void changedPriceCategory(String key, String? value) {
+    final priceParced = num.tryParse(value ?? '');
+
+    if (priceParced == null) {
+      throw ('addPriceCategory priceParced is not Number');
+    }
+
+    _productEditor?.priceCategories?[key] = priceParced;
+  }
+
+  void removePriceCategory(String key) {
+    _productEditor?.priceCategories?.remove(key);
+    emit(CreateProductRemoveCustomField(key));
+  }
+
+  void addPriceCategory(String key, String value) {
+    final priceParced = num.tryParse(value);
+
+    if (priceParced == null) {
+      throw ('addPriceCategory priceParced is not Number');
+    }
+
+    _productEditor?.priceCategories?[key] = priceParced;
+    clearTempCustomField();
+    emit(CreateProductAddCustomField(key, value));
+  }
+
+  clearPriceCategoryField() {
+    tempPriceCategoryName = '';
+    tempCustomValue = '';
   }
 }

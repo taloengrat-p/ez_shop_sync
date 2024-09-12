@@ -46,6 +46,7 @@ abstract class  LocaleKeys {
   static const createProduct = 'createProduct';
   static const description = 'description';
   static const price = 'price';
+  static const priceCategory = 'priceCategory';
   static const category = 'category';
   static const quantity = 'quantity';
   static const tags = 'tags';
@@ -96,5 +97,8 @@ abstract class  LocaleKeys {
   static const paymentMethodOptions_cash = 'paymentMethodOptions.cash';
   static const paymentMethodOptions = 'paymentMethodOptions';
   static const settings = 'settings';
+  static const optionalField = 'optionalField';
+  static const priceCategoryName = 'priceCategoryName';
+  static const custom = 'custom';
 
 }

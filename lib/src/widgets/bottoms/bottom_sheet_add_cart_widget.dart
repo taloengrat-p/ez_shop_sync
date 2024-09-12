@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +26,7 @@ class BottomSheetAddCartWidget extends StatefulWidget {
 class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
   late Product _productEditor;
   final _qtyTextController = TextEditingController(text: '1');
+  String? priceCategory;
 
   @override
   void initState() {
@@ -60,6 +63,38 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
                       price: (_productEditor.price ?? 0) * (qtyEditor ?? 0),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                RowGapWidget(
+                  gap: 8,
+                  children: widget.product.priceCategories
+                          ?.map(
+                            (k, v) => MapEntry(
+                              k,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    priceCategory = k;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: priceCategory == k ? Colors.amber : null,
+                                    borderRadius: BorderRadius.circular(DimensionsKeys.radius / 2),
+                                  ),
+                                  child: Text(
+                                    k.toString(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .values
+                          .toList() ??
+                      [],
                 ),
                 const SizedBox(
                   height: 8,

@@ -18,7 +18,7 @@ class CartItemAdapter extends TypeAdapter<CartItem> {
     };
     return CartItem(
       id: fields[1] as String,
-      product: fields[7] as Product,
+      product: fields[7] as Product?,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?

@@ -20,7 +20,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       id: fields[1] as String,
       name: fields[7] as String,
       description: fields[8] as String?,
-      price: fields[9] as num?,
+      priceCategories:
+          fields[9] == null ? {} : (fields[9] as Map?)?.cast<String, num>(),
       category: fields[10] as String?,
       brand: fields[11] as String?,
       imageDetail: (fields[12] as List?)?.cast<String>(),
@@ -37,6 +38,7 @@ class ProductAdapter extends TypeAdapter<Product> {
           : fields[16] as ProductStatus,
       quantity: fields[20] as num?,
       ownerId: fields[21] as String,
+      price: fields[22] as num?,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
@@ -48,13 +50,13 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(22)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
       ..write(obj.description)
       ..writeByte(9)
-      ..write(obj.price)
+      ..write(obj.priceCategories)
       ..writeByte(10)
       ..write(obj.category)
       ..writeByte(11)
@@ -79,6 +81,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.quantity)
       ..writeByte(21)
       ..write(obj.ownerId)
+      ..writeByte(22)
+      ..write(obj.price)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

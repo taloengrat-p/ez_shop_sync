@@ -14,8 +14,8 @@ class Product extends BaseHiveObject {
   @HiveField(8, defaultValue: null)
   String? description;
 
-  @HiveField(9, defaultValue: null)
-  num? price;
+  @HiveField(9, defaultValue: {})
+  Map<String, num>? priceCategories;
 
   @HiveField(10, defaultValue: null)
   String? category;
@@ -53,11 +53,14 @@ class Product extends BaseHiveObject {
   @HiveField(21, defaultValue: null)
   String ownerId;
 
+  @HiveField(22, defaultValue: null)
+  num? price;
+
   Product({
     required super.id,
     required this.name,
     this.description,
-    this.price,
+    this.priceCategories,
     this.category,
     this.brand,
     this.imageDetail,
@@ -70,18 +73,19 @@ class Product extends BaseHiveObject {
     required this.status,
     this.quantity,
     required this.ownerId,
+    this.price,
   });
 
   @override
   String toString() {
-    return 'Product(name: $name, description: $description, price: $price, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId)';
+    return 'Product(name: $name, description: $description, price: $priceCategories, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId)';
   }
 
   Product copyWith({
     String? id,
     String? name,
     String? description,
-    num? price,
+    Map<String, num>? priceCategories,
     String? category,
     String? brand,
     List<String>? imageDetail,
@@ -99,7 +103,7 @@ class Product extends BaseHiveObject {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
-      price: price ?? this.price,
+      priceCategories: priceCategories ?? this.priceCategories,
       category: category ?? this.category,
       brand: brand ?? this.brand,
       imageDetail: imageDetail ?? this.imageDetail,
