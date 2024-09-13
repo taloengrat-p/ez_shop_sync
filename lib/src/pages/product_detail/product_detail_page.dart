@@ -17,7 +17,6 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart'
 import 'package:ez_shop_sync/src/pages/product_settings/product_settings_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:uuid/uuid.dart';
 
-var uuid = Uuid();
+var uuid = const Uuid();
 
 class ResultEncryp {
   final String value;
@@ -46,8 +46,7 @@ class CryptoUtils {
 
   static String generateUuid(int length) {
     var uuid = const Uuid();
-    String fullUuid =
-        uuid.v4().replaceAll('-', ''); // Remove hyphens to get 32 characters
+    String fullUuid = uuid.v4().replaceAll('-', ''); // Remove hyphens to get 32 characters
     if (length > fullUuid.length) {
       throw Exception("Requested length exceeds the UUID length");
     }

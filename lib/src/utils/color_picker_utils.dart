@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ColorPickerUtils {
-  static Future<Color?> showDialogPicker(BuildContext context,
-      {Color? initialColor}) async {
+  static Future<Color?> showDialogPicker(BuildContext context, {Color? initialColor}) async {
     Color pickerColor = initialColor ?? Colors.white;
     Color currentColor = pickerColor;
 
@@ -14,9 +13,7 @@ class ColorPickerUtils {
       builder: (context) {
         return Dialog(
           backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(DimensionsKeys.radius))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(DimensionsKeys.radius))),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -27,7 +24,7 @@ class ColorPickerUtils {
                   },
                 ),
                 ActionButtonGroupWidget(
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   onCancel: () {
                     Navigator.of(context).pop();
                   },

@@ -59,7 +59,7 @@ class _UserManagementState extends State<UserManagementPage> {
 
   Widget _buildPage(BuildContext context, UserManagementState state) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
     );
   }
 }

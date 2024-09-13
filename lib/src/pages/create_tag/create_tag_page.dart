@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -11,15 +9,15 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
 
 class CreateTagPage extends StatefulWidget {

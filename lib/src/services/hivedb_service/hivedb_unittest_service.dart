@@ -11,13 +11,11 @@ import 'package:injectable/injectable.dart';
 class HiveDBUnittestService extends HiveDBService {
   @override
   init() {
-    // TODO: implement init
     throw UnimplementedError();
   }
 
   @override
   initBox() {
-    // TODO: implement initBox
     throw UnimplementedError();
   }
 

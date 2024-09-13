@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
