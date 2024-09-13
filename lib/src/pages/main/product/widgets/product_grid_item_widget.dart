@@ -53,11 +53,14 @@ class ProductGridItemWidget extends StatelessWidget {
                         Text(
                           product.name,
                           overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         Text(
-                          product.price.elsePrefixCurrency(),
+                          product.priceStringDisplay,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.orange),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
                         ),
                         if (product.quantity != null)
                           Text(

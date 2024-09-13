@@ -238,7 +238,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                           },
                           onTempFieldChange: (key, value) {
                             cubit.setTempPriceCategoryName(key);
-                            cubit.setTempPriceCategoryValue(key);
+                            cubit.setTempPriceCategoryValue(value);
                           },
                         ),
                       ),
@@ -272,7 +272,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                           },
                           onTempFieldChange: (key, value) {
                             cubit.setTempCustomName(key);
-                            cubit.setTempCustomValue(key);
+                            cubit.setTempCustomValue(value);
                           },
                         ),
                       ),

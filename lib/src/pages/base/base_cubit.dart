@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:ui';
+
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
@@ -286,8 +286,7 @@ class BaseCubit extends Cubit<BaseState> {
   }) async {
     if (_cart != null && product != null) {
       emit(BaseLoading());
-      final cartUpdate = await cartRepository.update(
-          _cart!.id, _cart!..cartItems.add(CartItem(id: const Uuid().v1(), product: product)));
+      final cartUpdate = await cartRepository.addCart(_cart!.id, product);
 
       log('cartUpdate $cartUpdate');
       emit(BaseAddCartSuccess());

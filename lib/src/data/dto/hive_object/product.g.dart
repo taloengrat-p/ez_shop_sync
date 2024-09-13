@@ -38,7 +38,7 @@ class ProductAdapter extends TypeAdapter<Product> {
           : fields[16] as ProductStatus,
       quantity: fields[20] as num?,
       ownerId: fields[21] as String,
-      price: fields[22] as num?,
+      priceSelected: fields[22] as String?,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
@@ -82,7 +82,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(21)
       ..write(obj.ownerId)
       ..writeByte(22)
-      ..write(obj.price)
+      ..write(obj.priceSelected)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

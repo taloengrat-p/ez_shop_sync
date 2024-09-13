@@ -57,7 +57,7 @@ class _FormCustomFieldWidgetState extends State<FormCustomFieldWidget> {
                           label: k,
                           textInitial: v?.toString(),
                           onChanged: (value) {
-                            widget.onFieldValueChange?.call(k, v.toString());
+                            widget.onFieldValueChange?.call(k, value);
                           },
                         ),
                       ),

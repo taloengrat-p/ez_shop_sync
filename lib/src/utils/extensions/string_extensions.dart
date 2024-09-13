@@ -19,20 +19,20 @@ extension StringExtendsions on String {
   }
 
   String prefixCurrency() {
-    return '${ApplicationConstance.currencyTHB} $this';
+    return '${ApplicationConstance.currencyTHB}$this';
   }
 
   String suffuxCurrency() {
-    return '${ApplicationConstance.currencyTHB} $this';
+    return '${ApplicationConstance.currencyTHB}$this';
   }
 }
 
 extension StringNullableExtendsions on String? {
   String elsePrefixCurrency() {
-    return '${ApplicationConstance.currencyTHB} ${this ?? ''.elseDisplay()}';
+    return '${ApplicationConstance.currencyTHB}${this ?? ''.elseDisplay()}';
   }
 
   String elseSuffuxCurrency() {
-    return '${ApplicationConstance.currencyTHB} ${this ?? ''.elseDisplay()}';
+    return '${ApplicationConstance.currencyTHB}${this ?? ''.elseDisplay()}';
   }
 }

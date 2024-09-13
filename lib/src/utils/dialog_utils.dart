@@ -18,7 +18,7 @@ class DialogUtils {
     ).show();
   }
 
-  static Future<int?> showAddCartDialog(BuildContext context, Product? product) async {
+  static Future<BottomSheetAddCartSuccess?> showAddCartDialog(BuildContext context, Product? product) async {
     if (product == null) {
       throw ('showAddCartDialog product is Null');
     }

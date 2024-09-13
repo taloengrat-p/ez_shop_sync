@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
+import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
@@ -20,6 +21,7 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
@@ -175,8 +177,8 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       return GridView.count(
         crossAxisCount: crossAxisCount,
         childAspectRatio: (itemWidth / itemHeight),
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         children: cubit.products
             .map(
               (e) => GestureDetector(
@@ -255,8 +257,13 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   onAddCart(Product product) async {
     final result = await DialogUtils.showAddCartDialog(context, product);
 
-    if (result is num) {
-      cubit.addCart(product.copyWith(quantity: result));
+    if (result is BottomSheetAddCartSuccess) {
+      cubit.addCart(
+        product.copyWith(
+          quantity: result.qty,
+          priceSelected: result.priceCategorySelected,
+        ),
+      );
     }
   }
 
@@ -271,6 +278,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   @override
   onEdit(String productId) async {
-    final result = await CreateProductRouter(context).navigate();
+    final result = await CreateProductRouter(context).navigate(
+      argruments: ProductEditArgrument(
+        cubit.products.firstWhere((e) => e.id == productId),
+      ),
+    );
   }
 }

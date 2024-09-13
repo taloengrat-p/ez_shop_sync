@@ -3,6 +3,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
+import 'package:ez_shop_sync/src/widgets/price_group_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,7 +25,7 @@ class BottomSheetAddStockWidget extends StatefulWidget {
 class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
   late Product _productEditor;
   final _qtyTextController = TextEditingController(text: '1');
-
+  String? priceCategorySelected;
   @override
   void initState() {
     _productEditor = widget.product;
@@ -63,6 +64,22 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                 const SizedBox(
                   height: 8,
                 ),
+                PriceGroupSelectWidget(
+                  items: widget.product.priceCategories?.keys.toList() ?? [],
+                  itemSelected: priceCategorySelected,
+                  onChange: (value) {
+                    setState(() {
+                      if (priceCategorySelected == value) {
+                        priceCategorySelected = null;
+                      } else {
+                        priceCategorySelected = value;
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
                 TextFormFieldUiWidget(
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
@@ -85,9 +102,11 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
           ButtonWidget(
             margin: const EdgeInsets.only(top: 16),
             label: LocaleKeys.addStock.tr(),
-            leading: const Icon(CupertinoIcons.cart_badge_plus),
+            leading: const Icon(CupertinoIcons.bag_badge_plus),
             backgroundColor: Colors.amber,
-            onPressed: _qtyTextController.text.isEmpty || int.tryParse(_qtyTextController.text) == null
+            onPressed: _qtyTextController.text.isEmpty ||
+                    int.tryParse(_qtyTextController.text) == null ||
+                    priceCategorySelected == null
                 ? null
                 : () {
                     Navigator.of(context).pop(int.parse(_qtyTextController.text));

@@ -21,7 +21,7 @@ class CartCubit extends Cubit<CartState> {
   }) : super(CartInitial());
 
   num get totalPrice =>
-      products.fold(0.0, (sum, item) => sum + ((item.product?.price ?? 0) * (item.product?.quantity ?? 0)));
+      products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0) * (item.product?.quantity ?? 0)));
 
   num get totalServiceCharge => (totalPrice * serviceChargeValue);
 

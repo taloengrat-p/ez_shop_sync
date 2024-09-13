@@ -1,6 +1,7 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
@@ -106,7 +107,7 @@ class ProductListItemWidget extends StatelessWidget {
                     name: product.name,
                     desc: product.description,
                     qty: product.quantity,
-                    price: product.price,
+                    price: product.priceStringDisplay,
                   ),
                 ),
               ],

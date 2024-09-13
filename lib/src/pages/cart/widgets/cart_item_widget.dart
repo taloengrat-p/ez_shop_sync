@@ -1,6 +1,8 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
@@ -69,9 +71,7 @@ class CartItemWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     name: cartItem.product?.name ?? '',
                     desc: cartItem.product?.description,
-                    price: cartItem.product?.priceCategories == null || cartItem.product?.quantity == null
-                        ? null
-                        : (cartItem.product?.price ?? 0) * (cartItem.product?.quantity ?? 0),
+                    price: cartItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
                   ),
                 ),
                 Column(

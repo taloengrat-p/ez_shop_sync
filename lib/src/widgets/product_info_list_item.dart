@@ -1,14 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
-
 import 'package:flutter/material.dart';
 
 class ProductInfoListItem extends StatelessWidget {
   final String name;
   final String? desc;
-  final num? price;
+  final String? price;
   final EdgeInsetsGeometry? padding;
   final num? qty;
 
@@ -47,8 +44,8 @@ class ProductInfoListItem extends StatelessWidget {
           ),
           if (price != null)
             Text(
-              price.toString().prefixCurrency(),
-              style: Theme.of(context).textTheme.titleMedium,
+              price!,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
             ),
           if (qty != null)
             Text(
