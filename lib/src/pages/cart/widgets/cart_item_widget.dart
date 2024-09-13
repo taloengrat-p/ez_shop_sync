@@ -71,6 +71,7 @@ class CartItemWidget extends StatelessWidget {
                     name: cartItem.product?.name ?? '',
                     desc: cartItem.product?.description,
                     price: cartItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
+                    priceCategory: cartItem.product?.priceSelected,
                   ),
                 ),
                 Column(

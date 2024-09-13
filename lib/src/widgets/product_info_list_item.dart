@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_price_category_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProductInfoListItem extends StatelessWidget {
@@ -8,6 +9,7 @@ class ProductInfoListItem extends StatelessWidget {
   final String? price;
   final EdgeInsetsGeometry? padding;
   final num? qty;
+  final String? priceCategory;
 
   const ProductInfoListItem({
     super.key,
@@ -16,6 +18,7 @@ class ProductInfoListItem extends StatelessWidget {
     this.padding,
     this.price,
     this.qty,
+    this.priceCategory,
   });
 
   @override
@@ -42,11 +45,17 @@ class ProductInfoListItem extends StatelessWidget {
               ),
             ],
           ),
-          if (price != null)
+          if (price != null) ...[
+            if (priceCategory != null)
+              ContainerPriceCategoryWidget(
+                isSelect: true,
+                label: priceCategory ?? '',
+              ),
             Text(
               price!,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
             ),
+          ],
           if (qty != null)
             Text(
               LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
