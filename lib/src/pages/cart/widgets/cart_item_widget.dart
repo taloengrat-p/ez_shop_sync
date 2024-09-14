@@ -46,7 +46,6 @@ class CartItemWidget extends StatelessWidget {
                   topRight: Radius.circular(8),
                   bottomRight: Radius.circular(8),
                 ),
-                // label: LocaleKeys.delete.tr(),
               ),
               const SizedBox(
                 width: 0.5,
@@ -54,15 +53,14 @@ class CartItemWidget extends StatelessWidget {
             ],
           ),
           child: SizedBox(
-            height: 120,
+            height: 150,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ImageWidget(
                   imageUrl: cartItem.product?.image,
                   imageFullName: cartItem.product?.imageName,
                   width: 120,
-                  height: 120,
                   borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                 ),
                 Expanded(

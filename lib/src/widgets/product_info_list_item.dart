@@ -45,22 +45,29 @@ class ProductInfoListItem extends StatelessWidget {
               ),
             ],
           ),
-          if (price != null) ...[
-            if (priceCategory != null)
-              ContainerPriceCategoryWidget(
-                isSelect: true,
-                label: priceCategory ?? '',
-              ),
-            Text(
-              price!,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
-            ),
-          ],
-          if (qty != null)
-            Text(
-              LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
-              style: Theme.of(context).textTheme.titleMedium,
-            )
+          Column(
+            children: [
+              if (priceCategory != null)
+                ContainerPriceCategoryWidget(
+                  isSelect: true,
+                  label: priceCategory ?? '',
+                ),
+              if (price != null) ...[
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  price!,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
+                )
+              ],
+              if (qty != null)
+                Text(
+                  LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
+                  style: Theme.of(context).textTheme.titleMedium,
+                )
+            ],
+          ),
         ],
       ),
     );

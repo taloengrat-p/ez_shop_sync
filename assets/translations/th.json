@@ -79,7 +79,8 @@
   "dateTimeCreated": "วันและเวลาที่สร้าง",
   "dateTimeUpdated": "วันและเวลาที่อัพเดต",
   "button": {
-    "save": "บันทึก"
+    "save": "บันทึก",
+    "okay": "ตกลง"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "อีเมล",
@@ -101,5 +102,9 @@
   "settings": "ตั้งค่า",
   "optionalField": "{} (ไม่บังคับ)",
   "priceCategoryName": "ชื่อประเภท",
-  "custom": "กำหนดเอง"
+  "custom": "กำหนดเอง",
+  "error": {
+    "unableAddCart": "ไม่สามารถเพิ่มสินค้าได้",
+    "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา"
+  }
 }

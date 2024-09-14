@@ -79,6 +79,7 @@ abstract class  LocaleKeys {
   static const dateTimeCreated = 'dateTimeCreated';
   static const dateTimeUpdated = 'dateTimeUpdated';
   static const button_save = 'button.save';
+  static const button_okay = 'button.okay';
   static const button = 'button';
   static const phoneNumber = 'phoneNumber';
   static const email = 'email';
@@ -100,5 +101,8 @@ abstract class  LocaleKeys {
   static const optionalField = 'optionalField';
   static const priceCategoryName = 'priceCategoryName';
   static const custom = 'custom';
+  static const error_unableAddCart = 'error.unableAddCart';
+  static const error_productPriceNotYet = 'error.productPriceNotYet';
+  static const error = 'error';
 
 }

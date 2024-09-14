@@ -1,5 +1,4 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ContainerPriceCategoryWidget extends StatelessWidget {

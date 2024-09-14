@@ -182,13 +182,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
         children: cubit.products
             .map(
               (e) => GestureDetector(
-                onTap: () async {
-                  final result = await ProductDetailRouter(context).navigate(argruments: e);
-
-                  if (result is BaseArgrument && result.refresh) {
-                    cubit.init();
-                  }
-                },
+                onTap: () => onClickGoToDetailPage(e),
                 child: ProductGridItemWidget(
                   key: ValueKey(e.id),
                   product: e,
@@ -207,9 +201,12 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       itemBuilder: (context, index) {
         final product = cubit.products.elementAt(index);
 
-        return ProductListItemWidget(
-          product: product,
-          iProductItem: this,
+        return GestureDetector(
+          onTap: () => onClickGoToDetailPage(product),
+          child: ProductListItemWidget(
+            product: product,
+            iProductItem: this,
+          ),
         );
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -283,5 +280,14 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
         cubit.products.firstWhere((e) => e.id == productId),
       ),
     );
+  }
+
+  @override
+  onClickGoToDetailPage(Product product) async {
+    final result = await ProductDetailRouter(context).navigate(argruments: product);
+
+    if (result is BaseArgrument && result.refresh) {
+      cubit.init();
+    }
   }
 }
