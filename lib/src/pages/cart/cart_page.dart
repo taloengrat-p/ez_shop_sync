@@ -150,18 +150,21 @@ class _CartState extends State<CartPage> {
           duration: const Duration(milliseconds: 300),
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: 120,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white.withOpacity(0.0),
-                    Colors.white.withOpacity(0.5),
-                    Colors.white.withOpacity(0.9),
-                  ],
+            child: IgnorePointer(
+              ignoring: true,
+              child: Container(
+                width: double.infinity,
+                height: 120,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withOpacity(0.0),
+                      Colors.white.withOpacity(0.5),
+                      Colors.white.withOpacity(0.9),
+                    ],
+                  ),
                 ),
               ),
             ),
