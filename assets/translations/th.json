@@ -101,5 +101,7 @@
   "settings": "ตั้งค่า",
   "optionalField": "{} (ไม่บังคับ)",
   "priceCategoryName": "ชื่อประเภท",
-  "custom": "กำหนดเอง"
+  "custom": "กำหนดเอง",
+  "storeName": "ชื่อร้านค้า",
+  "yourStoreName": "ชื่อร้านค้าของคุณ"
 }

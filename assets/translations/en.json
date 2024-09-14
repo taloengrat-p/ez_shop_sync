@@ -101,5 +101,7 @@
   "settings": "Settings",
   "optionalField": "{} (Optional)",
   "priceCategoryName": "Category name",
-  "custom": "Custom"
+  "custom": "Custom",
+  "storeName": "Store Name",
+  "yourStoreName": "Your Store Name"
 }

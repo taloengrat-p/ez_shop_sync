@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_cubit.dart';
@@ -94,15 +96,15 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           title: "",
                           bodyWidget: StepWidget(
                             number: 1,
-                            title: 'Create Your Store Name',
+                            title: LocaleKeys.createYourStoreName.tr(),
                             children: [
                               TextFormFieldUiWidget(
-                                label: 'Store Name',
+                                label: LocaleKeys.storeName.tr(),
                                 focusNode: _storeNameFocusNode,
                                 textInitial: cubit.storeName,
                                 onChanged: cubit.setStoreName,
                                 textInputAction: TextInputAction.done,
-                                hintText: 'Your Store Name',
+                                hintText: LocaleKeys.yourStoreName.tr(),
                                 onFieldSubmitted: (value) {
                                   if (cubit.enableNext) {
                                     _introKey.currentState?.next();

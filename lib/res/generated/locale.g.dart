@@ -100,5 +100,7 @@ abstract class  LocaleKeys {
   static const optionalField = 'optionalField';
   static const priceCategoryName = 'priceCategoryName';
   static const custom = 'custom';
+  static const storeName = 'storeName';
+  static const yourStoreName = 'yourStoreName';
 
 }
