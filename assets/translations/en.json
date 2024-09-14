@@ -79,7 +79,8 @@
   "dateTimeCreated": "Date time created",
   "dateTimeUpdated": "Date time updated",
   "button": {
-    "save": "Save"
+    "save": "Save",
+    "okay": "Okay"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "Email",
@@ -99,9 +100,13 @@
     "cash": "Cash"
   },
   "settings": "Settings",
-  "optionalField": "{} (Optional)",
+  "optionalField": "{} (optional)",
   "priceCategoryName": "Category name",
   "custom": "Custom",
   "storeName": "Store Name",
-  "yourStoreName": "Your Store Name"
+  "yourStoreName": "Your Store Name",
+  "error": {
+    "unableAddCart": "Unable to add cart",
+    "productPriceNotYet": "Your product has not been priced yet."
+  }
 }

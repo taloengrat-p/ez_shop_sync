@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const locale = 'locale';
   static const createYourStoreName = 'createYourStoreName';
   static const storeSettings = 'storeSettings';
@@ -79,6 +79,7 @@ abstract class  LocaleKeys {
   static const dateTimeCreated = 'dateTimeCreated';
   static const dateTimeUpdated = 'dateTimeUpdated';
   static const button_save = 'button.save';
+  static const button_okay = 'button.okay';
   static const button = 'button';
   static const phoneNumber = 'phoneNumber';
   static const email = 'email';
@@ -102,5 +103,7 @@ abstract class  LocaleKeys {
   static const custom = 'custom';
   static const storeName = 'storeName';
   static const yourStoreName = 'yourStoreName';
-
+  static const error_unableAddCart = 'error.unableAddCart';
+  static const error_productPriceNotYet = 'error.productPriceNotYet';
+  static const error = 'error';
 }

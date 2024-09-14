@@ -1,16 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
-
+import 'package:ez_shop_sync/src/widgets/container/container_price_category_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProductInfoListItem extends StatelessWidget {
   final String name;
   final String? desc;
-  final num? price;
+  final String? price;
   final EdgeInsetsGeometry? padding;
   final num? qty;
+  final String? priceCategory;
 
   const ProductInfoListItem({
     super.key,
@@ -19,6 +18,7 @@ class ProductInfoListItem extends StatelessWidget {
     this.padding,
     this.price,
     this.qty,
+    this.priceCategory,
   });
 
   @override
@@ -45,16 +45,29 @@ class ProductInfoListItem extends StatelessWidget {
               ),
             ],
           ),
-          if (price != null)
-            Text(
-              price.toString().prefixCurrency(),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          if (qty != null)
-            Text(
-              LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
-              style: Theme.of(context).textTheme.titleMedium,
-            )
+          Column(
+            children: [
+              if (priceCategory != null)
+                ContainerPriceCategoryWidget(
+                  isSelect: true,
+                  label: priceCategory ?? '',
+                ),
+              if (price != null) ...[
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  price!,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
+                )
+              ],
+              if (qty != null)
+                Text(
+                  LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
+                  style: Theme.of(context).textTheme.titleMedium,
+                )
+            ],
+          ),
         ],
       ),
     );

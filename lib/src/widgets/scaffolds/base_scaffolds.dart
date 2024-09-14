@@ -1,6 +1,4 @@
 import 'package:ez_shop_sync/app.dart';
-import 'package:ez_shop_sync/res/colors.dart';
-import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:flutter/material.dart';
 
 enum RouteAwareType {

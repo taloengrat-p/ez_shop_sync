@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
@@ -105,6 +106,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   void changedCustomField(String? k, String? v) {
+    log('changedCustomField: $k:$v');
     if (k == null) {
       throw ('changedCustomField key is Null');
     }
@@ -173,17 +175,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       }
     }
 
-    if (tempCustomName.isNotEmpty && tempCustomValue.isNotEmpty) {
-      _productEditor?.attributes?[tempCustomName] = tempCustomValue;
-    }
-
-    if (tempPriceCategoryName.isNotEmpty && tempPriceCategoryValue.isNotEmpty) {
-      num? priceTemp = num.tryParse(tempPriceCategoryValue);
-
-      if (priceTemp != null) {
-        _productEditor?.priceCategories?[tempPriceCategoryName] = priceTemp;
-      }
-    }
+    checkTempCustomFieldRemaining();
+    checkTempPriceCategoryRemaining();
 
     if (_productEditor == null) {
       return;
@@ -201,10 +194,19 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     });
   }
 
+  checkTempCustomFieldRemaining() {
+    if (tempCustomName.isNotEmpty && tempCustomValue.isNotEmpty) {
+      _productEditor?.attributes?[tempCustomName] = tempCustomValue;
+    }
+  }
+
   Future<void> saveEdit() async {
     if (_productEditor == null) {
       return;
     }
+
+    checkTempCustomFieldRemaining();
+    checkTempPriceCategoryRemaining();
 
     emit(CreateProductLoading());
     await productRepository.update(_productEditor!.id, _productEditor!);
@@ -242,12 +244,22 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     }
 
     _productEditor?.priceCategories?[key] = priceParced;
-    clearTempCustomField();
+    clearPriceCategoryField();
     emit(CreateProductAddCustomField(key, value));
   }
 
   clearPriceCategoryField() {
     tempPriceCategoryName = '';
     tempCustomValue = '';
+  }
+
+  void checkTempPriceCategoryRemaining() {
+    if (tempPriceCategoryName.isNotEmpty && tempPriceCategoryValue.isNotEmpty) {
+      num? priceTemp = num.tryParse(tempPriceCategoryValue);
+
+      if (priceTemp != null) {
+        _productEditor?.priceCategories?[tempPriceCategoryName] = priceTemp;
+      }
+    }
   }
 }

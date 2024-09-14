@@ -5,4 +5,5 @@ abstract class IProductPage {
   onAddStock(Product product);
   onEdit(String productId);
   onDelete(String productId);
+  onClickGoToDetailPage(Product product);
 }

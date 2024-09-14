@@ -106,7 +106,7 @@ class ProductListItemWidget extends StatelessWidget {
                     name: product.name,
                     desc: product.description,
                     qty: product.quantity,
-                    price: product.price,
+                    price: product.priceStringDisplay,
                   ),
                 ),
               ],

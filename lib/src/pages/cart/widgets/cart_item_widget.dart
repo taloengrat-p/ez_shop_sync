@@ -1,6 +1,7 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
@@ -45,7 +46,6 @@ class CartItemWidget extends StatelessWidget {
                   topRight: Radius.circular(8),
                   bottomRight: Radius.circular(8),
                 ),
-                // label: LocaleKeys.delete.tr(),
               ),
               const SizedBox(
                 width: 0.5,
@@ -53,15 +53,14 @@ class CartItemWidget extends StatelessWidget {
             ],
           ),
           child: SizedBox(
-            height: 120,
+            height: 150,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ImageWidget(
                   imageUrl: cartItem.product?.image,
                   imageFullName: cartItem.product?.imageName,
                   width: 120,
-                  height: 120,
                   borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                 ),
                 Expanded(
@@ -69,9 +68,8 @@ class CartItemWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     name: cartItem.product?.name ?? '',
                     desc: cartItem.product?.description,
-                    price: cartItem.product?.priceCategories == null || cartItem.product?.quantity == null
-                        ? null
-                        : (cartItem.product?.price ?? 0) * (cartItem.product?.quantity ?? 0),
+                    price: cartItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
+                    priceCategory: cartItem.product?.priceSelected,
                   ),
                 ),
                 Column(

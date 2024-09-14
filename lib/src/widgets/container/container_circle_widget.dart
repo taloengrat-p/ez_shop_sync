@@ -18,7 +18,7 @@ class ContainerCircleWidget extends StatelessWidget {
     this.margin,
     this.padding,
     this.backgroundColor,
-    this.iconSize = 24,
+    this.iconSize = 20,
   });
 
   @override
@@ -35,7 +35,7 @@ class ContainerCircleWidget extends StatelessWidget {
           border: Border.all(color: onPressed == null ? Colors.grey.withOpacity(0.4) : color ?? ColorKeys.primary),
         ),
         child: IconButton(
-          iconSize: iconSize ?? 20,
+          iconSize: iconSize,
           onPressed: onPressed,
           color: onPressed == null ? Colors.grey.withOpacity(0.4) : color ?? ColorKeys.primary,
           icon: child,

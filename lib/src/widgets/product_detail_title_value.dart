@@ -1,6 +1,4 @@
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductDetailTitleValue extends StatelessWidget {

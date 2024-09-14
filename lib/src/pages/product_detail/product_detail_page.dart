@@ -17,9 +17,9 @@ import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart'
 import 'package:ez_shop_sync/src/pages/product_settings/product_settings_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
@@ -165,8 +165,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               onPressed: () async {
                                 final result = await DialogUtils.showAddCartDialog(context, cubit.product);
 
-                                if (result is num) {
-                                  cubit.addCart(cubit.product?.copyWith(quantity: result));
+                                if (result is BottomSheetAddCartSuccess) {
+                                  cubit.addCart(
+                                    cubit.product?.copyWith(
+                                      quantity: result.qty,
+                                      priceSelected: result.priceCategorySelected,
+                                    ),
+                                  );
                                 }
                               },
                             ),
@@ -219,7 +224,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  cubit.product?.priceCategories?.elseDisplay().prefixCurrency() ?? elseDisplay().prefixCurrency(),
+                  cubit.product?.priceStringDisplay ?? elseDisplay(),
                   style: TextStyle(
                     fontSize: 18,
                     color: ColorKeys.accent,

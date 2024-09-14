@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/base_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_server_repository.dart';
@@ -72,6 +73,14 @@ class CartRepository extends BaseRepository implements ICartRepository {
   Future<Cart> deleteItemByIdFromCart(String? id, String cartItemId) async {
     if (appMode == AppMode.local) {
       return await cartLocalRepository.deleteItemByIdFromCart(id, cartItemId);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  Future<Cart?> addCart(String id, Product product) async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.addCart(id, product);
     } else {
       throw UnimplementedError();
     }

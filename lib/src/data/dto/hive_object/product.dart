@@ -3,6 +3,9 @@
 import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 
 part 'product.g.dart';
 
@@ -54,7 +57,7 @@ class Product extends BaseHiveObject {
   String ownerId;
 
   @HiveField(22, defaultValue: null)
-  num? price;
+  String? priceSelected;
 
   Product({
     required super.id,
@@ -73,12 +76,25 @@ class Product extends BaseHiveObject {
     required this.status,
     this.quantity,
     required this.ownerId,
-    this.price,
+    this.priceSelected,
   });
+
+  List<num>? get priceRange => priceCategories?.entries.map((mapEntry) => mapEntry.value).toList() ?? [];
+
+  // num
+  String get priceStringDisplay => (priceCategories?.isEmpty ?? true) || (priceRange?.isEmpty ?? true)
+      ? ''.elseDisplay().prefixCurrency()
+      : (priceRange?.length ?? false) == 1
+          ? priceRange?.first.toString().prefixCurrency() ?? ''.elseDisplay()
+          : '${priceRange?.first.prefixCurrency()} - ${priceRange?.last.prefixCurrency()}';
+
+  num? get priceCurrentSelected =>
+      (priceCategories?.entries.where((mapEntry) => mapEntry.key == priceSelected).firstOrNull?.value ?? 0) *
+      (quantity ?? 0);
 
   @override
   String toString() {
-    return 'Product(name: $name, description: $description, price: $priceCategories, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId)';
+    return 'Product(name: $name, description: $description, priceCategories: $priceCategories, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId, priceSelected: $priceSelected)';
   }
 
   Product copyWith({
@@ -98,6 +114,7 @@ class Product extends BaseHiveObject {
     num? quantity,
     String? ownerId,
     ProductStatus? status,
+    String? priceSelected,
   }) {
     return Product(
       id: id ?? this.id,
@@ -116,6 +133,7 @@ class Product extends BaseHiveObject {
       quantity: quantity ?? this.quantity,
       ownerId: ownerId ?? this.ownerId,
       status: status ?? this.status,
+      priceSelected: priceSelected ?? this.priceSelected,
     );
   }
 }

@@ -109,7 +109,9 @@ class CreateProductPageState extends State<CreateProductPage> {
                       ),
                       TextFormFieldUiWidget(
                         textValue: cubit.productEditor?.description,
-                        label: LocaleKeys.description.tr(),
+                        label: LocaleKeys.optionalField.tr(
+                          args: [LocaleKeys.description.tr()],
+                        ),
                         onChanged: cubit.setDescription,
                       ),
                       const SizedBox(
@@ -117,7 +119,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                       ),
                       TextFormFieldUiWidget(
                         textValue: cubit.productEditor?.quantity?.toString() ?? '',
-                        label: LocaleKeys.quantity.tr(),
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.quantity.tr()]),
                         keyboardType: TextInputType.number,
                         onChanged: cubit.setQuantity,
                       ),
@@ -127,7 +129,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                       TextFormFieldDropdownSelectWidget<Category>(
                         controller: _categoryController,
                         singleSelect: true,
-                        label: LocaleKeys.category.tr(),
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.category.tr()]),
                         items: cubit.categories
                             .map(
                               (e) => DropdownItem<Category>(
@@ -199,7 +201,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                           );
                         },
                         onSelectionChange: cubit.setTags,
-                        label: LocaleKeys.tags.tr(),
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.tags.tr()]),
                         footerMenu: IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () async {
@@ -238,7 +240,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                           },
                           onTempFieldChange: (key, value) {
                             cubit.setTempPriceCategoryName(key);
-                            cubit.setTempPriceCategoryValue(key);
+                            cubit.setTempPriceCategoryValue(value);
                           },
                         ),
                       ),
@@ -272,7 +274,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                           },
                           onTempFieldChange: (key, value) {
                             cubit.setTempCustomName(key);
-                            cubit.setTempCustomValue(key);
+                            cubit.setTempCustomValue(value);
                           },
                         ),
                       ),

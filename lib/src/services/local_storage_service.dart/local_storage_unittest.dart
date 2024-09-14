@@ -18,37 +18,31 @@ class LocalStorageUnittest extends LocalStorageService {
 
   @override
   Future<bool> doCheckIsFirstRunApp() {
-    // TODO: implement doCheckIsFirstRunApp
     throw UnimplementedError();
   }
 
   @override
   Future<bool> doCheckIsIntroduceFlowDone() {
-    // TODO: implement doCheckIsIntroduceFlowDonw
     throw UnimplementedError();
   }
 
   @override
   T? getPref<T>(String key) {
-    // TODO: implement getPref
     throw UnimplementedError();
   }
 
   @override
   Future<bool> setPref(String key, Object? value) {
-    // TODO: implement setPref
     throw UnimplementedError();
   }
 
   @override
   getSecure(String key) {
-    // TODO: implement getSecure
     throw UnimplementedError();
   }
 
   @override
   setSecure(String key, String? value) {
-    // TODO: implement setSecure
     throw UnimplementedError();
   }
 }
