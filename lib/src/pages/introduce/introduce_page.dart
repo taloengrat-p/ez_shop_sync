@@ -67,19 +67,15 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
       child: BlocListener<IntroduceCubit, IntroduceState>(
         listener: (context, state) async {
           if (state is IntroduceSuccess) {
-            final result = await PinSetupRouter(context).navigate();
-
-            if (result is PinSetupAllSuccess) {
-              MainRouter(context).replace();
-            }
-          } else if (state is IntroduceCreatePINSuccess) {}
+            MainRouter(context).replace();
+          }
         },
         child: BlocBuilder<IntroduceCubit, IntroduceState>(
           builder: (context, state) {
             return BaseScaffolds(
               appBar: AppBar(
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
               ),
               body: state is IntroduceSuccess
                   ? Container(
@@ -118,13 +114,13 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           title: "",
                           bodyWidget: StepWidget(
                             number: 2,
-                            title: 'Create Owner Infomation',
+                            title: LocaleKeys.introducePage_createOwnerInfomation.tr(),
                             children: [
                               TextFormFieldUiWidget(
-                                label: 'Firstname',
+                                label: LocaleKeys.introducePage_firstName.tr(),
                                 focusNode: _firstNameFocusNode,
                                 textInitial: cubit.firstName,
-                                hintText: 'Your First Name',
+                                hintText: LocaleKeys.introducePage_yourFirstName.tr(),
                                 onChanged: cubit.setFirstName,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
@@ -132,11 +128,11 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                 },
                               ),
                               TextFormFieldUiWidget(
-                                label: 'Lastname',
+                                label: LocaleKeys.introducePage_lastName.tr(),
                                 focusNode: _lastNameFocusNode,
                                 textInitial: cubit.lastName,
                                 onChanged: cubit.setLastName,
-                                hintText: 'Your Last Name',
+                                hintText: LocaleKeys.introducePage_yourLastName.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
                                   FocusScope.of(context).requestFocus(_emailFocusNode);
@@ -144,10 +140,10 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               ),
                               TextFormFieldUiWidget(
                                 focusNode: _emailFocusNode,
-                                label: 'Email',
+                                label: LocaleKeys.email.tr(),
                                 textInitial: cubit.email,
                                 onChanged: cubit.setEmail,
-                                hintText: 'Your Email',
+                                hintText: LocaleKeys.introducePage_yourEmail.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
                                   FocusScope.of(context).requestFocus(_phoneNumber);
@@ -155,10 +151,10 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               ),
                               TextFormFieldUiWidget(
                                 focusNode: _phoneNumber,
-                                label: 'Phone number',
+                                label: LocaleKeys.phoneNumber.tr(),
                                 textInitial: cubit.phoneNumber,
                                 onChanged: cubit.setPhoneNumber,
-                                hintText: 'Your Phone number',
+                                hintText: LocaleKeys.introducePage_yourPhoneNumber.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
                                   if (cubit.enableNext) {
@@ -216,19 +212,23 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                       showSkipButton: false,
                       showNextButton: cubit.currentStep != 2,
                       back: ButtonWidget(
-                        label: 'Back',
+                        label: LocaleKeys.button_back.tr(),
                         onPressed: () {
                           _introKey.currentState?.previous();
                         },
                       ),
                       done: ButtonWidget(
-                        label: 'Done',
-                        onPressed: () {
-                          cubit.doSubmit();
+                        label: LocaleKeys.button_done.tr(),
+                        onPressed: () async {
+                          final result = await PinSetupRouter(context).navigate();
+
+                          if (result is PinSetupAllSuccess) {
+                            cubit.doSubmit();
+                          }
                         },
                       ),
                       next: ButtonWidget(
-                        label: 'Next',
+                        label: LocaleKeys.button_next.tr(),
                         onPressed: cubit.enableNext
                             ? () {
                                 _introKey.currentState?.next();

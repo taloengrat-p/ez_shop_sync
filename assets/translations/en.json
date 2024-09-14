@@ -80,7 +80,10 @@
   "dateTimeUpdated": "Date time updated",
   "button": {
     "save": "Save",
-    "okay": "Okay"
+    "okay": "Okay",
+    "back": "Back",
+    "done": "Done",
+    "next": "Next"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "Email",
@@ -108,5 +111,15 @@
   "error": {
     "unableAddCart": "Unable to add cart",
     "productPriceNotYet": "Your product has not been priced yet."
+  },
+  "introducePage": {
+    "createOwnerInfomation": "Create Owner Infomation",
+    "firstName": "Firstname",
+    "lastName": "Lastname",
+    "yourFirstName": "Your First Name",
+    "yourLastName": "Your Last Name",
+    "yourEmail": "Your email",
+    "yourPhoneNumber": "Your Phone number",
+    "checkYourInfo": "Check your infomation"
   }
 }

@@ -80,7 +80,10 @@
   "dateTimeUpdated": "วันและเวลาที่อัพเดต",
   "button": {
     "save": "บันทึก",
-    "okay": "ตกลง"
+    "okay": "ตกลง",
+    "back": "กลับ",
+    "done": "เสร็จสิ้น",
+    "next": "ถัดไป"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "อีเมล",
@@ -108,5 +111,15 @@
   "error": {
     "unableAddCart": "ไม่สามารถเพิ่มสินค้าได้",
     "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา"
+  },
+  "introducePage": {
+    "createOwnerInfomation": "สร้างข้อมูลเจ้าของร้าน",
+    "firstName": "ชื่อจริง",
+    "lastName": "นามสกุล",
+    "yourFirstName": "ชื่อจริงของคุณ",
+    "yourLastName": "นามสกุลของคุณ",
+    "yourEmail": "อีเมลของคุณ",
+    "yourPhoneNumber": "หมายเลขโทรศัพท์ของคุณ",
+    "checkYourInfo": "ตรวจสอบข้อมูลของคุณ"
   }
 }
