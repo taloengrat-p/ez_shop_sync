@@ -118,5 +118,21 @@ abstract class  LocaleKeys {
   static const introducePage_yourPhoneNumber = 'introducePage.yourPhoneNumber';
   static const introducePage_checkYourInfo = 'introducePage.checkYourInfo';
   static const introducePage = 'introducePage';
+  static const productHistory_createFormat = 'productHistory.createFormat';
+  static const productHistory_createWithStockFormat = 'productHistory.createWithStockFormat';
+  static const productHistory_createWithStockPriceCategoryFormat = 'productHistory.createWithStockPriceCategoryFormat';
+  static const productHistory_updateFormat = 'productHistory.updateFormat';
+  static const productHistory_updateFirstFormat = 'productHistory.updateFirstFormat';
+  static const productHistory_deleteProduct = 'productHistory.deleteProduct';
+  static const productHistory_deletePriceCategory = 'productHistory.deletePriceCategory';
+  static const productHistory_addToStockFormat = 'productHistory.addToStockFormat';
+  static const productHistory_removeFromStockFormat = 'productHistory.removeFromStockFormat';
+  static const productHistory_productHistoryEmpty = 'productHistory.productHistoryEmpty';
+  static const productHistory_create = 'productHistory.create';
+  static const productHistory_update = 'productHistory.update';
+  static const productHistory_remove = 'productHistory.remove';
+  static const productHistory_delete = 'productHistory.delete';
+  static const productHistory_addStock = 'productHistory.addStock';
+  static const productHistory = 'productHistory';
 
 }

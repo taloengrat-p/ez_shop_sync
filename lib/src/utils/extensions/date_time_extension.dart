@@ -17,4 +17,12 @@ extension DateTimeExtension on DateTime? {
 
     return formattedDate;
   }
+
+  String toDisplayDateDependLocale(BuildContext context) {
+    return toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY);
+  }
+
+  String toDisplayTimeDependLocale(BuildContext context) {
+    return toDisplayDependLocale(context, format: DateFormatConstance.HH_mm);
+  }
 }

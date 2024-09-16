@@ -34,13 +34,14 @@ class StoreAdapter extends TypeAdapter<Store> {
       storeTheme: fields[16] as AppTheme?,
       categories:
           fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
+      members: fields[18] == null ? [] : (fields[18] as List?)?.cast<Member>(),
     )..syncDatetime = fields[6] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(7)
       ..write(obj.ownerId)
       ..writeByte(8)
@@ -63,6 +64,8 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..write(obj.storeTheme)
       ..writeByte(17)
       ..write(obj.categories)
+      ..writeByte(18)
+      ..write(obj.members)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)

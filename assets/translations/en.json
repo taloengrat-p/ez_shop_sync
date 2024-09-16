@@ -85,7 +85,7 @@
     "done": "Done",
     "next": "Next"
   },
-  "phoneNumber": "หมายเลขโทรศัพท์",
+  "phoneNumber": "Phone number",
   "email": "Email",
   "editProduct": "Edit Product",
   "addCart": "Add Cart",
@@ -121,5 +121,22 @@
     "yourEmail": "Your email",
     "yourPhoneNumber": "Your Phone number",
     "checkYourInfo": "Check your infomation"
+  },
+  "productHistory": {
+    "createFormat": "Product Created.",
+    "createWithStockFormat": "Product Created with {} {}.",
+    "createWithStockPriceCategoryFormat": "Product Created with {} {} {}.",
+    "updateFormat": "Update {} from {} to {}.",
+    "updateFirstFormat": "Update {} to {}.",
+    "deleteProduct": "Delete {}",
+    "deletePriceCategory": "Delete {} from {}.",
+    "addToStockFormat": "Add {} {} into stock.",
+    "removeFromStockFormat": "Remove {} {} {} from stock.",
+    "productHistoryEmpty": "Your product history is empty",
+    "create": "Create",
+    "update": "Update",
+    "remove": "Remove",
+    "delete": "Delete",
+    "addStock": "Add stock"
   }
 }

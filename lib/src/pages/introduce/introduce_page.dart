@@ -39,6 +39,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   final _phoneNumber = FocusNode();
 
   final _storeNameFocusNode = FocusNode();
+  final _storeDescFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -99,6 +100,17 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                 focusNode: _storeNameFocusNode,
                                 textInitial: cubit.storeName,
                                 onChanged: cubit.setStoreName,
+                                textInputAction: TextInputAction.next,
+                                hintText: LocaleKeys.yourStoreName.tr(),
+                                onFieldSubmitted: (value) {
+                                  FocusScope.of(context).requestFocus(_storeDescFocusNode);
+                                },
+                              ),
+                              TextFormFieldUiWidget(
+                                label: LocaleKeys.description.tr(),
+                                focusNode: _storeDescFocusNode,
+                                textInitial: cubit.storeName,
+                                onChanged: cubit.setStoreDesc,
                                 textInputAction: TextInputAction.done,
                                 hintText: LocaleKeys.yourStoreName.tr(),
                                 onFieldSubmitted: (value) {

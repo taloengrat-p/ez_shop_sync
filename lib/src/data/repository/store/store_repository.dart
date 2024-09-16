@@ -67,7 +67,7 @@ class StoreRepository implements IStoreRepository {
   @override
   deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      await storeLocalRepository.deleteAll(ids);
+      await storeLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

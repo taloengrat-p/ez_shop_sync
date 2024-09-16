@@ -9,6 +9,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
@@ -85,6 +86,13 @@ class BaseCubit extends Cubit<BaseState> {
     onCheckFirstRun();
     onCheckIntroduceFlowDone();
     doGetUserAppLocalSession();
+  }
+
+  String get currentUsername {
+    if (user?.username == null) {
+      throw ('currentUsername user?.username is Null');
+    }
+    return user!.username;
   }
 
   loadAppTheme(AppTheme? value) {
@@ -309,17 +317,35 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseRemoveCartItem());
   }
 
-  Future<Product?> addStock({required Product? product, required num qty}) async {
+  Future<Product?> addStock({required Product? product}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
-    final newQuantity = (product.quantity ?? 0) + qty;
-    log('newQuantity $newQuantity');
+
     emit(BaseLoading());
-    final productUpdated = await productRepository.update(product.id, product..quantity = newQuantity);
-    await doGetProducts();
+    final productUpdated = await productRepository.addProductQuantityToStock(
+      AddProductQtyToStockrequest(
+        id: product.id,
+        storeId: store!.id,
+        userId: user!.id,
+        product: product,
+      ),
+    );
+
+    updateProductQuantity(productUpdated);
     emit(BaseAddStockSuccess(DateTime.now()));
 
     return productUpdated;
+  }
+
+  void updateProductQuantity(Product? productUpdated) {
+    final productFinded = _products.where((e) => e.id == productUpdated?.id).firstOrNull;
+
+    if (productFinded == null) {
+      throw ('updateProductQuantity() Product is Null');
+    }
+
+    productFinded.quantity = productUpdated?.quantity;
+    emit(BaseRefresh(DateTime.now()));
   }
 }

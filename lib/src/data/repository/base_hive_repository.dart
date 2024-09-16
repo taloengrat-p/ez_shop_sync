@@ -13,12 +13,17 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     box = Hive.box<T>(boxName);
   }
 
-  Future<T> create(T request) async {
+  Future<T> create(
+    T request, {
+    String? userId,
+  }) async {
     await box.put(
       request.id,
       request
         ..createDate = DateTime.now()
-        ..updateDate = DateTime.now(),
+        ..updateDate = DateTime.now()
+        ..createBy = userId
+        ..updateBy = userId,
     );
 
     return request;
@@ -39,12 +44,25 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     await box.delete(id);
   }
 
-  Future<void> deleteAll(List<I> ids) async {
+  Future<void> deleteAllByIds(List<I> ids) async {
     await box.deleteAll(ids);
   }
 
-  Future<T> update(I id, T updated) async {
-    await box.put(id, updated..updateDate = DateTime.now());
+  Future<void> deleteAll() async {
+    await box.deleteFromDisk();
+  }
+
+  Future<T> update(
+    I id,
+    T updated, {
+    String? userId,
+  }) async {
+    await box.put(
+      id,
+      updated
+        ..updateDate = DateTime.now()
+        ..updateBy = userId,
+    );
 
     return updated;
   }

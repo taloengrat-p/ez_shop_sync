@@ -5,6 +5,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -30,6 +32,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   String tempPriceCategoryValue = '';
 
   Store? get currentStore => baseCubit.store;
+  User? get currentUser => baseCubit.user;
+
   List<Tag> get tagsModelSelected =>
       _productEditor?.tag
           ?.map(
@@ -179,14 +183,19 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     checkTempPriceCategoryRemaining();
 
     if (_productEditor == null) {
-      return;
+      throw ('createProduct Product editor is Null');
     }
 
     final result = await productRepository.create(
-      _productEditor!
-        ..id = id
-        ..imageName = imageFullName
-        ..imageDetail = imageDetailFileName,
+      CreateProductRequest(
+        id: id,
+        storeId: currentStore!.id,
+        userId: currentUser!.id,
+        product: _productEditor!
+          ..id = id
+          ..imageName = imageFullName
+          ..imageDetail = imageDetailFileName,
+      ),
     );
 
     Future.delayed(Duration.zero, () {

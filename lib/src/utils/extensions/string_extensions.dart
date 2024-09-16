@@ -35,4 +35,8 @@ extension StringNullableExtendsions on String? {
   String elseSuffuxCurrency() {
     return '${ApplicationConstance.currencyTHB}${this ?? ''.elseDisplay()}';
   }
+
+  String ignoreSensitiveCase() {
+    return this?.toLowerCase().replaceAll(" ", "") ?? '';
+  }
 }

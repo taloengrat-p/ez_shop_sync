@@ -30,6 +30,11 @@ class ProductLoading extends ProductState {
   String toString() => 'ProductLoading';
 }
 
+class ProductAddStockSuccess extends ProductState {
+  @override
+  String toString() => 'ProductAddStockSuccess';
+}
+
 class ProductSuccess extends ProductState {
   @override
   String toString() => 'ProductSuccess';

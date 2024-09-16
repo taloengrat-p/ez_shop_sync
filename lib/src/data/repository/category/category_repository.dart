@@ -50,7 +50,7 @@ class CategoryRepository extends BaseRepository implements ICategoryRepository {
   @override
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      await categoryLocalRepository.deleteAll(ids);
+      await categoryLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

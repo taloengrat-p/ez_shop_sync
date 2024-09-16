@@ -4,10 +4,12 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 
 class BaseRepoRequest {
   final AppMode appMode;
+  final String id;
   final String storeId;
   final String userId;
 
   const BaseRepoRequest({
+    required this.id,
     this.appMode = AppMode.local,
     required this.storeId,
     required this.userId,

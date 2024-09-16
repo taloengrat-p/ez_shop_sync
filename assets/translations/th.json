@@ -121,5 +121,23 @@
     "yourEmail": "อีเมลของคุณ",
     "yourPhoneNumber": "หมายเลขโทรศัพท์ของคุณ",
     "checkYourInfo": "ตรวจสอบข้อมูลของคุณ"
+  },
+  "productHistory": {
+    "createFormat": "สร้างสินค้า",
+    "createWithStockFormat": "สร้างสินค้า ด้วย {} {}.",
+    "createWithStockPriceCategoryFormat": "สร้างสินค้า ด้วย {} {} {}.",
+    "updateFormat": "อัพเดต {} จาก {} เป็น {}",
+    "updateFirstFormat": "Update {} to {}.",
+    "deleteProduct": "ลบ {}",
+    "deletePriceCategory": "ลบ {} ออกจาก {}",
+    "addToStockFormat": "เพิ่ม {} {} ลงในคลังสิงค้า",
+    "removeFromStockFormat": "ลบ {} {} {} ออกจากคลังสินค้า",
+    "productHistoryEmpty": "สินค้าของคุณไม่มีประวัติ",
+    "create": "สร้าง",
+    "update": "อัพเดต",
+    "remove": "ลบ",
+    "delete": "ลบ",
+    "addStock": "เพิ่มสินจำนวนค้าในคลัง",
+    "removeStock": "ลบจำนวนสินค้าในคลัง"
   }
 }

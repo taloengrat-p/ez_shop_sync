@@ -27,6 +27,11 @@ class ProductDetailFailure extends ProductDetailState {
   String toString() => 'ProductDetailFailure';
 }
 
+class ProductDetailLoadHistorySuccess extends ProductDetailState {
+  @override
+  String toString() => 'ProductDetailLoadHistorySuccess';
+}
+
 class ProductDetailDelete extends ProductDetailState {
   @override
   String toString() => 'ProductDetailDelete';

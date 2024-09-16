@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
@@ -14,12 +15,15 @@ import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart'
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/widgets/product_detail_tab_data.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/widgets/product_detail_tab_history.dart';
 import 'package:ez_shop_sync/src/pages/product_settings/product_settings_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
@@ -55,6 +59,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     cubit = ProductDetailCubit(
       productRepository: GetIt.I<ProductRepository>(),
       baseCubit: baseCubit,
+      productHistoryRepository: GetIt.I<ProductHistoryRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
@@ -189,8 +194,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         onPressed: () async {
                           final result = await DialogUtils.showAddStockDialog(context, cubit.product);
 
-                          if (result is num) {
-                            cubit.addStock(cubit.product?.copyWith(), result);
+                          if (result is BottomSheetAddStockSuccess) {
+                            cubit.addStock(
+                              cubit.product?.copyWith(
+                                priceSelected: result.priceCategorySelected,
+                                quantity: result.qty,
+                              ),
+                            );
                           }
                         },
                       ),
@@ -305,6 +315,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: _buildContent(),
               ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                height: 450,
+                width: double.infinity,
+                child: _buildTabContent(),
+              ),
             ],
           ),
         ),
@@ -327,6 +345,41 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildTabContent() {
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 2,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          TabBar(
+            indicatorColor: ColorKeys.primary,
+            tabs: [
+              Tab(
+                icon: SizedBox.expand(
+                  child: Icon(CupertinoIcons.time),
+                ),
+              ),
+              Tab(
+                icon: SizedBox.expand(
+                  child: Icon(CupertinoIcons.chart_bar_square),
+                ),
+              ),
+            ],
+          ),
+          const Expanded(
+            child: TabBarView(
+              children: [
+                ProductDetailTabHistory(),
+                ProductDetailTabData(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

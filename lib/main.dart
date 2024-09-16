@@ -7,7 +7,9 @@ import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
@@ -80,6 +82,7 @@ Future<void> initialHiveDB() async {
   await Hive.initFlutter(document.path);
 
   Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(MemberAdapter());
   Hive.registerAdapter(StoreAdapter());
   Hive.registerAdapter(ProductStatusAdapter());
   Hive.registerAdapter(ProductAdapter());
@@ -88,8 +91,10 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(CategoryAdapter());
   Hive.registerAdapter(CartAdapter());
   Hive.registerAdapter(CartItemAdapter());
-  
+  Hive.registerAdapter(ProductHistoryAdapter());
+
   await Hive.openBox<Product>(HiveBoxConstance.product);
+  await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);
   await Hive.openBox<Store>(HiveBoxConstance.store);
   await Hive.openBox<User>(HiveBoxConstance.user);
   await Hive.openBox<Tag>(HiveBoxConstance.tag);

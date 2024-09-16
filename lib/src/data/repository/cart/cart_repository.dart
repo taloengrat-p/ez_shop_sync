@@ -46,7 +46,7 @@ class CartRepository extends BaseRepository implements ICartRepository {
   @override
   Future<void> deleteAll(List<String> ids) async {
     if (appMode == AppMode.local) {
-      await cartLocalRepository.deleteAll(ids);
+      await cartLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

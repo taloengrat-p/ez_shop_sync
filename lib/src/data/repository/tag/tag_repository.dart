@@ -62,7 +62,7 @@ class TagRepository extends BaseRepository implements ITagRepository {
   @override
   deleteAll(List<String> ids, {AppMode appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      await tagLocalRepository.deleteAll(ids);
+      await tagLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

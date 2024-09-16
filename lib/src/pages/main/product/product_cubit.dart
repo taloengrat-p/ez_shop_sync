@@ -82,7 +82,9 @@ class ProductCubit extends Cubit<ProductState> {
     baseCubit.addCart(offset: offset, product: product);
   }
 
-  void addProductToStock(Product product, num value) {
-    baseCubit.addStock(product: product, qty: value);
+  void addProductToStock(Product product) {
+    emit(ProductLoading());
+    baseCubit.addStock(product: product);
+    emit(ProductAddStockSuccess());
   }
 }

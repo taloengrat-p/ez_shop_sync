@@ -49,6 +49,7 @@ class AuthRepository implements IAuthRepository {
       final store = Store(
         id: storeId,
         ownerId: userId,
+        description: request.storeDesc,
         name: request.storeName,
         tags: [],
         categories: [],

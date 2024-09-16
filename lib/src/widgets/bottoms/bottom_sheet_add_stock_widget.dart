@@ -9,6 +9,15 @@ import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widg
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class BottomSheetAddStockSuccess {
+  final num qty;
+  final String? priceCategorySelected;
+  BottomSheetAddStockSuccess({
+    required this.priceCategorySelected,
+    required this.qty,
+  });
+}
+
 class BottomSheetAddStockWidget extends StatefulWidget {
   final Product product;
   final Function()? onSubmit;
@@ -106,10 +115,15 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
             backgroundColor: Colors.amber,
             onPressed: _qtyTextController.text.isEmpty ||
                     int.tryParse(_qtyTextController.text) == null ||
-                    priceCategorySelected == null
+                    (((widget.product.priceCategories?.length ?? 2) > 1) && priceCategorySelected == null)
                 ? null
                 : () {
-                    Navigator.of(context).pop(int.parse(_qtyTextController.text));
+                    Navigator.of(context).pop(
+                      BottomSheetAddStockSuccess(
+                        priceCategorySelected: priceCategorySelected,
+                        qty: int.parse(_qtyTextController.text),
+                      ),
+                    );
                   },
           ),
         ],

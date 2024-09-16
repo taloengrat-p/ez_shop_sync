@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class IntroduceCubit extends Cubit<IntroduceState> {
   int currentStep = 0;
   String storeName = '';
+  String storeDesc = '';
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -71,6 +72,7 @@ class IntroduceCubit extends Cubit<IntroduceState> {
     final userRegister = await authRepository.register(
       CreateRegisterRequest(
         storeName: storeName.trim(),
+        storeDesc: storeDesc.trim(),
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
@@ -88,5 +90,9 @@ class IntroduceCubit extends Cubit<IntroduceState> {
 
   setPhoneNumber(String? value) {
     _phoneNumber = value ?? '';
+  }
+
+  setStoreDesc(String? value) {
+    storeDesc = value ?? '';
   }
 }

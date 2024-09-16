@@ -58,12 +58,13 @@ class _PinSetupState extends State<PinSetupPage> {
         child: BlocBuilder<PinSetupCubit, PinSetupState>(
           builder: (context, state) {
             return BaseScaffolds(
-                appBar: AppbarWidget(
-                  context,
-                  color: Colors.transparent,
-                  iconThemeColor: Colors.black,
-                ).build(),
-                body: state is! PinSetupSuccess
+              appBar: AppbarWidget(
+                context,
+                color: Colors.transparent,
+                iconThemeColor: Colors.black,
+              ).build(),
+              body: Center(
+                child: state is! PinSetupSuccess
                     ? AppPinWidget(
                         key: const ValueKey('create'),
                         title: _cubit.argrument?.title ?? LocaleKeys.createPINTitle.tr(),
@@ -84,7 +85,9 @@ class _PinSetupState extends State<PinSetupPage> {
 
                           return null;
                         },
-                      ));
+                      ),
+              ),
+            );
           },
         ),
       ),

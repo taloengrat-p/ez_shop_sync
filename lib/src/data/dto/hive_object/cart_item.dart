@@ -12,9 +12,13 @@ class CartItem extends BaseHiveObject {
   @HiveField(7)
   Product? product;
 
+  @HiveField(8)
+  String? note;
+  
   CartItem({
     required super.id,
     required this.product,
+    this.note,
   });
 
   CartItem copyWith({

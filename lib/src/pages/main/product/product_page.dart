@@ -22,6 +22,7 @@ import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
@@ -245,8 +246,13 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   onAddStock(Product product) async {
     final result = await DialogUtils.showAddStockDialog(context, product);
 
-    if (result is num) {
-      cubit.addProductToStock(product, result);
+    if (result is BottomSheetAddStockSuccess) {
+      cubit.addProductToStock(
+        product.copyWith(
+          priceSelected: result.priceCategorySelected,
+          quantity: result.qty,
+        ),
+      );
     }
   }
 
