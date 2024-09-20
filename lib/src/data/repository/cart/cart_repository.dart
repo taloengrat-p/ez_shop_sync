@@ -85,4 +85,20 @@ class CartRepository extends BaseRepository implements ICartRepository {
       throw UnimplementedError();
     }
   }
+
+  Future<void> increaseQty(String? cartId, String? productId, num qty) async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.increaseQty(cartId, productId, qty);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  Future<void> decreaseQty(String? cartId, String? productId, num qty) async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.decreaseQty(cartId, productId, qty);
+    } else {
+      throw UnimplementedError();
+    }
+  }
 }

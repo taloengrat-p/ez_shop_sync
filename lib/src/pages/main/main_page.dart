@@ -105,7 +105,7 @@ class _MainPageState extends State<MainPage> {
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
                           labelStyle: TextStyle(
-                            color: ColorKeys.text,
+                            color: ColorKeys.primary,
                           ),
                         ),
                         TabItem(
@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> {
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
                           labelStyle: TextStyle(
-                            color: ColorKeys.text,
+                            color: ColorKeys.primary,
                           ),
                         ),
                         // TabItem(
@@ -132,7 +132,7 @@ class _MainPageState extends State<MainPage> {
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
                           labelStyle: TextStyle(
-                            color: ColorKeys.text,
+                            color: ColorKeys.primary,
                           ),
                         ),
                         TabItem(
@@ -141,7 +141,7 @@ class _MainPageState extends State<MainPage> {
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
                           labelStyle: TextStyle(
-                            color: ColorKeys.text,
+                            color: ColorKeys.primary,
                           ),
                         ),
                       ],

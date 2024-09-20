@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
@@ -77,5 +79,41 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
           ),
       );
     }
+  }
+
+  Future<void> increaseQty(String? cartId, String? productId, num qty) async {
+    log('[performRepo] increaseQty : ');
+    if (cartId == null) {
+      throw ('increaseQty() cartId is Null');
+    }
+    final Cart? cart = getById(cartId);
+    if (cart == null) {
+      throw ('increaseQty() cart is Null');
+    }
+
+    final cartItem = cart.cartItems
+        .map((e) =>
+            e.id == productId ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0))) : e)
+        .toList();
+
+    await update(cartId, cart..cartItems = cartItem);
+  }
+
+  Future<void> decreaseQty(String? cartId, String? productId, num qty) async {
+    log('[performRepo] decreaseQty : ');
+    if (cartId == null) {
+      throw ('increaseQty() cartId is Null');
+    }
+    final Cart? cart = getById(cartId);
+    if (cart == null) {
+      throw ('increaseQty() cart is Null');
+    }
+
+    final cartItem = cart.cartItems
+        .map((e) =>
+            e.id == productId ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0))) : e)
+        .toList();
+
+    await update(cartId, cart..cartItems = cartItem);
   }
 }

@@ -5,13 +5,14 @@ import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
+import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartRepository cartRepository;
   BaseCubit baseCubit;
   num _serviceCharge = 0;
-
+  TimerUtils timerUtils = TimerUtils();
   List<CartItem> _products = [];
   List<CartItem> get products => _products;
 
@@ -20,8 +21,7 @@ class CartCubit extends Cubit<CartState> {
     required this.baseCubit,
   }) : super(CartInitial());
 
-  num get totalPrice =>
-      products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0) * (item.product?.quantity ?? 0)));
+  num get totalPrice => products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0)));
 
   num get totalServiceCharge => (totalPrice * serviceChargeValue);
 
@@ -47,6 +47,14 @@ class CartCubit extends Cubit<CartState> {
 
     item.product?.quantity = (_products[index].product?.quantity ?? 0) + 1;
     emit(CartIncrease(productId: item.id, qty: item.product!.quantity!));
+
+    timerUtils.debounceTime(
+      const Duration(milliseconds: 500),
+      () {
+        log('[perform] increase');
+        cartRepository.increaseQty(baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
+      },
+    );
   }
 
   void decreaseProductQtyByIndex(int index) {
@@ -61,6 +69,14 @@ class CartCubit extends Cubit<CartState> {
 
     item.product?.quantity = _products[index].product!.quantity! - 1;
     emit(CartDecrease(productId: item.id, qty: item.product!.quantity!));
+
+    timerUtils.debounceTime(
+      const Duration(milliseconds: 500),
+      () {
+        log('[perform] decrease');
+        cartRepository.decreaseQty(baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
+      },
+    );
   }
 
   void initial() {
