@@ -90,7 +90,7 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       HomePage(),
                       ProductPage(),
-                      TransactionPage(),
+                      // TransactionPage(),
                       HistoryPage(),
                       MorePage(),
                     ],
@@ -117,15 +117,15 @@ class _MainPageState extends State<MainPage> {
                             color: ColorKeys.text,
                           ),
                         ),
-                        TabItem(
-                          CupertinoIcons.money_dollar_circle,
-                          LocaleKeys.transactions.tr(),
-                          ColorKeys.white,
-                          circleStrokeColor: ColorKeys.primary,
-                          labelStyle: TextStyle(
-                            color: ColorKeys.text,
-                          ),
-                        ),
+                        // TabItem(
+                        //   CupertinoIcons.money_dollar_circle,
+                        //   LocaleKeys.transactions.tr(),
+                        //   ColorKeys.white,
+                        //   circleStrokeColor: ColorKeys.primary,
+                        //   labelStyle: TextStyle(
+                        //     color: ColorKeys.text,
+                        //   ),
+                        // ),
                         TabItem(
                           CupertinoIcons.chart_bar_square,
                           LocaleKeys.statistic.tr(),
