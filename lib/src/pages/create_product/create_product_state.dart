@@ -67,6 +67,18 @@ class CreateProductFailure extends CreateProductState {
   String toString() => 'CreateProductFailure';
 }
 
+class CreateProductUpdateImages extends CreateProductState {
+  final List<String>? imagesPath;
+
+  const CreateProductUpdateImages(this.imagesPath);
+
+  @override
+  String toString() => 'CreateProductUpdateImages $imagesPath';
+
+  @override
+  List<Object?> get props => [imagesPath];
+}
+
 class ProductEditArgrument extends CreateProductState {
   final Product product;
 

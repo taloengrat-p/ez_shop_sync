@@ -20,7 +20,7 @@ class BodyWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: Colors.white,
+          color: Colors.transparent,
           child: Column(
             children: [
               Padding(

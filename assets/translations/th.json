@@ -139,5 +139,8 @@
     "delete": "ลบ",
     "addStock": "เพิ่มสินจำนวนค้าในคลัง",
     "removeStock": "ลบจำนวนสินค้าในคลัง"
-  }
+  },
+  "orderCompleteTitle": "ทำรายการสำเร็จ",
+  "backToHomePage": "กลับไปหน้าแรก",
+  "orderId": "Order ID"
 }

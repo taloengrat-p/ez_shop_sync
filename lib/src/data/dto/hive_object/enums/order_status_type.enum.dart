@@ -1,0 +1,4 @@
+enum OrderStatusType {
+  complete,
+  undefiend,
+}

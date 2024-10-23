@@ -138,5 +138,8 @@
     "remove": "Remove",
     "delete": "Delete",
     "addStock": "Add stock"
-  }
+  },
+  "orderCompleteTitle": "Order completed successfully",
+  "backToHomePage": "Back to Home",
+  "orderId": "Order ID"
 }

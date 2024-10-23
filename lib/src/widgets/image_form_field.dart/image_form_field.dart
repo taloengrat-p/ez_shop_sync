@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/widgets/column_title_value_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,14 +8,14 @@ import 'package:flutter/material.dart';
 
 class ImageFormField extends StatefulWidget {
   final int imageDetailLimit;
-  final Function(File? value)? onProductImageSelect;
-  final dynamic Function(List<File>? images)? onProductDetailImageSelect;
+  final dynamic Function(List<String>? images)? onImageSelectChange;
+  final List<String> imageUrlItems;
 
   const ImageFormField({
     super.key,
     required this.imageDetailLimit,
-    required this.onProductImageSelect,
-    required this.onProductDetailImageSelect,
+    required this.onImageSelectChange,
+    required this.imageUrlItems,
   });
 
   @override
@@ -24,38 +23,41 @@ class ImageFormField extends StatefulWidget {
 }
 
 class _ImageFormFieldState extends State<ImageFormField> {
-  List<File> productDetailImages = [];
-  File? productImage;
-  CarouselSliderController _carouselController = CarouselSliderController();
+  final List<File> _imageList = [];
+
+  final CarouselSliderController _carouselController = CarouselSliderController();
+
+  List<String> get imagePathList => _imageList.map((e) => e.path).toList();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      height: 250,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ColumnTitleValueWidget(
-            title: 'Product Image',
-            value: ImagePickerWidget(
-              width: 140,
-              height: 200,
-              onImagePicked: (file) {
-                if (file.isNotNull) {
-                  productImage = file;
-                  widget.onProductImageSelect?.call(productImage);
-                }
-              },
+          if (widget.imageUrlItems.isEmpty)
+            ColumnTitleValueWidget(
+              value: ImagePickerWidget(
+                height: 200,
+                width: 250,
+                onImagePicked: (file) {
+                  if (file != null) {
+                    setState(() {
+                      _imageList.add(file);
+                      doCallBacktoParent();
+                    });
+                  }
+                },
+              ),
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          if (productDetailImages.isNotEmpty)
+          if (widget.imageUrlItems.isNotEmpty)
             Expanded(
               child: CarouselSlider(
                 carouselController: _carouselController,
                 options: CarouselOptions(
                   viewportFraction: 0.8,
-                  height: 140,
                   enableInfiniteScroll: false,
                   initialPage: 0,
                 ),
@@ -65,23 +67,22 @@ class _ImageFormFieldState extends State<ImageFormField> {
           const SizedBox(
             width: 8,
           ),
-          if (widget.imageDetailLimit != productDetailImages.length)
+          if ((widget.imageDetailLimit != widget.imageUrlItems.length) && widget.imageUrlItems.isNotEmpty)
             Center(
               child: ColumnTitleValueWidget(
-                title: 'Detail Image',
                 value: ImagePickerWidget(
-                  height: productDetailImages.isEmpty ? 100 : 60,
-                  width: productDetailImages.isEmpty ? 100 : 60,
-                  imageInit: null,
+                  height: 60,
+                  width: 60,
+                  path: null,
                   disablePreview: true,
                   margin: const EdgeInsets.symmetric(horizontal: 5.0),
                   onImagePicked: (file) {
-                    if (file.isNotNull) {
+                    if (file != null) {
                       setState(() {
-                        productDetailImages.add(file!);
+                        _imageList.add(file);
                       });
-                      _carouselController.animateToPage(productDetailImages.length);
-                      widget.onProductDetailImageSelect?.call(productDetailImages);
+
+                      doCallBacktoParent();
                     }
                   },
                 ),
@@ -94,24 +95,25 @@ class _ImageFormFieldState extends State<ImageFormField> {
 
   List<Widget> buildCarouselImagePickerDetail() {
     return [
-      ...productDetailImages.asMap().map((index, e) {
+      ...widget.imageUrlItems.asMap().map((index, e) {
         return MapEntry(index, Builder(
           builder: (BuildContext context) {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 3),
               child: ColumnTitleValueWidget(
-                title: 'Detail ${index + 1}',
+                title: '${index + 1} / ${widget.imageUrlItems.length}',
                 textStyle: const TextStyle(fontSize: 12),
                 value: ImagePickerWidget(
-                  imageInit: e,
-                  height: 100,
+                  constraints: const BoxConstraints(maxHeight: 180),
+                  // height: 200,
+                  path: e,
                   margin: const EdgeInsets.symmetric(horizontal: 5.0),
                   onImagePicked: (file) {
-                    if (file.isNotNull) {
+                    if (file != null) {
                       setState(() {
-                        productDetailImages[index] = file!;
+                        _imageList[index] = file;
                       });
-                      widget.onProductDetailImageSelect?.call(productDetailImages);
+                      widget.onImageSelectChange?.call(imagePathList);
                     }
                   },
                 ),
@@ -121,5 +123,10 @@ class _ImageFormFieldState extends State<ImageFormField> {
         ));
       }).values,
     ];
+  }
+
+  void doCallBacktoParent() {
+    // _carouselController.animateToPage(_imageList.length);
+    widget.onImageSelectChange?.call(imagePathList);
   }
 }

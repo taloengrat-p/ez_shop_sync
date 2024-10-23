@@ -1,7 +1,11 @@
 import 'dart:developer';
 
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -10,15 +14,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartRepository cartRepository;
+  OrderRepository orderRepository;
   BaseCubit baseCubit;
   num _serviceCharge = 0;
   TimerUtils timerUtils = TimerUtils();
-  List<CartItem> _products = [];
-  List<CartItem> get products => _products;
+  List<OrderItem> _products = [];
+  Cart? _cart;
+  List<OrderItem> get products => _products;
 
   CartCubit({
     required this.cartRepository,
     required this.baseCubit,
+    required this.orderRepository,
   }) : super(CartInitial());
 
   num get totalPrice => products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0)));
@@ -81,6 +88,7 @@ class CartCubit extends Cubit<CartState> {
 
   void initial() {
     log('inital ${baseCubit.cart?.cartItems.map((e) => e.id).toList()}', name: runtimeType.toString());
+    _cart = baseCubit.cart;
     _products = baseCubit.cart?.cartItems.map((e) => e).toList() ?? [];
     emit(CartInitial());
   }
@@ -94,5 +102,23 @@ class CartCubit extends Cubit<CartState> {
   void changePaymentMethod(String? val) {
     paymentMethod = val;
     emit(CartChangePaymentMethod(paymentMethod));
+  }
+
+  void submit() async {
+    if (_cart == null) {
+      throw Exception('submit _cart == null');
+    }
+
+    emit(CartLoading());
+    await orderRepository.create(
+      CreateOrderRequest(
+        id: '',
+        storeCode: baseCubit.store?.name.substring(0, 4) ?? '',
+        storeId: baseCubit.store?.id ?? '',
+        userId: baseCubit.user?.id ?? '',
+        cart: _cart!,
+        paymentType: PaymentType.fromString(paymentMethod),
+      ),
+    );
   }
 }

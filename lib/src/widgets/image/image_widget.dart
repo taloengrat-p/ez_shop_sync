@@ -1,19 +1,16 @@
 import 'dart:developer' as dev;
 import 'dart:io';
 
-import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/src/utils/extensions/list_string_extensions.dart';
+import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/empty_image.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ImageWidget extends StatefulWidget {
   final String? imageUrl;
   final double? height;
   final double? width;
-  final String? imageFullName;
   final BorderRadiusGeometry? borderRadius;
   final EdgeInsets? margin;
   final EdgeInsets? padding;
@@ -24,7 +21,6 @@ class ImageWidget extends StatefulWidget {
     this.imageUrl,
     this.width,
     this.height,
-    this.imageFullName,
     this.margin = const EdgeInsets.all(4),
     this.padding = const EdgeInsets.all(4),
   });
@@ -36,8 +32,7 @@ class ImageWidget extends StatefulWidget {
 class _ImageWidgetState extends State<ImageWidget> {
   File? _imageFile;
   BoxDecoration containerDecoration(Color color) => BoxDecoration(
-        borderRadius:
-            widget.borderRadius ?? BorderRadius.circular(DimensionsKeys.radius),
+        borderRadius: widget.borderRadius ?? BorderRadius.circular(DimensionsKeys.radius),
         color: color,
       );
 
@@ -45,15 +40,17 @@ class _ImageWidgetState extends State<ImageWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((time) async {
-      final document = await getApplicationDocumentsDirectory();
+      // final document = await getApplicationDocumentsDirectory();
 
-      final filePath = [document.path, widget.imageFullName].toJoinPath();
-      if (File(filePath).existsSync()) {
-        setState(() {
-          _imageFile = File(filePath);
-        });
-      } else {
-        // print('File not found at path: $filePath');
+      final filePath = widget.imageUrl;
+      if (filePath != null) {
+        if (File(filePath).existsSync()) {
+          setState(() {
+            _imageFile = File(filePath);
+          });
+        } else {
+          // print('File not found at path: $filePath');
+        }
       }
     });
   }
@@ -69,8 +66,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: _imageFile != null
           ? Image.file(
               _imageFile!,
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                 dev.log('error build image $error');
                 return Stack(
                   children: [

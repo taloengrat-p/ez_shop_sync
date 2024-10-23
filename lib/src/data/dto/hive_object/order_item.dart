@@ -5,27 +5,27 @@ import 'package:hive/hive.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 
-part 'cart_item.g.dart';
+part 'order_item.g.dart';
 
 @HiveType(typeId: 9)
-class CartItem extends BaseHiveObject {
+class OrderItem extends BaseHiveObject {
   @HiveField(7)
   Product? product;
 
   @HiveField(8)
   String? note;
-  
-  CartItem({
+
+  OrderItem({
     required super.id,
     required this.product,
     this.note,
   });
 
-  CartItem copyWith({
+  OrderItem copyWith({
     String? id,
     Product? product,
   }) {
-    return CartItem(
+    return OrderItem(
       id: id ?? super.id,
       product: product ?? this.product,
     );

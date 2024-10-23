@@ -1,6 +1,6 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CartItemWidget extends StatelessWidget {
-  final CartItem cartItem;
+  final OrderItem cartItem;
   final Function()? onIncreaseQty;
   final Function()? onDecreaseQty;
   final Function()? onDelete;
@@ -58,8 +58,7 @@ class CartItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ImageWidget(
-                  imageUrl: cartItem.product?.image,
-                  imageFullName: cartItem.product?.imageName,
+                  imageUrl: cartItem.product?.imagesPath?.firstOrNull,
                   width: 120,
                   borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                 ),

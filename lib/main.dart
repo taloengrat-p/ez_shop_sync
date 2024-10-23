@@ -5,7 +5,8 @@ import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
@@ -89,8 +90,9 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(AppThemeAdapter());
   Hive.registerAdapter(CategoryAdapter());
+  Hive.registerAdapter(ProductOrderAdapter());
   Hive.registerAdapter(CartAdapter());
-  Hive.registerAdapter(CartItemAdapter());
+  Hive.registerAdapter(OrderItemAdapter());
   Hive.registerAdapter(ProductHistoryAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
@@ -100,4 +102,5 @@ Future<void> initialHiveDB() async {
   await Hive.openBox<Tag>(HiveBoxConstance.tag);
   await Hive.openBox<Category>(HiveBoxConstance.category);
   await Hive.openBox<Cart>(HiveBoxConstance.cart);
+  await Hive.openBox<ProductOrder>(HiveBoxConstance.order);
 }

@@ -93,8 +93,9 @@ class CreateProductPageState extends State<CreateProductPage> {
                       ),
                       ImageFormField(
                         imageDetailLimit: 5,
-                        onProductDetailImageSelect: cubit.setProductDetailImageSelect,
-                        onProductImageSelect: cubit.setProductImageSelect,
+                        imageUrlItems: cubit.productEditor?.imagesPath ?? [],
+                        onImageSelectChange: cubit.setProductImages,
+                        // onProductImageSelect: cubit.setProductImageSelect,
                       ),
                       const SizedBox(
                         height: 16,

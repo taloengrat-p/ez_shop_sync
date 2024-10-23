@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ColumnTitleValueWidget extends StatelessWidget {
-  final String title;
+  final String? title;
   final Widget? value;
   final TextStyle? textStyle;
   const ColumnTitleValueWidget({
     super.key,
-    required this.title,
+    this.title,
     this.value,
     this.textStyle,
   });
@@ -14,14 +14,15 @@ class ColumnTitleValueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          title,
-          style: textStyle,
-        ),
+        if (title != null)
+          Text(
+            title!,
+            style: textStyle,
+          ),
         const SizedBox(
           height: 4,
         ),

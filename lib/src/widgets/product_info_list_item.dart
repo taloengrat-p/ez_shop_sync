@@ -46,6 +46,7 @@ class ProductInfoListItem extends StatelessWidget {
             ],
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (priceCategory != null)
                 ContainerPriceCategoryWidget(

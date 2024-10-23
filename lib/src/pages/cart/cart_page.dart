@@ -2,13 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
+import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
-import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
@@ -59,6 +60,7 @@ class _CartState extends State<CartPage> {
     _cubit = CartCubit(
       baseCubit: GetIt.I<BaseCubit>(),
       cartRepository: GetIt.I<CartRepository>(),
+      orderRepository: GetIt.I<OrderRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -97,11 +99,14 @@ class _CartState extends State<CartPage> {
         listener: (context, state) {
           if (state is CartRemoveItemSuccess) {
             checkCanScroll();
+          } else if (state is CartSuccess) {
+            OrderCompleteRouter(context).navigate();
           }
         },
         child: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             return BaseScaffolds(
+              isLoading: state is CartLoading,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
@@ -131,6 +136,9 @@ class _CartState extends State<CartPage> {
                     ButtonWidget(
                       label: LocaleKeys.proceedToCheckout.tr(),
                       leading: const Icon(Icons.payment_rounded),
+                      onPressed: () {
+                        _cubit.submit();
+                      },
                     )
                   ],
                 ),

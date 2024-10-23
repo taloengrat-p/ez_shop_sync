@@ -91,8 +91,7 @@ class ProductListItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ImageWidget(
-                  imageUrl: product.image,
-                  imageFullName: product.imageName,
+                  imageUrl: product.imagesPath?.firstOrNull,
                   width: 120,
                   height: 120,
                   borderRadius: BorderRadius.circular(DimensionsKeys.radius),

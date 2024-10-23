@@ -24,14 +24,12 @@ class ProductAdapter extends TypeAdapter<Product> {
           fields[9] == null ? {} : (fields[9] as Map?)?.cast<String, num>(),
       category: fields[10] as String?,
       brand: fields[11] as String?,
-      imageDetail: (fields[12] as List?)?.cast<String>(),
+      imagesPath: (fields[12] as List?)?.cast<String>(),
       imageThumbnail: fields[13] as String?,
       attributes: fields[14] == null
           ? {}
           : (fields[14] as Map?)?.cast<String, dynamic>(),
       tag: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
-      image: fields[17] as String?,
-      imageName: fields[18] as String?,
       storeId: fields[19] as String,
       status: fields[16] == null
           ? ProductStatus.undefined
@@ -50,7 +48,7 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(20)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -62,7 +60,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(11)
       ..write(obj.brand)
       ..writeByte(12)
-      ..write(obj.imageDetail)
+      ..write(obj.imagesPath)
       ..writeByte(13)
       ..write(obj.imageThumbnail)
       ..writeByte(14)
@@ -71,10 +69,6 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.tag)
       ..writeByte(16)
       ..write(obj.status)
-      ..writeByte(17)
-      ..write(obj.image)
-      ..writeByte(18)
-      ..write(obj.imageName)
       ..writeByte(19)
       ..write(obj.storeId)
       ..writeByte(20)

@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/app.dart';
+import 'package:ez_shop_sync/src/widgets/overlay_loading_widget.dart';
 import 'package:flutter/material.dart';
 
 enum RouteAwareType {
@@ -14,6 +15,7 @@ class BaseScaffolds extends StatefulWidget {
   final Widget? floatingActionButton;
   final PreferredSizeWidget? appBar;
   final Colors? textSystemUiOverlayStyleColor;
+  final bool isLoading;
   final Function(RouteAwareType type)? onRouteAware;
   const BaseScaffolds({
     super.key,
@@ -23,6 +25,7 @@ class BaseScaffolds extends StatefulWidget {
     this.floatingActionButton,
     this.textSystemUiOverlayStyleColor,
     this.onRouteAware,
+    this.isLoading = false,
   });
 
   @override
@@ -72,17 +75,22 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade100,
-        drawerScrimColor: Colors.white,
-        appBar: widget.appBar,
-        body: widget.body,
-        bottomNavigationBar: widget.bottomNavigationBar,
-        floatingActionButton: widget.floatingActionButton,
-      ),
+    return Stack(
+      children: [
+        SafeArea(
+          top: false,
+          bottom: true,
+          child: Scaffold(
+            backgroundColor: Colors.grey.shade100,
+            drawerScrimColor: Colors.white,
+            appBar: widget.appBar,
+            body: widget.body,
+            bottomNavigationBar: widget.bottomNavigationBar,
+            floatingActionButton: widget.floatingActionButton,
+          ),
+        ),
+        if (widget.isLoading) OverlayLoadingWidget(),
+      ],
     );
   }
 }

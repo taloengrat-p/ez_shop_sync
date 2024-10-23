@@ -29,8 +29,7 @@ class ProductGridItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ImageWidget(
-            imageUrl: product.image,
-            imageFullName: product.imageName,
+            imageUrl: product.imagesPath?.firstOrNull,
             margin: const EdgeInsets.all(4),
             padding: const EdgeInsets.all(4),
             borderRadius: const BorderRadius.only(

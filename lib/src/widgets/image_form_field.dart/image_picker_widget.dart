@@ -10,16 +10,18 @@ class ImagePickerWidget extends StatefulWidget {
   final double? width;
   final EdgeInsets? margin;
   final Function(File? file)? onImagePicked;
-  final File? imageInit;
+  final String? path;
   final bool disablePreview;
+  final BoxConstraints? constraints;
   const ImagePickerWidget({
     super.key,
     this.height,
     this.width,
     this.margin,
     this.onImagePicked,
-    this.imageInit,
+    this.path,
     this.disablePreview = false,
+    this.constraints,
   });
 
   @override
@@ -31,11 +33,10 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   @override
   void initState() {
-    
     super.initState();
-    if (widget.imageInit.isNotNull) {
+    if (widget.path != null) {
       setState(() {
-        image = widget.imageInit;
+        image = File(widget.path!);
       });
     }
   }
@@ -60,11 +61,15 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         color: Colors.grey,
         strokeWidth: 1,
         child: image != null
-            ? Image.file(
-                image!,
-                fit: BoxFit.contain,
-                width: widget.width,
+            ? Container(
+                constraints: widget.constraints,
                 height: widget.height,
+                child: Image.file(
+                  image!,
+                  fit: BoxFit.contain,
+                  width: widget.width,
+                  height: widget.height,
+                ),
               )
             : Container(
                 padding: widget.margin,

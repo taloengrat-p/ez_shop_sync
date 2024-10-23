@@ -79,12 +79,9 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     }
   }
 
-  setProductDetailImageSelect(List<File>? values) {
-    _productEditor?.imageDetail = values?.map((e) => e.path).toList();
-  }
-
-  setProductImageSelect(File? value) {
-    _productEditor?.image = value?.path;
+  setProductImages(List<String>? images) {
+    _productEditor?.imagesPath = images;
+    emit(CreateProductUpdateImages(_productEditor?.imagesPath));
   }
 
   void submit() async {
@@ -161,17 +158,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   Future<void> createProduct({required String id}) async {
     emit(CreateProductLoading());
-    String? imageFullName;
     List<String> imageDetailFileName = [];
-    if (_productEditor?.image.isNotNull ?? false) {
-      final fileBytes = await FolderFileUtils.getFileBytes(File(_productEditor!.image!));
-      final imageName = const Uuid().v1().substring(0, 10);
-      final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
-      imageFullName = imageSaveModel.fileName;
-    }
 
-    if (_productEditor?.imageDetail?.isNotEmpty ?? false) {
-      for (var element in _productEditor!.imageDetail!) {
+    if (_productEditor?.imagesPath?.isNotEmpty ?? false) {
+      for (var element in _productEditor!.imagesPath!) {
         final fileBytes = await FolderFileUtils.getFileBytes(File(element));
         final imageName = const Uuid().v1().substring(0, 10);
         final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
@@ -193,8 +183,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         userId: currentUser!.id,
         product: _productEditor!
           ..id = id
-          ..imageName = imageFullName
-          ..imageDetail = imageDetailFileName,
+          ..imagesPath = imageDetailFileName,
       ),
     );
 

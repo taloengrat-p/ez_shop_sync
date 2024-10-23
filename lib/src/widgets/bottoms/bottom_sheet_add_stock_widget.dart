@@ -57,7 +57,7 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                 Row(
                   children: [
                     ImageWidget(
-                      imageFullName: _productEditor.imageName,
+                      imageUrl: _productEditor.imagesPath?.firstOrNull,
                       width: 80,
                       height: 80,
                     ),

@@ -68,7 +68,7 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
                 Row(
                   children: [
                     ImageWidget(
-                      imageFullName: _productEditor.imageName,
+                      imageUrl: _productEditor.imagesPath?.firstOrNull,
                       width: 80,
                       height: 80,
                     ),

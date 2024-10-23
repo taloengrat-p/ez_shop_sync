@@ -17,6 +17,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     T request, {
     String? userId,
   }) async {
+    
     await box.put(
       request.id,
       request

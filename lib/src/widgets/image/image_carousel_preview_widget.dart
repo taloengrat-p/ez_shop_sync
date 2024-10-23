@@ -41,7 +41,6 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
                 (e) {
                   return ImageWidget(
                     imageUrl: e,
-                    imageFullName: e,
                     margin: const EdgeInsets.all(4),
                     padding: const EdgeInsets.all(4),
                     borderRadius: const BorderRadius.only(

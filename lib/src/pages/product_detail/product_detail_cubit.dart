@@ -48,19 +48,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     emit(ProductDetailRefresh(DateTime.now()));
   }
 
-  List<String> get imageMerged {
-    List<String> images = [];
-
-    if (product?.imageName?.isNotNull ?? false) {
-      images.add(product!.imageName!);
-    }
-
-    if (product?.imageDetail?.isNotNull ?? false) {
-      images.addAll(product!.imageDetail!);
-    }
-
-    return images;
-  }
+  List<String> get imageMerged => product?.imagesPath ?? [];
 
   void deleteProduct() {
     if (product?.id.isNull ?? true) {

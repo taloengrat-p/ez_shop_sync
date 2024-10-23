@@ -27,7 +27,7 @@ class Product extends BaseHiveObject {
   String? brand;
 
   @HiveField(12, defaultValue: null)
-  List<String>? imageDetail;
+  List<String>? imagesPath;
 
   @HiveField(13, defaultValue: null)
   String? imageThumbnail;
@@ -40,12 +40,6 @@ class Product extends BaseHiveObject {
 
   @HiveField(16, defaultValue: ProductStatus.undefined)
   ProductStatus status;
-
-  @HiveField(17, defaultValue: null)
-  String? image;
-
-  @HiveField(18, defaultValue: null)
-  String? imageName;
 
   @HiveField(19)
   String storeId;
@@ -66,12 +60,10 @@ class Product extends BaseHiveObject {
     this.priceCategories,
     this.category,
     this.brand,
-    this.imageDetail,
+    this.imagesPath,
     this.imageThumbnail,
     this.attributes,
     this.tag,
-    this.image,
-    this.imageName,
     required this.storeId,
     required this.status,
     this.quantity,
@@ -94,7 +86,7 @@ class Product extends BaseHiveObject {
 
   @override
   String toString() {
-    return 'Product(name: $name, description: $description, priceCategories: $priceCategories, category: $category, brand: $brand, imageDetail: $imageDetail, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, image: $image, imageName: $imageName, storeId: $storeId, quantity: $quantity, ownerId: $ownerId, priceSelected: $priceSelected)';
+    return 'Product(name: $name, description: $description, priceCategories: $priceCategories, category: $category, brand: $brand, imageDetail: $imagesPath, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, storeId: $storeId, quantity: $quantity, ownerId: $ownerId, priceSelected: $priceSelected)';
   }
 
   Product copyWith({
@@ -123,12 +115,10 @@ class Product extends BaseHiveObject {
       priceCategories: priceCategories ?? this.priceCategories,
       category: category ?? this.category,
       brand: brand ?? this.brand,
-      imageDetail: imageDetail ?? this.imageDetail,
+      imagesPath: imageDetail ?? this.imagesPath,
       imageThumbnail: imageThumbnail ?? this.imageThumbnail,
       attributes: attributes ?? this.attributes,
       tag: tag ?? this.tag,
-      image: image ?? this.image,
-      imageName: imageName ?? this.imageName,
       storeId: storeId ?? this.storeId,
       quantity: quantity ?? this.quantity,
       ownerId: ownerId ?? this.ownerId,
