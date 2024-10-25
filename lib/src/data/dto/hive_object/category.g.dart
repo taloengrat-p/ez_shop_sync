@@ -69,3 +69,41 @@ class CategoryAdapter extends TypeAdapter<Category> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
+      name: json['name'] as String,
+      id: json['id'] as String,
+      parentId: json['parentId'] as String?,
+      borderColor: json['borderColor'] as String?,
+      color: json['color'] as String?,
+      iconData: json['iconData'] as Map<String, dynamic>?,
+    )
+      ..createDate = json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String)
+      ..createBy = json['createBy'] as String?
+      ..updateDate = json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String)
+      ..updateBy = json['updateBy'] as String?
+      ..syncDatetime = json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'name': instance.name,
+      'parentId': instance.parentId,
+      'color': instance.color,
+      'borderColor': instance.borderColor,
+      'iconData': instance.iconData,
+    };

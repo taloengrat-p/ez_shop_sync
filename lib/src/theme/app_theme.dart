@@ -1,9 +1,12 @@
+import 'package:ez_shop_sync/src/models/base_object.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'app_theme.g.dart';
 
 @HiveType(typeId: 6)
-class AppTheme {
+@JsonSerializable()
+class AppTheme extends BaseObject {
   @HiveField(1)
   String primaryColor;
   @HiveField(2)
@@ -19,7 +22,8 @@ class AppTheme {
     required this.backgroundColor,
   });
 
-  @override
-  String toString() =>
-      'AppTheme(primaryColor: $primaryColor, secondaryColor: $secondaryColor, accentColor: $accentColor)';
+  factory AppTheme.fromJson(Map<String, dynamic> json) => _$AppThemeFromJson(json);
+
+  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$AppThemeToJson(this);
 }

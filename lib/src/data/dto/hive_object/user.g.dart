@@ -80,3 +80,49 @@ class UserAdapter extends TypeAdapter<User> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+User _$UserFromJson(Map<String, dynamic> json) => User(
+      id: json['id'] as String,
+      createDate: json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String),
+      createBy: json['createBy'] as String?,
+      updateDate: json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String),
+      updateBy: json['updateBy'] as String?,
+      storeId:
+          (json['storeId'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      phoneNumber: json['phoneNumber'] as String?,
+      email: json['email'] as String,
+      username: json['username'] as String,
+      profilePictureUrl: json['profilePictureUrl'] as String?,
+      storeLatest: json['storeLatest'] as String?,
+      carts: (json['carts'] as List<dynamic>).map((e) => e as String).toList(),
+    )..syncDatetime = json['syncDatetime'] == null
+        ? null
+        : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'storeId': instance.storeId,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'phoneNumber': instance.phoneNumber,
+      'email': instance.email,
+      'username': instance.username,
+      'profilePictureUrl': instance.profilePictureUrl,
+      'storeLatest': instance.storeLatest,
+      'carts': instance.carts,
+    };

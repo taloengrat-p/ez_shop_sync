@@ -48,3 +48,21 @@ class AppThemeAdapter extends TypeAdapter<AppTheme> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+AppTheme _$AppThemeFromJson(Map<String, dynamic> json) => AppTheme(
+      primaryColor: json['primaryColor'] as String,
+      secondaryColor: json['secondaryColor'] as String,
+      accentColor: json['accentColor'] as String,
+      backgroundColor: json['backgroundColor'] as String,
+    );
+
+Map<String, dynamic> _$AppThemeToJson(AppTheme instance) => <String, dynamic>{
+      'primaryColor': instance.primaryColor,
+      'secondaryColor': instance.secondaryColor,
+      'accentColor': instance.accentColor,
+      'backgroundColor': instance.backgroundColor,
+    };

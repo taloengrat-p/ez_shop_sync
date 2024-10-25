@@ -66,3 +66,41 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
+    ProductHistory(
+      productId: json['productId'] as String,
+      id: json['id'] as String,
+      event: json['event'] as String,
+      newData: json['newData'] as Map<String, dynamic>?,
+      oldData: json['oldData'] as Map<String, dynamic>?,
+    )
+      ..createDate = json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String)
+      ..createBy = json['createBy'] as String?
+      ..updateDate = json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String)
+      ..updateBy = json['updateBy'] as String?
+      ..syncDatetime = json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$ProductHistoryToJson(ProductHistory instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'event': instance.event,
+      'productId': instance.productId,
+      'oldData': instance.oldData,
+      'newData': instance.newData,
+    };

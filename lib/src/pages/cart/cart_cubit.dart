@@ -110,7 +110,7 @@ class CartCubit extends Cubit<CartState> {
     }
 
     emit(CartLoading());
-    await orderRepository.create(
+    final orderCreated = await orderRepository.create(
       CreateOrderRequest(
         id: '',
         storeCode: baseCubit.store?.name.substring(0, 4) ?? '',
@@ -120,5 +120,6 @@ class CartCubit extends Cubit<CartState> {
         paymentType: PaymentType.fromString(paymentMethod),
       ),
     );
+    emit(CartSuccess(orderCreated));
   }
 }

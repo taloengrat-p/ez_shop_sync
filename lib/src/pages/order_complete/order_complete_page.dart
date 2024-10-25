@@ -1,15 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/main.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
+import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 
 class OrderCompletePage extends StatefulWidget {
   const OrderCompletePage({
@@ -29,7 +30,11 @@ class _OrderCompleteState extends State<OrderCompletePage> {
     _cubit = OrderCompleteCubit();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
-      setState(() {});
+      final argruments = ModalRoute.of(context)?.settings.arguments;
+
+      if (argruments is CartSuccess) {
+        _cubit.setArgruments(argruments);
+      }
     });
   }
 
@@ -72,31 +77,63 @@ class _OrderCompleteState extends State<OrderCompletePage> {
   }
 
   Widget _buildPage(BuildContext context, OrderCompleteState state) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            const Icon(
-              Icons.check_circle_rounded,
-              size: 100,
-              color: Colors.green,
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Text(
-              LocaleKeys.orderCompleteTitle.tr(),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Container(
-              height: DimensionsKeys.heightBts,
-            ),
-          ],
+    return SizedBox(
+      width: double.infinity,
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              const Icon(
+                Icons.check_circle_rounded,
+                size: 100,
+                color: Colors.green,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                LocaleKeys.orderCompleteTitle.tr(),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              Text(_cubit.argruments?.ordered?.createDate
+                      .toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY_HH_mm) ??
+                  ''),
+              const SizedBox(
+                height: 16,
+              ),
+              buildTitleValueInfo('Order NO. :', _cubit.argruments?.ordered?.id ?? ''),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildTitleValueInfo(String title, String value) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Expanded(
+          child: Text(value),
+        ),
+      ],
     );
   }
 }

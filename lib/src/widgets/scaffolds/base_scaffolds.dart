@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/app.dart';
+import 'package:ez_shop_sync/src/widgets/debug/debugger_dragable.dart';
 import 'package:ez_shop_sync/src/widgets/overlay_loading_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +85,12 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
             backgroundColor: Colors.grey.shade100,
             drawerScrimColor: Colors.white,
             appBar: widget.appBar,
-            body: widget.body,
+            body: Stack(
+              children: [
+                widget.body ?? Container(),
+                const DebuggerDragable(),
+              ],
+            ),
             bottomNavigationBar: widget.bottomNavigationBar,
             floatingActionButton: widget.floatingActionButton,
           ),

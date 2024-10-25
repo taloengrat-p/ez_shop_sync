@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class CartState extends Equatable {
   const CartState([List props = const []]) : super();
@@ -39,8 +41,15 @@ class CartLoading extends CartState {
 }
 
 class CartSuccess extends CartState {
+  final ProductOrder? ordered;
+
+  const CartSuccess(this.ordered);
+
   @override
-  String toString() => 'CartSuccess';
+  String toString() => 'CartSuccess $order';
+
+  @override
+  List<Object?> get props => [ordered];
 }
 
 class CartFailure extends CartState {

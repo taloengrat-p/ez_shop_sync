@@ -42,3 +42,17 @@ class MemberAdapter extends TypeAdapter<Member> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Member _$MemberFromJson(Map<String, dynamic> json) => Member(
+      userId: json['userId'] as String,
+      role: json['role'] as String,
+    );
+
+Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
+      'userId': instance.userId,
+      'role': instance.role,
+    };

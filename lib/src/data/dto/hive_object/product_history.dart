@@ -4,10 +4,12 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_even
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'product_history.g.dart';
 
 @HiveType(typeId: 10)
+@JsonSerializable()
 class ProductHistory extends BaseHiveObject {
   @HiveField(7)
   final String event;
@@ -29,6 +31,11 @@ class ProductHistory extends BaseHiveObject {
     this.newData,
     this.oldData,
   });
+
+  factory ProductHistory.fromJson(Map<String, dynamic> json) => _$ProductHistoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductHistoryToJson(this);
+
   String titleDisplay({Product? product}) {
     switch (eventType) {
       case ProductHistoryEvent.create:

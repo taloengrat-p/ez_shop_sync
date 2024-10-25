@@ -155,3 +155,71 @@ class ProductStatusAdapter extends TypeAdapter<ProductStatus> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Product _$ProductFromJson(Map<String, dynamic> json) => Product(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      priceCategories: (json['priceCategories'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as num),
+      ),
+      category: json['category'] as String?,
+      brand: json['brand'] as String?,
+      imagesPath: (json['imagesPath'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      imageThumbnail: json['imageThumbnail'] as String?,
+      attributes: json['attributes'] as Map<String, dynamic>?,
+      tag: (json['tag'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      storeId: json['storeId'] as String,
+      status: $enumDecode(_$ProductStatusEnumMap, json['status']),
+      quantity: json['quantity'] as num?,
+      ownerId: json['ownerId'] as String,
+      priceSelected: json['priceSelected'] as String?,
+    )
+      ..createDate = json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String)
+      ..createBy = json['createBy'] as String?
+      ..updateDate = json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String)
+      ..updateBy = json['updateBy'] as String?
+      ..syncDatetime = json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'name': instance.name,
+      'description': instance.description,
+      'priceCategories': instance.priceCategories,
+      'category': instance.category,
+      'brand': instance.brand,
+      'imagesPath': instance.imagesPath,
+      'imageThumbnail': instance.imageThumbnail,
+      'attributes': instance.attributes,
+      'tag': instance.tag,
+      'status': _$ProductStatusEnumMap[instance.status]!,
+      'storeId': instance.storeId,
+      'quantity': instance.quantity,
+      'ownerId': instance.ownerId,
+      'priceSelected': instance.priceSelected,
+    };
+
+const _$ProductStatusEnumMap = {
+  ProductStatus.active: 'active',
+  ProductStatus.inactive: 'inactive',
+  ProductStatus.discontinued: 'discontinued',
+  ProductStatus.outOfStock: 'outOfStock',
+  ProductStatus.undefined: 'undefined',
+};

@@ -3,10 +3,11 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
-
+import 'package:json_annotation/json_annotation.dart';
 part 'member.g.dart';
 
 @HiveType(typeId: 11)
+@JsonSerializable()
 class Member {
   @HiveField(1)
   final String userId;
@@ -20,4 +21,9 @@ class Member {
   });
 
   RoleType get roleType => RoleType.fromString(role);
+
+  factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
+
+  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$MemberToJson(this);
 }

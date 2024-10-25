@@ -1,9 +1,11 @@
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @HiveType(typeId: 4)
+@JsonSerializable()
 class User extends BaseHiveObject {
   @HiveField(7, defaultValue: [])
   List<String>? storeId;
@@ -51,8 +53,7 @@ class User extends BaseHiveObject {
     required this.carts,
   });
 
-  @override
-  String toString() {
-    return 'User(storeId: $storeId, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, email: $email, username: $username, profilePictureUrl: $profilePictureUrl, storeLatest: $storeLatest)';
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

@@ -1,6 +1,7 @@
+import 'package:ez_shop_sync/src/models/base_object.dart';
 import 'package:hive/hive.dart';
 
-abstract class BaseHiveObject {
+abstract class BaseHiveObject extends BaseObject {
   @HiveField(1)
   String id;
 

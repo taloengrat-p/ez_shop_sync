@@ -100,7 +100,7 @@ class _CartState extends State<CartPage> {
           if (state is CartRemoveItemSuccess) {
             checkCanScroll();
           } else if (state is CartSuccess) {
-            OrderCompleteRouter(context).navigate();
+            OrderCompleteRouter(context).navigate(argruments: state);
           }
         },
         child: BlocBuilder<CartCubit, CartState>(

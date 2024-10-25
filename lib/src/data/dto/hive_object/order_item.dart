@@ -4,10 +4,12 @@ import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'order_item.g.dart';
 
 @HiveType(typeId: 9)
+@JsonSerializable()
 class OrderItem extends BaseHiveObject {
   @HiveField(7)
   Product? product;
@@ -30,4 +32,8 @@ class OrderItem extends BaseHiveObject {
       product: product ?? this.product,
     );
   }
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 }

@@ -69,6 +69,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i325.StoreServerRepository());
     gh.factory<_i300.StoreLocalRepository>(() => _i300.StoreLocalRepository());
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
+    gh.singleton<_i850.OrderServerRepository>(
+        () => _i850.OrderServerRepository());
     gh.singleton<_i548.OrderLocalRepository>(
         () => _i548.OrderLocalRepository());
     gh.singleton<_i0.ProductHistoryLocalRepository>(
@@ -92,8 +94,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
-    gh.singleton<_i850.OrderServerRepository>(
-        () => _i850.OrderServerRepository());
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i222.CartLocalRepository>(),
           cartServerRepository: gh<_i808.CartServerRepository>(),

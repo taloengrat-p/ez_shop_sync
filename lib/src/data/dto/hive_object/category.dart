@@ -1,9 +1,11 @@
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'category.g.dart';
 
 @HiveType(typeId: 7)
+@JsonSerializable()
 class Category extends BaseHiveObject {
   @HiveField(7)
   String name;
@@ -28,4 +30,8 @@ class Category extends BaseHiveObject {
     this.color,
     this.iconData,
   });
+
+  factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CategoryToJson(this);
 }

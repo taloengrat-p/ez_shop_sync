@@ -60,3 +60,37 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
+      id: json['id'] as String,
+      product: json['product'] == null
+          ? null
+          : Product.fromJson(json['product'] as Map<String, dynamic>),
+      note: json['note'] as String?,
+    )
+      ..createDate = json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String)
+      ..createBy = json['createBy'] as String?
+      ..updateDate = json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String)
+      ..updateBy = json['updateBy'] as String?
+      ..syncDatetime = json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'product': instance.product,
+      'note': instance.note,
+    };

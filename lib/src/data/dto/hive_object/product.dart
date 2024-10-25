@@ -6,10 +6,12 @@ import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'product.g.dart';
 
 @HiveType(typeId: 1)
+@JsonSerializable()
 class Product extends BaseHiveObject {
   @HiveField(7)
   String name;
@@ -88,6 +90,10 @@ class Product extends BaseHiveObject {
   String toString() {
     return 'Product(name: $name, description: $description, priceCategories: $priceCategories, category: $category, brand: $brand, imageDetail: $imagesPath, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, storeId: $storeId, quantity: $quantity, ownerId: $ownerId, priceSelected: $priceSelected)';
   }
+
+  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
 
   Product copyWith({
     String? id,

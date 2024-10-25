@@ -63,3 +63,39 @@ class CartAdapter extends TypeAdapter<Cart> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
+      id: json['id'] as String,
+      createDate: json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String),
+      createBy: json['createBy'] as String?,
+      updateDate: json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String),
+      updateBy: json['updateBy'] as String?,
+      syncDatetime: json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String),
+      cartItems: (json['cartItems'] as List<dynamic>)
+          .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      storeId: json['storeId'] as String,
+      userId: json['userId'] as String,
+    );
+
+Map<String, dynamic> _$CartToJson(Cart instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'userId': instance.userId,
+      'storeId': instance.storeId,
+      'cartItems': instance.cartItems,
+    };

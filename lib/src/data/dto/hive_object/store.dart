@@ -5,10 +5,12 @@ import 'package:hive/hive.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'store.g.dart';
 
 @HiveType(typeId: 3)
+@JsonSerializable()
 class Store extends BaseHiveObject {
   @HiveField(7)
   String ownerId;
@@ -66,8 +68,8 @@ class Store extends BaseHiveObject {
     this.members,
   });
 
-  @override
-  String toString() {
-    return 'Store(ownerId: $ownerId, name: $name, address: $address, phoneNumbers: $phoneNumbers, email: $email, website: $website, description: $description, images: $images, tags: $tags, storeTheme: $storeTheme, categories: $categories, members: $members)';
-  }
+  factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);
+
+  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$StoreToJson(this);
 }

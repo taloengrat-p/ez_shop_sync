@@ -90,3 +90,63 @@ class StoreAdapter extends TypeAdapter<Store> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Store _$StoreFromJson(Map<String, dynamic> json) => Store(
+      id: json['id'] as String,
+      createDate: json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String),
+      createBy: json['createBy'] as String?,
+      updateDate: json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String),
+      updateBy: json['updateBy'] as String?,
+      ownerId: json['ownerId'] as String,
+      name: json['name'] as String,
+      address: json['address'] as String?,
+      phoneNumbers: (json['phoneNumbers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      email: json['email'] as String?,
+      website: json['website'] as String?,
+      description: json['description'] as String?,
+      images:
+          (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      storeTheme: json['storeTheme'] == null
+          ? null
+          : AppTheme.fromJson(json['storeTheme'] as Map<String, dynamic>),
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      members: (json['members'] as List<dynamic>?)
+          ?.map((e) => Member.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    )..syncDatetime = json['syncDatetime'] == null
+        ? null
+        : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'ownerId': instance.ownerId,
+      'name': instance.name,
+      'address': instance.address,
+      'phoneNumbers': instance.phoneNumbers,
+      'email': instance.email,
+      'website': instance.website,
+      'description': instance.description,
+      'images': instance.images,
+      'tags': instance.tags,
+      'storeTheme': instance.storeTheme,
+      'categories': instance.categories,
+      'members': instance.members,
+    };

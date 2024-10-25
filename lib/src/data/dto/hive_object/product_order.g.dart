@@ -63,3 +63,40 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
+      id: json['id'] as String,
+      status: json['status'] as String,
+      cartItems: (json['cartItems'] as List<dynamic>)
+          .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      paymentType: json['paymentType'] as String,
+    )
+      ..createDate = json['createDate'] == null
+          ? null
+          : DateTime.parse(json['createDate'] as String)
+      ..createBy = json['createBy'] as String?
+      ..updateDate = json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String)
+      ..updateBy = json['updateBy'] as String?
+      ..syncDatetime = json['syncDatetime'] == null
+          ? null
+          : DateTime.parse(json['syncDatetime'] as String);
+
+Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'createDate': instance.createDate?.toIso8601String(),
+      'createBy': instance.createBy,
+      'updateDate': instance.updateDate?.toIso8601String(),
+      'updateBy': instance.updateBy,
+      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'status': instance.status,
+      'paymentType': instance.paymentType,
+      'cartItems': instance.cartItems,
+    };

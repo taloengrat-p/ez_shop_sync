@@ -3,10 +3,12 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'cart.g.dart';
 
 @HiveType(typeId: 8)
+@JsonSerializable()
 class Cart extends BaseHiveObject {
   @HiveField(7)
   String userId;
@@ -29,6 +31,7 @@ class Cart extends BaseHiveObject {
     required this.userId,
   });
 
-  @override
-  String toString() => 'Cart(id: ${super.id} userId: $userId, storeId: $storeId, productItems: $cartItems)';
+  factory Cart.fromJson(Map<String, dynamic> json) => _$CartFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CartToJson(this);
 }
