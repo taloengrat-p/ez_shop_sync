@@ -11,4 +11,6 @@ class ProductLocalRepository extends BaseHiveRepository<String, Product> {
   List<Product> getAllByStoreId(String id) {
     return getAll().where((e) => e.storeId == id).toList();
   }
+
+  updateQuantity(String id, Product product) {}
 }

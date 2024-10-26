@@ -17,7 +17,6 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     T request, {
     String? userId,
   }) async {
-    
     await box.put(
       request.id,
       request
@@ -37,8 +36,15 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   List<T> getAll() {
     List<T> result = box.values.toList();
     result.sort(
-        (a, b) => a.createDate?.millisecondsSinceEpoch.compareTo(b.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
+        (a, b) => b.createDate?.millisecondsSinceEpoch.compareTo(a.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
     return result;
+  }
+
+  List<T> getAllRange(int start, int end) {
+    List<T> result = box.values.toList();
+    result.sort(
+        (a, b) => b.createDate?.millisecondsSinceEpoch.compareTo(a.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
+    return result.sublist(start, end);
   }
 
   Future<void> delete(I id) async {

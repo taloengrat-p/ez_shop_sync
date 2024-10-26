@@ -27,6 +27,7 @@ class CartItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContainerShadowWidget(
       color: Colors.white,
+      borderRadius: 20,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Slidable(
@@ -73,6 +74,7 @@ class CartItemWidget extends StatelessWidget {
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       onPressed: onIncreaseQty,

@@ -141,5 +141,12 @@
   },
   "orderCompleteTitle": "Order completed successfully",
   "backToHomePage": "Back to Home",
-  "orderId": "Order ID"
+  "orderId": "Order NO",
+  "orderHistory": "Order History",
+  "myMenu": "My Menu",
+  "orderDateTime": "Order Date Time",
+  "orderNumberOfItem": "{} item(s)",
+  "orderDetail": "Order Details",
+  "cartEmpty": "Your cart is empty please add product.",
+  "gotoProductsPage": "Go to inventory page"
 }

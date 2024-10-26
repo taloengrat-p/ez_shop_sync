@@ -142,5 +142,12 @@
   },
   "orderCompleteTitle": "ทำรายการสำเร็จ",
   "backToHomePage": "กลับไปหน้าแรก",
-  "orderId": "Order ID"
+  "orderId": "หมายเลขคำสั่งซื้อ",
+  "orderHistory": "ประวัติการสั่งซื้อ",
+  "myMenu": "เมนูของฉัน",
+  "orderDateTime": "วันเวลาที่สั่งซื้อ",
+  "orderNumberOfItem": "{} รายการ",
+  "orderDetail": "รายละเอียดการสั่งซื้อ",
+  "cartEmpty": "รถเข็นของคุณว่างเปล่า กรุณาเพิ่มสินค้า",
+  "gotoProductsPage": "ไปที่หน้าสต๊อกสินค้า"
 }

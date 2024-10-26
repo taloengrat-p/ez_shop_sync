@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
@@ -159,5 +161,25 @@ class ProductRepository implements IProductRepository {
     );
 
     return productUpdated;
+  }
+
+  Future<void> orderCompletedUpdate(Cart? cart, {AppMode? appMode = AppMode.local}) async {
+    if (appMode == AppMode.local) {
+      for (OrderItem item in cart?.cartItems ?? []) {
+        if (item.product?.id != null) {
+          final product = getById(item.product!.id);
+
+          if (product == null) {
+            throw ('Product ${item.product!.id} is Null');
+          }
+
+          final newQuantity = (product.quantity ?? 0) - (item.product?.quantity ?? 0);
+
+          await productLocalRepository.update(product.id, product..quantity = newQuantity);
+        }
+      }
+    } else {
+      throw UnimplementedError();
+    }
   }
 }

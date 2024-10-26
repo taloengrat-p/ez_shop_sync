@@ -1,12 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
+import 'package:ez_shop_sync/src/pages/main/main_router.dart';
+import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
@@ -14,6 +18,7 @@ import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -61,6 +66,7 @@ class _CartState extends State<CartPage> {
       baseCubit: GetIt.I<BaseCubit>(),
       cartRepository: GetIt.I<CartRepository>(),
       orderRepository: GetIt.I<OrderRepository>(),
+      productRepository: GetIt.I<ProductRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -93,6 +99,7 @@ class _CartState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<CartCubit, CartState>(
@@ -100,7 +107,7 @@ class _CartState extends State<CartPage> {
           if (state is CartRemoveItemSuccess) {
             checkCanScroll();
           } else if (state is CartSuccess) {
-            OrderCompleteRouter(context).navigate(argruments: state);
+            OrderCompleteRouter(context).replace(argruments: state);
           }
         },
         child: BlocBuilder<CartCubit, CartState>(
@@ -113,36 +120,48 @@ class _CartState extends State<CartPage> {
                 title: LocaleKeys.cart.tr(),
                 actions: [],
               ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: buildPriceLayout(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(LocaleKeys.totalAmount.tr()),
-                        Text(
-                          _cubit.totalPriceIncludeServiceCharge.toString(),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    ButtonWidget(
-                      label: LocaleKeys.proceedToCheckout.tr(),
-                      leading: const Icon(Icons.payment_rounded),
+              body: _cubit.products.isEmpty
+                  ? Center(
+                      child:
+                          EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.cartEmpty.tr()))
+                  : _buildPage(context, state),
+              bottomNavigationBar: _cubit.products.isEmpty
+                  ? ButtonWidget(
+                      margin: const EdgeInsets.all(16),
+                      label: LocaleKeys.gotoProductsPage.tr(),
                       onPressed: () {
-                        _cubit.submit();
+                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
                       },
                     )
-                  ],
-                ),
-              ),
+                  : buildPriceLayout(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(LocaleKeys.totalAmount.tr()),
+                              Text(
+                                _cubit.totalPriceIncludeServiceCharge.toString(),
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          ButtonWidget(
+                            label: LocaleKeys.proceedToCheckout.tr(),
+                            leading: const Icon(Icons.payment_rounded),
+                            onPressed: () {
+                              _cubit.submit();
+                            },
+                          )
+                        ],
+                      ),
+                    ),
             );
           },
         ),
@@ -259,7 +278,7 @@ class _CartState extends State<CartPage> {
               ),
               value: CupertinoRadio(
                 activeColor: Colors.green,
-                value: 'qr-code',
+                value: PaymentType.qrcode.name,
                 groupValue: _cubit.paymentMethod,
                 onChanged: (val) {
                   _cubit.changePaymentMethod(val);
@@ -274,7 +293,7 @@ class _CartState extends State<CartPage> {
                 LocaleKeys.paymentMethodOptions_cash.tr(),
               ),
               value: CupertinoRadio(
-                value: 'cash',
+                value: PaymentType.cash.name,
                 activeColor: Colors.green,
                 groupValue: _cubit.paymentMethod,
                 onChanged: (val) {

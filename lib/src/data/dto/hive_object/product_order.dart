@@ -1,5 +1,8 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:ez_shop_sync/src/utils/extensions/list_order_item_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,9 +16,23 @@ class ProductOrder extends BaseHiveObject {
 
   @HiveField(8)
   final String paymentType;
+  PaymentType get geyPaymentType => PaymentType.fromString(paymentType);
 
   @HiveField(9, defaultValue: [])
   List<OrderItem> cartItems;
+
+  @HiveField(10, defaultValue: 0)
+  num? serviceCharge;
+
+  num get numberOfItems => cartItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
+
+  num get serviceChargeValue => (serviceCharge ?? 0) / 100;
+
+  num get totalServiceCharge => (cartItems.totalPrice * serviceChargeValue);
+
+  num get totalPriceIncludeServiceCharge => cartItems.totalPrice + totalServiceCharge;
+
+  String get totalPriceDisplay => totalPriceIncludeServiceCharge.prefixCurrency();
 
   ProductOrder({
     required super.id,

@@ -136,5 +136,13 @@ abstract class  LocaleKeys {
   static const productHistory = 'productHistory';
   static const orderCompleteTitle = 'orderCompleteTitle';
   static const backToHomePage = 'backToHomePage';
+  static const orderId = 'orderId';
+  static const orderHistory = 'orderHistory';
+  static const myMenu = 'myMenu';
+  static const orderDateTime = 'orderDateTime';
+  static const orderNumberOfItem = 'orderNumberOfItem';
+  static const orderDetail = 'orderDetail';
+  static const cartEmpty = 'cartEmpty';
+  static const gotoProductsPage = 'gotoProductsPage';
 
 }

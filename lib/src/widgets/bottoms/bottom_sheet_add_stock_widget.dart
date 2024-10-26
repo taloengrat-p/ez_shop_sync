@@ -115,7 +115,7 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
             backgroundColor: Colors.amber,
             onPressed: _qtyTextController.text.isEmpty ||
                     int.tryParse(_qtyTextController.text) == null ||
-                    (((widget.product.priceCategories?.length ?? 2) > 1) && priceCategorySelected == null)
+                    (priceCategorySelected == null || (priceCategorySelected?.isEmpty ?? false))
                 ? null
                 : () {
                     Navigator.of(context).pop(

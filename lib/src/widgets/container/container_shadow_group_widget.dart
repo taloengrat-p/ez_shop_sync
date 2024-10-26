@@ -6,11 +6,11 @@ class ContainerShadowGroupWidget extends StatelessWidget {
   final double? borderRadius;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
-  final String title;
+  final String? title;
   final List<Widget> children;
   const ContainerShadowGroupWidget({
     super.key,
-    required this.title,
+    this.title,
     this.color,
     this.borderRadius,
     this.margin,
@@ -27,13 +27,14 @@ class ContainerShadowGroupWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 0),
-            child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: Text(
+                title!,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
             ),
-          ),
           const SizedBox(
             height: 8,
           ),

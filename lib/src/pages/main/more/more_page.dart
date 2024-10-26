@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/widgets/menu_group_widget.dart';
+import 'package:ez_shop_sync/src/pages/order_history/order_history_router.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
@@ -131,6 +132,10 @@ class _MorePageState extends State<MorePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildStoreProfile(),
+            const SizedBox(
+              height: 16,
+            ),
+            _buildMenuSettings(),
             const SizedBox(
               height: 16,
             ),
@@ -369,6 +374,22 @@ class _MorePageState extends State<MorePage> {
             if (result is ThemeSettingSuccess) {
               cubit.refresh();
             }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuSettings() {
+    return MenuGroupWidget(
+      title: LocaleKeys.myMenu.tr(),
+      items: [
+        MenuItemModel(
+          // disabled: true,
+          title: LocaleKeys.orderHistory.tr(),
+          value: 1,
+          onPressed: () {
+            OrderHistoryRouter(context).navigate();
           },
         ),
       ],

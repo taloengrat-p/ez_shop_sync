@@ -24,6 +24,7 @@ class ProductGridItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppContainerWidget(
       backgroundColor: Colors.white,
+      radius: 20,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

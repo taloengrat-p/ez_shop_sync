@@ -7,6 +7,17 @@ abstract class MainState extends Equatable {
   List<Object?> get props => [];
 }
 
+class MainArgruments extends MainState {
+  final int startWithIndexPage;
+
+  const MainArgruments(this.startWithIndexPage);
+
+  @override
+  String toString() => 'MainArgruments $startWithIndexPage';
+  @override
+  List<Object?> get props => [startWithIndexPage];
+}
+
 class MainInitial extends MainState {
   @override
   String toString() => 'MainInitial';

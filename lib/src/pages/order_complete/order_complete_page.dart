@@ -3,9 +3,13 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
+import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
+import 'package:ez_shop_sync/src/pages/order_history/order_history_router.dart';
+import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
+import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -108,7 +112,7 @@ class _OrderCompleteState extends State<OrderCompletePage> {
               const SizedBox(
                 height: 16,
               ),
-              buildTitleValueInfo('Order NO. :', _cubit.argruments?.ordered?.id ?? ''),
+              buildTitleValueInfo(LocaleKeys.orderId.tr(), _cubit.argruments?.ordered?.id ?? ''),
             ],
           ),
         ),
@@ -120,6 +124,7 @@ class _OrderCompleteState extends State<OrderCompletePage> {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Flexible(
           child: Text(
@@ -131,7 +136,21 @@ class _OrderCompleteState extends State<OrderCompletePage> {
           width: 8,
         ),
         Expanded(
-          child: Text(value),
+          child: InkWell(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                    decorationColor: Colors.blue,
+                  ),
+            ),
+            onTap: () {
+              OrderHistoryDetailRouter(context).replace(
+                argruments: OrderHistoryDetailArgruments(_cubit.argruments?.ordered),
+              );
+            },
+          ),
         ),
       ],
     );

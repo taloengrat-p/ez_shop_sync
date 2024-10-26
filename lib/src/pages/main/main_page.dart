@@ -11,7 +11,6 @@ import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
-import 'package:ez_shop_sync/src/pages/main/transaction/transaction_page.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
@@ -39,7 +38,15 @@ class _MainPageState extends State<MainPage> {
     baseCubit = BlocProvider.of<BaseCubit>(context);
     cubit = MainCubit(baseCubit: baseCubit);
     _navigationController = CircularBottomNavigationController(cubit.currentPage);
+
     _pageController = PageController(initialPage: cubit.currentPage);
+
+    WidgetsBinding.instance.addPostFrameCallback((time) {
+      final argruments = ModalRoute.of(context)?.settings.arguments;
+      if (argruments is MainArgruments) {
+        _pageController.jumpToPage(argruments.startWithIndexPage);
+      }
+    });
   }
 
   @override

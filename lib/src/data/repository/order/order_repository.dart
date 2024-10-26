@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart' as orderType;
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
@@ -8,6 +9,7 @@ import 'package:ez_shop_sync/src/data/repository/order/order_local_repository.da
 import 'package:ez_shop_sync/src/data/repository/order/order_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
@@ -35,10 +37,11 @@ class OrderRepository implements IOrderRepository {
 
   @override
   Future<orderType.ProductOrder> create(CreateOrderRequest request) async {
+    final now = DateTime.now();
     if (request.appMode == AppMode.local) {
       String fullUuid = const Uuid().v4();
-      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 8);
-      String prefixedUuid = '${request.storeCode}-$shortUuid';
+      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
+      String prefixedUuid = '${request.storeCode}${now.format(DateFormatConstance.YYYYMMDD_HHMMSS)}$shortUuid';
 
       final orderCreate = orderType.ProductOrder(
         id: prefixedUuid,
@@ -81,6 +84,18 @@ class OrderRepository implements IOrderRepository {
       return orderLocalRepository.getAll();
     } else {
       throw UnimplementedError();
+    }
+  }
+
+  List<orderType.ProductOrder> getAllRange(int start, int end, {AppMode? appMode = AppMode.local}) {
+    try {
+      if (appMode == AppMode.local) {
+        return orderLocalRepository.getAllRange(start, end);
+      } else {
+        throw UnimplementedError();
+      }
+    } catch (e) {
+      return [];
     }
   }
 

@@ -9,6 +9,8 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_page.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_page.dart';
+import 'package:ez_shop_sync/src/pages/order_history/order_history_page.dart';
+import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_page.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_page.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_page.dart';
@@ -41,6 +43,8 @@ class Routes {
   static const String ROUTE_CART = '/ROUTE_CART';
   static const String ROUTE_PRODUCTSETTINGS = '/ROUTE_PRODUCTSETTINGS';
   static const String ROUTE_ORDERCOMPLETE = '/ROUTE_ORDERCOMPLETE';
+  static const String ROUTE_ORDERHISTORY = '/ROUTE_ORDERHISTORY';
+  static const String ROUTE_ORDERHISTORYDETAIL = '/ROUTE_ORDERHISTORYDETAIL';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -62,5 +66,7 @@ class Routes {
     ROUTE_CART: (context) => const CartPage(),
     ROUTE_PRODUCTSETTINGS: (context) => const ProductSettingsPage(),
     ROUTE_ORDERCOMPLETE: (context) => const OrderCompletePage(),
+    ROUTE_ORDERHISTORY: (context) => const OrderHistoryPage(),
+    ROUTE_ORDERHISTORYDETAIL: (context) => const OrderHistoryDetailPage(),
   };
 }

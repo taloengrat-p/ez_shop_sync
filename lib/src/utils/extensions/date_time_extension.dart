@@ -25,4 +25,14 @@ extension DateTimeExtension on DateTime? {
   String toDisplayTimeDependLocale(BuildContext context) {
     return toDisplayDependLocale(context, format: DateFormatConstance.HH_mm);
   }
+
+  String format(String format) {
+    if (this == null) {
+      return '--';
+    }
+
+    String formattedDate = DateFormat(format).format(this!);
+
+    return formattedDate;
+  }
 }

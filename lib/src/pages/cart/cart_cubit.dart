@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CartCubit extends Cubit<CartState> {
   CartRepository cartRepository;
   OrderRepository orderRepository;
+  ProductRepository productRepository;
+
   BaseCubit baseCubit;
   num _serviceCharge = 0;
   TimerUtils timerUtils = TimerUtils();
@@ -26,6 +29,7 @@ class CartCubit extends Cubit<CartState> {
     required this.cartRepository,
     required this.baseCubit,
     required this.orderRepository,
+    required this.productRepository,
   }) : super(CartInitial());
 
   num get totalPrice => products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0)));
@@ -44,7 +48,7 @@ class CartCubit extends Cubit<CartState> {
 
   num get subTotalPrice => totalPrice;
 
-  String? paymentMethod = 'qr-code';
+  String? paymentMethod = 'qrcode';
 
   void increaseProductQtyByIndex(int index) {
     final item = _products[index];
@@ -110,6 +114,7 @@ class CartCubit extends Cubit<CartState> {
     }
 
     emit(CartLoading());
+    // for (var i = 0;i < 50; i++) {
     final orderCreated = await orderRepository.create(
       CreateOrderRequest(
         id: '',
@@ -120,6 +125,13 @@ class CartCubit extends Cubit<CartState> {
         paymentType: PaymentType.fromString(paymentMethod),
       ),
     );
+
+    if (_cart != null) {
+      await productRepository.orderCompletedUpdate(_cart);
+      await cartRepository.delete(_cart!.id);
+      baseCubit.setCurrentCart(null);
+    }
     emit(CartSuccess(orderCreated));
+    // }
   }
 }
