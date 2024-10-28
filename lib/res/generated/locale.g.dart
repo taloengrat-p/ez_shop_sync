@@ -144,5 +144,10 @@ abstract class  LocaleKeys {
   static const orderDetail = 'orderDetail';
   static const cartEmpty = 'cartEmpty';
   static const gotoProductsPage = 'gotoProductsPage';
+  static const totalSales = 'totalSales';
+  static const netProfit = 'netProfit';
+  static const year = 'year';
+  static const month = 'month';
+  static const week = 'week';
 
 }

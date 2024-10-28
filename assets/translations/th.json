@@ -149,5 +149,10 @@
   "orderNumberOfItem": "{} รายการ",
   "orderDetail": "รายละเอียดการสั่งซื้อ",
   "cartEmpty": "รถเข็นของคุณว่างเปล่า กรุณาเพิ่มสินค้า",
-  "gotoProductsPage": "ไปที่หน้าสต๊อกสินค้า"
+  "gotoProductsPage": "ไปที่หน้าสต๊อกสินค้า",
+  "totalSales": "ยอดขายรวม",
+  "netProfit": "กำไรสุทธิ",
+  "year": "ปี",
+  "month": "เดืิอน",
+  "week": "อาทิตย์"
 }

@@ -148,5 +148,10 @@
   "orderNumberOfItem": "{} item(s)",
   "orderDetail": "Order Details",
   "cartEmpty": "Your cart is empty please add product.",
-  "gotoProductsPage": "Go to inventory page"
+  "gotoProductsPage": "Go to inventory page",
+  "totalSales": "Total Sales",
+  "netProfit": "Net Profit",
+  "year": "Year",
+  "month": "Month",
+  "week": "Week"
 }

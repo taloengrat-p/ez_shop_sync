@@ -1,13 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
-import 'package:ez_shop_sync/src/pages/main/history/history_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
-import 'package:ez_shop_sync/src/pages/order_history/order_history_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';

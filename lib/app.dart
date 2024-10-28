@@ -17,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:toastification/toastification.dart';
-
 import 'flavors.dart';
 
 RouteObserver<PageRoute> routeAware = RouteObserver<PageRoute>();
