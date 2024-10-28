@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,12 @@ extension StringExtendsions on String {
 
   String suffuxCurrency() {
     return '${ApplicationConstance.currencyTHB}$this';
+  }
+
+  String formatCurrency() {
+    double value = double.parse(this);
+    String formattedAmount = NumberFormat('#,##0.00').format(value);
+    return "${ApplicationConstance.currencyTHB}$formattedAmount";
   }
 }
 

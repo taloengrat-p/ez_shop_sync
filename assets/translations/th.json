@@ -7,6 +7,7 @@
   "transactions": "ธุรกรรม",
   "products": "สินค้า",
   "productsEmpty": "สินค้าของคุณว่างเปล่า กรุณาสร้างสินค้าขึ้นมาใหม่",
+  "orderHistoryEmpty": "ประวัติการสั่งซื้อของคุณว่างเปล่า",
   "createInvoice": "สร้างใบแจ้งหนี้",
   "invoiceHistory": "ประวัติใบแจ้งหนี้",
   "storeManagement": "การจัดการร้านค้า",
@@ -154,5 +155,5 @@
   "netProfit": "กำไรสุทธิ",
   "year": "ปี",
   "month": "เดืิอน",
-  "week": "อาทิตย์"
+  "week": "สัปดาห์"
 }

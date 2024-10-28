@@ -44,13 +44,17 @@ class OrderRepository implements IOrderRepository {
       String prefixedUuid = '${request.storeCode}${now.format(DateFormatConstance.YYYYMMDD_HHMMSS)}$shortUuid';
 
       final orderCreate = orderType.ProductOrder(
+        storeId: request.storeId,
         id: prefixedUuid,
         status: OrderStatusType.complete.name,
         cartItems: request.cart.cartItems,
         paymentType: request.paymentType.name,
       );
 
-      final result = await orderLocalRepository.create(orderCreate);
+      final result = await orderLocalRepository.create(
+        orderCreate,
+        userId: request.userId,
+      );
 
       return result;
     } else {
@@ -112,6 +116,19 @@ class OrderRepository implements IOrderRepository {
   Future<orderType.ProductOrder> update(String id, orderType.ProductOrder updated, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.update(id, updated);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  List<orderType.ProductOrder> getAllBetween(
+    String storeId, {
+    required DateTime start,
+    required DateTime end,
+    AppMode? appMode = AppMode.local,
+  }) {
+    if (appMode == AppMode.local) {
+      return orderLocalRepository.getAllBetween(start: start, end: end).where((e) => e.storeId == storeId).toList();
     } else {
       throw UnimplementedError();
     }

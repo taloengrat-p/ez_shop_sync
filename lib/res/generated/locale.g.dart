@@ -9,6 +9,7 @@ abstract class  LocaleKeys {
   static const transactions = 'transactions';
   static const products = 'products';
   static const productsEmpty = 'productsEmpty';
+  static const orderHistoryEmpty = 'orderHistoryEmpty';
   static const createInvoice = 'createInvoice';
   static const invoiceHistory = 'invoiceHistory';
   static const storeManagement = 'storeManagement';

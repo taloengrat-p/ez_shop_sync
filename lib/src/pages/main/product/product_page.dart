@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
+import 'package:ez_shop_sync/src/models/period_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';

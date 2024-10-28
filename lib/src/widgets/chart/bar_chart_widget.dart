@@ -5,20 +5,24 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class BarChartWidget extends StatefulWidget {
-  BarChartWidget({super.key});
+  final Widget? header;
+  BarChartWidget({
+    super.key,
+    this.header,
+  });
 
   List<Color> get availableColors => const <Color>[
-        Colors.red,
-        Colors.red,
-        Colors.red,
-        Colors.red,
-        Colors.red,
-        Colors.red,
+        Colors.green,
+        Colors.green,
+        Colors.green,
+        Colors.green,
+        Colors.green,
+        Colors.green,
       ];
 
-  final Color barBackgroundColor = Colors.red.withOpacity(0.3);
-  final Color barColor = Colors.red;
-  final Color touchedBarColor = Colors.red;
+  final Color barBackgroundColor = Colors.green.withOpacity(0.3);
+  final Color barColor = Colors.green;
+  final Color touchedBarColor = Colors.green;
 
   @override
   State<StatefulWidget> createState() => BarChartWidgetState();
@@ -29,7 +33,20 @@ class BarChartWidgetState extends State<BarChartWidget> {
 
   int touchedIndex = -1;
 
-  bool isPlaying = false;
+  bool isPlaying = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      refreshState();
+      Future.delayed(const Duration(seconds: 1), () {
+        setState(() {
+          isPlaying = false;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,28 +59,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                const Text(
-                  'Mingguan',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Grafik konsumsi kalori',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 38,
-                ),
+                widget.header ?? const SizedBox(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -79,26 +75,6 @@ class BarChartWidgetState extends State<BarChartWidget> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(
-                  isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Colors.blue,
-                ),
-                onPressed: () {
-                  setState(() {
-                    isPlaying = !isPlaying;
-                    if (isPlaying) {
-                      refreshState();
-                    }
-                  });
-                },
-              ),
-            ),
-          )
         ],
       ),
     );

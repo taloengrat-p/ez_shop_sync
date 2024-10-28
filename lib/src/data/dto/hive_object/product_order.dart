@@ -24,6 +24,9 @@ class ProductOrder extends BaseHiveObject {
   @HiveField(10, defaultValue: 0)
   num? serviceCharge;
 
+  @HiveField(11, defaultValue: '')
+  String storeId;
+
   num get numberOfItems => cartItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
 
   num get serviceChargeValue => (serviceCharge ?? 0) / 100;
@@ -35,6 +38,7 @@ class ProductOrder extends BaseHiveObject {
   String get totalPriceDisplay => totalPriceIncludeServiceCharge.prefixCurrency();
 
   ProductOrder({
+    required this.storeId,
     required super.id,
     required this.status,
     required this.cartItems,

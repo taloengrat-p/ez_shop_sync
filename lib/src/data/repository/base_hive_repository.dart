@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
+import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -44,7 +48,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     List<T> result = box.values.toList();
     result.sort(
         (a, b) => b.createDate?.millisecondsSinceEpoch.compareTo(a.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
-    return result.sublist(start, end);
+    return result.length < (end - start) ? result : result.sublist(start, end);
   }
 
   Future<void> delete(I id) async {
@@ -75,6 +79,16 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   }
 
   List<T> getAllById(List<I> ids) {
-    return box.values.where((e) => ids.contains(e.id)).toList();
+    return getAll().where((e) => ids.contains(e.id)).toList();
+  }
+
+  List<T> getAllBetween({required DateTime start, required DateTime end}) {
+    return getAll().where((e) {
+      final result = (e.createDate?.isAfter(start) ?? false) && (e.createDate?.isBefore(end) ?? false) ||
+          (e.createDate?.isAtSameMomentAs(start) ?? false) ||
+          (e.createDate?.isAtSameMomentAs(end) ?? false);
+      log('getAllBetween ${start.toDisplay()} to ${end.toDisplay()} but ${e.createDate!.toDisplay()} is $result');
+      return result;
+    }).toList();
   }
 }

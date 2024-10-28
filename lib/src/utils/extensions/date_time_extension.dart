@@ -38,6 +38,12 @@ extension DateTimeNullableExtension on DateTime? {
 }
 
 extension DateTimeExtension on DateTime {
+  String toDisplay({String? format}) {
+    String formattedDate = DateFormat(format ?? DateFormatConstance.D_MMM_YYYY_HH_mm).format(this);
+
+    return formattedDate;
+  }
+
   DateTime getStartOfWeek() {
     int daysToSubtract = weekday - DateTime.monday;
     return subtract(Duration(days: daysToSubtract));
@@ -46,6 +52,12 @@ extension DateTimeExtension on DateTime {
   DateTime getEndOfWeek() {
     int daysToAdd = DateTime.sunday - weekday;
     return add(Duration(days: daysToAdd));
+  }
+
+  DateTime getLastDayByMonth() {
+    DateTime firstDayOfNextMonth = DateTime(year, month + 1, 1);
+
+    return firstDayOfNextMonth;
   }
 }
 

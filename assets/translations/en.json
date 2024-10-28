@@ -7,6 +7,7 @@
   "transactions": "Transactions",
   "products": "Products",
   "productsEmpty": "Your product is empty please create new product.",
+  "orderHistoryEmpty": "Your order history is empty",
   "createInvoice": "Create Invoice",
   "invoiceHistory": "Invoice History",
   "storeManagement": "Store Management",

@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/pages/order_history/widgets/order_history_item_
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +54,7 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<OrderHistoryCubit, OrderHistoryState>(
@@ -67,7 +69,15 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
                 title: LocaleKeys.orderHistory.tr(),
                 actions: [],
               ).build(),
-              body: _buildPage(context, state),
+              body: _cubit.orderItems.isEmpty
+                  ? Center(
+                      child: EmptyDataWidget(
+                        height: size.height * 0.45,
+                        width: 200,
+                        message: LocaleKeys.orderHistoryEmpty.tr(),
+                      ),
+                    )
+                  : _buildPage(context, state),
             );
           },
         ),

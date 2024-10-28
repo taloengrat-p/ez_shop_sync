@@ -17,11 +17,13 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ProductOrder(
+      storeId: fields[11] as String,
       id: fields[1] as String,
       status: fields[7] as String,
       cartItems: fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
     )
+      ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
@@ -32,13 +34,17 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
   @override
   void write(BinaryWriter writer, ProductOrder obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
       ..write(obj.paymentType)
       ..writeByte(9)
       ..write(obj.cartItems)
+      ..writeByte(10)
+      ..write(obj.serviceCharge)
+      ..writeByte(11)
+      ..write(obj.storeId)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -69,6 +75,7 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
 // **************************************************************************
 
 ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
+      storeId: json['storeId'] as String,
       id: json['id'] as String,
       status: json['status'] as String,
       cartItems: (json['cartItems'] as List<dynamic>)
@@ -86,7 +93,8 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
       ..updateBy = json['updateBy'] as String?
       ..syncDatetime = json['syncDatetime'] == null
           ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+          : DateTime.parse(json['syncDatetime'] as String)
+      ..serviceCharge = json['serviceCharge'] as num?;
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
     <String, dynamic>{
@@ -99,4 +107,6 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'status': instance.status,
       'paymentType': instance.paymentType,
       'cartItems': instance.cartItems,
+      'serviceCharge': instance.serviceCharge,
+      'storeId': instance.storeId,
     };
