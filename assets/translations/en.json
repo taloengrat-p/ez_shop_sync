@@ -154,5 +154,11 @@
   "netProfit": "Net Profit",
   "year": "Year",
   "month": "Month",
-  "week": "Week"
+  "week": "Week",
+  "thisWeekIncoming": "This Week Income",
+  "thisMonthIncoming": "This Month Income",
+  "thisYearIncoming": "This Year Income",
+  "seeDetail": "See detail",
+  "totalIncome": "Total income",
+  "averageIncome": "Average income"
 }

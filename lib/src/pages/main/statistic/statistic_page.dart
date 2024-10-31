@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/models/period_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
+import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_router.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -95,6 +96,9 @@ class _StatisticState extends State<StatisticPage> {
             margin: const EdgeInsets.symmetric(horizontal: 16),
             color: Colors.white,
             child: BarChartWidget(
+              activeColor: Colors.green,
+              periodType: _cubit.periodType,
+              days: _cubit.dateTimeWithValue,
               header: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -102,13 +106,15 @@ class _StatisticState extends State<StatisticPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'This Week Imcoming',
+                        _cubit.periodType.getLabel,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          TransactionsChartDetailsRouter(context).navigate();
+                        },
                         child: Text(
-                          'See detail',
+                          LocaleKeys.seeDetail.tr(),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
                         ),
                       ),
@@ -121,14 +127,14 @@ class _StatisticState extends State<StatisticPage> {
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Total incoming',
+                              LocaleKeys.totalIncome.tr(),
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
                             ),
                             Text(
-                              '238.00'.prefixCurrency(),
+                              _cubit.totalSales.toString().formatCurrency(),
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -138,17 +144,17 @@ class _StatisticState extends State<StatisticPage> {
                       ),
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Average imcoming',
+                              LocaleKeys.averageIncome.tr(),
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
                             ),
                             Text(
-                              '238.00'.prefixCurrency(),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              _cubit.averageIncome.prefixCurrency(),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ],
                         ),
@@ -162,39 +168,9 @@ class _StatisticState extends State<StatisticPage> {
               ),
             ),
           ),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-                width: double.infinity,
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      LocaleKeys.category.tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(),
-                    ),
-                    if (_cubit.baseCubit.categories.isEmpty)
-                      SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: Text(LocaleKeys.categoryEmpty.tr()),
-                        ),
-                      ),
-                    if (_cubit.baseCubit.categories.isNotEmpty)
-                      ..._cubit.baseCubit.categories.map(
-                        (e) => Text(e.name),
-                      )
-                  ],
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                width: double.infinity,
-                height: DimensionsKeys.heightBts * 2,
-              ),
-            ],
+          const SizedBox(
+            width: double.infinity,
+            height: DimensionsKeys.heightBts,
           ),
         ],
       ),

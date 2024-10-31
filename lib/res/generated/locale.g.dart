@@ -150,5 +150,11 @@ abstract class  LocaleKeys {
   static const year = 'year';
   static const month = 'month';
   static const week = 'week';
+  static const thisWeekIncoming = 'thisWeekIncoming';
+  static const thisMonthIncoming = 'thisMonthIncoming';
+  static const thisYearIncoming = 'thisYearIncoming';
+  static const seeDetail = 'seeDetail';
+  static const totalIncome = 'totalIncome';
+  static const averageIncome = 'averageIncome';
 
 }

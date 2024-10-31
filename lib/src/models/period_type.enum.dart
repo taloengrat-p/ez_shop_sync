@@ -7,6 +7,20 @@ enum PeriodType {
   year,
   undefined;
 
+  String get getLabel {
+    switch (this) {
+      case week:
+        return LocaleKeys.thisWeekIncoming.tr();
+      case month:
+        return LocaleKeys.thisMonthIncoming.tr();
+      case year:
+        return LocaleKeys.thisYearIncoming.tr();
+
+      default:
+        return 'undefined';
+    }
+  }
+
   String get label {
     switch (this) {
       case week:

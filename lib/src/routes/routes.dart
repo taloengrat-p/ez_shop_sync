@@ -20,6 +20,7 @@ import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_page.da
 import 'package:ez_shop_sync/src/pages/store_management/store_management_page.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_page.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_page.dart';
+import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_page.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_page.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,7 @@ class Routes {
   static const String ROUTE_ORDERCOMPLETE = '/ROUTE_ORDERCOMPLETE';
   static const String ROUTE_ORDERHISTORY = '/ROUTE_ORDERHISTORY';
   static const String ROUTE_ORDERHISTORYDETAIL = '/ROUTE_ORDERHISTORYDETAIL';
+  static const String ROUTE_TRANSACTIONSCHARTDETAILS = '/ROUTE_TRANSACTIONSCHARTDETAILS';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -68,5 +70,6 @@ class Routes {
     ROUTE_ORDERCOMPLETE: (context) => const OrderCompletePage(),
     ROUTE_ORDERHISTORY: (context) => const OrderHistoryPage(),
     ROUTE_ORDERHISTORYDETAIL: (context) => const OrderHistoryDetailPage(),
+    ROUTE_TRANSACTIONSCHARTDETAILS: (context) => const TransactionsChartDetailsPage(),
   };
 }

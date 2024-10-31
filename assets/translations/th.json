@@ -154,6 +154,12 @@
   "totalSales": "ยอดขายรวม",
   "netProfit": "กำไรสุทธิ",
   "year": "ปี",
-  "month": "เดืิอน",
-  "week": "สัปดาห์"
+  "month": "เดือน",
+  "week": "สัปดาห์",
+  "thisWeekIncoming": "รายได้สัปดาห์นี้",
+  "thisMonthIncoming": "รายได้เดือนนี้",
+  "thisYearIncoming": "รายได้ปีนี้",
+  "seeDetail": "ดูรายละเอียด",
+  "totalIncome": "รายได้รวม",
+  "averageIncome": "รายได้เฉลี่ย"
 }
