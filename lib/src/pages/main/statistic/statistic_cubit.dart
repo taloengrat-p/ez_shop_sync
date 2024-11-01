@@ -38,7 +38,14 @@ class StatisticCubit extends Cubit<StatisticState> {
     required this.baseCubit,
   }) : super(StatisticInitial());
 
-  String get averageIncome => (totalSales / dateTime.whereDayActived().length).ceilToDecimalPlaces(2).toString();
+  String get averageIncome => (totalSales /
+          (periodType == PeriodType.week
+              ? dateTime.whereDayActived().length
+              : periodType == PeriodType.month
+                  ? DateTime.now().getWeekMonth()
+                  : DateTime.now().getMonthYear()))
+      .ceilToDecimalPlaces(2)
+      .toString();
 
   Map<DateTime, List<ProductOrder>> get dateTimeWithValue =>
       periodType == PeriodType.month ? groupDatesBy4Weeks(ordered) : groupItemsByDate(ordered);
@@ -74,18 +81,16 @@ class StatisticCubit extends Cubit<StatisticState> {
 
   Map<DateTime, List<ProductOrder>> groupDatesBy4Weeks(List<ProductOrder> items) {
     Map<DateTime, List<ProductOrder>> groupedItems = dateTime.asMap().map((index, value) {
-      return MapEntry(DateTime(value.year, value.month, value.getWeekOfMonth()), []);
+      return MapEntry(DateTime(value.year, value.month, value.getWeekMonth()), []);
     });
 
     for (var item in items) {
       if (groupedItems
-          .containsKey(DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekOfMonth()))) {
-        groupedItems[DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekOfMonth())]!
+          .containsKey(DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekMonth()))) {
+        groupedItems[DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekMonth())]!
             .add(item);
       } else {
-        groupedItems[DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekOfMonth())] = [
-          item
-        ];
+        groupedItems[DateTime(item.createDate!.year, item.createDate!.month, item.createDate!.getWeekMonth())] = [item];
       }
     }
 

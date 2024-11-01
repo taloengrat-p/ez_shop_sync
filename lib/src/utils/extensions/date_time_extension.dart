@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
@@ -46,7 +44,13 @@ extension DateTimeExtension on DateTime {
     return formattedDate;
   }
 
-  int getWeekOfMonth() {
+  int getMonthYear() {
+    final now = DateTime.now();
+
+    return now.month;
+  }
+
+  int getWeekMonth() {
     // Find the first day of the month
     DateTime firstDayOfMonth = DateTime(year, month, 1);
 
@@ -59,32 +63,60 @@ extension DateTimeExtension on DateTime {
     return weekNumber;
   }
 
-  Map<String, DateTime> getMondayAndSundayOfWeek(
-    int weekOfMonth,
-  ) {
-    // Get the first day of the month
-    DateTime firstDayOfMonth = getFirstDayOfMonth();
-    DateTime lastDayOfMonth = getLastDayByMonth();
-    bool isFirstWeek = isFirstWeekOfMonth();
-    bool isLastWeek = isLastWeekOfMonth();
-    log('firstDayOfMonth $firstDayOfMonth, lastDayOfMonth $lastDayOfMonth, isFirstWeek: $isFirstWeek, isLastWeek: $isLastWeek');
-    // Calculate the start day of the specified week
-    int startDay = (weekOfMonth - 1) * 7 + 1;
-    DateTime weekStart = DateTime(year, month, startDay);
+  String displayRangeByWeekOfMonth() {
+    return getFirstDaysOfWeeks().day.toString();
+  }
 
-    // Find the Monday of that week
-    int daysToMonday = (DateTime.monday - weekStart.weekday + 7) % 7;
-    DateTime mondayOfWeek = weekStart.add(Duration(days: daysToMonday));
+  Map<String, DateTime> getWeekStartAndEndDates(int year, int month, int weekNumber) {
+    // Start with the first day of the month
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
 
-    // Find the Sunday of that week
-    DateTime sundayOfWeek = mondayOfWeek.add(Duration(days: 6));
+    // Calculate the first Monday in the month or use the first day if there's no Monday in the month
+    int daysToFirstMonday = (DateTime.monday - firstDayOfMonth.weekday) % 7;
+    DateTime firstMonday = firstDayOfMonth.add(Duration(days: daysToFirstMonday));
+    DateTime weekStart = firstMonday.add(Duration(days: (weekNumber - 1) * 7));
+
+    // If the calculated week start is before the current month, set it to the first day of the month
+    if (weekStart.month < month) {
+      weekStart = firstDayOfMonth;
+    }
+
+    // Calculate the end of the week (6 days after the start of the week)
+    // DateTime weekEnd = weekStart.add(Duration(days: 6));
+    int daysToSunday = DateTime.sunday - weekStart.weekday;
+    DateTime weekEnd = weekStart.add(Duration(days: daysToSunday));
+    // If the week end is beyond the last day of the month, set it to the last day of the month
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 1).subtract(Duration(days: 1));
+    if (weekEnd.month > month) {
+      weekEnd = lastDayOfMonth;
+    }
 
     return {
-      "monday": isFirstWeek ? firstDayOfMonth : mondayOfWeek,
-      "sunday": isFirstWeek
-          ? firstDayOfMonth.add(Duration(days: (DateTime.sunday - weekStart.weekday + 7) % 7))
-          : sundayOfWeek,
+      "start": weekStart,
+      "end": weekEnd,
     };
+  }
+
+  DateTime getFirstDaysOfWeeks() {
+    late DateTime firstDaysOfWeeks;
+
+    // Get the first day of the month
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
+
+    // Calculate the first Monday of the month
+    int daysToFirstMonday = (DateTime.monday - firstDayOfMonth.weekday) % 7;
+    DateTime firstMonday = firstDayOfMonth.add(Duration(days: daysToFirstMonday));
+
+    // If the first Monday is not in the current month, start from the first day of the month
+    DateTime startDay = firstMonday.month == month ? firstMonday : firstDayOfMonth;
+
+    // Add each first day of the week until we reach the next month
+    while (startDay.month == month) {
+      firstDaysOfWeeks = startDay;
+      startDay = startDay.add(Duration(days: 7)); // Move to the next week
+    }
+
+    return firstDaysOfWeeks;
   }
 
   DateTime getStartOfWeek() {
@@ -116,9 +148,17 @@ extension DateTimeExtension on DateTime {
     return day >= lastDay.day - 6;
   }
 
-  bool isActived() {
+  bool isDayActived() {
     DateTime today = DateTime.now();
     return isBefore(today) || isAtSameMomentAs(today);
+  }
+
+  bool isWeekActived() {
+    DateTime today = DateTime.now();
+
+    int toDayWeekMonth = today.getWeekMonth();
+
+    return toDayWeekMonth >= day;
   }
 
   List<DateTime> getCurrentWeek() {
@@ -151,6 +191,6 @@ extension ListDateTimeExtension on List<DateTime> {
   }
 
   List<DateTime> whereDayActived() {
-    return where((day) => day.isActived()).toList();
+    return where((day) => day.isDayActived()).toList();
   }
 }

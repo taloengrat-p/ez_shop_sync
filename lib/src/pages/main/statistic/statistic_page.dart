@@ -12,6 +12,7 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_router.dart';
+import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -35,6 +36,11 @@ class StatisticPage extends StatefulWidget {
 
 class _StatisticState extends State<StatisticPage> {
   late StatisticCubit _cubit;
+
+  String get periodTitle => _cubit.periodType == PeriodType.week
+      ? _cubit.dateTime.displayWeekFormat(context)
+      : _cubit.dateTimeSelected.toDisplayDependLocale(context,
+          format: _cubit.periodType == PeriodType.month ? DateFormatConstance.MMMM_YYYY : DateFormatConstance.YYYY);
   @override
   void initState() {
     log('[_StatisticState] init');
@@ -111,7 +117,13 @@ class _StatisticState extends State<StatisticPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          TransactionsChartDetailsRouter(context).navigate();
+                          TransactionsChartDetailsRouter(context).navigate(
+                            argruments: TransactionsChartDetailsArgrument(
+                              periodType: _cubit.periodType,
+                              days: _cubit.dateTimeWithValue,
+                              periodTitle: periodTitle,
+                            ),
+                          );
                         },
                         child: Text(
                           LocaleKeys.seeDetail.tr(),
@@ -205,13 +217,7 @@ class _StatisticState extends State<StatisticPage> {
         children: [
           Expanded(
             child: Text(
-              _cubit.periodType == PeriodType.week
-                  ? _cubit.dateTime.displayWeekFormat(context)
-                  : _cubit.dateTimeSelected?.toDisplayDependLocale(context,
-                          format: _cubit.periodType == PeriodType.month
-                              ? DateFormatConstance.MMMM_YYYY
-                              : DateFormatConstance.YYYY) ??
-                      '--',
+              periodTitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),

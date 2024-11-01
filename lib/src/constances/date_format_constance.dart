@@ -9,7 +9,7 @@ class DateFormatConstance {
   static const String YYYY = 'yyyy';
   static const String E = 'E';
   static const String EEEE = 'EEEE';
-  static const String M = 'MMM';
+  static const String MMM = 'MMM';
   static const String DD = 'dd';
 
   static const String HH_mm = 'HH:mm';

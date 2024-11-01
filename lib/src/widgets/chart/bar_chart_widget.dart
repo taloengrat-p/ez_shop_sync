@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
@@ -50,7 +49,7 @@ class BarChartWidget extends StatefulWidget {
       }
     }
 
-    return maxTotalPrice;
+    return maxTotalPrice == 0 ? 1 : maxTotalPrice;
   }
 
   @override
@@ -120,11 +119,12 @@ class BarChartWidgetState extends State<BarChartWidget> {
     List<int> showTooltips = const [],
   }) {
     barColor ??= widget.barColor;
+
     return BarChartGroupData(
       x: x,
       barRods: [
         BarChartRodData(
-          toY: isTouched ? y + 0.05 : y,
+          toY: isTouched ? y + 0.5 : y,
           color: isTouched ? widget.touchedBarColor : barColor,
           width: width,
           borderSide:
@@ -132,7 +132,9 @@ class BarChartWidgetState extends State<BarChartWidget> {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: widget.maxValue.toDouble(),
-            color: dateTime.isActived() ? widget.barBackgroundColor : widget.barBackgroundInactive,
+            color: (widget.periodType == PeriodType.month ? dateTime.isWeekActived() : dateTime.isDayActived())
+                ? widget.barBackgroundColor
+                : widget.barBackgroundInactive,
           ),
         ),
       ],
@@ -149,6 +151,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
             index,
             makeGroupData(
               index,
+              width: widget.periodType == PeriodType.year ? 12 : 22,
               value.value.fold(0, (previous, e) => previous + e.totalPriceIncludeServiceCharge),
               // isTouched: index == touchedIndex,
               dateTime: value.key,
@@ -230,13 +233,12 @@ class BarChartWidgetState extends State<BarChartWidget> {
   }
 
   Widget getTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
+    final style = TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: widget.periodType == PeriodType.year ? 10 : 14,
     );
     Widget text;
-    log('widget.days.keys ${widget.days.keys}');
     switch (widget.periodType) {
       case PeriodType.week:
         return Text(
@@ -244,15 +246,19 @@ class BarChartWidgetState extends State<BarChartWidget> {
             style: style);
 
       case PeriodType.month:
-        final startDay = widget.days.keys
-            .elementAt(value.toInt())
-            .getMondayAndSundayOfWeek(widget.days.keys.elementAt(value.toInt()).day);
+        final element = widget.days.keys.elementAt(value.toInt());
+        final startDay = element.getWeekStartAndEndDates(element.year, element.month, element.day - 1);
 
-        log('startDay original length ${widget.days.keys.length} : ${widget.days.keys
-            .elementAt(value.toInt())}');
-        return Text('${startDay['monday']?.day}-${startDay['sunday']?.day}');
+        return Text('${startDay['start']!.day}-${startDay['end']!.day}');
+      case PeriodType.year:
+        final element = widget.days.keys.elementAt(value.toInt());
+
+        return Text(
+          element.toDisplayDependLocale(context, format: DateFormatConstance.MMM),
+          style: style,
+        );
       default:
-        text = const Text('', style: style);
+        text = Text('', style: style);
         break;
     }
     return text;
