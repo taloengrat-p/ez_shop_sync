@@ -111,7 +111,8 @@
   "yourStoreName": "ชื่อร้านค้าของคุณ",
   "error": {
     "unableAddCart": "ไม่สามารถเพิ่มสินค้าได้",
-    "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา"
+    "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา",
+    "productPriceNotEnough": "สินค้าในคลังของคุณไม่เพียงพอ"
   },
   "introducePage": {
     "createOwnerInfomation": "สร้างข้อมูลเจ้าของร้าน",

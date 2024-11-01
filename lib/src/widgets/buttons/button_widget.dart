@@ -1,5 +1,6 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 enum ButtonUiEffect {
@@ -35,8 +36,9 @@ class ButtonWidget extends StatefulWidget {
   final bool disabled;
   final Axis axis;
   final bool isLabelUpperCase;
-
+  final bool isLoading;
   const ButtonWidget({
+    this.isLoading = false,
     super.key,
     this.isLabelUpperCase = true,
     this.type,
@@ -109,21 +111,23 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         onPressed: widget.disabled ? null : widget.onPressed,
         child: Padding(
           padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 8.0),
-          child: widget.axis == Axis.horizontal
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...buildChildren(),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...buildChildren(),
-                  ],
-                ),
+          child: widget.isLoading
+              ? const CupertinoActivityIndicator()
+              : widget.axis == Axis.horizontal
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...buildChildren(),
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...buildChildren(),
+                      ],
+                    ),
         ),
       ),
     );

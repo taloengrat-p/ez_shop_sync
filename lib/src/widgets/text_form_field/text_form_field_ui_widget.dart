@@ -222,7 +222,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     //     fontWeight: FontWeight.w400,
                     //   ),
                     //   errorMaxLines: 4,
-                    //   errorText: widget.errorText,
+                    // errorText: widget.errorText,
                     //   errorBorder: OutlineInputBorder(
                     //     gapPadding: 0,
                     //     borderRadius: borderRadius,
@@ -239,6 +239,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                       suffixIcon: widget.autoCompleteType == TextFormFieldUiType.password
                           ? getSuffixPasswordType()
                           : widget.suffixIcon,
+                      errorText: widget.errorText,
                     ).build(),
                     onChanged: (value) {
                       widget.onChanged?.call(value);

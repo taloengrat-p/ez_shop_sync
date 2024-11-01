@@ -109,6 +109,7 @@ abstract class  LocaleKeys {
   static const yourStoreName = 'yourStoreName';
   static const error_unableAddCart = 'error.unableAddCart';
   static const error_productPriceNotYet = 'error.productPriceNotYet';
+  static const error_productPriceNotEnough = 'error.productPriceNotEnough';
   static const error = 'error';
   static const introducePage_createOwnerInfomation = 'introducePage.createOwnerInfomation';
   static const introducePage_firstName = 'introducePage.firstName';
