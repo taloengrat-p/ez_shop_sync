@@ -17,7 +17,7 @@ class TransactionHistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (transaction.getMethodType == TransactionMethodType.order) {
           OrderHistoryDetailRouter(context)
