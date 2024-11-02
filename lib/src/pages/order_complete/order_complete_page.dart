@@ -144,7 +144,7 @@ class _OrderCompleteState extends State<OrderCompletePage> {
             ),
             onTap: () {
               OrderHistoryDetailRouter(context).replace(
-                argruments: OrderHistoryDetailArgruments(_cubit.argruments?.ordered),
+                argruments: OrderHistoryDetailArgruments(productOrder: _cubit.argruments?.ordered),
               );
             },
           ),

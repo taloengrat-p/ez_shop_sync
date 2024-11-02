@@ -104,7 +104,7 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
                 ),
                 onTap: () {
                   OrderHistoryDetailRouter(context).navigate(
-                    argruments: OrderHistoryDetailArgruments(model),
+                    argruments: OrderHistoryDetailArgruments(productOrder: model),
                   );
                 },
               );

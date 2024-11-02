@@ -30,6 +30,7 @@ import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/history_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/transaction_history_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -169,25 +170,7 @@ class _StatisticState extends State<StatisticPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final transaction = _cubit.transactionPerview[index];
-                      return HistoryWidget(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        title: transaction.getMethodType.label,
-                        desc: transaction.valueId,
-                        leading: CircleProfileWidget(
-                          title: transaction.createBy?.substring(0, 2).toUpperCase(),
-                          radius: 24,
-                        ),
-                        dateTime: transaction.createDate,
-                        trailing: Text(
-                          '${transaction.getTransactionType == TransactionType.income ? '+' : '-'}${transaction.totalPrice.prefixCurrency()}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: transaction.getTransactionType == TransactionType.income
-                                    ? Colors.green
-                                    : Colors.black,
-                              ),
-                        ),
-                      );
+                      return TransactionHistoryWidget(transaction: transaction);
                     },
                     separatorBuilder: (context, index) {
                       return const Divider(

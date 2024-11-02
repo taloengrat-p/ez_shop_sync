@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/history_widget.dart';
+import 'package:ez_shop_sync/src/widgets/transaction_history_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -78,23 +79,7 @@ class _TransactionStatementDetailState extends State<TransactionStatementDetailP
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final transaction = _cubit.argruments!.transactions[index];
-              return HistoryWidget(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                title: transaction.getMethodType.label,
-                desc: transaction.valueId,
-                leading: CircleProfileWidget(
-                  title: transaction.createBy?.substring(0, 2).toUpperCase(),
-                  radius: 24,
-                ),
-                dateTime: transaction.createDate,
-                trailing: Text(
-                  '${transaction.getTransactionType == TransactionType.income ? '+' : '-'}${transaction.totalPrice.prefixCurrency()}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: transaction.getTransactionType == TransactionType.income ? Colors.green : Colors.black,
-                      ),
-                ),
-              );
+              return TransactionHistoryWidget(transaction: transaction);
             },
             separatorBuilder: (context, index) {
               return const Divider(
