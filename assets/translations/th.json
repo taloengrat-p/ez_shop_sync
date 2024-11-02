@@ -172,5 +172,6 @@
   "tansactionTitleTypes": {
     "order": "คำสั่งซื้อ",
     "addStock": "เพิ่มสินค้า"
-  }
+  },
+  "addStockHistory": "ประวัติการเพิ่มสินค้า"
 }

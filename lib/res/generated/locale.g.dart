@@ -166,5 +166,6 @@ abstract class  LocaleKeys {
   static const tansactionTitleTypes_order = 'tansactionTitleTypes.order';
   static const tansactionTitleTypes_addStock = 'tansactionTitleTypes.addStock';
   static const tansactionTitleTypes = 'tansactionTitleTypes';
+  static const addStockHistory = 'addStockHistory';
 
 }

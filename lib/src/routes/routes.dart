@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ez_shop_sync/src/pages/add_stock_history/add_stock_history_page.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_page.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
@@ -49,6 +50,7 @@ class Routes {
   static const String ROUTE_ORDERHISTORYDETAIL = '/ROUTE_ORDERHISTORYDETAIL';
   static const String ROUTE_TRANSACTIONSCHARTDETAILS = '/ROUTE_TRANSACTIONSCHARTDETAILS';
   static const String ROUTE_TRANSACTIONSTATEMENTDETAIL = '/ROUTE_TRANSACTIONSTATEMENTDETAIL';
+  static const String ROUTE_ADDSTOCKHISTORY = '/ROUTE_ADDSTOCKHISTORY';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -74,5 +76,6 @@ class Routes {
     ROUTE_ORDERHISTORYDETAIL: (context) => const OrderHistoryDetailPage(),
     ROUTE_TRANSACTIONSCHARTDETAILS: (context) => const TransactionsChartDetailsPage(),
     ROUTE_TRANSACTIONSTATEMENTDETAIL: (context) => const TransactionStatementDetailPage(),
+    ROUTE_ADDSTOCKHISTORY: (context) => const AddStockHistoryPage(),
   };
 }

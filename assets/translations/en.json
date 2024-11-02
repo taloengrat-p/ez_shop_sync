@@ -171,5 +171,6 @@
   "tansactionTitleTypes": {
     "order": "Order",
     "addStock": "Add stock"
-  }
+  },
+  "addStockHistory" : "Add Product History"
 }
