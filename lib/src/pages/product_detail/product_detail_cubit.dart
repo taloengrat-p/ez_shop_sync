@@ -81,10 +81,11 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     );
   }
 
-  void addStock(Product? product) async {
+  void addStock(Product? product, num amountCost) async {
     emit(ProductDetailLoading());
     product = await baseCubit.addStock(
       product: product,
+      amountCost: amountCost,
     );
     emit(ProductDetailRefresh(DateTime.now()));
   }
@@ -94,13 +95,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
       throw ('loadProducthistory product is Null');
     }
 
-    productHistory = await productHistoryRepository.getAllByProductId(
-      BaseRepoRequest(
-        id: product!.id,
-        storeId: baseCubit.store!.id,
-        userId: baseCubit.user!.id,
-      ),
-    );
+    productHistory = await productHistoryRepository.getAllByProductId(product!.id);
 
     emit(ProductDetailLoadHistorySuccess());
   }

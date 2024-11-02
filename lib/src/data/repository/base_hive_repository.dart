@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   String boxName;
@@ -21,8 +22,9 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     T request, {
     String? userId,
   }) async {
+    final id = request.id ?? const Uuid().v4();
     await box.put(
-      request.id,
+      id,
       request
         ..createDate = DateTime.now()
         ..updateDate = DateTime.now()
@@ -30,7 +32,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
         ..updateBy = userId,
     );
 
-    return request;
+    return request..id = id;
   }
 
   T? getById(I id) {

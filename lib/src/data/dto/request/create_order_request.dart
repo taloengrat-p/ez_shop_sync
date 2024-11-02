@@ -7,7 +7,6 @@ class CreateOrderRequest extends BaseRepoRequest {
   String storeCode;
   PaymentType paymentType;
   CreateOrderRequest({
-    required super.id,
     required this.storeCode,
     required super.storeId,
     required super.userId,

@@ -156,8 +156,15 @@ abstract class  LocaleKeys {
   static const thisMonthIncoming = 'thisMonthIncoming';
   static const thisYearIncoming = 'thisYearIncoming';
   static const seeDetail = 'seeDetail';
+  static const seeAll = 'seeAll';
   static const totalIncome = 'totalIncome';
   static const averageIncome = 'averageIncome';
   static const productSettings = 'productSettings';
+  static const amountCost = 'amountCost';
+  static const transactionHistory = 'transactionHistory';
+  static const transactionEmpty = 'transactionEmpty';
+  static const tansactionTitleTypes_order = 'tansactionTitleTypes.order';
+  static const tansactionTitleTypes_addStock = 'tansactionTitleTypes.addStock';
+  static const tansactionTitleTypes = 'tansactionTitleTypes';
 
 }

@@ -5,7 +5,6 @@ class CreateProductRequest extends BaseRepoRequest {
   Product product;
 
   CreateProductRequest({
-    required super.id,
     required super.storeId,
     required super.userId,
     required this.product,

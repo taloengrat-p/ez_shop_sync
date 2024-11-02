@@ -17,7 +17,7 @@ class TagAdapter extends TypeAdapter<Tag> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Tag(
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       name: fields[7] as String,
       color: fields[8] as String?,
       borderColor: fields[9] as String?,
@@ -69,7 +69,7 @@ class TagAdapter extends TypeAdapter<Tag> {
 // **************************************************************************
 
 Tag _$TagFromJson(Map<String, dynamic> json) => Tag(
-      id: json['id'] as String,
+      id: json['id'],
       name: json['name'] as String,
       color: json['color'] as String?,
       borderColor: json['borderColor'] as String?,

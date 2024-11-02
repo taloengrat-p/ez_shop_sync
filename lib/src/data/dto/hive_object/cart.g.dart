@@ -17,7 +17,7 @@ class CartAdapter extends TypeAdapter<Cart> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Cart(
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       createDate: fields[2] as DateTime?,
       createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
@@ -69,7 +69,7 @@ class CartAdapter extends TypeAdapter<Cart> {
 // **************************************************************************
 
 Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
-      id: json['id'] as String,
+      id: json['id'],
       createDate: json['createDate'] == null
           ? null
           : DateTime.parse(json['createDate'] as String),

@@ -1,21 +1,22 @@
-import 'dart:developer';
-
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/period_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 
 class StatisticCubit extends Cubit<StatisticState> {
   DateTime _dateTimeSelected = DateTime.now();
   CategoryRepository categoryRepository;
   OrderRepository orderRepository;
-
+  TransactionRepository transactionRepository;
   BaseCubit baseCubit;
   PeriodType periodType = PeriodType.week;
 
@@ -27,15 +28,27 @@ class StatisticCubit extends Cubit<StatisticState> {
 
   DateTime get dateTimeSelected => _dateTimeSelected;
 
-  num get totalSales => ordered.fold(0.0, (sum, item) => sum + item.totalPriceIncludeServiceCharge);
+  num get totalSales => transaction.where((e) => e.getTransactionType == TransactionType.income).fold(
+      0.0,
+      (sum, item) =>
+          sum + item.totalPrice); // ordered.fold(0.0, (sum, item) => sum + item.totalPriceIncludeServiceCharge);
+  num get netProfit => transaction.fold(
+        0.0,
+        (sum, item) =>
+            item.getTransactionType == TransactionType.income ? sum + item.totalPrice : sum - item.totalPrice,
+      );
 
   List<ProductOrder> _ordered = [];
   List<ProductOrder> get ordered => _ordered;
+  List<Transaction> _transaction = [];
+  List<Transaction> get transaction => _transaction;
+  List<Transaction> get transactionPerview => transaction.take(3).toList();
 
   StatisticCubit({
     required this.categoryRepository,
     required this.orderRepository,
     required this.baseCubit,
+    required this.transactionRepository,
   }) : super(StatisticInitial());
 
   String get averageIncome => (totalSales /
@@ -110,6 +123,10 @@ class StatisticCubit extends Cubit<StatisticState> {
           : periodType == PeriodType.month
               ? DateTime(dateTimeSelected.year, dateTimeSelected.month).getLastDayByMonth()
               : DateTime(dateTimeSelected.year + 1),
+    );
+
+    _transaction = await transactionRepository.getAllByStoreId(
+      BaseRepoRequest(storeId: baseCubit.store!.id, userId: baseCubit.user!.id),
     );
     emit(StatisticInitial());
   }

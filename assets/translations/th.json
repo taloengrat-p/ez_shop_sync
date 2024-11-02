@@ -162,7 +162,15 @@
   "thisMonthIncoming": "รายได้เดือนนี้",
   "thisYearIncoming": "รายได้ปีนี้",
   "seeDetail": "ดูรายละเอียด",
+  "seeAll": "ดูทั้งหมด",
   "totalIncome": "รายได้รวม",
   "averageIncome": "รายได้เฉลี่ย",
-  "productSettings": "การตั้งค่าสินค้า"
+  "productSettings": "การตั้งค่าสินค้า",
+  "amountCost": "ราคาต้นทุน",
+  "transactionHistory": "ประวัติการทำธุรกรรม",
+  "transactionEmpty": "ไม่มีประวัติการทำธรุกรรม",
+  "tansactionTitleTypes": {
+    "order": "คำสั่งซื้อ",
+    "addStock": "เพิ่มสินค้า"
+  }
 }

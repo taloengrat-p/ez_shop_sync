@@ -17,7 +17,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Product(
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       name: fields[7] as String,
       description: fields[8] as String?,
       priceCategories:
@@ -38,6 +38,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       ownerId: fields[21] as String,
       priceSelected: fields[22] as String?,
     )
+      ..config = fields[23] as ProductConfig?
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
@@ -48,7 +49,7 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(21)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -77,6 +78,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.ownerId)
       ..writeByte(22)
       ..write(obj.priceSelected)
+      ..writeByte(23)
+      ..write(obj.config)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -161,7 +164,7 @@ class ProductStatusAdapter extends TypeAdapter<ProductStatus> {
 // **************************************************************************
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
-      id: json['id'] as String,
+      id: json['id'],
       name: json['name'] as String,
       description: json['description'] as String?,
       priceCategories: (json['priceCategories'] as Map<String, dynamic>?)?.map(
@@ -191,7 +194,10 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       ..updateBy = json['updateBy'] as String?
       ..syncDatetime = json['syncDatetime'] == null
           ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+          : DateTime.parse(json['syncDatetime'] as String)
+      ..config = json['config'] == null
+          ? null
+          : ProductConfig.fromJson(json['config'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'id': instance.id,
@@ -214,6 +220,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'quantity': instance.quantity,
       'ownerId': instance.ownerId,
       'priceSelected': instance.priceSelected,
+      'config': instance.config,
     };
 
 const _$ProductStatusEnumMap = {

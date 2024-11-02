@@ -40,6 +40,12 @@ import '../../data/repository/store/store_repository.dart' as _i882;
 import '../../data/repository/tag/tag_local_repository.dart' as _i558;
 import '../../data/repository/tag/tag_repository.dart' as _i505;
 import '../../data/repository/tag/tag_server_repository.dart' as _i1035;
+import '../../data/repository/transactions/transaction_local_repository.dart'
+    as _i206;
+import '../../data/repository/transactions/transaction_repository.dart'
+    as _i370;
+import '../../data/repository/transactions/transaction_server_repository.dart'
+    as _i889;
 import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../utils/image_picker_utils.dart' as _i286;
 import '../hivedb_service/hivedb_dev_service.dart' as _i1036;
@@ -94,9 +100,17 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
+    gh.singleton<_i206.TransactionLocalRepository>(
+        () => _i206.TransactionLocalRepository());
+    gh.singleton<_i889.TransactionServerRepository>(
+        () => _i889.TransactionServerRepository());
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i222.CartLocalRepository>(),
           cartServerRepository: gh<_i808.CartServerRepository>(),
+        ));
+    gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
+          transactionLocalRepository: gh<_i206.TransactionLocalRepository>(),
+          transactionServerRepository: gh<_i889.TransactionServerRepository>(),
         ));
     gh.singleton<_i535.HiveDBService>(
       () => _i233.HiveDBUnittestService(),
@@ -117,6 +131,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i79.LocalStorageUnittest(),
       registerFor: {_tests},
     );
+    gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
+          orderLocalRepository: gh<_i548.OrderLocalRepository>(),
+          orderServerRepository: gh<_i850.OrderServerRepository>(),
+          cartRepository: gh<_i999.CartRepository>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
+        ));
     gh.singleton<_i535.HiveDBService>(
       () => _i1036.HiveDBDevService(),
       registerFor: {
@@ -135,6 +155,7 @@ extension GetItInjectableX on _i174.GetIt {
           productLocalRepository: gh<_i1011.ProductLocalRepository>(),
           productServerRepository: gh<_i920.ProductServerRepository>(),
           productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
         ));
     gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
           storeLocalRepository: gh<_i300.StoreLocalRepository>(),
@@ -143,11 +164,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
           categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i442.CategoryServerRepository>(),
-        ));
-    gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
-          orderLocalRepository: gh<_i548.OrderLocalRepository>(),
-          orderServerRepository: gh<_i850.OrderServerRepository>(),
-          cartRepository: gh<_i999.CartRepository>(),
         ));
     gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
           authLocalRepository: gh<_i900.AuthLocalRepository>(),

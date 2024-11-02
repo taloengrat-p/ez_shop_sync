@@ -11,6 +11,7 @@ class BottomSheetUtils {
       context: context,
       showDragHandle: true,
       useSafeArea: true,
+      isScrollControlled: true,
       builder: (context) {
         return Container(
           decoration: BoxDecoration(

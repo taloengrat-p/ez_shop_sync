@@ -17,7 +17,7 @@ class StoreAdapter extends TypeAdapter<Store> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Store(
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       createDate: fields[2] as DateTime?,
       createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
@@ -96,7 +96,7 @@ class StoreAdapter extends TypeAdapter<Store> {
 // **************************************************************************
 
 Store _$StoreFromJson(Map<String, dynamic> json) => Store(
-      id: json['id'] as String,
+      id: json['id'],
       createDate: json['createDate'] == null
           ? null
           : DateTime.parse(json['createDate'] as String),

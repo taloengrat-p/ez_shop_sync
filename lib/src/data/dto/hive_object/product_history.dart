@@ -26,7 +26,7 @@ class ProductHistory extends BaseHiveObject {
 
   ProductHistory({
     required this.productId,
-    required super.id,
+    super.id,
     required this.event,
     this.newData,
     this.oldData,

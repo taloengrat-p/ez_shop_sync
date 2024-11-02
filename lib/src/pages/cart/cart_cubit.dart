@@ -136,7 +136,6 @@ class CartCubit extends Cubit<CartState> {
     // for (var i = 0;i < 50; i++) {
     final orderCreated = await orderRepository.create(
       CreateOrderRequest(
-        id: '',
         storeCode: baseCubit.store?.name.substring(0, 4) ?? '',
         storeId: baseCubit.store?.id ?? '',
         userId: baseCubit.user?.id ?? '',
@@ -156,7 +155,7 @@ class CartCubit extends Cubit<CartState> {
 
   Map<String, Product> getProductsByCartItems() {
     final productStockFromCartItem =
-        productRepository.getByIds(_products.map((e) => e.product?.id ?? '').toList()).toList();
+        productRepository.getByIds(_products.map((e) => e.product?.id.toString() ?? '').toList()).toList();
 
     return {
       for (var item in productStockFromCartItem) item.id: item,

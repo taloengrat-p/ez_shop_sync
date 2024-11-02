@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_config.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
@@ -13,6 +14,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
@@ -87,6 +89,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(StoreAdapter());
   Hive.registerAdapter(ProductStatusAdapter());
   Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(ProductConfigAdapter());
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(AppThemeAdapter());
   Hive.registerAdapter(CategoryAdapter());
@@ -94,6 +97,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(CartAdapter());
   Hive.registerAdapter(OrderItemAdapter());
   Hive.registerAdapter(ProductHistoryAdapter());
+  Hive.registerAdapter(TransactionAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);
@@ -103,4 +107,5 @@ Future<void> initialHiveDB() async {
   await Hive.openBox<Category>(HiveBoxConstance.category);
   await Hive.openBox<Cart>(HiveBoxConstance.cart);
   await Hive.openBox<ProductOrder>(HiveBoxConstance.order);
+  await Hive.openBox<Transaction>(HiveBoxConstance.transaction);
 }

@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'category.dart';
+part of 'transaction.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CategoryAdapter extends TypeAdapter<Category> {
+class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
-  final int typeId = 7;
+  final int typeId = 14;
 
   @override
-  Category read(BinaryReader reader) {
+  Transaction read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Category(
-      name: fields[7] as String,
+    return Transaction(
       id: fields[1] as dynamic,
-      parentId: fields[8] as String?,
-      borderColor: fields[10] as String?,
-      color: fields[9] as String?,
-      iconData: (fields[11] as Map?)?.cast<String, dynamic>(),
+      transactionType: fields[7] as String,
+      method: fields[8] as String,
+      valueId: fields[9] as String,
+      totalPrice: fields[10] as num,
+      storeId: fields[11] as String,
     )
       ..createDate = fields[2] as DateTime?
       ..createBy = fields[3] as String?
@@ -32,19 +32,19 @@ class CategoryAdapter extends TypeAdapter<Category> {
   }
 
   @override
-  void write(BinaryWriter writer, Category obj) {
+  void write(BinaryWriter writer, Transaction obj) {
     writer
       ..writeByte(11)
       ..writeByte(7)
-      ..write(obj.name)
+      ..write(obj.transactionType)
       ..writeByte(8)
-      ..write(obj.parentId)
+      ..write(obj.method)
       ..writeByte(9)
-      ..write(obj.color)
+      ..write(obj.valueId)
       ..writeByte(10)
-      ..write(obj.borderColor)
+      ..write(obj.totalPrice)
       ..writeByte(11)
-      ..write(obj.iconData)
+      ..write(obj.storeId)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -65,7 +65,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CategoryAdapter &&
+      other is TransactionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -74,13 +74,13 @@ class CategoryAdapter extends TypeAdapter<Category> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
-      name: json['name'] as String,
+Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       id: json['id'],
-      parentId: json['parentId'] as String?,
-      borderColor: json['borderColor'] as String?,
-      color: json['color'] as String?,
-      iconData: json['iconData'] as Map<String, dynamic>?,
+      transactionType: json['transactionType'] as String,
+      method: json['method'] as String,
+      valueId: json['valueId'] as String,
+      totalPrice: json['totalPrice'] as num,
+      storeId: json['storeId'] as String,
     )
       ..createDate = json['createDate'] == null
           ? null
@@ -94,16 +94,17 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
           ? null
           : DateTime.parse(json['syncDatetime'] as String);
 
-Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
+Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'createDate': instance.createDate?.toIso8601String(),
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
-      'name': instance.name,
-      'parentId': instance.parentId,
-      'color': instance.color,
-      'borderColor': instance.borderColor,
-      'iconData': instance.iconData,
+      'transactionType': instance.transactionType,
+      'method': instance.method,
+      'valueId': instance.valueId,
+      'totalPrice': instance.totalPrice,
+      'storeId': instance.storeId,
     };

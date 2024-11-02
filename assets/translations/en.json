@@ -161,7 +161,15 @@
   "thisMonthIncoming": "This Month Income",
   "thisYearIncoming": "This Year Income",
   "seeDetail": "See detail",
+  "seeAll": "See all",
   "totalIncome": "Total income",
   "averageIncome": "Average income",
-  "productSettings": "Product Settings"
+  "productSettings": "Product Settings",
+  "amountCost": "Amount cost",
+  "transactionHistory": "Transaction history",
+  "transactionEmpty": "Your Transaction history is empty",
+  "tansactionTitleTypes": {
+    "order": "Order",
+    "addStock": "Add stock"
+  }
 }

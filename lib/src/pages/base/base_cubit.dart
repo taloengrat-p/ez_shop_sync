@@ -317,7 +317,7 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseRemoveCartItem());
   }
 
-  Future<Product?> addStock({required Product? product}) async {
+  Future<Product?> addStock({required Product? product, required num amountCost}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
@@ -325,10 +325,11 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseLoading());
     final productUpdated = await productRepository.addProductQuantityToStock(
       AddProductQtyToStockrequest(
-        id: product.id,
+        productId: product.id,
         storeId: store!.id,
         userId: user!.id,
         product: product,
+        amountCost: amountCost,
       ),
     );
 

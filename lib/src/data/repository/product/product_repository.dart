@@ -2,15 +2,19 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
@@ -37,11 +41,13 @@ class ProductRepository implements IProductRepository {
   ProductLocalRepository productLocalRepository;
   ProductServerRepository productServerRepository;
   ProductHistoryRepository productHistoryRepository;
+  TransactionRepository transactionRepository;
 
   ProductRepository({
     required this.productLocalRepository,
     required this.productServerRepository,
     required this.productHistoryRepository,
+    required this.transactionRepository,
   });
 
   @override
@@ -51,11 +57,10 @@ class ProductRepository implements IProductRepository {
 
       await productHistoryRepository.create(
         CreateProductHistoryRequest(
-          id: const Uuid().v1(),
           storeId: request.storeId,
           userId: request.userId,
           event: ProductHistoryEvent.create,
-          productId: request.id,
+          productId: result.id,
           newData: {},
         ),
       );
@@ -143,32 +148,49 @@ class ProductRepository implements IProductRepository {
     }
   }
 
-  Future<Product?> addProductQuantityToStock(AddProductQtyToStockrequest request) async {
-    final product = getById(request.id);
+  Future<Product?> addProductQuantityToStock(
+    AddProductQtyToStockrequest request, {
+    AppMode? appMode = AppMode.local,
+  }) async {
+    if (appMode == AppMode.local) {
+      final product = getById(request.productId);
 
-    if (product == null) {
-      throw ('Product ${request.id} is Null');
+      if (product == null) {
+        throw ('Product ${request.productId} is Null');
+      }
+
+      final newQuantity = (product.quantity ?? 0) + (request.product.quantity ?? 0);
+
+      final productUpdated = await update(product.id, product..quantity = newQuantity);
+
+      final productHistory = await productHistoryRepository.create(
+        CreateProductHistoryRequest(
+          productId: product.id,
+          storeId: product.storeId,
+          userId: request.userId,
+          event: ProductHistoryEvent.addToStock,
+          newData: {
+            "priceCategory": request.product.priceSelected,
+            "qty": request.product.quantity,
+          },
+        ),
+      );
+
+      await transactionRepository.create(
+        CreateTransactionRequest(
+          storeId: request.storeId,
+          userId: request.userId,
+          method: TransactionMethodType.addStock,
+          totalPrice: request.amountCost,
+          transactionType: TransactionType.expenses,
+          valueId: productHistory.id,
+        ),
+      );
+
+      return productUpdated;
+    } else {
+      throw UnimplementedError();
     }
-
-    final newQuantity = (product.quantity ?? 0) + (request.product.quantity ?? 0);
-
-    final productUpdated = await update(product.id, product..quantity = newQuantity);
-
-    await productHistoryRepository.create(
-      CreateProductHistoryRequest(
-        id: const Uuid().v1(),
-        productId: product.id,
-        storeId: product.storeId,
-        userId: request.userId,
-        event: ProductHistoryEvent.addToStock,
-        newData: {
-          "priceCategory": request.product.priceSelected,
-          "qty": request.product.quantity,
-        },
-      ),
-    );
-
-    return productUpdated;
   }
 
   Future<void> orderCompletedUpdate(Cart? cart, {AppMode? appMode = AppMode.local}) async {

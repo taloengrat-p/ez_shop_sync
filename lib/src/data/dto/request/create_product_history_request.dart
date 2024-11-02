@@ -8,7 +8,6 @@ class CreateProductHistoryRequest extends BaseRepoRequest {
   Map<String, dynamic>? newData;
 
   CreateProductHistoryRequest({
-    required super.id,
     required super.storeId,
     required super.userId,
     required this.productId,

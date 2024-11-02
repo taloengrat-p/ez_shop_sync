@@ -11,7 +11,6 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/folder_file_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -135,7 +134,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   setTags(List<Tag> tags) {
     _productEditor?.tag = tags
         .map(
-          (e) => e.id,
+          (e) => e.id.toString(),
         )
         .toList();
   }
@@ -178,7 +177,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
     final result = await productRepository.create(
       CreateProductRequest(
-        id: id,
         storeId: currentStore!.id,
         userId: currentUser!.id,
         product: _productEditor!

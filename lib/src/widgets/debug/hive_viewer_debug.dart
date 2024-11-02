@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_ui/boxes_view.dart';
@@ -25,6 +26,7 @@ class _HiveViewerDebugState extends State<HiveViewerDebug> {
         Hive.box<Cart>(HiveBoxConstance.cart): (json) => Cart.fromJson(json),
         Hive.box<Store>(HiveBoxConstance.store): (json) => Store.fromJson(json),
         Hive.box<Product>(HiveBoxConstance.product): (json) => Product.fromJson(json),
+        Hive.box<Transaction>(HiveBoxConstance.transaction): (json) => Transaction.fromJson(json),
       },
       onError: (error) {
         log('error $error');

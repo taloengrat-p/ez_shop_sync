@@ -18,7 +18,7 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
     };
     return ProductHistory(
       productId: fields[8] as String,
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       event: fields[7] as String,
       newData: (fields[10] as Map?)?.cast<String, dynamic>(),
       oldData: (fields[9] as Map?)?.cast<String, dynamic>(),
@@ -74,7 +74,7 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
 ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
     ProductHistory(
       productId: json['productId'] as String,
-      id: json['id'] as String,
+      id: json['id'],
       event: json['event'] as String,
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,

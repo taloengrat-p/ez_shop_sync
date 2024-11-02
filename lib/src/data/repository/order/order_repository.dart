@@ -2,14 +2,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart' as orderType;
+import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/list_order_item_extension.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
@@ -28,11 +34,13 @@ class OrderRepository implements IOrderRepository {
   OrderLocalRepository orderLocalRepository;
   OrderServerRepository orderServerRepository;
   CartRepository cartRepository;
+  TransactionRepository transactionRepository;
 
   OrderRepository({
     required this.orderLocalRepository,
     required this.orderServerRepository,
     required this.cartRepository,
+    required this.transactionRepository,
   });
 
   @override
@@ -56,6 +64,16 @@ class OrderRepository implements IOrderRepository {
         userId: request.userId,
       );
 
+      await transactionRepository.create(
+        CreateTransactionRequest(
+          storeId: request.storeId,
+          userId: request.userId,
+          method: TransactionMethodType.order,
+          totalPrice: request.cart.cartItems.totalPrice,
+          transactionType: TransactionType.income,
+          valueId: prefixedUuid,
+        ),
+      );
       return result;
     } else {
       throw UnimplementedError();

@@ -17,7 +17,7 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return OrderItem(
-      id: fields[1] as String,
+      id: fields[1] as dynamic,
       product: fields[7] as Product?,
       note: fields[8] as String?,
     )
@@ -66,7 +66,7 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
 // **************************************************************************
 
 OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
-      id: json['id'] as String,
+      id: json['id'],
       product: json['product'] == null
           ? null
           : Product.fromJson(json['product'] as Map<String, dynamic>),

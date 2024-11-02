@@ -50,7 +50,7 @@ class TagManagementCubit extends Cubit<TagManagementState> {
     log('remove ${selected.keys}');
 
     Store storeUpdated = baseCubit.store!
-      ..tags = baseCubit.tags.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id).toList();
+      ..tags = baseCubit.tags.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
     await storeRepository.update(baseCubit.store!.id, storeUpdated);
     toggleDeleteMode();
     baseCubit.loadTagsByCurrentStore();

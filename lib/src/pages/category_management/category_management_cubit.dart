@@ -52,7 +52,7 @@ class CategoryManagementCubit extends Cubit<CategoryManagementState> {
     log('remove ${selected.keys}');
 
     final categoryListUpdate =
-        baseCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id).toList();
+        baseCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
     Store storeUpdated = baseCubit.store!..categories = categoryListUpdate;
 
     await storeRepository.update(baseCubit.store!.id, storeUpdated);

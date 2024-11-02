@@ -200,6 +200,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 priceSelected: result.priceCategorySelected,
                                 quantity: result.qty,
                               ),
+                              result.amountCost,
                             );
                           }
                         },

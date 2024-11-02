@@ -17,8 +17,8 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ProductOrder(
-      storeId: fields[11] as String,
-      id: fields[1] as String,
+      storeId: fields[11] == null ? '' : fields[11] as String,
+      id: fields[1] as dynamic,
       status: fields[7] as String,
       cartItems: fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
@@ -76,7 +76,7 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
 
 ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
       storeId: json['storeId'] as String,
-      id: json['id'] as String,
+      id: json['id'],
       status: json['status'] as String,
       cartItems: (json['cartItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))

@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 
 class BottomSheetAddStockSuccess {
   final num qty;
+  final num amountCost;
   final String? priceCategorySelected;
   BottomSheetAddStockSuccess({
     required this.priceCategorySelected,
     required this.qty,
+    required this.amountCost,
   });
 }
 
@@ -34,6 +36,7 @@ class BottomSheetAddStockWidget extends StatefulWidget {
 class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
   late Product _productEditor;
   final _qtyTextController = TextEditingController(text: '1');
+  final _costAmountTextController = TextEditingController();
   String? priceCategorySelected;
   @override
   void initState() {
@@ -105,6 +108,22 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                     );
                   },
                 ),
+                TextFormFieldUiWidget(
+                  controller: _costAmountTextController,
+                  label: LocaleKeys.amountCost.tr(),
+                  autofocus: true,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (value) {
+                    Future.delayed(
+                      Duration.zero,
+                      () {
+                        setState(() {
+                          _costAmountTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                        });
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -115,13 +134,18 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
             backgroundColor: Colors.amber,
             onPressed: _qtyTextController.text.isEmpty ||
                     int.tryParse(_qtyTextController.text) == null ||
-                    (priceCategorySelected == null || (priceCategorySelected?.isEmpty ?? false))
+                    (priceCategorySelected == null || (priceCategorySelected?.isEmpty ?? false)) ||
+                    _costAmountTextController.text.isEmpty ||
+                    int.tryParse(_costAmountTextController.text) == null
                 ? null
                 : () {
+                    final amountCost = num.tryParse(_costAmountTextController.text);
+
                     Navigator.of(context).pop(
                       BottomSheetAddStockSuccess(
                         priceCategorySelected: priceCategorySelected,
                         qty: int.parse(_qtyTextController.text),
+                        amountCost: amountCost ?? 0,
                       ),
                     );
                   },

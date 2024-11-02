@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
@@ -10,9 +7,9 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class IProductHistoryRepository {
-  Future<List<ProductHistory>> getAllByProductId(BaseRepoRequest request);
+  Future<List<ProductHistory>> getAllByProductId(String id, {AppMode appMode = AppMode.local});
   Future<ProductHistory> create(CreateProductHistoryRequest request);
-  Future<void> delete(BaseRepoRequest request);
+  Future<void> delete(String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(BaseRepoRequest request);
 }
 
@@ -32,7 +29,6 @@ class ProductHistoryRepository implements IProductHistoryRepository {
     if (request.appMode == AppMode.local) {
       ProductHistory productHistory = ProductHistory(
         productId: request.productId,
-        id: request.id,
         event: request.event.toString(),
         oldData: request.oldData,
         newData: request.newData,
@@ -47,9 +43,9 @@ class ProductHistoryRepository implements IProductHistoryRepository {
   }
 
   @override
-  Future<void> delete(BaseRepoRequest request) async {
-    if (request.appMode == AppMode.local) {
-      return await productHistoryLocalRepository.delete(request.id);
+  Future<void> delete(String id, {AppMode appMode = AppMode.local}) async {
+    if (appMode == AppMode.local) {
+      return await productHistoryLocalRepository.delete(id);
     } else {
       throw UnimplementedError();
     }
@@ -65,9 +61,9 @@ class ProductHistoryRepository implements IProductHistoryRepository {
   }
 
   @override
-  Future<List<ProductHistory>> getAllByProductId(BaseRepoRequest request) async {
-    if (request.appMode == AppMode.local) {
-      return productHistoryLocalRepository.getByProductId(request.id);
+  Future<List<ProductHistory>> getAllByProductId(String id, {AppMode appMode = AppMode.local}) async {
+    if (appMode == AppMode.local) {
+      return productHistoryLocalRepository.getByProductId(id);
     } else {
       throw UnimplementedError();
     }
