@@ -122,6 +122,11 @@ class _StatisticState extends State<StatisticPage> {
                   child: _buildTitleStatisticInfo(
                     LocaleKeys.netProfit.tr(),
                     _cubit.netProfit.prefixCurrency(),
+                    valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: _cubit.netProfit > 0 ? Colors.green : Colors.white,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
                   ),
                 )
               ],
@@ -275,10 +280,10 @@ class _StatisticState extends State<StatisticPage> {
     );
   }
 
-  Widget _buildTitleStatisticInfo(String title, String value) {
+  Widget _buildTitleStatisticInfo(String title, String value, {TextStyle? valueStyle}) {
     return ContainerShadowWidget(
       padding: const EdgeInsets.all(12),
-      color: ColorKeys.primary.withOpacity(0.6),
+      color: ColorKeys.primary.withOpacity(0.55),
       child: Column(
         children: [
           Text(
@@ -287,7 +292,7 @@ class _StatisticState extends State<StatisticPage> {
           ),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+            style: valueStyle ?? Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
           ),
         ],
       ),
