@@ -107,6 +107,14 @@ class ProductRepository implements IProductRepository {
     }
   }
 
+  List<Product> getByIds(List<String> ids, {AppMode? appMode = AppMode.local}) {
+    if (appMode == AppMode.local) {
+      return productLocalRepository.getAllById(ids);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
   @override
   Product? getById(String id, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {

@@ -111,6 +111,7 @@
   "yourStoreName": "ชื่อร้านค้าของคุณ",
   "error": {
     "unableAddCart": "ไม่สามารถเพิ่มสินค้าได้",
+    "unableCheckout": "ไม่สามารถทำรายการได้",
     "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา",
     "productPriceNotEnough": "สินค้าในคลังของคุณไม่เพียงพอ"
   },
@@ -162,5 +163,6 @@
   "thisYearIncoming": "รายได้ปีนี้",
   "seeDetail": "ดูรายละเอียด",
   "totalIncome": "รายได้รวม",
-  "averageIncome": "รายได้เฉลี่ย"
+  "averageIncome": "รายได้เฉลี่ย",
+  "productSettings": "การตั้งค่าสินค้า"
 }

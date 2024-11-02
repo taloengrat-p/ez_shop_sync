@@ -1,10 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/product_settings/product_settings_cubit.dart';
-import 'package:ez_shop_sync/src/pages/product_settings/product_settings_state.dart';   
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ez_shop_sync/src/pages/product_settings/product_settings_state.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductSettingsPage extends StatefulWidget {
   const ProductSettingsPage({
@@ -26,7 +28,6 @@ class _ProductSettingsState extends State<ProductSettingsPage> {
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
     });
- 
   }
 
   @override
@@ -43,9 +44,10 @@ class _ProductSettingsState extends State<ProductSettingsPage> {
         child: BlocBuilder<ProductSettingsCubit, ProductSettingsState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
-                title: "ProductSettings",
+                title: LocaleKeys.productSettings.tr(),
                 actions: [],
               ).build(),
               body: _buildPage(context, state),

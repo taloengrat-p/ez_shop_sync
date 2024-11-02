@@ -111,6 +111,7 @@
   "yourStoreName": "Your Store Name",
   "error": {
     "unableAddCart": "Unable to add cart",
+    "unableCheckout": "Unable to complete the transaction",
     "productPriceNotYet": "Your product has not been priced yet.",
     "productPriceNotEnough": "Your inventory is insufficient."
   },
@@ -161,5 +162,6 @@
   "thisYearIncoming": "This Year Income",
   "seeDetail": "See detail",
   "totalIncome": "Total income",
-  "averageIncome": "Average income"
+  "averageIncome": "Average income",
+  "productSettings": "Product Settings"
 }

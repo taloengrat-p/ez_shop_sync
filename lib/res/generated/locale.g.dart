@@ -108,6 +108,7 @@ abstract class  LocaleKeys {
   static const storeName = 'storeName';
   static const yourStoreName = 'yourStoreName';
   static const error_unableAddCart = 'error.unableAddCart';
+  static const error_unableCheckout = 'error.unableCheckout';
   static const error_productPriceNotYet = 'error.productPriceNotYet';
   static const error_productPriceNotEnough = 'error.productPriceNotEnough';
   static const error = 'error';
@@ -157,5 +158,6 @@ abstract class  LocaleKeys {
   static const seeDetail = 'seeDetail';
   static const totalIncome = 'totalIncome';
   static const averageIncome = 'averageIncome';
+  static const productSettings = 'productSettings';
 
 }

@@ -66,6 +66,7 @@ class DialogUtils {
       context: context,
       builder: (context) {
         return AlertDialog(
+          actionsPadding: const EdgeInsets.only(bottom: 8, left: 12, right: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(DimensionsKeys.radius)),
           title: Text(title),
           content: Text(desc ?? ''),

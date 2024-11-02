@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
@@ -47,8 +48,17 @@ class CartCubit extends Cubit<CartState> {
   String get totalItems => products.fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0)).toString();
 
   num get subTotalPrice => totalPrice;
-
+  bool get hasAnyError => products.any(
+        (item) {
+          // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
+          final productStockItem = productInStock[item.product?.id];
+          final hasError = (productStockItem?.quantity ?? 0) < (item.product?.quantity ?? 0);
+          return hasError;
+        },
+      );
   String? paymentMethod = 'qrcode';
+
+  Map<String, Product> productInStock = {};
 
   void increaseProductQtyByIndex(int index) {
     final item = _products[index];
@@ -91,9 +101,11 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void initial() {
-    log('inital ${baseCubit.cart?.cartItems.map((e) => e.id).toList()}', name: runtimeType.toString());
     _cart = baseCubit.cart;
     _products = baseCubit.cart?.cartItems.map((e) => e).toList() ?? [];
+
+    productInStock = getProductsByCartItems();
+
     emit(CartInitial());
   }
 
@@ -114,6 +126,13 @@ class CartCubit extends Cubit<CartState> {
     }
 
     emit(CartLoading());
+
+    productInStock = getProductsByCartItems();
+
+    if (hasAnyError) {
+      emit(CartProductInsufficient());
+      return;
+    }
     // for (var i = 0;i < 50; i++) {
     final orderCreated = await orderRepository.create(
       CreateOrderRequest(
@@ -133,5 +152,14 @@ class CartCubit extends Cubit<CartState> {
     }
     emit(CartSuccess(orderCreated));
     // }
+  }
+
+  Map<String, Product> getProductsByCartItems() {
+    final productStockFromCartItem =
+        productRepository.getByIds(_products.map((e) => e.product?.id ?? '').toList()).toList();
+
+    return {
+      for (var item in productStockFromCartItem) item.id: item,
+    };
   }
 }

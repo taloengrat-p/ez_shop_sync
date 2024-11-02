@@ -40,6 +40,11 @@ class CartLoading extends CartState {
   String toString() => 'CartLoading';
 }
 
+class CartProductInsufficient extends CartState {
+  @override
+  String toString() => 'CartProductInsufficient';
+}
+
 class CartSuccess extends CartState {
   final ProductOrder? ordered;
 

@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.da
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
@@ -108,6 +109,12 @@ class _CartState extends State<CartPage> {
             checkCanScroll();
           } else if (state is CartSuccess) {
             OrderCompleteRouter(context).replace(argruments: state);
+          } else if (state is CartProductInsufficient) {
+            DialogUtils.showAlertDialog(
+              context,
+              title: LocaleKeys.error_unableCheckout.tr(),
+              desc: LocaleKeys.error_productPriceNotEnough.tr(),
+            );
           }
         },
         child: BlocBuilder<CartCubit, CartState>(
@@ -155,9 +162,11 @@ class _CartState extends State<CartPage> {
                           ButtonWidget(
                             label: LocaleKeys.proceedToCheckout.tr(),
                             leading: const Icon(Icons.payment_rounded),
-                            onPressed: () {
-                              _cubit.submit();
-                            },
+                            onPressed: _cubit.hasAnyError
+                                ? null
+                                : () {
+                                    _cubit.submit();
+                                  },
                           )
                         ],
                       ),
@@ -217,8 +226,11 @@ class _CartState extends State<CartPage> {
             final cartItem = _cubit.products.elementAt(index);
 
             // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
-
+            final productStockItem = _cubit.productInStock[cartItem.product?.id];
+            final hasError = (productStockItem?.quantity ?? 0) < (cartItem.product?.quantity ?? 0);
             return CartItemWidget(
+              hasError: hasError,
+              errorMessageType: hasError ? CartErrorType.insufficient : null,
               cartItem: cartItem,
               onIncreaseQty: () {
                 _cubit.increaseProductQtyByIndex(index);
