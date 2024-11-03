@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
@@ -162,10 +164,10 @@ extension DateTimeExtension on DateTime {
   }
 
   List<DateTime> getCurrentWeek() {
-    DateTime now = DateTime.now();
-    int currentWeekday = now.weekday; // Monday = 1, Sunday = 7
-    DateTime startOfWeek = now.subtract(Duration(days: currentWeekday - 1)); // Adjust to start from Monday
+    int currentWeekday = weekday; // Monday = 1, Sunday = 7
+    DateTime startOfWeek = subtract(Duration(days: currentWeekday - 1)); // Adjust to start from Monday
 
+    log('startOfWeek $startOfWeek');
     return List<DateTime>.generate(7, (i) => startOfWeek.add(Duration(days: i)));
   }
 

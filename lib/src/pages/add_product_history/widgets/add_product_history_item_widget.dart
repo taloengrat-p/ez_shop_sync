@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
@@ -12,15 +12,15 @@ import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/text_title_bold_value_widget.dart';
 import 'package:flutter/material.dart';
 
-class OrderHistoryItemWidget extends StatelessWidget {
-  final ProductOrder order;
+class AddProductHistoryItemWidget extends StatelessWidget {
+  final AddProduct addProduct;
 
-  const OrderHistoryItemWidget({
+  const AddProductHistoryItemWidget({
     super.key,
-    required this.order,
+    required this.addProduct,
   });
 
-  OrderItem get firstOrderItem => order.cartItems.first;
+  OrderItem get firstOrderItem => addProduct.addProductItems.first;
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +38,11 @@ class OrderHistoryItemWidget extends StatelessWidget {
                 children: [
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderId.tr(),
-                    value: order.id,
+                    value: addProduct.id,
                   ),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: order.createDate.toDisplayDependLocale(context),
+                    value: addProduct.createDate.toDisplayDependLocale(context),
                   )
                 ],
               ),
@@ -100,12 +100,12 @@ class OrderHistoryItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    LocaleKeys.orderNumberOfItem.tr(args: [order.numberOfItems.toString()]),
+                    LocaleKeys.orderNumberOfItem.tr(args: [addProduct.numberOfItems.toString()]),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  ProductOrderTotalAmountWidget(totalPrice: order.totalPriceIncludeServiceCharge),
+                  ProductOrderTotalAmountWidget(totalPrice: addProduct.amountCost),
                 ],
               ),
             ),

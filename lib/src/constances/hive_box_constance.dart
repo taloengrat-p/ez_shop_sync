@@ -8,4 +8,6 @@ class HiveBoxConstance {
   static const category = 'category';
   static const cart = 'cart';
   static const transaction = 'transaction';
+  static const addProduct = 'addProduct';
+  static const addProductHistory = 'addProductHistory';
 }

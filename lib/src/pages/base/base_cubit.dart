@@ -3,13 +3,15 @@ import 'dart:ui';
 
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
-import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
@@ -42,6 +44,7 @@ class BaseCubit extends Cubit<BaseState> {
   CategoryRepository categoryRepository;
   CartRepository cartRepository;
   UserRepository userRepository;
+  AddProductRepository addProductRepository;
   //
   final durationAddCart = const Duration(milliseconds: 700);
   NavigationService navigationService;
@@ -57,13 +60,16 @@ class BaseCubit extends Cubit<BaseState> {
   List<Tag> _tags = [];
   List<Category> _categories = [];
   List<Cart> _carts = [];
+  List<AddProduct> _addProducts = [];
   Cart? _cart;
+  AddProduct? _addProduct;
 
   // getter sections
   AppMode get appMode => _appMode;
   User? get user => _user;
   Store? get store => _store;
   Cart? get cart => _cart;
+  AddProduct? get addProduct => _addProduct;
   List<Cart> get carts => _carts;
   List<Product> get products => _products;
   List<Store> get stores => _stores;
@@ -71,6 +77,7 @@ class BaseCubit extends Cubit<BaseState> {
   List<Category> get categories => _categories;
   AppTheme? get appTheme => _appTheme;
   int get cartCount => cart?.cartItems.length ?? 0;
+  int get addProductCount => _addProduct?.addProductItems.length ?? 0;
 
   BaseCubit({
     required this.localStorageService,
@@ -82,6 +89,7 @@ class BaseCubit extends Cubit<BaseState> {
     required this.categoryRepository,
     required this.cartRepository,
     required this.userRepository,
+    required this.addProductRepository,
   }) : super(BaseInitial()) {
     onCheckFirstRun();
     onCheckIntroduceFlowDone();
@@ -117,6 +125,8 @@ class BaseCubit extends Cubit<BaseState> {
     await authLocalRepository.update(user!.id, user!..storeLatest = store!.id);
 
     await doGetCartByCurrentUserAndStore();
+    await doGetAddProductByCurrentUserAndStore();
+    setCurrentAddCartByCurrentStore(store!.id);
     setCurrentCartByCurrentStore(store!.id);
     loadAppTheme(_store?.storeTheme);
     loadTagsByCurrentStore();
@@ -155,8 +165,39 @@ class BaseCubit extends Cubit<BaseState> {
     // log('current Cart $cart');
   }
 
+  setCurrentAddCartByCurrentStore(String storeId) async {
+    // log('setCurrentCartByCurrentStore : ${_carts.map((e) => e.id)}');
+    if (_addProducts.map((e) => e.storeId).toList().contains(storeId)) {
+      final addProductFinded = _addProducts.where((addProduct) => addProduct.storeId == storeId).firstOrNull;
+      setCurrentAddProduct(addProductFinded);
+    } else {
+      final addProductCreated = await addProductRepository.create(
+        CreateAddProductRequest(
+          addProduct: AddProduct(
+            id: const Uuid().v1(),
+            storeId: storeId,
+            userId: user!.id,
+            addProductItems: [],
+            amountCost: 0,
+          ),
+          storeId: storeId,
+          userId: user!.id,
+        ),
+      );
+
+      await userRepository.update(user!.id, user!..addProducts.add(addProductCreated.id));
+      setCurrentAddProduct(addProductCreated);
+    }
+
+    // log('current Cart $cart');
+  }
+
   setCurrentCart(Cart? value) {
     _cart = value;
+  }
+
+  setCurrentAddProduct(AddProduct? value) {
+    _addProduct = value;
   }
 
   changeMode(AppMode mode) {
@@ -296,7 +337,6 @@ class BaseCubit extends Cubit<BaseState> {
       emit(BaseLoading());
       final cartUpdate = await cartRepository.addCart(_cart!.id, product);
 
-      log('cartUpdate $cartUpdate');
       emit(BaseAddCartSuccess());
       Future.delayed(durationAddCart).then((value) {
         emit(BaseAddCartAnimationSuccess());
@@ -308,6 +348,10 @@ class BaseCubit extends Cubit<BaseState> {
     _carts = cartRepository.getCartsByUserIdWithCurrentStore(user!.carts);
   }
 
+  Future<void> doGetAddProductByCurrentUserAndStore() async {
+    _addProducts = addProductRepository.getAddProductByUserIdWithCurrentStore(user!.addProducts);
+  }
+
   Future<void> deleteItemFromCart(String cartItemId) async {
     emit(BaseLoading());
     final resultCartUpdated = await cartRepository.deleteItemByIdFromCart(cart?.id, cartItemId);
@@ -317,26 +361,41 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseRemoveCartItem());
   }
 
+  Future<void> deleteItemFromAddProduct(String addProductItemId) async {
+    emit(BaseLoading());
+    final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromCart(cart?.id, addProductItemId);
+
+    setCurrentAddProduct(resultAddCartUpdated);
+
+    emit(BaseRemoveCartItem());
+  }
+
   Future<Product?> addStock({required Product? product, required num amountCost}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
 
-    emit(BaseLoading());
-    final productUpdated = await productRepository.addProductQuantityToStock(
-      AddProductQtyToStockrequest(
-        productId: product.id,
-        storeId: store!.id,
-        userId: user!.id,
-        product: product,
-        amountCost: amountCost,
-      ),
-    );
+    if (addProduct == null) {
+      throw ('addStock addProduct is Null');
+    }
 
-    updateProductQuantity(productUpdated);
+    emit(BaseLoading());
+
+    final addProductUpdate = await addProductRepository.addProduct(addProduct!.id, product);
+    // final productUpdated = await productRepository.addProductQuantityToStock(
+    //   AddProductQtyToStockrequest(
+    //     productId: product.id,
+    //     storeId: store!.id,
+    //     userId: user!.id,
+    //     product: product,
+    //     amountCost: amountCost,
+    //   ),
+    // );
+
+    // updateProductQuantity(productUpdated);
     emit(BaseAddStockSuccess(DateTime.now()));
 
-    return productUpdated;
+    return product;
   }
 
   void updateProductQuantity(Product? productUpdated) {

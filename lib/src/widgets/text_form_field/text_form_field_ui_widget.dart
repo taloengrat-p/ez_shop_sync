@@ -9,7 +9,7 @@ enum TextFormFieldUiType { password, normal, email }
 
 class TextFormFieldUiWidget extends StatefulWidget {
   final Widget? labelSuffix;
-  final String label;
+  final String? label;
   final String? hintText;
   final String? textInitial;
   final bool? obscureText;
@@ -40,7 +40,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final Widget? child;
   const TextFormFieldUiWidget({
     super.key,
-    required this.label,
+    this.label,
     this.obscureText,
     this.errorText,
     this.validator,
@@ -161,6 +161,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                   TextFormField(
                     textInputAction: widget.textInputAction,
                     smartDashesType: SmartDashesType.disabled,
+
                     enableSuggestions: widget.enableSuggestions,
                     autocorrect: widget.autoCorrect,
                     inputFormatters: widget.inputFormatters ?? [],
@@ -180,7 +181,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     validator: (value) {
                       if ((value?.isEmpty ?? true) && widget.isRequired) {
                         return widget.customMessageRequired ??
-                            LocaleKeys.requiredErrorMessage.tr(args: [widget.label.toLowerCase()]);
+                            LocaleKeys.requiredErrorMessage.tr(args: [widget.label?.toLowerCase() ?? '']);
                       }
 
                       return widget.validator?.call(doValiedate(value));

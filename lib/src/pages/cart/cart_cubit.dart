@@ -146,8 +146,10 @@ class CartCubit extends Cubit<CartState> {
 
     if (_cart != null) {
       await productRepository.orderCompletedUpdate(_cart);
-      await cartRepository.delete(_cart!.id);
-      baseCubit.setCurrentCart(null);
+      await cartRepository.update(
+        _cart!.id,
+        _cart!..cartItems = [],
+      );
     }
     emit(CartSuccess(orderCreated));
     // }

@@ -31,8 +31,8 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
         ..createBy = userId
         ..updateBy = userId,
     );
-
-    return request..id = id;
+    request.id = id;
+    return request;
   }
 
   T? getById(I id) {

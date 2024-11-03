@@ -37,6 +37,7 @@ class ButtonWidget extends StatefulWidget {
   final Axis axis;
   final bool isLabelUpperCase;
   final bool isLoading;
+
   const ButtonWidget({
     this.isLoading = false,
     super.key,

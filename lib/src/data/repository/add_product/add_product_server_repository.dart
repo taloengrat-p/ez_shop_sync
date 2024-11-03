@@ -2,4 +2,4 @@ import 'package:injectable/injectable.dart';
 
 @Singleton()
 @Injectable()
-class AddStockServerRepository {}
+class AddProductServerRepository {}

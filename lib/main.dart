@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_config.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
@@ -16,6 +17,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
@@ -23,6 +25,7 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
+import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -57,6 +60,7 @@ FutureOr<void> main() async {
       categoryRepository: GetIt.I<CategoryRepository>(),
       cartRepository: GetIt.I<CartRepository>(),
       userRepository: GetIt.I<UserRepository>(),
+      addProductRepository: GetIt.I<AddProductRepository>(),
     ),
   );
   runApp(
@@ -98,6 +102,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(OrderItemAdapter());
   Hive.registerAdapter(ProductHistoryAdapter());
   Hive.registerAdapter(TransactionAdapter());
+  Hive.registerAdapter(AddProductAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);
@@ -108,4 +113,6 @@ Future<void> initialHiveDB() async {
   await Hive.openBox<Cart>(HiveBoxConstance.cart);
   await Hive.openBox<ProductOrder>(HiveBoxConstance.order);
   await Hive.openBox<Transaction>(HiveBoxConstance.transaction);
+  await Hive.openBox<AddProduct>(HiveBoxConstance.addProduct);
+  await Hive.openBox<AddProduct>(HiveBoxConstance.addProductHistory);
 }

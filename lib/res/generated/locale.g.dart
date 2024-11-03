@@ -93,6 +93,7 @@ abstract class  LocaleKeys {
   static const totalAmount = 'totalAmount';
   static const subTotal = 'subTotal';
   static const proceedToCheckout = 'proceedToCheckout';
+  static const proceedToAddProduct = 'proceedToAddProduct';
   static const items = 'items';
   static const serviceCharge = 'serviceCharge';
   static const paymentInfo = 'paymentInfo';
@@ -138,6 +139,7 @@ abstract class  LocaleKeys {
   static const productHistory_addStock = 'productHistory.addStock';
   static const productHistory = 'productHistory';
   static const orderCompleteTitle = 'orderCompleteTitle';
+  static const addProductCompleteTitle = 'addProductCompleteTitle';
   static const backToHomePage = 'backToHomePage';
   static const orderId = 'orderId';
   static const orderHistory = 'orderHistory';

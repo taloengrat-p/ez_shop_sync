@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/add_stock_history/add_stock_history_router.dart';
+import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
@@ -398,7 +398,7 @@ class _MorePageState extends State<MorePage> {
           title: LocaleKeys.addStockHistory.tr(),
           value: 2,
           onPressed: () {
-            AddStockHistoryRouter(context).navigate();
+            AddProductHistoryRouter(context).navigate();
           },
         ),
       ],

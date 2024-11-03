@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class OrderCompleteState extends Equatable {
@@ -6,6 +9,28 @@ abstract class OrderCompleteState extends Equatable {
 
   @override
   List<Object?> get props => [];
+}
+
+class OrderCompleteArgrument extends OrderCompleteState {
+  final String title;
+  final ProductOrder? orderItems;
+  final AddProduct? addProductItems;
+  final TransactionMethodType transactionMethodType;
+  const OrderCompleteArgrument({
+    required this.title,
+    this.orderItems,
+    required this.transactionMethodType,
+    this.addProductItems,
+  });
+  @override
+  String toString() => 'OrderCompleteRefresh $title $orderItems $transactionMethodType';
+
+  @override
+  List<Object?> get props => [
+        title,
+        orderItems,
+        transactionMethodType,
+      ];
 }
 
 class OrderCompleteRefresh extends OrderCompleteState {

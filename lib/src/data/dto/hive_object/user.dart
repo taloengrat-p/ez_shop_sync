@@ -34,6 +34,9 @@ class User extends BaseHiveObject {
   @HiveField(15, defaultValue: [])
   List<String> carts;
 
+  @HiveField(16, defaultValue: [])
+  List<String> addProducts;
+
   String get fullname => '$firstName $lastName';
 
   User({
@@ -51,6 +54,7 @@ class User extends BaseHiveObject {
     this.profilePictureUrl,
     this.storeLatest,
     required this.carts,
+    required this.addProducts,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

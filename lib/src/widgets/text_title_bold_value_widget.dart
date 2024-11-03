@@ -19,9 +19,12 @@ class TextTitleBoldValueWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
         ),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+        Expanded(
+          child: Text(
+            value,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+          ),
         ),
       ],
     );

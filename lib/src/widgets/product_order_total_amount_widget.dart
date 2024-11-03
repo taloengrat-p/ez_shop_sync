@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:flutter/material.dart';
 
 class ProductOrderTotalAmountWidget extends StatelessWidget {
-  final ProductOrder? productOrder;
+  final num? totalPrice;
   const ProductOrderTotalAmountWidget({
     super.key,
-    required this.productOrder,
+    required this.totalPrice,
   });
 
   @override
@@ -22,7 +22,7 @@ class ProductOrderTotalAmountWidget extends StatelessWidget {
               ),
         ),
         Text(
-          productOrder?.totalPriceDisplay ?? '--',
+          totalPrice?.prefixCurrency() ?? '--',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),

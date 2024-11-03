@@ -47,5 +47,6 @@ class ProductOrder extends BaseHiveObject {
 
   factory ProductOrder.fromJson(Map<String, dynamic> json) => _$ProductOrderFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$ProductOrderToJson(this);
 }

@@ -94,6 +94,7 @@
   "totalAmount": "Total amount",
   "subTotal": "Sub Total",
   "proceedToCheckout": "Proceed To Checkout",
+  "proceedToAddProduct": "Proceed To Add Product",
   "items": "Items",
   "serviceCharge": "Service Charge ( {} % )",
   "paymentInfo": "Payment information",
@@ -143,6 +144,7 @@
     "addStock": "Add stock"
   },
   "orderCompleteTitle": "Order completed successfully",
+  "addProductCompleteTitle": "Add Product completed successfully",
   "backToHomePage": "Back to Home",
   "orderId": "Order NO",
   "orderHistory": "Order History",
@@ -172,5 +174,5 @@
     "order": "Order",
     "addStock": "Add stock"
   },
-  "addStockHistory" : "Add Product History"
+  "addStockHistory": "Add Product History"
 }

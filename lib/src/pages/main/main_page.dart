@@ -3,6 +3,7 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
@@ -68,6 +69,22 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
                 actions: [
+                  ContainerCircleWidget(
+                    child: cubit.baseCubit.addProductCount != 0
+                        ? Badge.count(
+                            count: cubit.baseCubit.addProductCount,
+                            child: const Icon(CupertinoIcons.bag_badge_plus),
+                          )
+                        : const Icon(
+                            CupertinoIcons.bag_badge_plus,
+                          ),
+                    onPressed: () {
+                      AddProductRouter(context).navigate();
+                    },
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
                   ContainerCircleWidget(
                     child: cubit.baseCubit.cartCount != 0
                         ? Badge.count(

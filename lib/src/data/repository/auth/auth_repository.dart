@@ -64,6 +64,7 @@ class AuthRepository implements IAuthRepository {
         phoneNumber: request.phoneNumber,
         username: '${request.firstName}.${request.lastName.substring(0, 1)}'.toLowerCase(),
         carts: [],
+        addProducts: [],
       );
 
       await authLocalRepository.create(

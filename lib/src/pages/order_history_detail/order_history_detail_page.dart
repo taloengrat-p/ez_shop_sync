@@ -138,7 +138,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                ProductOrderTotalAmountWidget(productOrder: _cubit.order),
+                ProductOrderTotalAmountWidget(totalPrice: _cubit.order?.totalPriceIncludeServiceCharge),
               ],
             )
           ],

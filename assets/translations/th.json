@@ -94,6 +94,7 @@
   "totalAmount": "ยอดรวมทั้งหมด",
   "subTotal": "ยอดรวมสั่งซื้อ",
   "proceedToCheckout": "ดำเนินการชำระเงิน",
+  "proceedToAddProduct": "ดำเนินการเพิ่มสินค้า",
   "items": "รายการ",
   "serviceCharge": "ค่าบริการ ( {} % )",
   "paymentInfo": "ข้อมูลการชำระเงิน",
@@ -144,6 +145,7 @@
     "removeStock": "ลบจำนวนสินค้าในคลัง"
   },
   "orderCompleteTitle": "ทำรายการสำเร็จ",
+  "addProductCompleteTitle": "เพิ่มรายการสินค้าสำเร็จ",
   "backToHomePage": "กลับไปหน้าแรก",
   "orderId": "หมายเลขคำสั่งซื้อ",
   "orderHistory": "ประวัติการสั่งซื้อ",

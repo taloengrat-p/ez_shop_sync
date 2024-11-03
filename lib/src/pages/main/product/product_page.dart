@@ -125,15 +125,6 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                   },
                 ),
                 const SizedBox(
-                  width: 5,
-                ),
-                ContainerCircleWidget(
-                  child: const Icon(
-                    CupertinoIcons.bag_badge_plus,
-                  ),
-                  // onPressed: () async {},
-                ),
-                SizedBox(
                   width: 8,
                 ),
               ]

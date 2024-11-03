@@ -55,7 +55,12 @@ class HistoryWidget extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        if (desc != null) Text(desc ?? ''),
+        if (desc != null)
+          Text(
+            desc ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         const SizedBox(
           height: 8,
         ),

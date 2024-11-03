@@ -1,18 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_statement_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_statement_detail_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
-import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
-import 'package:ez_shop_sync/src/widgets/history_widget.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/transaction_history_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 
 class TransactionStatementDetailPage extends StatefulWidget {
   const TransactionStatementDetailPage({

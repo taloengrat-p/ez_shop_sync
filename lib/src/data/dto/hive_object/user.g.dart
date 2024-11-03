@@ -31,13 +31,15 @@ class UserAdapter extends TypeAdapter<User> {
       profilePictureUrl: fields[13] as String?,
       storeLatest: fields[14] as String?,
       carts: fields[15] == null ? [] : (fields[15] as List).cast<String>(),
+      addProducts:
+          fields[16] == null ? [] : (fields[16] as List).cast<String>(),
     )..syncDatetime = fields[6] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(7)
       ..write(obj.storeId)
       ..writeByte(8)
@@ -56,6 +58,8 @@ class UserAdapter extends TypeAdapter<User> {
       ..write(obj.storeLatest)
       ..writeByte(15)
       ..write(obj.carts)
+      ..writeByte(16)
+      ..write(obj.addProducts)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -105,6 +109,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       profilePictureUrl: json['profilePictureUrl'] as String?,
       storeLatest: json['storeLatest'] as String?,
       carts: (json['carts'] as List<dynamic>).map((e) => e as String).toList(),
+      addProducts: (json['addProducts'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     )..syncDatetime = json['syncDatetime'] == null
         ? null
         : DateTime.parse(json['syncDatetime'] as String);
@@ -125,4 +132,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'profilePictureUrl': instance.profilePictureUrl,
       'storeLatest': instance.storeLatest,
       'carts': instance.carts,
+      'addProducts': instance.addProducts,
     };

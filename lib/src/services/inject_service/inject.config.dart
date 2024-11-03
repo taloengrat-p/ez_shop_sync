@@ -11,6 +11,17 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../data/repository/add_product/add_product_local_repository.dart'
+    as _i172;
+import '../../data/repository/add_product/add_product_repository.dart' as _i13;
+import '../../data/repository/add_product/add_product_server_repository.dart'
+    as _i807;
+import '../../data/repository/add_product_history/add_product_history_local_repository.dart'
+    as _i675;
+import '../../data/repository/add_product_history/add_product_history_repository.dart'
+    as _i394;
+import '../../data/repository/add_product_history/add_product_history_server_repository.dart'
+    as _i391;
 import '../../data/repository/auth/_local/auth_local_repository.dart' as _i900;
 import '../../data/repository/auth/auth_repository.dart' as _i214;
 import '../../data/repository/cart/cart_local_repository.dart' as _i222;
@@ -104,6 +115,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i206.TransactionLocalRepository());
     gh.singleton<_i889.TransactionServerRepository>(
         () => _i889.TransactionServerRepository());
+    gh.singleton<_i172.AddProductLocalRepository>(
+        () => _i172.AddProductLocalRepository());
+    gh.singleton<_i807.AddProductServerRepository>(
+        () => _i807.AddProductServerRepository());
+    gh.singleton<_i675.AddProductHistoryLocalRepository>(
+        () => _i675.AddProductHistoryLocalRepository());
+    gh.singleton<_i391.AddProductHistoryServerRepository>(
+        () => _i391.AddProductHistoryServerRepository());
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i222.CartLocalRepository>(),
           cartServerRepository: gh<_i808.CartServerRepository>(),
@@ -116,6 +135,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i233.HiveDBUnittestService(),
       registerFor: {_tests},
     );
+    gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(
+          addProductLocalRepository: gh<_i172.AddProductLocalRepository>(),
+          addProductServerRepository: gh<_i807.AddProductServerRepository>(),
+        ));
     gh.singleton<_i2.ProductHistoryRepository>(
         () => _i2.ProductHistoryRepository(
               productHistoryLocalRepository:
@@ -131,6 +154,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i79.LocalStorageUnittest(),
       registerFor: {_tests},
     );
+    gh.singleton<_i394.AddProductHistoryRepository>(() => _i394.AddProductHistoryRepository(
+          addProductHistoryLocalRepository:
+              gh<_i675.AddProductHistoryLocalRepository>(),
+          addProductHistoryServerRepository:
+              gh<_i391.AddProductHistoryServerRepository>(),
+        ));
     gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
           orderLocalRepository: gh<_i548.OrderLocalRepository>(),
           orderServerRepository: gh<_i850.OrderServerRepository>(),

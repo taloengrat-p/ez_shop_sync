@@ -1,16 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
+import 'package:ez_shop_sync/src/pages/add_product/add_product_cubit.dart';
+import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
-import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
@@ -26,25 +23,24 @@ import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-class CartPage extends StatefulWidget {
-  const CartPage({
+class AddProductPage extends StatefulWidget {
+  const AddProductPage({
     super.key,
   });
 
   @override
-  _CartState createState() => _CartState();
+  _AddProductState createState() => _AddProductState();
 }
 
-class _CartState extends State<CartPage> {
-  late CartCubit _cubit;
+class _AddProductState extends State<AddProductPage> {
+  late AddProductCubit _cubit;
   final _listViewController = ScrollController();
   final _scrollViewController = ScrollController();
-
   bool _isBottomScroll = false;
   bool _canScroll = false;
 
@@ -64,40 +60,20 @@ class _CartState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-
-    _listViewController.addListener(_onScroll);
-    _cubit = CartCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
-      cartRepository: GetIt.I<CartRepository>(),
-      orderRepository: GetIt.I<OrderRepository>(),
+    _cubit = AddProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
+      addProductHistoryRepository: GetIt.I<AddProductHistoryRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
+      addProductRepository: GetIt.I<AddProductRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       _cubit.initial();
-      Future.delayed(const Duration(milliseconds: 100), () {
-        checkCanScroll();
-      });
     });
-  }
-
-  checkCanScroll() {
-    final maxScrollExtent = _listViewController.position.maxScrollExtent;
-    final minScrollExtent = _listViewController.position.minScrollExtent;
-
-    final canScroll = maxScrollExtent > minScrollExtent;
-
-    // log('canScroll $canScroll, maxScrollExtent $maxScrollExtent, minScrollExtent $minScrollExtent');
-    if (canScroll != _canScroll) {
-      setState(() {
-        _canScroll = canScroll;
-      });
-    }
   }
 
   @override
   void dispose() {
-    _listViewController.dispose();
     super.dispose();
   }
 
@@ -106,34 +82,27 @@ class _CartState extends State<CartPage> {
     final size = MediaQuery.of(context).size;
     return BlocProvider(
       create: (context) => _cubit,
-      child: BlocListener<CartCubit, CartState>(
+      child: BlocListener<AddProductCubit, AddProductState>(
         listener: (context, state) {
-          if (state is CartRemoveItemSuccess) {
-            checkCanScroll();
-          } else if (state is CartSuccess) {
+          if (state is AddProductRemoveItemSuccess) {
+            // checkCanScroll();
+          } else if (state is AddProductSuccess) {
             OrderCompleteRouter(context).replace(
-              argruments: OrderCompleteArgrument(
-                title: LocaleKeys.orderCompleteTitle.tr(),
-                orderItems: state.ordered,
-                transactionMethodType: TransactionMethodType.order,
-              ),
-            );
-          } else if (state is CartProductInsufficient) {
-            DialogUtils.showAlertDialog(
-              context,
-              title: LocaleKeys.error_unableCheckout.tr(),
-              desc: LocaleKeys.error_productPriceNotEnough.tr(),
-            );
+                argruments: OrderCompleteArgrument(
+              title: LocaleKeys.addProductCompleteTitle.tr(),
+              addProductItems: state.addProduct,
+              transactionMethodType: TransactionMethodType.addProduct,
+            ));
           }
         },
-        child: BlocBuilder<CartCubit, CartState>(
+        child: BlocBuilder<AddProductCubit, AddProductState>(
           builder: (context, state) {
             return BaseScaffolds(
-              isLoading: state is CartLoading,
+              isLoading: state is AddProductLoading,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: LocaleKeys.cart.tr(),
+                title: LocaleKeys.addStock.tr(),
                 actions: [],
               ).build(),
               body: _cubit.products.isEmpty
@@ -157,11 +126,19 @@ class _CartState extends State<CartPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(LocaleKeys.totalAmount.tr()),
-                              Text(
-                                _cubit.totalPriceIncludeServiceCharge.toString(),
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                child: TextFormFieldUiWidget(
+                                  textAlign: TextAlign.right,
+                                  autofocus: true,
+                                  textValue: _cubit.totalPrice?.toString() ?? '0',
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                  onChanged: (value) {
+                                    _cubit.setTotalPrice(value);
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -169,13 +146,12 @@ class _CartState extends State<CartPage> {
                             height: 16,
                           ),
                           ButtonWidget(
-                            label: LocaleKeys.proceedToCheckout.tr(),
-                            leading: const Icon(Icons.payment_rounded),
-                            onPressed: _cubit.hasAnyError
-                                ? null
-                                : () {
-                                    _cubit.submit();
-                                  },
+                            disabled: _cubit.disabledSubmit,
+                            label: LocaleKeys.proceedToAddProduct.tr(),
+                            leading: const Icon(Icons.add_circle_outline_rounded),
+                            onPressed: () {
+                              _cubit.submit();
+                            },
                           )
                         ],
                       ),
@@ -187,7 +163,7 @@ class _CartState extends State<CartPage> {
     );
   }
 
-  Widget _buildPage(BuildContext context, CartState state) {
+  Widget _buildPage(BuildContext context, AddProductState state) {
     return Stack(
       children: [
         buildProductItems(),
@@ -234,12 +210,7 @@ class _CartState extends State<CartPage> {
           itemBuilder: (context, index) {
             final cartItem = _cubit.products.elementAt(index);
 
-            // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
-            final productStockItem = _cubit.productInStock[cartItem.product?.id];
-            final hasError = (productStockItem?.quantity ?? 0) < (cartItem.product?.quantity ?? 0);
             return CartItemWidget(
-              hasError: hasError,
-              errorMessageType: hasError ? CartErrorType.insufficient : null,
               cartItem: cartItem,
               onIncreaseQty: () {
                 _cubit.increaseProductQtyByIndex(index);
@@ -262,10 +233,6 @@ class _CartState extends State<CartPage> {
             );
           },
         ),
-        buildPaymentMethod(),
-        const SizedBox(
-          height: 16,
-        ),
         buildPaymentInfo(),
       ],
     );
@@ -279,52 +246,6 @@ class _CartState extends State<CartPage> {
         vertical: 8,
       ),
       child: child,
-    );
-  }
-
-  Widget buildPaymentMethod() {
-    return ContainerShadowGroupWidget(
-      title: LocaleKeys.paymentMethod.tr(),
-      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-      color: Colors.white,
-      children: [
-        ColumnGapWidget(
-          mainAxisSize: MainAxisSize.min,
-          gap: 4,
-          children: [
-            RowBetweenWidget(
-              title: Text(
-                LocaleKeys.paymentMethodOptions_qrCode.tr(),
-              ),
-              value: CupertinoRadio(
-                activeColor: Colors.green,
-                value: PaymentType.qrcode.name,
-                groupValue: _cubit.paymentMethod,
-                onChanged: (val) {
-                  _cubit.changePaymentMethod(val);
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.grey.shade200,
-            ),
-            RowBetweenWidget(
-              title: Text(
-                LocaleKeys.paymentMethodOptions_cash.tr(),
-              ),
-              value: CupertinoRadio(
-                value: PaymentType.cash.name,
-                activeColor: Colors.green,
-                groupValue: _cubit.paymentMethod,
-                onChanged: (val) {
-                  _cubit.changePaymentMethod(val);
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -345,23 +266,15 @@ class _CartState extends State<CartPage> {
                 _cubit.totalItems.prefixCurrency(),
               ),
             ),
-            RowBetweenWidget(
-              title: Text(LocaleKeys.subTotal.tr()),
-              value: Text(_cubit.subTotalPrice.toString().prefixCurrency()),
-            ),
-            RowBetweenWidget(
-              title: Text(LocaleKeys.serviceCharge.tr(args: [_cubit.serviceCharge.toString()])),
-              value: Text(
-                _cubit.totalServiceCharge.toString().prefixCurrency(),
-              ),
-            ),
             Divider(
               color: Colors.grey.shade200,
             ),
             RowBetweenWidget(
-              title: Text(LocaleKeys.totalAmount.tr(args: [_cubit.serviceCharge.toString()])),
+              title: Text(
+                LocaleKeys.totalAmount.tr(),
+              ),
               value: Text(
-                _cubit.totalPriceIncludeServiceCharge.toString().prefixCurrency(),
+                _cubit.totalPriceDisplay,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

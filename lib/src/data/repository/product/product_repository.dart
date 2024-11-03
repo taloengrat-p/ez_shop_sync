@@ -180,7 +180,7 @@ class ProductRepository implements IProductRepository {
         CreateTransactionRequest(
           storeId: request.storeId,
           userId: request.userId,
-          method: TransactionMethodType.addStock,
+          method: TransactionMethodType.addProduct,
           totalPrice: request.amountCost,
           transactionType: TransactionType.expenses,
           valueId: productHistory.id,
