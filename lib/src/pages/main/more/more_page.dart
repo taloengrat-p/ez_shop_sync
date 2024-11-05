@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
@@ -19,6 +20,7 @@ import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
+import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
@@ -26,6 +28,7 @@ import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
+import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -57,6 +60,7 @@ class _MorePageState extends State<MorePage> {
     cubit = MoreCubit(
       baseCubit: baseCubit,
       localStorageService: GetIt.I<LocalStorageService>(),
+      authRepository: GetIt.I<AuthRepository>(),
     );
   }
 
@@ -153,7 +157,6 @@ class _MorePageState extends State<MorePage> {
               height: 32,
             ),
             ButtonWidget(
-              disabled: true,
               label: LocaleKeys.logout.tr(),
               backgroundColor: Colors.red,
               leading: const Icon(

@@ -53,7 +53,7 @@ class ButtonWidget extends StatefulWidget {
     this.padding,
     this.margin,
     this.gap,
-    this.height = 56,
+    this.height = 50,
     this.isFittedLabel = true,
     this.elevation,
     this.buttonUiEffect,
@@ -97,6 +97,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return Container(
       margin: widget.margin,
       width: widget.width,
+      height: widget.height,
       child: ElevatedButton(
         style: ButtonStyle(
           elevation: WidgetStatePropertyAll(widget.elevation),

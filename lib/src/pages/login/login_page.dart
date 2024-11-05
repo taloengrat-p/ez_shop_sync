@@ -1,0 +1,167 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
+import 'package:ez_shop_sync/src/models/screen_mode.dart';
+import 'package:ez_shop_sync/src/pages/login/login_cubit.dart';
+import 'package:ez_shop_sync/src/pages/login/login_state.dart';
+import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_router.dart';
+import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_state.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({
+    super.key,
+  });
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<LoginPage> {
+  late LoginCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = LoginCubit(
+      authRepository: GetIt.I<AuthRepository>(),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((time) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => _cubit,
+      child: BlocListener<LoginCubit, LoginState>(
+        listener: (context, state) {},
+        child: BlocBuilder<LoginCubit, LoginState>(
+          builder: (context, state) {
+            return BaseScaffolds(
+              appBar: AppbarWidget(
+                context,
+                centerTitle: false,
+                title: _cubit.screenMode == ScreenMode.login
+                    ? LocaleKeys.loginPage_login.tr()
+                    : LocaleKeys.loginPage_register.tr(),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _cubit.switchToScreenMode();
+                    },
+                    child: Text(
+                      _cubit.screenMode == ScreenMode.register
+                          ? LocaleKeys.loginPage_login.tr()
+                          : LocaleKeys.loginPage_register.tr(),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                    ),
+                  )
+                ],
+              ).build(),
+              body: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildPage(context, state),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPage(BuildContext context, LoginState state) {
+    final size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: size.width * 0.3,
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Form(
+            child: ColumnGapWidget(
+              gap: 8,
+              children: [
+                TextFormFieldUiWidget(
+                  label: LocaleKeys.loginPage_username.tr(),
+                  hintText: LocaleKeys.loginPage_yourEmail.tr(),
+                  errorText: state is LoginFailure ? state.errorType?.label : null,
+                  onChanged: (value) {
+                    _cubit.setUsername(value);
+                  },
+                ),
+                TextFormFieldUiWidget(
+                  label: LocaleKeys.loginPage_password.tr(),
+                  obscureText: !_cubit.isVisiblePassword,
+                  errorText: state is LoginFailure ? state.errorType?.label : null,
+                  onChanged: (value) {
+                    _cubit.setPassword(value);
+                  },
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _cubit.toggleVisiblePassword();
+                    },
+                    icon: Icon(_cubit.isVisiblePassword ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+                  ),
+                ),
+                // AnimatedOpacity(
+                //   opacity: _cubit.screenMode == ScreenMode.register ? 1.0 : 0.0,
+                //   duration: const Duration(milliseconds: 800),
+                //   child: Visibility(
+                //     visible: _cubit.screenMode == ScreenMode.register,
+                //     child: TextFormFieldUiWidget(
+                //       label: LocaleKeys.phoneNumber.tr(),
+                //       // errorText: state is LoginFailure ? state.errorType?.label : null,
+                //       onChanged: (value) {
+                //         _cubit.setPhoneNumber(value);
+                //       },
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 32,
+          ),
+          ButtonWidget(
+            disabled: _cubit.isDisabled || state is LoginLoading,
+            label: _cubit.screenMode == ScreenMode.login
+                ? LocaleKeys.loginPage_login.tr()
+                : LocaleKeys.loginPage_register.tr(),
+            isLoading: state is LoginLoading,
+            onPressed: () {
+              if (_cubit.screenMode == ScreenMode.register) {
+                _cubit.register();
+              } else if (_cubit.screenMode == ScreenMode.login) {
+                _cubit.login();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

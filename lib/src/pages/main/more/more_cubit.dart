@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -11,6 +12,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class MoreCubit extends Cubit<MoreState> {
   BaseCubit baseCubit;
+  AuthRepository authRepository;
   List<Store> get stores => baseCubit.stores;
   late Locale locale;
   String version = '';
@@ -19,6 +21,7 @@ class MoreCubit extends Cubit<MoreState> {
   MoreCubit({
     required this.baseCubit,
     required this.localStorageService,
+    required this.authRepository,
   }) : super(MoreInitial()) {
     getAppVersion();
   }
@@ -31,7 +34,9 @@ class MoreCubit extends Cubit<MoreState> {
 
   Store? get currentStore => baseCubit.store;
 
-  doLogout() {}
+  Future<void> doLogout() async {
+    await authRepository.logout();
+  }
 
   Future<void> changeLanguage(BuildContext context, bool value) async {
     emit(MoreLoading());

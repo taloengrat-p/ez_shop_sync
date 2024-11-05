@@ -12,8 +12,10 @@ class AppPinWidget extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final String? errorText;
+  final String? token;
   const AppPinWidget({
     super.key,
+    this.token,
     required this.title,
     this.desc,
     this.obscureText = true,
@@ -101,6 +103,15 @@ class _AppPinWidgetState extends State<AppPinWidget> {
             forceErrorState: widget.errorText != null,
             onChanged: widget.onChanged,
           ),
+          if (widget.token != null)
+            Column(
+              children: [
+                SizedBox(
+                  height: 16,
+                ),
+                Text(widget.token!),
+              ],
+            )
         ],
       ),
     );

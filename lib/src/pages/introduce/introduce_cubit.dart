@@ -69,23 +69,23 @@ class IntroduceCubit extends Cubit<IntroduceState> {
   }
 
   void doSubmit() async {
-    final userRegister = await authRepository.register(
-      CreateRegisterRequest(
-        storeName: storeName.trim(),
-        storeDesc: storeDesc.trim(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        email: email.trim(),
-        phoneNumber: phoneNumber.trim(),
-      ),
-    );
+    // final userRegister = await authRepository.register(
+    //   CreateRegisterRequest(
+    //     storeName: storeName.trim(),
+    //     storeDesc: storeDesc.trim(),
+    //     firstName: firstName.trim(),
+    //     lastName: lastName.trim(),
+    //     email: email.trim(),
+    //     phoneNumber: phoneNumber.trim(),
+    //   ),
+    // );
 
-    final updateIntroduceFlow = await localStorageService.setPref(SharedPrefKeys.isIntroduceFlowDone, true);
-    await localStorageService.setPref(SharedPrefKeys.currentUsername, userRegister.username);
-    if (updateIntroduceFlow) {
-      baseCubit.doLogin(userForceLogin: userRegister);
-      emit(IntroduceSuccess(userRegister.username));
-    }
+    // final updateIntroduceFlow = await localStorageService.setPref(SharedPrefKeys.isIntroduceFlowDone, true);
+    // await localStorageService.setPref(SharedPrefKeys.currentUsername, userRegister.username);
+    // if (updateIntroduceFlow) {
+    //   baseCubit.doLogin(userForceLogin: userRegister);
+    //   emit(IntroduceSuccess(userRegister.username));
+    // }
   }
 
   setPhoneNumber(String? value) {

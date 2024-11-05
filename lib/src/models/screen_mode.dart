@@ -4,5 +4,7 @@ enum ScreenMode {
   edit,
   search,
   create,
+  register,
+  login,
   none,
 }

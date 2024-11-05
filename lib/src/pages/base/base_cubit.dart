@@ -9,7 +9,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart' as local;
 import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
@@ -28,6 +28,7 @@ import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:firebase_auth/firebase_auth.dart' as server;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -53,7 +54,8 @@ class BaseCubit extends Cubit<BaseState> {
   ProductSortType productSortType = ProductSortType.asc;
   bool isFirstRun = false;
   bool? isIntroduceFlowDone;
-  User? _user;
+  local.User? _user;
+  server.User? serverUser;
   Store? _store;
   List<Product> _products = [];
   List<Store> _stores = [];
@@ -66,7 +68,7 @@ class BaseCubit extends Cubit<BaseState> {
 
   // getter sections
   AppMode get appMode => _appMode;
-  User? get user => _user;
+  local.User? get user => _user;
   Store? get store => _store;
   Cart? get cart => _cart;
   AddProduct? get addProduct => _addProduct;
@@ -133,8 +135,14 @@ class BaseCubit extends Cubit<BaseState> {
     loadCategoryByCurrentStore();
   }
 
-  Future<void> setCurrentUser(User? value) async {
-    _user = value;
+  setCurrentServerUser(server.User? serverUser) {
+    log('setCurrentServerUser() $serverUser');
+    this.serverUser = serverUser;
+    emit(BaseUserChange(serverUser: serverUser));
+  }
+
+  Future<void> setCurrentUser({local.User? localUser, server.User? serverUser}) async {
+    _user = localUser;
 
     if (_user?.storeId?.isEmpty ?? true) {
       return;
@@ -236,9 +244,9 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseInitialSuccess());
   }
 
-  doLogin({String? username, String? password, User? userForceLogin}) async {
+  doLogin({String? username, String? password, local.User? userForceLogin}) async {
     if (userForceLogin.isNotNull) {
-      setCurrentUser(userForceLogin);
+      setCurrentUser(localUser: userForceLogin);
       return;
     }
   }
@@ -253,8 +261,8 @@ class BaseCubit extends Cubit<BaseState> {
     }
 
     if (currentLocalUsername?.isNotEmpty ?? false) {
-      User? userFinded = authLocalRepository.getByUsername(currentLocalUsername!);
-      setCurrentUser(userFinded);
+      local.User? userFinded = authLocalRepository.getByUsername(currentLocalUsername!);
+      setCurrentUser(localUser: userFinded);
 
       await initialStoreData();
       emit(BaseRefresh(DateTime.now()));
@@ -325,8 +333,8 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseLoadCategoriesByStoreSuccess(store?.categories ?? []));
   }
 
-  void updateCurrentUser(User resultUpdated) {
-    setCurrentUser(resultUpdated);
+  void updateCurrentUser(local.User resultUpdated) {
+    setCurrentUser(localUser: resultUpdated);
   }
 
   void addCart({

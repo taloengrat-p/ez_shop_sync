@@ -39,6 +39,13 @@ class ProfileSettingsDeleteSuccess extends ProfileSettingsState {
   String toString() => 'ProfileSettingsDeleteSuccess';
 }
 
+class ProfileSettingsSendVerifyEmail extends ProfileSettingsState {
+  final String email;
+  const ProfileSettingsSendVerifyEmail(this.email);
+  @override
+  String toString() => 'ProfileSettingsSendVerifyEmail';
+}
+
 class ProfileSettingsFailure extends ProfileSettingsState {
   const ProfileSettingsFailure();
 

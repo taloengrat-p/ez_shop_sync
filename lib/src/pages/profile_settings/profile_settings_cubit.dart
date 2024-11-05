@@ -42,7 +42,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
   String get profileEmail => user?.email.elseDisplay() ?? elseDisplay();
 
-  void initial() {
+  void initial() async {
     emit(ProfileSettingsLoading());
 
     phoneOriginal = user?.phoneNumber;
@@ -58,7 +58,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     emit(ProfileSettingsLoading());
 
     await userRepository.delete(user!.id);
-    baseCubit.setCurrentUser(baseCubit.user);
+    baseCubit.setCurrentUser(localUser: baseCubit.user);
     emit(ProfileSettingsDeleteSuccess());
   }
 
@@ -108,4 +108,18 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     phoneEditor = phoneNumber;
     emit(ProfileSettingsRefresh(DateTime.now()));
   }
+
+  void verifyEmail() async {
+    emit(ProfileSettingsLoading());
+    try {
+      await baseCubit.serverUser?.sendEmailVerification();
+      emit(
+        ProfileSettingsSendVerifyEmail(baseCubit.serverUser?.email ?? ''),
+      );
+    } catch (e) {
+      emit(const ProfileSettingsFailure());
+    }
+  }
+
+  void forceLogout() {}
 }

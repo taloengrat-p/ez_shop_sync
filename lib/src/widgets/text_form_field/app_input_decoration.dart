@@ -11,8 +11,9 @@ class AppInputDecoration {
   double borderRadius;
   String? hintText;
   String? errorText;
-
-  AppInputDecoration({
+  BuildContext context;
+  AppInputDecoration(
+    this.context, {
     this.readOnly = false,
     this.contentPadding,
     this.suffixIcon,
@@ -47,7 +48,10 @@ class AppInputDecoration {
         ),
       ),
       labelStyle: const TextStyle(fontSize: 17),
-      hintStyle: TextStyle(color: ColorKeys.text),
+      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w300,
+            color: Colors.grey,
+          ),
       hintText: hintText,
       errorStyle: const TextStyle(
         color: Colors.red,

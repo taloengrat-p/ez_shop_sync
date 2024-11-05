@@ -63,9 +63,9 @@ class _MainPageState extends State<MainPage> {
                 context,
                 titleWidget: Row(
                   children: [
-                    ProfileWidget(
-                      name: cubit.username,
-                    ),
+                    // ProfileWidget(
+                    //   name: cubit.username,
+                    // ),
                   ],
                 ),
                 actions: [

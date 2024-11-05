@@ -174,5 +174,19 @@
     "order": "Order",
     "addStock": "Add stock"
   },
-  "addStockHistory": "Add Product History"
+  "addStockHistory": "Add Product History",
+  "loginPage": {
+    "login": "Login",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "yourEmail": "Your email"
+  },
+  "errorMessage": {
+    "loginUserNotFound": "User not found",
+    "loginWrongPassword": "Wrong password",
+    "loginWrongUsernameOrPassword": "Username or password is wrong",
+    "emailInvalid": "Email format is invalid"
+  },
+  "verifyPhoneNumber": "Verify phone number"
 }

@@ -169,5 +169,17 @@ abstract class  LocaleKeys {
   static const tansactionTitleTypes_addStock = 'tansactionTitleTypes.addStock';
   static const tansactionTitleTypes = 'tansactionTitleTypes';
   static const addStockHistory = 'addStockHistory';
+  static const loginPage_login = 'loginPage.login';
+  static const loginPage_register = 'loginPage.register';
+  static const loginPage_username = 'loginPage.username';
+  static const loginPage_password = 'loginPage.password';
+  static const loginPage_yourEmail = 'loginPage.yourEmail';
+  static const loginPage = 'loginPage';
+  static const errorMessage_loginUserNotFound = 'errorMessage.loginUserNotFound';
+  static const errorMessage_loginWrongPassword = 'errorMessage.loginWrongPassword';
+  static const errorMessage_loginWrongUsernameOrPassword = 'errorMessage.loginWrongUsernameOrPassword';
+  static const errorMessage_emailInvalid = 'errorMessage.emailInvalid';
+  static const errorMessage = 'errorMessage';
+  static const verifyPhoneNumber = 'verifyPhoneNumber';
 
 }

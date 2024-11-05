@@ -33,7 +33,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
     User userUpdated = baseCubit.user!..storeId?.add(storeCreated.id);
     User resultUserUpdated = await userRepository.update(baseCubit.user!.id, userUpdated);
 
-    baseCubit.setCurrentUser(resultUserUpdated);
+    baseCubit.setCurrentUser(localUser: resultUserUpdated);
     baseCubit.setCurrentStoreById(storeCreated.id);
     emit(CreateStoreSuccess(storeCreated));
   }

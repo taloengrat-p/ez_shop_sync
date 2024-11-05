@@ -24,6 +24,7 @@ import '../../data/repository/add_product_history/add_product_history_server_rep
     as _i391;
 import '../../data/repository/auth/_local/auth_local_repository.dart' as _i900;
 import '../../data/repository/auth/auth_repository.dart' as _i214;
+import '../../data/repository/auth/auth_server_repository.dart' as _i57;
 import '../../data/repository/cart/cart_local_repository.dart' as _i222;
 import '../../data/repository/cart/cart_repository.dart' as _i999;
 import '../../data/repository/cart/cart_server_repository.dart' as _i808;
@@ -59,6 +60,7 @@ import '../../data/repository/transactions/transaction_server_repository.dart'
     as _i889;
 import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../utils/image_picker_utils.dart' as _i286;
+import '../firebase/firebase_services.dart' as _i454;
 import '../hivedb_service/hivedb_dev_service.dart' as _i1036;
 import '../hivedb_service/hivedb_service.dart' as _i535;
 import '../hivedb_service/hivedb_unittest_service.dart' as _i233;
@@ -94,16 +96,29 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i0.ProductHistoryLocalRepository());
     gh.singleton<_i657.ProductHistoryServerRepository>(
         () => _i657.ProductHistoryServerRepository());
+    gh.singleton<_i172.AddProductLocalRepository>(
+        () => _i172.AddProductLocalRepository());
+    gh.singleton<_i807.AddProductServerRepository>(
+        () => _i807.AddProductServerRepository());
     gh.singleton<_i334.CategoryLocalRepository>(
         () => _i334.CategoryLocalRepository());
     gh.singleton<_i442.CategoryServerRepository>(
         () => _i442.CategoryServerRepository());
+    gh.singleton<_i57.AuthServerRepository>(() => _i57.AuthServerRepository());
     gh.singleton<_i900.AuthLocalRepository>(() => _i900.AuthLocalRepository());
+    gh.singleton<_i675.AddProductHistoryLocalRepository>(
+        () => _i675.AddProductHistoryLocalRepository());
+    gh.singleton<_i391.AddProductHistoryServerRepository>(
+        () => _i391.AddProductHistoryServerRepository());
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
     gh.singleton<_i1011.ProductLocalRepository>(
         () => _i1011.ProductLocalRepository());
     gh.singleton<_i920.ProductServerRepository>(
         () => _i920.ProductServerRepository());
+    gh.singleton<_i206.TransactionLocalRepository>(
+        () => _i206.TransactionLocalRepository());
+    gh.singleton<_i889.TransactionServerRepository>(
+        () => _i889.TransactionServerRepository());
     gh.singleton<_i222.CartLocalRepository>(() => _i222.CartLocalRepository());
     gh.singleton<_i808.CartServerRepository>(
         () => _i808.CartServerRepository());
@@ -111,18 +126,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
-    gh.singleton<_i206.TransactionLocalRepository>(
-        () => _i206.TransactionLocalRepository());
-    gh.singleton<_i889.TransactionServerRepository>(
-        () => _i889.TransactionServerRepository());
-    gh.singleton<_i172.AddProductLocalRepository>(
-        () => _i172.AddProductLocalRepository());
-    gh.singleton<_i807.AddProductServerRepository>(
-        () => _i807.AddProductServerRepository());
-    gh.singleton<_i675.AddProductHistoryLocalRepository>(
-        () => _i675.AddProductHistoryLocalRepository());
-    gh.singleton<_i391.AddProductHistoryServerRepository>(
-        () => _i391.AddProductHistoryServerRepository());
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i222.CartLocalRepository>(),
           cartServerRepository: gh<_i808.CartServerRepository>(),
@@ -154,12 +157,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i79.LocalStorageUnittest(),
       registerFor: {_tests},
     );
-    gh.singleton<_i394.AddProductHistoryRepository>(() => _i394.AddProductHistoryRepository(
-          addProductHistoryLocalRepository:
-              gh<_i675.AddProductHistoryLocalRepository>(),
-          addProductHistoryServerRepository:
-              gh<_i391.AddProductHistoryServerRepository>(),
-        ));
+    gh.singleton<_i394.AddProductHistoryRepository>(
+        () => _i394.AddProductHistoryRepository(
+              addProductHistoryLocalRepository:
+                  gh<_i675.AddProductHistoryLocalRepository>(),
+              addProductHistoryServerRepository:
+                  gh<_i391.AddProductHistoryServerRepository>(),
+            ));
     gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
           orderLocalRepository: gh<_i548.OrderLocalRepository>(),
           orderServerRepository: gh<_i850.OrderServerRepository>(),
@@ -194,9 +198,12 @@ extension GetItInjectableX on _i174.GetIt {
           categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i442.CategoryServerRepository>(),
         ));
+    gh.singleton<_i454.FirebaseServices>(() => _i454.FirebaseServices(
+        navigationService: gh<_i892.NavigationService>()));
     gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
           authLocalRepository: gh<_i900.AuthLocalRepository>(),
           storeRepository: gh<_i882.StoreRepository>(),
+          authServerRepository: gh<_i57.AuthServerRepository>(),
         ));
     return this;
   }

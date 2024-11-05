@@ -27,6 +27,7 @@ import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/services/firebase/firebase_services.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
@@ -36,11 +37,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'app.dart';
 
 FutureOr<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await EasyLocalization.ensureInitialized();
 
   await initialHiveDB();
@@ -63,6 +70,9 @@ FutureOr<void> main() async {
       addProductRepository: GetIt.I<AddProductRepository>(),
     ),
   );
+
+  GetIt.I<FirebaseServices>().start(GetIt.I<BaseCubit>());
+
   runApp(
     EasyLocalization(
       path: 'assets/translations',

@@ -6,10 +6,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
+import 'package:ez_shop_sync/src/pages/login/login_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -101,13 +103,7 @@ class _AppState extends State<App> {
               builder: (context, state) {
                 return Stack(
                   children: [
-                    baseCubit.isIntroduceFlowDone.isNull
-                        ? Container(
-                            color: Colors.white,
-                          )
-                        : baseCubit.isIntroduceFlowDone!
-                            ? const MainPage()
-                            : const IntroduceFlowPage(),
+                    baseCubit.serverUser == null ? const LoginPage() : const MainPage(),
                     if (state is BaseLoading)
                       Container(
                         width: double.infinity,

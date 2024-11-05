@@ -175,5 +175,19 @@
     "order": "คำสั่งซื้อ",
     "addStock": "เพิ่มสินค้า"
   },
-  "addStockHistory": "ประวัติการเพิ่มสินค้า"
+  "addStockHistory": "ประวัติการเพิ่มสินค้า",
+  "loginPage": {
+    "login": "เข้าสู่ระบบ",
+    "register": "สมัครสมาชิก",
+    "username": "ชื่อผู้ใช้",
+    "password": "รหัสผ่าน",
+    "yourEmail": "อีเมล์ของคุณ"
+  },
+  "errorMessage": {
+    "loginUserNotFound": "ไม่พบผู้ใช้'",
+    "loginWrongPassword": "รหัสผ่านผิด",
+    "loginWrongUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+    "emailInvalid": "รูปแบบอีเมล์ไม่ถูกต้อง"
+  },
+  "verifyPhoneNumber": "Verify phone number"
 }

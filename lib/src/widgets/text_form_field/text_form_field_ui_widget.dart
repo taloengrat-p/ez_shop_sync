@@ -216,7 +216,6 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     //   ),
                     //   labelStyle: const TextStyle(fontSize: 17),
                     //   // hintStyle: TextStyle(color: ColorKeys.defaultWeak),
-                    //   hintText: widget.hintText,
                     //   errorStyle: TextStyle(
                     //     // color: ColorKeys.error,
                     //     fontSize: 15,
@@ -235,12 +234,14 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     //   ),
                     // ),
                     decoration: AppInputDecoration(
+                      context,
                       contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
                       readOnly: widget.readOnly,
                       suffixIcon: widget.autoCompleteType == TextFormFieldUiType.password
                           ? getSuffixPasswordType()
                           : widget.suffixIcon,
                       errorText: widget.errorText,
+                      hintText: widget.hintText,
                     ).build(),
                     onChanged: (value) {
                       widget.onChanged?.call(value);

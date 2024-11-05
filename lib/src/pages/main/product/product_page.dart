@@ -24,7 +24,6 @@ import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
-import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
@@ -79,6 +78,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                     controller: _searchTextController,
                     autofocus: true,
                     decoration: AppInputDecoration(
+                      context,
                       contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
                       suffixIcon: IconButton(
                         icon: const Icon(
