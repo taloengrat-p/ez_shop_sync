@@ -103,7 +103,7 @@ class _AppState extends State<App> {
               builder: (context, state) {
                 return Stack(
                   children: [
-                    baseCubit.serverUser == null ? const LoginPage() : const MainPage(),
+                    baseCubit.user == null ? const LoginPage() : const MainPage(),
                     if (state is BaseLoading)
                       Container(
                         width: double.infinity,

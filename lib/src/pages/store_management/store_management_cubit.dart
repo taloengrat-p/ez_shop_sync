@@ -39,7 +39,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
 
   void initial() {
     emit(StoreManagementLoading());
-    owner = userRepository.getById(store!.ownerId);
+    // owner = userRepository.getById(store!.ownerId);
 
     nameOriginal = store?.name;
     descOriginal = store?.description;
@@ -54,7 +54,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
 
     final storeBuffer = store;
     await storeRepository.delete(store!.id, name: storeBuffer?.name);
-    baseCubit.setCurrentUser(localUser: baseCubit.user);
+    baseCubit.setCurrentUser(baseCubit.user);
     emit(StoreManagementDeleteSuccess(storeBuffer));
   }
 

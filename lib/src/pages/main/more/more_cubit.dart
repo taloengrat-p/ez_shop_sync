@@ -30,8 +30,6 @@ class MoreCubit extends Cubit<MoreState> {
 
   String get storeName => baseCubit.store?.name ?? '';
 
-  String get username => baseCubit.user?.username ?? '';
-
   Store? get currentStore => baseCubit.store;
 
   Future<void> doLogout() async {

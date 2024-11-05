@@ -1,11 +1,12 @@
 import 'dart:developer';
 
-import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+// import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
@@ -20,46 +21,35 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     required this.userRepository,
   }) : super(ProfileSettingsInitial());
 
-  // String? nameOriginal;
-  // String? descOriginal;
+  String? displayNameEditor;
 
-  // String? nameEditor;
-  // String? descEditor;
-
-  String? phoneEditor;
-  String? phoneOriginal;
+  // String? phoneEditor;
+  // String? phoneOriginal;
 
   String? emailOriginal;
   String? emailEditor;
 
-  String get profileName => user?.fullname.elseDisplay() ?? elseDisplay();
+  String get displayNameOriginal => baseCubit.currentUsername;
 
   String get profilePhoneNumber => user?.phoneNumber.elseDisplay() ?? elseDisplay();
 
-  bool get hasEditChange =>
-      ((phoneEditor != phoneOriginal) || (emailEditor != emailOriginal)) &&
-      ((phoneEditor?.isNotEmpty ?? false) && (emailEditor?.isNotEmpty ?? false));
+  bool get hasEditChange => (displayNameEditor != displayNameOriginal);
+  // ((phoneEditor != phoneOriginal) || (emailEditor != emailOriginal)) &&
+  //     ((phoneEditor?.isNotEmpty ?? false) && (emailEditor?.isNotEmpty ?? false));
 
   String get profileEmail => user?.email.elseDisplay() ?? elseDisplay();
 
   void initial() async {
     emit(ProfileSettingsLoading());
-
-    phoneOriginal = user?.phoneNumber;
+    await user?.reload();
+    displayNameEditor = displayNameOriginal;
+    // phoneOriginal = user?.phoneNumber ?? '';
     emailOriginal = user?.email;
 
     doSetPhoneNumber(user?.phoneNumber);
     doSetEmail(user?.email);
     // doSetDesc(user?.description);
-    emit(ProfileSettingsSuccess());
-  }
-
-  void doDelete() async {
-    emit(ProfileSettingsLoading());
-
-    await userRepository.delete(user!.id);
-    baseCubit.setCurrentUser(localUser: baseCubit.user);
-    emit(ProfileSettingsDeleteSuccess());
+    emit(ProfileSettingsInitial());
   }
 
   void doEdit() {
@@ -76,22 +66,18 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
   void doSave() async {
     emit(ProfileSettingsLoading());
-    final resultUpdated = await userRepository.update(
-      user!.id,
-      user!
-        ..phoneNumber = phoneEditor
-        ..email = (emailEditor ?? emailOriginal) ?? ''
-        ..updateBy = user?.username,
-    );
 
-    log('resultUpdated ${resultUpdated}');
-    baseCubit.updateCurrentUser(resultUpdated);
-    initial();
-    screenMode = ScreenMode.display;
-    emit(ProfileSettingsUpdateSuccess());
+    if (displayNameEditor != displayNameOriginal) {
+      await baseCubit.updateDisplayName(displayNameEditor);
+      initial();
+      screenMode = ScreenMode.display;
+      emit(const ProfileSettingsUpdateSuccess());
+    }
   }
 
   doSetName(String? value) {
+    displayNameEditor = value?.trim() ?? '';
+    emit(ProfileSettingsRefresh(DateTime.now()));
     // nameEditor = value;
   }
 
@@ -105,21 +91,23 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   }
 
   void doSetPhoneNumber(String? phoneNumber) {
-    phoneEditor = phoneNumber;
+    // phoneEditor = phoneNumber?.trim() ?? '';
     emit(ProfileSettingsRefresh(DateTime.now()));
   }
 
   void verifyEmail() async {
     emit(ProfileSettingsLoading());
     try {
-      await baseCubit.serverUser?.sendEmailVerification();
+      await baseCubit.user?.sendEmailVerification();
       emit(
-        ProfileSettingsSendVerifyEmail(baseCubit.serverUser?.email ?? ''),
+        ProfileSettingsSendVerifyEmail(baseCubit.user?.email ?? ''),
       );
     } catch (e) {
       emit(const ProfileSettingsFailure());
     }
   }
 
-  void forceLogout() {}
+  void refresh() {
+    emit(ProfileSettingsRefresh(DateTime.now()));
+  }
 }

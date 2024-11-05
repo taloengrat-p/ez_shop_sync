@@ -3,6 +3,7 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
@@ -19,6 +20,7 @@ import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -30,30 +32,34 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   late CircularBottomNavigationController _navigationController;
   late PageController _pageController;
-  late MainCubit cubit;
+  late MainCubit _cubit;
   late BaseCubit baseCubit;
 
   @override
   void initState() {
     super.initState();
     baseCubit = BlocProvider.of<BaseCubit>(context);
-    cubit = MainCubit(baseCubit: baseCubit);
-    _navigationController = CircularBottomNavigationController(cubit.currentPage);
+    _cubit = MainCubit(
+      baseCubit: baseCubit,
+      userRepository: GetIt.I<UserRepository>(),
+    );
+    _navigationController = CircularBottomNavigationController(_cubit.currentPage);
 
-    _pageController = PageController(initialPage: cubit.currentPage);
+    _pageController = PageController(initialPage: _cubit.currentPage);
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
       if (argruments is MainArgruments) {
         _pageController.jumpToPage(argruments.startWithIndexPage);
       }
+      _cubit.doCheckUserAlreadyUseApp();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => cubit,
+      create: (context) => _cubit,
       child: BlocListener<MainCubit, MainState>(
         listener: (context, state) {},
         child: BlocBuilder<MainCubit, MainState>(
@@ -63,16 +69,18 @@ class _MainPageState extends State<MainPage> {
                 context,
                 titleWidget: Row(
                   children: [
-                    // ProfileWidget(
-                    //   name: cubit.username,
-                    // ),
+                    Expanded(
+                      child: ProfileWidget(
+                        name: _cubit.username ?? '',
+                      ),
+                    ),
                   ],
                 ),
                 actions: [
                   ContainerCircleWidget(
-                    child: cubit.baseCubit.addProductCount != 0
+                    child: _cubit.baseCubit.addProductCount != 0
                         ? Badge.count(
-                            count: cubit.baseCubit.addProductCount,
+                            count: _cubit.baseCubit.addProductCount,
                             child: const Icon(CupertinoIcons.bag_badge_plus),
                           )
                         : const Icon(
@@ -86,9 +94,9 @@ class _MainPageState extends State<MainPage> {
                     width: 8,
                   ),
                   ContainerCircleWidget(
-                    child: cubit.baseCubit.cartCount != 0
+                    child: _cubit.baseCubit.cartCount != 0
                         ? Badge.count(
-                            count: cubit.baseCubit.cartCount,
+                            count: _cubit.baseCubit.cartCount,
                             child: const Icon(CupertinoIcons.cart),
                           )
                         : const Icon(CupertinoIcons.cart),
@@ -109,7 +117,7 @@ class _MainPageState extends State<MainPage> {
                     controller: _pageController,
                     onPageChanged: (value) {
                       _navigationController.value = value;
-                      cubit.setCurrentPageView(value);
+                      _cubit.setCurrentPageView(value);
                     },
                     children: [
                       HomePage(),
@@ -178,7 +186,7 @@ class _MainPageState extends State<MainPage> {
                           return;
                         }
 
-                        if ((selectedPos - cubit.currentPage).abs() > 1) {
+                        if ((selectedPos - _cubit.currentPage).abs() > 1) {
                           _pageController.jumpToPage(selectedPos);
                         } else {
                           _pageController.animateToPage(selectedPos,

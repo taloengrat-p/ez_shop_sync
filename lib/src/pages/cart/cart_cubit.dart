@@ -138,7 +138,7 @@ class CartCubit extends Cubit<CartState> {
       CreateOrderRequest(
         storeCode: baseCubit.store?.name.substring(0, 4) ?? '',
         storeId: baseCubit.store?.id ?? '',
-        userId: baseCubit.user?.id ?? '',
+        userId: baseCubit.user?.uid ?? '',
         cart: _cart!,
         paymentType: PaymentType.fromString(paymentMethod),
       ),

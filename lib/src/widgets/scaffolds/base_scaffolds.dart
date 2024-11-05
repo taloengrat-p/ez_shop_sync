@@ -18,6 +18,7 @@ class BaseScaffolds extends StatefulWidget {
   final Colors? textSystemUiOverlayStyleColor;
   final bool isLoading;
   final Function(RouteAwareType type)? onRouteAware;
+  final bool isInitialLoading;
   const BaseScaffolds({
     super.key,
     this.bottomNavigationBar,
@@ -27,6 +28,7 @@ class BaseScaffolds extends StatefulWidget {
     this.textSystemUiOverlayStyleColor,
     this.onRouteAware,
     this.isLoading = false,
+    this.isInitialLoading = false,
   });
 
   @override
@@ -95,7 +97,7 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
             floatingActionButton: widget.floatingActionButton,
           ),
         ),
-        if (widget.isLoading) OverlayLoadingWidget(),
+        if (widget.isLoading) const OverlayLoadingWidget(),
       ],
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -8,11 +10,13 @@ import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_cubit.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
+import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
@@ -34,12 +38,13 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
   late BaseCubit baseCubit;
   @override
   void initState() {
-    super.initState();
     baseCubit = GetIt.I<BaseCubit>();
     _cubit = ProfileSettingsCubit(
       userRepository: GetIt.I<UserRepository>(),
-      baseCubit: baseCubit,
+      baseCubit: GetIt.I<BaseCubit>(),
     );
+
+    super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       _cubit.initial();
@@ -59,20 +64,27 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
           create: (context) => _cubit,
         ),
         BlocProvider<BaseCubit>(
-          create: (context) => baseCubit,
+          create: (context) => GetIt.I<BaseCubit>(),
         ),
       ],
       child: BlocConsumer<BaseCubit, BaseState>(
-          listener: (context, state) {},
+          bloc: GetIt.I<BaseCubit>(),
+          listener: (context, state) {
+            if (state is BaseUserChange) {
+              _cubit.refresh();
+            }
+          },
           builder: (context, state) {
             return BlocListener<ProfileSettingsCubit, ProfileSettingsState>(
               listener: (context, state) async {
+                log('state $state', name: runtimeType.toString());
                 if (state is ProfileSettingsSendVerifyEmail) {
                   await DialogUtils.showAlertDialog(context,
                       title: 'Email verification sended',
                       desc: 'Please check your email ${state.email} and login again',
                       barrierDismissible: false);
-                  _cubit.forceLogout();
+
+                  ProfileSettingsRouter(context).pop();
                 } else if (state is ProfileSettingsFailure) {
                   DialogUtils.showAlertDialog(
                     context,
@@ -84,13 +96,14 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
               child: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
                 builder: (context, state) {
                   return BaseScaffolds(
+                    isInitialLoading: state is ProfileSettingsLoading,
                     isLoading: state is ProfileSettingsLoading,
                     appBar: AppbarWidget(
                       context,
                       centerTitle: false,
                       title: LocaleKeys.profileSettings.tr(),
                       actions: [
-                        if (_cubit.screenMode == ScreenMode.edit)
+                        if (_cubit.screenMode != ScreenMode.display)
                           TextButton(
                             child: Text(LocaleKeys.cancel.tr()),
                             onPressed: () {
@@ -105,22 +118,24 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                             ),
                           ),
                         ],
+                        const SizedBox(
+                          width: 8,
+                        ),
                       ],
                     ).build(),
                     body: _buildPage(context, state),
                     bottomNavigationBar: _cubit.screenMode == ScreenMode.display
                         ? null
                         : ButtonWidget(
+                            disabled: !_cubit.hasEditChange,
                             margin: const EdgeInsets.symmetric(
                               horizontal: DimensionsKeys.pagePaddingHzt,
                               vertical: DimensionsKeys.l,
                             ),
                             label: LocaleKeys.button_save.tr(),
-                            onPressed: _cubit.hasEditChange
-                                ? () {
-                                    _cubit.doSave();
-                                  }
-                                : null,
+                            onPressed: () {
+                              _cubit.doSave();
+                            },
                           ),
                   );
                 },
@@ -136,57 +151,78 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
         vertical: DimensionsKeys.pagePaddingVt,
         horizontal: DimensionsKeys.pagePaddingHzt,
       ),
-      child: SingleChildScrollView(
-        child: ColumnGapWidget(
-          gap: 8,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _cubit.initial();
+        },
+        child: ListView(
           children: [
-            TextFormFieldUiWidget(
-              key: const ValueKey('fullname'),
-              readOnly: true,
-              label: LocaleKeys.name.tr(),
-              textValue: _cubit.profileName,
-              onChanged: _cubit.doSetName,
-            ),
-            TextFormFieldUiWidget(
-              key: const ValueKey('email'),
-              readOnly: _cubit.screenMode == ScreenMode.display,
-              label: LocaleKeys.email.tr(),
-              suffixIcon: IconButton(
-                onPressed: () async {
-                  _cubit.verifyEmail();
-                },
-                icon: Icon(
-                  Icons.verified_rounded,
-                  color: (baseCubit.serverUser?.emailVerified ?? false) ? Colors.green : Colors.grey,
+            ColumnGapWidget(
+              gap: 8,
+              children: [
+                TextFormFieldUiWidget(
+                  key: const ValueKey('display-name'),
+                  readOnly: _cubit.screenMode == ScreenMode.display,
+                  label: 'Display name',
+                  textValue:
+                      _cubit.screenMode == ScreenMode.display ? _cubit.displayNameOriginal : _cubit.displayNameEditor,
+                  onChanged: _cubit.doSetName,
                 ),
-              ),
-              textValue:
-                  _cubit.screenMode == ScreenMode.display ? baseCubit.serverUser?.email : _cubit.emailEditor ?? '',
-              onChanged: _cubit.doSetEmail,
-            ),
-            TextFormFieldUiWidget(
-              key: const ValueKey('phone-number'),
-              readOnly: _cubit.screenMode == ScreenMode.display,
-              label: LocaleKeys.phoneNumber.tr(),
-              textValue:
-                  _cubit.screenMode == ScreenMode.display ? baseCubit.serverUser?.phoneNumber : _cubit.phoneEditor,
-              onChanged: _cubit.doSetPhoneNumber,
-              suffixIcon: Icon(
-                Icons.verified_rounded,
-                color: (baseCubit.serverUser?.phoneNumber != null) ? Colors.green : Colors.grey,
-              ),
-            ),
-            TextFormFieldUiWidget(
-              key: const ValueKey('date-created'),
-              readOnly: true,
-              label: LocaleKeys.dateTimeCreated.tr(),
-              textValue: _cubit.baseCubit.serverUser?.metadata.creationTime.toDisplayDependLocale(context) ?? '',
-            ),
-            TextFormFieldUiWidget(
-              key: const ValueKey('date-updated'),
-              readOnly: true,
-              label: LocaleKeys.dateTimeUpdated.tr(),
-              textValue: _cubit.user?.updateDate?.toDisplayDependLocale(context) ?? '',
+                TextFormFieldUiWidget(
+                  key: const ValueKey('email'),
+                  readOnly: true,
+                  label: LocaleKeys.email.tr(),
+                  suffixIcon: IconButton(
+                    onPressed: _cubit.user?.emailVerified ?? true
+                        ? null
+                        : () async {
+                            final result = await DialogUtils.showConfirm(
+                              context,
+                              title: 'Verification email',
+                              desc: 'Confirm your email \'${_cubit.user?.email}\' address for verification',
+                            );
+
+                            if (result == ConfirmDialogResult.ok) {
+                              _cubit.verifyEmail();
+                            }
+                          },
+                    icon: Icon(
+                      Icons.verified_rounded,
+                      color: (baseCubit.user?.emailVerified ?? false) ? Colors.green : Colors.grey,
+                    ),
+                  ),
+                  textValue: _cubit.screenMode == ScreenMode.display ? baseCubit.user?.email : _cubit.emailEditor ?? '',
+                  onChanged: _cubit.doSetEmail,
+                ),
+                // TextFormFieldUiWidget(
+                //   key: const ValueKey('phone-number'),
+                //   readOnly: _cubit.screenMode == ScreenMode.display,
+                //   label: LocaleKeys.phoneNumber.tr(),
+                //   textValue:
+                //       _cubit.screenMode == ScreenMode.display ? baseCubit.user?.phoneNumber ?? '' : _cubit.phoneEditor,
+                //   onChanged: _cubit.doSetPhoneNumber,
+                //   suffixIcon: _cubit.user?.phoneNumber == null
+                //       ? IconButton(
+                //           onPressed: () {
+                //             VerifyPhoneNumberRouter(context).navigate();
+                //           },
+                //           icon: const Icon(Icons.edit_rounded),
+                //         )
+                //       : baseCubit.user?.phoneNumber != null
+                //           ? Icon(
+                //               Icons.verified_rounded,
+                //               color: (baseCubit.user?.phoneNumber != null) ? Colors.green : Colors.grey,
+                //             )
+                //           : null,
+                // ),
+                TextFormFieldUiWidget(
+                  key: const ValueKey('date-created'),
+                  readOnly: true,
+                  label: LocaleKeys.dateTimeCreated.tr(),
+                  textValue:
+                      _cubit.baseCubit.user?.metadata.creationTime?.toLocal().toDisplayDependLocale(context) ?? '',
+                ),
+              ],
             ),
           ],
         ),

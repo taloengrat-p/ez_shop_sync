@@ -72,7 +72,7 @@ class ConfirmDialogUiWidget {
                                       title!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.grey,
+                                        color: Colors.black,
                                         fontSize: 18,
                                       ),
                                     ),
@@ -84,10 +84,10 @@ class ConfirmDialogUiWidget {
                                   Text(
                                     desc ?? '',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Colors.black54,
+                                          fontSize: 14,
+                                        ),
                                   ),
                                 ],
                               ),

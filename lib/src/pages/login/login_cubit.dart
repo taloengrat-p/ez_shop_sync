@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/login_request.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
@@ -8,7 +6,6 @@ import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -43,6 +40,7 @@ class LoginCubit extends Cubit<LoginState> {
       // phoneNumber: phoneNumber,
     );
 
+    emit(LoginLoading());
     final result = await authRepository.register(
       request,
       appMode: AppMode.server,

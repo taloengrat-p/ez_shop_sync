@@ -186,7 +186,8 @@
     "loginUserNotFound": "User not found",
     "loginWrongPassword": "Wrong password",
     "loginWrongUsernameOrPassword": "Username or password is wrong",
-    "emailInvalid": "Email format is invalid"
+    "emailInvalid": "Email format is invalid",
+    "emailAlreadyUse": "This email already in use"
   },
   "verifyPhoneNumber": "Verify phone number"
 }

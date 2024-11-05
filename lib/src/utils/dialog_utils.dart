@@ -20,6 +20,22 @@ class DialogUtils {
     ).show();
   }
 
+  static Future<ConfirmDialogResult?> showConfirm(
+    BuildContext context, {
+    required String title,
+    String? desc,
+    String? confirmLabel,
+    Color? color,
+  }) async {
+    return ConfirmDialogUiWidget(
+      context,
+      title: title,
+      desc: desc,
+      confirmLabel: confirmLabel ?? LocaleKeys.confirm.tr(),
+      confirmColor: color ?? Colors.black,
+    ).show();
+  }
+
   static Future<BottomSheetAddCartSuccess?> showAddCartDialog(BuildContext context, Product? product) async {
     if (product == null) {
       throw ('showAddCartDialog product is Null');

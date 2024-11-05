@@ -96,7 +96,7 @@ class AddProductCubit extends Cubit<AddProductState> {
     final addProductCompleted = await addProductHistoryRepository.create(
       CreateAddProductRequest(
         storeId: baseCubit.store!.id,
-        userId: baseCubit.user!.id,
+        userId: baseCubit.user?.uid ?? '',
         addProduct: _addProduct!.copyWith(),
       ),
     );

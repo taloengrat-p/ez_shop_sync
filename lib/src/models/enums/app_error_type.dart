@@ -6,6 +6,7 @@ enum AppErrorType {
   wrongPassword,
   invalidCredential,
   registerInvalidEmail,
+  emailAlreadyInUse,
   undefined;
 
   String get label => switch (this) {
@@ -13,7 +14,9 @@ enum AppErrorType {
         AppErrorType.wrongPassword => LocaleKeys.errorMessage_loginWrongPassword.tr(),
         AppErrorType.invalidCredential => LocaleKeys.errorMessage_loginWrongUsernameOrPassword.tr(),
         AppErrorType.registerInvalidEmail => LocaleKeys.errorMessage_emailInvalid.tr(),
+        AppErrorType.emailAlreadyInUse => LocaleKeys.errorMessage_emailAlreadyUse.tr(),
         AppErrorType.undefined => 'Unknown',
         null => 'Unknown',
+        // TODO: Handle this case.
       };
 }

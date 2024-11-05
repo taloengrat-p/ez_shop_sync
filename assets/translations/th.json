@@ -187,7 +187,8 @@
     "loginUserNotFound": "ไม่พบผู้ใช้'",
     "loginWrongPassword": "รหัสผ่านผิด",
     "loginWrongUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-    "emailInvalid": "รูปแบบอีเมล์ไม่ถูกต้อง"
+    "emailInvalid": "รูปแบบอีเมล์ไม่ถูกต้อง",
+    "emailAlreadyUse": "อีเมลนี้ถูกใช้แล้ว"
   },
-  "verifyPhoneNumber": "Verify phone number"
+  "verifyPhoneNumber": "ยืนยันหมายเลขโทรศัพท์"
 }

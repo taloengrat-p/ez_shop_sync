@@ -63,6 +63,8 @@ class AuthServerRepository implements IAuthRepository {
         appErrorType = AppErrorType.userNotFound;
       } else if (e.code == 'wrong-password') {
         appErrorType = AppErrorType.wrongPassword;
+      } else if (e.code == 'email-already-in-use') {
+        appErrorType = AppErrorType.emailAlreadyInUse;
       }
 
       return ApiResult(

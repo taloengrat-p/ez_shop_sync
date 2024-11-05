@@ -14,18 +14,22 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         CircleProfileWidget(
-          title: name.substring(0, 2).toUpperCase(),
+          title: name.substring(0, 1).toUpperCase(),
           radius: 18,
         ),
         const SizedBox(
           width: 8,
         ),
-        Text(
-          name,
-          style: TextStyle(
-            color: ColorKeys.brightness.getContrast(),
+        Expanded(
+          child: Text(
+            name,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: ColorKeys.brightness.getContrast(),
+            ),
           ),
         )
       ],

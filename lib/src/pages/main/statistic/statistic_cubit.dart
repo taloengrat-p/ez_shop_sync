@@ -126,7 +126,7 @@ class StatisticCubit extends Cubit<StatisticState> {
     );
 
     _transaction = await transactionRepository.getAllByStoreId(
-      BaseRepoRequest(storeId: baseCubit.store!.id, userId: baseCubit.user!.id),
+      BaseRepoRequest(storeId: baseCubit.store!.id, userId: baseCubit.user?.uid ?? ''),
     );
     emit(StatisticInitial());
   }

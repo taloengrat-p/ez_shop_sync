@@ -21,7 +21,10 @@ class CircleProfileWidget extends StatelessWidget {
         backgroundColor: ColorKeys.white,
         child: Text(
           title ?? '',
-          style: const TextStyle(color: Colors.black),
+          style: const TextStyle(
+            color: Colors.black,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );

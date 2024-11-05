@@ -179,6 +179,7 @@ abstract class  LocaleKeys {
   static const errorMessage_loginWrongPassword = 'errorMessage.loginWrongPassword';
   static const errorMessage_loginWrongUsernameOrPassword = 'errorMessage.loginWrongUsernameOrPassword';
   static const errorMessage_emailInvalid = 'errorMessage.emailInvalid';
+  static const errorMessage_emailAlreadyUse = 'errorMessage.emailAlreadyUse';
   static const errorMessage = 'errorMessage';
   static const verifyPhoneNumber = 'verifyPhoneNumber';
 

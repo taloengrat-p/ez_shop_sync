@@ -13,20 +13,21 @@ class FirebaseServices {
   FirebaseServices({required this.navigationService});
   start(BaseCubit baseCubit) {
     this.baseCubit = baseCubit;
-    startAuthListen();
+    // startAuthListen();
+    // startProfileUpdateListen();
   }
 
   startAuthListen() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       log('userChanges() $user', name: runtimeType.toString());
-      baseCubit?.setCurrentServerUser(user);
+      baseCubit?.setCurrentUser(user);
     });
   }
 
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       log('userChanges() $user', name: runtimeType.toString());
-      baseCubit?.setCurrentServerUser(user);
+      baseCubit?.setCurrentUser(user);
     });
   }
 }

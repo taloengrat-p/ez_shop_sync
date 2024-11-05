@@ -1,12 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/login/login_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
-import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_router.dart';
-import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_state.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -153,6 +150,10 @@ class _LoginState extends State<LoginPage> {
                 : LocaleKeys.loginPage_register.tr(),
             isLoading: state is LoginLoading,
             onPressed: () {
+              if (state is LoginLoading) {
+                return;
+              }
+
               if (_cubit.screenMode == ScreenMode.register) {
                 _cubit.register();
               } else if (_cubit.screenMode == ScreenMode.login) {
