@@ -7,7 +7,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enu
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
@@ -21,7 +20,6 @@ import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
 
 abstract class IProductRepository {
   List<Product> getAll({AppMode appMode = AppMode.local});

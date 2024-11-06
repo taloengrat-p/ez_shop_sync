@@ -28,6 +28,11 @@ class MainLoading extends MainState {
   String toString() => 'MainLoading';
 }
 
+class MainGotoIntroduceFlow extends MainState {
+  @override
+  String toString() => 'MainGotoIntroduceFlow';
+}
+
 class MainSuccess extends MainState {
   @override
   String toString() => 'MainSuccess';

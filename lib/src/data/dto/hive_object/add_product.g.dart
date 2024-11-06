@@ -24,7 +24,7 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
       id: fields[1] as dynamic,
       amountCost: fields[10] == null ? 0 : fields[10] as num,
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -81,9 +81,7 @@ AddProduct _$AddProductFromJson(Map<String, dynamic> json) => AddProduct(
       id: json['id'],
       amountCost: json['amountCost'] as num,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -96,7 +94,7 @@ AddProduct _$AddProductFromJson(Map<String, dynamic> json) => AddProduct(
 Map<String, dynamic> _$AddProductToJson(AddProduct instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

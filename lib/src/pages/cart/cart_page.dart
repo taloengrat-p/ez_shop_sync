@@ -3,7 +3,6 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -16,6 +15,7 @@ import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
+import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -116,6 +116,7 @@ class _CartState extends State<CartPage> {
                 title: LocaleKeys.orderCompleteTitle.tr(),
                 orderItems: state.ordered,
                 transactionMethodType: TransactionMethodType.order,
+                from: Routes.ROUTE_CART,
               ),
             );
           } else if (state is CartProductInsufficient) {

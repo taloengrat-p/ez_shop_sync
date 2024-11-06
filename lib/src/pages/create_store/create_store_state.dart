@@ -8,9 +8,28 @@ abstract class CreateStoreState extends Equatable {
   List<Object> get props => [];
 }
 
+class CreateStoreArgrument extends CreateStoreState {
+  final bool isInitialFirstStore;
+  const CreateStoreArgrument(this.isInitialFirstStore);
+  @override
+  String toString() => 'CreateStoreArgrument isInitialFirstStore: $isInitialFirstStore';
+  @override
+  List<Object> get props => [isInitialFirstStore];
+}
+
 class CreateStoreInitial extends CreateStoreState {
   @override
   String toString() => 'CreateStoreInitial';
+}
+
+class CreateStoreRefresh extends CreateStoreState {
+  final value;
+  const CreateStoreRefresh(this.value);
+  @override
+  String toString() => 'CreateStoreRefresh';
+
+  @override
+  List<Object> get props => [value];
 }
 
 class CreateStoreLoading extends CreateStoreState {

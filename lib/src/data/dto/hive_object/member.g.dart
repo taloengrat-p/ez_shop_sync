@@ -17,19 +17,22 @@ class MemberAdapter extends TypeAdapter<Member> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Member(
-      userId: fields[1] as String,
+      uid: fields[1] as String,
       role: fields[2] as String,
+      email: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Member obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(1)
-      ..write(obj.userId)
+      ..write(obj.uid)
       ..writeByte(2)
-      ..write(obj.role);
+      ..write(obj.role)
+      ..writeByte(3)
+      ..write(obj.email);
   }
 
   @override
@@ -48,11 +51,13 @@ class MemberAdapter extends TypeAdapter<Member> {
 // **************************************************************************
 
 Member _$MemberFromJson(Map<String, dynamic> json) => Member(
-      userId: json['userId'] as String,
+      uid: json['uid'] as String,
       role: json['role'] as String,
+      email: json['email'] as String,
     );
 
 Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
-      'userId': instance.userId,
+      'uid': instance.uid,
       'role': instance.role,
+      'email': instance.email,
     };

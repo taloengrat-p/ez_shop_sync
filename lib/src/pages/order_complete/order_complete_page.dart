@@ -98,14 +98,16 @@ class _OrderCompleteState extends State<OrderCompletePage> {
               const SizedBox(
                 height: 32,
               ),
-              Text(_cubit.createDate.toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
+              if (_cubit.createDate != null)
+                Text(_cubit.createDate.toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
               const SizedBox(
                 height: 16,
               ),
-              buildTitleValueInfo(
-                LocaleKeys.orderId.tr(),
-                _cubit.transactionId,
-              ),
+              if (_cubit.transactionId.isNotEmpty)
+                buildTitleValueInfo(
+                  LocaleKeys.orderId.tr(),
+                  _cubit.transactionId,
+                ),
             ],
           ),
         ),

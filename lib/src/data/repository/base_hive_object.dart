@@ -6,7 +6,7 @@ abstract class BaseHiveObject extends BaseObject {
   dynamic id;
 
   @HiveField(2, defaultValue: null)
-  DateTime? createDate;
+  dynamic createDate;
 
   @HiveField(3, defaultValue: null)
   String? createBy;

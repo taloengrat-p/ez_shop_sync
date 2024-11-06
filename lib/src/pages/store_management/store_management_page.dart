@@ -158,16 +158,16 @@ class _StoreManagementState extends State<StoreManagementPage> {
               textInitial: _cubit.ownerName,
               textValue: _cubit.ownerName,
             ),
-            TextFormFieldUiWidget(
-              readOnly: true,
-              label: LocaleKeys.dateTimeCreated.tr(),
-              textValue: _cubit.store?.createDate?.toDisplayDependLocale(context) ?? '',
-            ),
-            TextFormFieldUiWidget(
-              readOnly: true,
-              label: LocaleKeys.dateTimeUpdated.tr(),
-              textValue: _cubit.store?.updateDate?.toDisplayDependLocale(context) ?? '',
-            ),
+            // TextFormFieldUiWidget(
+            //   readOnly: true,
+            //   label: LocaleKeys.dateTimeCreated.tr(),
+            //   textValue: _cubit.store?.createDate?.toDisplayDependLocale(context) ?? '',
+            // ),
+            // TextFormFieldUiWidget(
+            //   readOnly: true,
+            //   label: LocaleKeys.dateTimeUpdated.tr(),
+            //   textValue: _cubit.store?.updateDate?.toDisplayDependLocale(context) ?? '',
+            // ),
           ],
         ),
       ),

@@ -23,7 +23,7 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
       newData: (fields[10] as Map?)?.cast<String, dynamic>(),
       oldData: (fields[9] as Map?)?.cast<String, dynamic>(),
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -79,9 +79,7 @@ ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -94,7 +92,7 @@ ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ProductHistoryToJson(ProductHistory instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

@@ -5,10 +5,15 @@ import 'package:flutter/cupertino.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String name;
-
+  final String? desc;
+  final TextStyle? descStyle;
+  final TextStyle? nameStyle;
   const ProfileWidget({
     super.key,
     required this.name,
+    this.desc,
+    this.descStyle,
+    this.nameStyle,
   });
 
   @override
@@ -24,12 +29,27 @@ class ProfileWidget extends StatelessWidget {
           width: 8,
         ),
         Expanded(
-          child: Text(
-            name,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: ColorKeys.brightness.getContrast(),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                overflow: TextOverflow.ellipsis,
+                style: nameStyle ??
+                    TextStyle(
+                      color: ColorKeys.brightness.getContrast(),
+                    ),
+              ),
+              if (desc != null)
+                Text(
+                  desc ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  style: descStyle ??
+                      TextStyle(
+                        color: ColorKeys.brightness.getContrast(),
+                      ),
+                ),
+            ],
           ),
         )
       ],

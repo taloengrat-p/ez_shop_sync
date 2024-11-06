@@ -8,6 +8,10 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
+import 'package:ez_shop_sync/src/pages/main/main_router.dart';
+import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
+import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
+import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -38,7 +42,11 @@ class _CreateStoreState extends State<CreateStorePage> {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
-      setState(() {});
+      final argruments = ModalRoute.of(context)?.settings.arguments;
+
+      if (argruments is CreateStoreArgrument) {
+        _cubit.initial(argruments);
+      }
     });
   }
 
@@ -54,17 +62,40 @@ class _CreateStoreState extends State<CreateStorePage> {
       child: BlocListener<CreateStoreCubit, CreateStoreState>(
         listener: (context, state) {
           if (state is CreateStoreSuccess) {
-            CreateStoreRouter(context).pop();
+            if (_cubit.argruments != null) {
+              OrderCompleteRouter(context).replace(
+                argruments: OrderCompleteArgrument(
+                  title: 'Create Store Success',
+                  from: Routes.ROUTE_CREATESTORE,
+                ),
+              );
+            } else {
+              CreateStoreRouter(context).pop();
+            }
           }
         },
         child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
           builder: (context, state) {
             return BaseScaffolds(
+              isLoading: state is CreateStoreLoading,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
                 title: LocaleKeys.createStore.tr(),
-                actions: [],
+                actions: [
+                  if (_cubit.argruments != null)
+                    TextButton(
+                      onPressed: () {
+                        MainRouter(context).replace();
+                      },
+                      child: Text(
+                        'Skip',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.blueAccent,
+                            ),
+                      ),
+                    ),
+                ],
               ).build(),
               body: SingleChildScrollView(
                 child: Padding(
@@ -72,12 +103,20 @@ class _CreateStoreState extends State<CreateStorePage> {
                   child: Form(
                     child: Column(
                       children: [
+                        const CircleAvatar(
+                          radius: 44,
+                          child: Icon(
+                            Icons.store_mall_directory_rounded,
+                            size: 44,
+                          ),
+                        ),
                         const SizedBox(
                           height: 16,
                         ),
                         TextFormFieldUiWidget(
                           label: LocaleKeys.name.tr(),
                           onChanged: _cubit.setName,
+                          autofocus: true,
                         ),
                         TextFormFieldUiWidget(
                           label: LocaleKeys.description.tr(),
@@ -89,6 +128,7 @@ class _CreateStoreState extends State<CreateStorePage> {
                 ),
               ),
               bottomNavigationBar: ButtonWidget(
+                disabled: _cubit.name.isEmpty,
                 margin: const EdgeInsets.all(16),
                 label: 'CREATE',
                 onPressed: () {

@@ -22,7 +22,7 @@ class TagAdapter extends TypeAdapter<Tag> {
       color: fields[8] as String?,
       borderColor: fields[9] as String?,
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -74,9 +74,7 @@ Tag _$TagFromJson(Map<String, dynamic> json) => Tag(
       color: json['color'] as String?,
       borderColor: json['borderColor'] as String?,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -88,7 +86,7 @@ Tag _$TagFromJson(Map<String, dynamic> json) => Tag(
 
 Map<String, dynamic> _$TagToJson(Tag instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

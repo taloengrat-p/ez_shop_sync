@@ -16,18 +16,17 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/services/firebase/firebase_services.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
@@ -68,10 +67,9 @@ FutureOr<void> main() async {
       cartRepository: GetIt.I<CartRepository>(),
       userRepository: GetIt.I<UserRepository>(),
       addProductRepository: GetIt.I<AddProductRepository>(),
+      notificationRepository: GetIt.I<NotificationRepository>(),
     ),
   );
-
-  GetIt.I<FirebaseServices>().start(GetIt.I<BaseCubit>());
 
   runApp(
     EasyLocalization(
@@ -98,7 +96,7 @@ Future<void> initialHiveDB() async {
   final document = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(document.path);
 
-  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(UserDataAdapter());
   Hive.registerAdapter(MemberAdapter());
   Hive.registerAdapter(StoreAdapter());
   Hive.registerAdapter(ProductStatusAdapter());
@@ -117,7 +115,7 @@ Future<void> initialHiveDB() async {
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);
   await Hive.openBox<Store>(HiveBoxConstance.store);
-  await Hive.openBox<User>(HiveBoxConstance.user);
+  await Hive.openBox<UserData>(HiveBoxConstance.user);
   await Hive.openBox<Tag>(HiveBoxConstance.tag);
   await Hive.openBox<Category>(HiveBoxConstance.category);
   await Hive.openBox<Cart>(HiveBoxConstance.cart);

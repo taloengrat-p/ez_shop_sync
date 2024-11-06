@@ -24,7 +24,7 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       paymentType: fields[8] as String,
     )
       ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -83,9 +83,7 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
           .toList(),
       paymentType: json['paymentType'] as String,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -99,7 +97,7 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

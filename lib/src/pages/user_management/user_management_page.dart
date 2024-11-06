@@ -1,9 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';
+import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
+import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:get_it/get_it.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({
@@ -20,10 +29,13 @@ class _UserManagementState extends State<UserManagementPage> {
   @override
   void initState() {
     super.initState();
-    _cubit = UserManagementCubit();
+    _cubit = UserManagementCubit(
+      storeRepository: GetIt.I<StoreRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
-      setState(() {});
+      _cubit.initial();
     });
   }
 
@@ -44,11 +56,19 @@ class _UserManagementState extends State<UserManagementPage> {
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: "UserManagement",
+                title: LocaleKeys.userManagement.tr(),
                 actions: [],
               ).build(),
               body: SingleChildScrollView(
                 child: _buildPage(context, state),
+              ),
+              bottomNavigationBar: ButtonWidget(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                label: 'Add',
+                leading: Icon(Icons.add_circle_outline_rounded),
+                onPressed: () {
+                  AddUserRouter(context).navigate();
+                },
               ),
             );
           },
@@ -58,8 +78,34 @@ class _UserManagementState extends State<UserManagementPage> {
   }
 
   Widget _buildPage(BuildContext context, UserManagementState state) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: _cubit.members.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        final member = _cubit.members[index];
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Flexible(
+                child: ProfileWidget(
+                  name: member.email,
+                  desc: member.role,
+                  nameStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.black87),
+                  descStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Divider(
+          color: Colors.grey,
+        );
+      },
     );
   }
 }

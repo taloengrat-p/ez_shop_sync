@@ -24,7 +24,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
       color: fields[9] as String?,
       iconData: (fields[11] as Map?)?.cast<String, dynamic>(),
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -82,9 +82,7 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
       color: json['color'] as String?,
       iconData: json['iconData'] as Map<String, dynamic>?,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -96,7 +94,7 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

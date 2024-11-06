@@ -1,5 +1,5 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
@@ -21,7 +21,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
     required this.userRepository,
   }) : super(StoreManagementInitial());
 
-  User? owner;
+  UserData? owner;
 
   String? nameOriginal;
   String? descOriginal;
@@ -33,7 +33,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
       ((nameEditor != nameOriginal) || (descEditor != descOriginal)) &&
       ((nameEditor?.isNotEmpty ?? false) && (descEditor?.isNotEmpty ?? false));
 
-  String get ownerName => owner?.fullname.elseDisplay() ?? elseDisplay();
+  String get ownerName => elseDisplay();
   String get storeDesc => store?.description.elseDisplay() ?? elseDisplay();
   String get storeName => store?.name.elseDisplay() ?? elseDisplay();
 

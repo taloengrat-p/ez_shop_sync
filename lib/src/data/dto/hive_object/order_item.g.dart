@@ -21,7 +21,7 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       product: fields[7] as Product?,
       note: fields[8] as String?,
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -72,9 +72,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
           : Product.fromJson(json['product'] as Map<String, dynamic>),
       note: json['note'] as String?,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -86,7 +84,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
 
 Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

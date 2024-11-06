@@ -1,11 +1,15 @@
 enum RoleType {
-  owner,
-  admin,
-  manager,
-  staff,
-  user,
-  anonymous,
-  undefined;
+  owner(1000),
+  admin(900),
+  manager(800),
+  staff(700),
+  user(600),
+  anonymous(500),
+  undefined(0);
+
+  final int power;
+
+  const RoleType(this.power);
 
   factory RoleType.fromString(String? value) {
     switch (value?.toLowerCase().replaceAll(" ", "")) {

@@ -13,6 +13,7 @@ import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
+import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -92,6 +93,7 @@ class _AddProductState extends State<AddProductPage> {
               title: LocaleKeys.addProductCompleteTitle.tr(),
               addProductItems: state.addProduct,
               transactionMethodType: TransactionMethodType.addProduct,
+              from: Routes.ROUTE_ADDPRODUCT,
             ));
           }
         },

@@ -3,6 +3,7 @@
 import 'package:ez_shop_sync/src/pages/add_product/add_product_page.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_page.dart';
+import 'package:ez_shop_sync/src/pages/add_user/add_user_page.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_page.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
@@ -12,6 +13,8 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_page.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
 import 'package:ez_shop_sync/src/pages/login/login_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
+import 'package:ez_shop_sync/src/pages/notification/notification_page.dart';
+import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_page.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_page.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_page.dart';
@@ -59,6 +62,9 @@ class Routes {
   static const String ROUTE_ADDPRODUCTHISTORYDETAIL = '/ROUTE_ADDPRODUCTHISTORYDETAIL';
   static const String ROUTE_LOGIN = '/ROUTE_LOGIN';
   static const String ROUTE_VERIFYPHONENUMBER = '/ROUTE_VERIFYPHONENUMBER';
+  static const String ROUTE_NOTIFICATION = '/ROUTE_NOTIFICATION';
+  static const String ROUTE_ADDUSER = '/ROUTE_ADDUSER';
+  static const String ROUTE_NOTIFICATIONDETAIL = '/ROUTE_NOTIFICATIONDETAIL';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -89,5 +95,8 @@ class Routes {
     ROUTE_ADDPRODUCTHISTORYDETAIL: (context) => const AddProductHistoryDetailPage(),
     ROUTE_LOGIN: (context) => const LoginPage(),
     ROUTE_VERIFYPHONENUMBER: (context) => const VerifyPhoneNumberPage(),
+    ROUTE_NOTIFICATION: (context) => const NotificationPage(),
+    ROUTE_ADDUSER: (context) => const AddUserPage(),
+    ROUTE_NOTIFICATIONDETAIL: (context) => const NotificationDetailPage(),
   };
 }

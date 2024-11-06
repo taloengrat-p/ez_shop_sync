@@ -24,7 +24,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       totalPrice: fields[10] as num,
       storeId: fields[11] as String,
     )
-      ..createDate = fields[2] as DateTime?
+      ..createDate = fields[2] as dynamic
       ..createBy = fields[3] as String?
       ..updateDate = fields[4] as DateTime?
       ..updateBy = fields[5] as String?
@@ -82,9 +82,7 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       totalPrice: json['totalPrice'] as num,
       storeId: json['storeId'] as String,
     )
-      ..createDate = json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String)
+      ..createDate = json['createDate']
       ..createBy = json['createBy'] as String?
       ..updateDate = json['updateDate'] == null
           ? null
@@ -97,7 +95,7 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

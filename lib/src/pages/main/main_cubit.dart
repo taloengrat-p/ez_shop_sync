@@ -24,8 +24,14 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void doCheckUserAlreadyUseApp() async {
+    emit(MainLoading());
     final result = await userRepository.onCheckUserAlreadyUseApp();
 
-    log('doCheckUserAlreadyUseApp $result');
+    if (result == false) {
+      await userRepository.initialUserData();
+      emit(MainGotoIntroduceFlow());
+    }
+
+    emit(MainInitial());
   }
 }

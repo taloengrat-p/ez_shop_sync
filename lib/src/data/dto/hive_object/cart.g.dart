@@ -18,7 +18,7 @@ class CartAdapter extends TypeAdapter<Cart> {
     };
     return Cart(
       id: fields[1] as dynamic,
-      createDate: fields[2] as DateTime?,
+      createDate: fields[2] as dynamic,
       createBy: fields[3] as String?,
       updateDate: fields[4] as DateTime?,
       updateBy: fields[5] as String?,
@@ -70,9 +70,7 @@ class CartAdapter extends TypeAdapter<Cart> {
 
 Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
       id: json['id'],
-      createDate: json['createDate'] == null
-          ? null
-          : DateTime.parse(json['createDate'] as String),
+      createDate: json['createDate'],
       createBy: json['createBy'] as String?,
       updateDate: json['updateDate'] == null
           ? null
@@ -90,7 +88,7 @@ Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
 
 Map<String, dynamic> _$CartToJson(Cart instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate?.toIso8601String(),
+      'createDate': instance.createDate,
       'createBy': instance.createBy,
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,

@@ -15,12 +15,14 @@ class OrderCompleteArgrument extends OrderCompleteState {
   final String title;
   final ProductOrder? orderItems;
   final AddProduct? addProductItems;
-  final TransactionMethodType transactionMethodType;
+  final TransactionMethodType? transactionMethodType;
+  final String from;
   const OrderCompleteArgrument({
     required this.title,
     this.orderItems,
-    required this.transactionMethodType,
+    this.transactionMethodType,
     this.addProductItems,
+    required this.from,
   });
   @override
   String toString() => 'OrderCompleteRefresh $title $orderItems $transactionMethodType';
@@ -30,6 +32,7 @@ class OrderCompleteArgrument extends OrderCompleteState {
         title,
         orderItems,
         transactionMethodType,
+        from,
       ];
 }
 

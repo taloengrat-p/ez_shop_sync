@@ -32,6 +32,8 @@ import '../../data/repository/category/category_local_repository.dart' as _i334;
 import '../../data/repository/category/category_repository.dart' as _i635;
 import '../../data/repository/category/category_server_repository.dart'
     as _i442;
+import '../../data/repository/notifications/notification_repository.dart'
+    as _i155;
 import '../../data/repository/order/order_local_repository.dart' as _i548;
 import '../../data/repository/order/order_repository.dart' as _i698;
 import '../../data/repository/order/order_server_repository.dart' as _i850;
@@ -44,11 +46,9 @@ import '../../data/repository/product_history/product_history_repository.dart'
     as _i2;
 import '../../data/repository/product_history/product_history_server_repository.dart'
     as _i657;
-import '../../data/repository/store/_local/store_local_repository.dart'
-    as _i300;
-import '../../data/repository/store/_server/store_server_repository.dart'
-    as _i325;
+import '../../data/repository/store/store_local_repository.dart' as _i762;
 import '../../data/repository/store/store_repository.dart' as _i882;
+import '../../data/repository/store/store_server_repository.dart' as _i352;
 import '../../data/repository/tag/tag_local_repository.dart' as _i558;
 import '../../data/repository/tag/tag_repository.dart' as _i505;
 import '../../data/repository/tag/tag_server_repository.dart' as _i1035;
@@ -60,7 +60,7 @@ import '../../data/repository/transactions/transaction_server_repository.dart'
     as _i889;
 import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../utils/image_picker_utils.dart' as _i286;
-import '../firebase/firebase_services.dart' as _i454;
+import '../firebase_service.dart' as _i228;
 import '../hivedb_service/hivedb_dev_service.dart' as _i1036;
 import '../hivedb_service/hivedb_service.dart' as _i535;
 import '../hivedb_service/hivedb_unittest_service.dart' as _i233;
@@ -84,9 +84,7 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
-    gh.factory<_i325.StoreServerRepository>(
-        () => _i325.StoreServerRepository());
-    gh.factory<_i300.StoreLocalRepository>(() => _i300.StoreLocalRepository());
+    gh.factory<_i762.StoreLocalRepository>(() => _i762.StoreLocalRepository());
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
     gh.singleton<_i850.OrderServerRepository>(
         () => _i850.OrderServerRepository());
@@ -110,7 +108,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i675.AddProductHistoryLocalRepository());
     gh.singleton<_i391.AddProductHistoryServerRepository>(
         () => _i391.AddProductHistoryServerRepository());
-    gh.singleton<_i118.UserRepository>(() => _i118.UserRepository());
     gh.singleton<_i1011.ProductLocalRepository>(
         () => _i1011.ProductLocalRepository());
     gh.singleton<_i920.ProductServerRepository>(
@@ -126,6 +123,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1035.TagServerRepository());
     gh.singleton<_i558.TagLocalRepository>(() => _i558.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
+    gh.singleton<_i228.FirebaseService>(() => _i228.FirebaseService());
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i222.CartLocalRepository>(),
           cartServerRepository: gh<_i808.CartServerRepository>(),
@@ -184,22 +182,32 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
+    gh.singleton<_i155.NotificationRepository>(() =>
+        _i155.NotificationRepository(
+            firebaseService: gh<_i228.FirebaseService>()));
     gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
           productLocalRepository: gh<_i1011.ProductLocalRepository>(),
           productServerRepository: gh<_i920.ProductServerRepository>(),
           productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
           transactionRepository: gh<_i370.TransactionRepository>(),
         ));
-    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
-          storeLocalRepository: gh<_i300.StoreLocalRepository>(),
-          storeServerRepository: gh<_i325.StoreServerRepository>(),
-        ));
     gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
           categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i442.CategoryServerRepository>(),
         ));
-    gh.singleton<_i454.FirebaseServices>(() => _i454.FirebaseServices(
-        navigationService: gh<_i892.NavigationService>()));
+    gh.singleton<_i118.UserRepository>(() => _i118.UserRepository(
+          firebaseService: gh<_i228.FirebaseService>(),
+          notificationRepository: gh<_i155.NotificationRepository>(),
+        ));
+    gh.factory<_i352.StoreServerRepository>(() => _i352.StoreServerRepository(
+          userRepository: gh<_i118.UserRepository>(),
+          firebaseService: gh<_i228.FirebaseService>(),
+          notificationRepository: gh<_i155.NotificationRepository>(),
+        ));
+    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
+          storeLocalRepository: gh<_i762.StoreLocalRepository>(),
+          storeServerRepository: gh<_i352.StoreServerRepository>(),
+        ));
     gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
           authLocalRepository: gh<_i900.AuthLocalRepository>(),
           storeRepository: gh<_i882.StoreRepository>(),

@@ -7,12 +7,18 @@ import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
+import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
+import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
+import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
+import 'package:ez_shop_sync/src/pages/introduce/introduce_router.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_page.dart';
+import 'package:ez_shop_sync/src/pages/notification/notification_router.dart';
+import 'package:ez_shop_sync/src/pages/notification/notification_state.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
@@ -61,10 +67,17 @@ class _MainPageState extends State<MainPage> {
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<MainCubit, MainState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is MainGotoIntroduceFlow) {
+            CreateStoreRouter(context).pushNamedAndRemoveUntil(
+              argruments: const CreateStoreArgrument(true),
+            );
+          }
+        },
         child: BlocBuilder<MainCubit, MainState>(
           builder: (context, state) {
             return BaseScaffolds(
+              isLoading: state is MainLoading,
               appBar: AppbarWidget(
                 context,
                 titleWidget: Row(
@@ -102,6 +115,27 @@ class _MainPageState extends State<MainPage> {
                         : const Icon(CupertinoIcons.cart),
                     onPressed: () {
                       CartRouter(context).navigate();
+                    },
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  BlocBuilder(
+                    bloc: GetIt.I<BaseCubit>(),
+                    builder: (context, state) {
+                      return ContainerCircleWidget(
+                        child: _cubit.baseCubit.notification.isNotEmpty
+                            ? Badge.count(
+                                count: _cubit.baseCubit.notification.length,
+                                child: const Icon(CupertinoIcons.bell),
+                              )
+                            : const Icon(CupertinoIcons.bell),
+                        onPressed: () {
+                          NotificationRouter(context).navigate(
+                            argruments: NotificationArgrument(_cubit.baseCubit.notification),
+                          );
+                        },
+                      );
                     },
                   ),
                   const SizedBox(

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
+import 'package:ez_shop_sync/src/utils/extensions/int_extenstion.dart';
 import 'package:flutter/material.dart';
 
 extension DateTimeNullableExtension on DateTime? {
@@ -40,6 +41,24 @@ extension DateTimeNullableExtension on DateTime? {
 }
 
 extension DateTimeExtension on DateTime {
+  String toDisplayConditionTimeAgoDisplay(BuildContext context) {
+    final timeMessage = millisecondsSinceEpoch;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final spaceTime = (now - timeMessage) / 1000;
+
+    if (spaceTime <= 3600) {
+      // over 1 hour
+      final minute = (spaceTime).toInt().toMinute().toString();
+
+      return minute == '0' ? 'now' : '{}m'.tr(args: [minute]);
+    } else if (spaceTime > 3600 && spaceTime <= 86400) {
+      return toDisplayTimeDependLocale(context);
+    } else {
+      return toDisplayDateDependLocale(context);
+    }
+  }
+
   String toDisplay({String? format}) {
     String formattedDate = DateFormat(format ?? DateFormatConstance.D_MMM_YYYY_HH_mm).format(this);
 

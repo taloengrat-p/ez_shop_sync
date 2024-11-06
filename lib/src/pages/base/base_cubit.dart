@@ -2,18 +2,21 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:ez_shop_sync/res/colors.dart';
-import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
@@ -25,11 +28,7 @@ import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
-import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart' as local;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -48,6 +47,7 @@ class BaseCubit extends Cubit<BaseState> {
   CartRepository cartRepository;
   UserRepository userRepository;
   AddProductRepository addProductRepository;
+  NotificationRepository notificationRepository;
   //
   final durationAddCart = const Duration(milliseconds: 700);
   NavigationService navigationService;
@@ -57,6 +57,7 @@ class BaseCubit extends Cubit<BaseState> {
   bool isFirstRun = false;
   bool? isIntroduceFlowDone;
   User? _user;
+  UserData? _userData;
   Store? _store;
   List<Product> _products = [];
   List<Store> _stores = [];
@@ -64,12 +65,15 @@ class BaseCubit extends Cubit<BaseState> {
   List<Category> _categories = [];
   List<Cart> _carts = [];
   List<AddProduct> _addProducts = [];
+  List<Notification> _notification = [];
   Cart? _cart;
   AddProduct? _addProduct;
 
   // getter sections
+  List<Notification> get notification => _notification;
   AppMode get appMode => _appMode;
   User? get user => _user;
+  UserData? get userData => _userData;
   Store? get store => _store;
   Cart? get cart => _cart;
   AddProduct? get addProduct => _addProduct;
@@ -80,7 +84,16 @@ class BaseCubit extends Cubit<BaseState> {
   List<Category> get categories => _categories;
   AppTheme? get appTheme => _appTheme;
   int get cartCount => cart?.cartItems.length ?? 0;
+  int get notificationCount => 0;
   int get addProductCount => _addProduct?.addProductItems.length ?? 0;
+  RoleType? get userRoleTypeCurrentStore => store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
+  String? get userId => user?.uid;
+  String get currentUsername {
+    if (user?.displayName == null && user?.email == null) {
+      throw ('currentUsername user?.displayName == null && user?.email == null is Null');
+    }
+    return user?.displayName ?? user?.email?.substring(0, user?.email?.indexOf("@")) ?? '--';
+  }
 
   BaseCubit({
     required this.localStorageService,
@@ -93,12 +106,48 @@ class BaseCubit extends Cubit<BaseState> {
     required this.cartRepository,
     required this.userRepository,
     required this.addProductRepository,
+    required this.notificationRepository,
   }) : super(BaseInitial()) {
     startAuthListen();
     startProfileUpdateListen();
-    onCheckFirstRun();
-    onCheckIntroduceFlowDone();
-    doGetUserAppLocalSession();
+    loadAllDependencies();
+  }
+
+  Future<void> loadAllDependencies() async {
+    emit(BaseLoading());
+    await loadUserData();
+    await loadStores();
+    await loadNotifications();
+    emit(BaseSuccess());
+  }
+
+  Future<void> loadStores() async {
+    final result = await storeRepository.getAll(appMode: AppMode.server);
+
+    result.when(
+      success: (response) {
+        _stores = response;
+        emit(BaseGetStoreSuccess(response));
+        setCurrentStoreById(userData?.storeSelected);
+      },
+      failure: (error, {errorType}) {
+        emit(BaseGetStoreFailure());
+      },
+    );
+  }
+
+  Future<void> loadUserData() async {
+    final result = await userRepository.getUserData();
+
+    result.when(
+      success: (response) {
+        _userData = response;
+        emit(BaseGetUserDataSuccess());
+      },
+      failure: (error, {errorType}) {
+        emit(BaseGetUserDataFailure());
+      },
+    );
   }
 
   startAuthListen() {
@@ -115,13 +164,6 @@ class BaseCubit extends Cubit<BaseState> {
     });
   }
 
-  String get currentUsername {
-    if (user?.displayName == null && user?.email == null) {
-      throw ('currentUsername user?.displayName == null && user?.email == null is Null');
-    }
-    return user?.displayName ?? user?.email?.substring(0, user?.email?.indexOf("@")) ?? '--';
-  }
-
   loadAppTheme(AppTheme? value) {
     _appTheme = value;
     ColorKeys.primary = _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
@@ -131,7 +173,7 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseLoadAppThemeSuccess(appTheme));
   }
 
-  setCurrentStoreById(String id) {
+  setCurrentStoreById(String? id) {
     final store = _stores.where((e) => e.id == id).firstOrNull;
     setCurrentStore(store);
   }
@@ -141,15 +183,16 @@ class BaseCubit extends Cubit<BaseState> {
   setCurrentStore(Store? value) async {
     _store = value;
 
+    emit(BaseSelectStore(_store?.id));
     // await authLocalRepository.update(user?.id, user!..storeLatest = store!.id);
 
-    await doGetCartByCurrentUserAndStore();
-    await doGetAddProductByCurrentUserAndStore();
-    setCurrentAddCartByCurrentStore(store!.id);
-    setCurrentCartByCurrentStore(store!.id);
-    loadAppTheme(_store?.storeTheme);
-    loadTagsByCurrentStore();
-    loadCategoryByCurrentStore();
+    // await doGetCartByCurrentUserAndStore();
+    // await doGetAddProductByCurrentUserAndStore();
+    // setCurrentAddCartByCurrentStore(store!.id);
+    // setCurrentCartByCurrentStore(store!.id);
+    // loadAppTheme(_store?.storeTheme);
+    // loadTagsByCurrentStore();
+    // loadCategoryByCurrentStore();
   }
 
   Future<void> setCurrentUser(User? user) async {
@@ -243,63 +286,8 @@ class BaseCubit extends Cubit<BaseState> {
     }
   }
 
-  Future<void> onCheckFirstRun() async {
-    isFirstRun = await localStorageService.doCheckIsFirstRunApp();
-  }
-
-  Future<void> onCheckIntroduceFlowDone() async {
-    isIntroduceFlowDone = await localStorageService.doCheckIsIntroduceFlowDone();
-    log('isIntroduceFlowDone : $isIntroduceFlowDone');
-
-    emit(BaseRefresh(DateTime.now()));
-    emit(BaseInitialSuccess());
-  }
-
-  doLogin({String? username, String? password, User? userForceLogin}) async {
-    // if (userForceLogin.isNotNull) {
-    //   setCurrentUser(localUser: userForceLogin);
-    //   return;
-    // }
-  }
-
-  doLogout() {}
-
-  Future<void> doGetUserAppLocalSession() async {
-    String? currentLocalUsername = localStorageService.getPref<String>(SharedPrefKeys.currentUsername);
-
-    if (currentLocalUsername.isNull) {
-      return;
-    }
-
-    // if (currentLocalUsername?.isNotEmpty ?? false) {
-    //   User? userFinded = authLocalRepository.getByUsername(currentLocalUsername!);
-    //   setCurrentUser(localUser: userFinded);
-
-    //   await initialStoreData();
-    //   emit(BaseRefresh(DateTime.now()));
-    // }
-  }
-
   emitInitLocalStorageServiceSuccess() {
     emit(BaseInitialLocalStorageServiceSuccess());
-  }
-
-  Future<void> doGetStores(List<String> ids) async {
-    emit(BaseLoading());
-    final allStore = storeRepository.getAllByIds(ids);
-
-    _stores = allStore;
-
-    if (stores.isNotEmpty) {
-      // final storeInit = user?.storeLatest != null
-      //     ? stores.where((e) => e.id == user?.storeLatest).firstOrNull ?? _stores.first
-      //     : _stores.first;
-
-      // setCurrentStore(storeInit);
-    } else {
-      setCurrentStore(null);
-    }
-    emit(BaseSuccess());
   }
 
   Future<void> doGetProducts() async {
@@ -430,5 +418,23 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> updateDisplayName(String? displayNameEditor) async {
     await _user?.updateDisplayName(displayNameEditor);
+  }
+
+  Future<void> loadNotifications() async {
+    final result = await notificationRepository.getNotifications();
+
+    result.when(
+      success: (response) {
+        setNotifications(response);
+        emit(BaseGetNotificationsSuccess());
+      },
+      failure: (error, {errorType}) {
+        emit(BaseGetNotificationsFailure());
+      },
+    );
+  }
+
+  void setNotifications(List<Notification> response) {
+    _notification = response;
   }
 }

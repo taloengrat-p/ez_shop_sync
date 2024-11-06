@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/user.dart' as local;
+import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart' as local;
 
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
@@ -20,6 +21,51 @@ class BaseInitial extends BaseState {
 class BaseInitialSuccess extends BaseState {
   @override
   String toString() => 'BaseInitialSuccess';
+}
+
+class BaseSelectStore extends BaseState {
+  final String? id;
+  const BaseSelectStore(this.id);
+  @override
+  String toString() => 'BaseSelectStore $id';
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class BaseGetStoreSuccess extends BaseState {
+  final List<Store> stores;
+
+  const BaseGetStoreSuccess(this.stores);
+  @override
+  String toString() => 'BaseGetStoreSuccess $stores';
+  @override
+  List<Object?> get props => stores;
+}
+
+class BaseGetStoreFailure extends BaseState {
+  @override
+  String toString() => 'BaseGetStoreFailure';
+}
+
+class BaseGetUserDataSuccess extends BaseState {
+  @override
+  String toString() => 'BaseGetUserDataSuccess';
+}
+
+class BaseGetNotificationsSuccess extends BaseState {
+  @override
+  String toString() => 'BaseGetNotificationsSuccess';
+}
+
+class BaseGetNotificationsFailure extends BaseState {
+  @override
+  String toString() => 'BaseGetNotificationsFailure';
+}
+
+class BaseGetUserDataFailure extends BaseState {
+  @override
+  String toString() => 'BaseGetUserDataFailure';
 }
 
 class BaseLoading extends BaseState {
