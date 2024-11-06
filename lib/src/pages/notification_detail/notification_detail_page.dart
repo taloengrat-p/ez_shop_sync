@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_state.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_button_group.dart';
@@ -25,7 +26,7 @@ class _NotificationDetailState extends State<NotificationDetailPage> {
   void initState() {
     super.initState();
     _cubit = NotificationDetailCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
+      storeServerRepository: GetIt.I<StoreServerRepository>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

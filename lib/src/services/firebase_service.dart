@@ -18,4 +18,5 @@ class FirebaseService {
 
   User? get user => _firebaseAuth.currentUser;
   String? get userUid => user?.uid;
+  String? get userEmail => user?.email;
 }

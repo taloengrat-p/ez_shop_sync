@@ -14,7 +14,10 @@ class ApiResult<T> {
 
   when({
     required Function(T response) success,
-    required Function(Object? error, {AppErrorType? errorType}) failure,
+    required Function(
+      Object? error, {
+      AppErrorType? errorType,
+    }) failure,
   }) {
     if (response != null && response is T) {
       success.call(response as T);
@@ -23,7 +26,7 @@ class ApiResult<T> {
     if (error != null) {
       failure.call(
         error,
-        errorType: appErrorType,
+        errorType: appErrorType ?? AppErrorType.somethingWentWrong,
       );
     }
   }

@@ -10,7 +10,7 @@ class Notification {
   final String? desc;
   final dynamic createAt;
   final String? storeId;
-
+  final Map<String, dynamic>? payload;
   DateTime get getCreateAt => (createAt as Timestamp).toDate();
 
   Notification({
@@ -19,6 +19,7 @@ class Notification {
     this.title,
     this.desc,
     this.storeId,
+    this.payload,
   });
 
   factory Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);

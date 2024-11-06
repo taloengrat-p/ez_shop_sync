@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
@@ -100,6 +101,38 @@ class StoreServerRepository {
       }
     } catch (e) {
       return ApiResult(error: e);
+    }
+  }
+
+  Future<ApiResult> acceptInvitation(String? storeId, Map<String, dynamic>? payload) async {
+    try {
+      await firebaseService.storesCollection.doc(storeId).set({
+        'members': FieldValue.arrayUnion(
+          [
+            Member(
+              uid: firebaseService.userUid ?? '',
+              role: payload?['role'],
+              email: firebaseService.userEmail ?? '',
+            ).toJson()
+          ],
+        )
+      }, SetOptions(merge: true));
+
+      return ApiResult(response: {"status": "Success"});
+    } catch (e) {
+      return ApiResult(
+        error: e,
+      );
+    }
+  }
+
+  Future<ApiResult> rejectInvitation() async {
+    try {
+      return ApiResult(response: {"status": "Success"});
+    } catch (e) {
+      return ApiResult(
+        error: e,
+      );
     }
   }
 }
