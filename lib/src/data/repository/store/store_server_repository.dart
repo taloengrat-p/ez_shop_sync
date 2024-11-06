@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
@@ -71,9 +72,10 @@ class StoreServerRepository {
   }
 
   Future<ApiResult> sendInviteToStore({
-    required storeId,
+    required String storeId,
     required String email,
     String? storeName,
+    required RoleType role,
   }) async {
     try {
       var user = await firebaseService.usersCollection.get();
@@ -91,8 +93,13 @@ class StoreServerRepository {
             type: NotificationType.storeInvite,
             title: storeName,
             createAt: FieldValue.serverTimestamp(),
+            payload: {
+              'storeId': storeId,
+              'role': role.name,
+            },
           ),
         );
+
         return ApiResult(
           response: {"status": "Success"},
         );
@@ -104,9 +111,10 @@ class StoreServerRepository {
     }
   }
 
-  Future<ApiResult> acceptInvitation(String? storeId, Map<String, dynamic>? payload) async {
-    try {
-      await firebaseService.storesCollection.doc(storeId).set({
+  Future<ApiResult> acceptInvitation(String? notiId, String? storeId, Map<String, dynamic>? payload) async {
+    // try {
+    await firebaseService.storesCollection.doc(storeId).set(
+      {
         'members': FieldValue.arrayUnion(
           [
             Member(
@@ -116,14 +124,18 @@ class StoreServerRepository {
             ).toJson()
           ],
         )
-      }, SetOptions(merge: true));
+      },
+      SetOptions(merge: true),
+    );
 
-      return ApiResult(response: {"status": "Success"});
-    } catch (e) {
-      return ApiResult(
-        error: e,
-      );
-    }
+    await notificationRepository.removeInvitation(notiId);
+
+    return ApiResult(response: {"status": "Success"});
+    // } catch (e) {
+    //   return ApiResult(
+    //     error: e,
+    //   );
+    // }
   }
 
   Future<ApiResult> rejectInvitation() async {

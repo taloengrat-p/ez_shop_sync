@@ -35,10 +35,21 @@ class NotificationRepository {
           .get();
 
       return ApiResult(
-        response: userNotificationCollection.docs.map((e) => Notification.fromJson(e.data())).toList(),
+        response: userNotificationCollection.docs.map((e) {
+          var notificationItem = Notification.fromJson(e.data());
+          return notificationItem..id = e.id;
+        }).toList(),
       );
     } catch (e) {
       return ApiResult(error: {}, appErrorType: AppErrorType.somethingWentWrong);
     }
+  }
+
+  Future<void> removeInvitation(String? notiId) async {
+    await firebaseService.usersCollection
+        .doc(firebaseService.userUid)
+        .collection(FirebaseFirestoreConstance.COLLECTION_NOTIFICATIONS)
+        .doc(notiId)
+        .delete();
   }
 }

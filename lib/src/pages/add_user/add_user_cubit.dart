@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
@@ -21,7 +22,11 @@ class AddUserCubit extends Cubit<AddUserState> {
   Future<void> submit() async {
     emit(AddUserLoading());
     final ApiResult result = await storeRepository.sendInviteToStore(
-        storeId: baseCubit.store!.id, email: email, storeName: baseCubit.store?.name);
+      storeId: baseCubit.store!.id,
+      email: email,
+      storeName: baseCubit.store?.name,
+      role: RoleType.admin,
+    );
 
     result.when(
       success: (response) {

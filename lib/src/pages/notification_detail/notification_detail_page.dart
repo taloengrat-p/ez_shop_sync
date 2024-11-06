@@ -1,6 +1,7 @@
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_cubit.dart';
+import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_state.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_button_group.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +48,15 @@ class _NotificationDetailState extends State<NotificationDetailPage> {
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<NotificationDetailCubit, NotificationDetailState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is NotificationDetailSuccess) {
+            NotificationDetailRouter(context).pop();
+          }
+        },
         child: BlocBuilder<NotificationDetailCubit, NotificationDetailState>(
           builder: (context, state) {
             return BaseScaffolds(
+              isLoading: state is NotificationDetailLoading,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,

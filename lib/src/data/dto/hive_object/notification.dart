@@ -5,11 +5,11 @@ part 'notification.g.dart';
 
 @JsonSerializable()
 class Notification {
+  String? id;
   final NotificationType? type;
   final String? title;
   final String? desc;
   final dynamic createAt;
-  final String? storeId;
   final Map<String, dynamic>? payload;
   DateTime get getCreateAt => (createAt as Timestamp).toDate();
 
@@ -18,8 +18,8 @@ class Notification {
     this.createAt,
     this.title,
     this.desc,
-    this.storeId,
     this.payload,
+    this.id,
   });
 
   factory Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);

@@ -110,7 +110,6 @@ class BaseCubit extends Cubit<BaseState> {
   }) : super(BaseInitial()) {
     startAuthListen();
     startProfileUpdateListen();
-    loadAllDependencies();
   }
 
   Future<void> loadAllDependencies() async {
@@ -197,6 +196,7 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> setCurrentUser(User? user) async {
     _user = user;
+    loadAllDependencies();
     emit(BaseUserChange(user));
     // if (_user?.storeId?.isEmpty ?? true) {
     //   return;
