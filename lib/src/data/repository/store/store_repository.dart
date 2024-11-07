@@ -4,9 +4,7 @@ import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
 

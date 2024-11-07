@@ -23,7 +23,6 @@ import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_verify/pin_verify_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
-import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
@@ -31,7 +30,6 @@ import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
-import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -59,9 +57,9 @@ class _MorePageState extends State<MorePage> {
   void initState() {
     log('[init]', name: runtimeType.toString());
     super.initState();
-    baseCubit = GetIt.I<BaseCubit>();
+
     _cubit = MoreCubit(
-      baseCubit: baseCubit,
+      baseCubit: GetIt.I<BaseCubit>(),
       localStorageService: GetIt.I<LocalStorageService>(),
       authRepository: GetIt.I<AuthRepository>(),
       userRepository: GetIt.I<UserRepository>(),
@@ -70,7 +68,6 @@ class _MorePageState extends State<MorePage> {
 
   @override
   void dispose() {
-    log('[dispose]', name: runtimeType.toString());
     super.dispose();
   }
 

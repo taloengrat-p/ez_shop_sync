@@ -127,6 +127,9 @@ class StoreServerRepository {
       },
       SetOptions(merge: true),
     );
+    await firebaseService.usersCollection.doc(firebaseService.userUid).set({
+      'stores': FieldValue.arrayUnion([storeId]),
+    }, SetOptions(merge: true));
 
     await notificationRepository.removeInvitation(notiId);
 
