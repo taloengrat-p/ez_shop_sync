@@ -95,5 +95,5 @@ Map<String, dynamic> _$CartToJson(Cart instance) => <String, dynamic>{
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
       'userId': instance.userId,
       'storeId': instance.storeId,
-      'cartItems': instance.cartItems,
+      'cartItems': instance.cartItems.map((e) => e.toJson()).toList(),
     };

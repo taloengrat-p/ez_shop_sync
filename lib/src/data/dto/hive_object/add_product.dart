@@ -7,7 +7,7 @@ import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 part 'add_product.g.dart';
 
 @HiveType(typeId: 15)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class AddProduct extends BaseHiveObject {
   @HiveField(7)
   String userId;

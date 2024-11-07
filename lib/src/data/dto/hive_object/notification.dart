@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'notification.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Notification {
   String? id;
   final NotificationType? type;

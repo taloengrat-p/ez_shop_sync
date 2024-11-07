@@ -32,7 +32,8 @@ class StoreAdapter extends TypeAdapter<Store> {
       images: (fields[14] as List?)?.cast<String>(),
       tags: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
       storeTheme: fields[16] as AppTheme?,
-      categories: fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
+      categories:
+          fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
       members: fields[18] == null ? [] : (fields[18] as List).cast<Member>(),
     )..syncDatetime = fields[6] as DateTime?;
   }
@@ -84,7 +85,10 @@ class StoreAdapter extends TypeAdapter<Store> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is StoreAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+      identical(this, other) ||
+      other is StoreAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 // **************************************************************************
@@ -95,21 +99,34 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       id: json['id'],
       createDate: json['createDate'],
       createBy: json['createBy'] as String?,
-      updateDate: json['updateDate'] == null ? null : DateTime.parse(json['updateDate'] as String),
+      updateDate: json['updateDate'] == null
+          ? null
+          : DateTime.parse(json['updateDate'] as String),
       updateBy: json['updateBy'] as String?,
       ownerId: json['ownerId'] as String,
       name: json['name'] as String,
       address: json['address'] as String?,
-      phoneNumbers: (json['phoneNumbers'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      phoneNumbers: (json['phoneNumbers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       email: json['email'] as String?,
       website: json['website'] as String?,
       description: json['description'] as String?,
-      images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      images:
+          (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      storeTheme: json['storeTheme'] == null ? null : AppTheme.fromJson(json['storeTheme'] as Map<String, dynamic>),
-      categories: (json['categories'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      members: (json['members'] as List<dynamic>).map((e) => Member.fromJson(e as Map<String, dynamic>)).toList(),
-    )..syncDatetime = json['syncDatetime'] == null ? null : DateTime.parse(json['syncDatetime'] as String);
+      storeTheme: json['storeTheme'] == null
+          ? null
+          : AppTheme.fromJson(json['storeTheme'] as Map<String, dynamic>),
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      members: (json['members'] as List<dynamic>)
+          .map((e) => Member.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    )..syncDatetime = json['syncDatetime'] == null
+        ? null
+        : DateTime.parse(json['syncDatetime'] as String);
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'id': instance.id,
@@ -127,7 +144,7 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'description': instance.description,
       'images': instance.images,
       'tags': instance.tags,
-      'storeTheme': instance.storeTheme,
+      'storeTheme': instance.storeTheme?.toJson(),
       'categories': instance.categories,
       'members': instance.members.map((e) => e.toJson()).toList(),
     };

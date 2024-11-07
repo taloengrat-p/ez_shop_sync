@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'category.g.dart';
 
 @HiveType(typeId: 7)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Category extends BaseHiveObject {
   @HiveField(7)
   String name;

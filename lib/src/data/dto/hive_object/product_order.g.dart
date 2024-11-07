@@ -104,7 +104,7 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
       'status': instance.status,
       'paymentType': instance.paymentType,
-      'cartItems': instance.cartItems,
+      'cartItems': instance.cartItems.map((e) => e.toJson()).toList(),
       'serviceCharge': instance.serviceCharge,
       'storeId': instance.storeId,
     };

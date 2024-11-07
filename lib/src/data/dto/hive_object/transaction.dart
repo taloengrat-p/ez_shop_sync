@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'transaction.g.dart';
 
 @HiveType(typeId: 14)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Transaction extends BaseHiveObject {
   @HiveField(7)
   final String transactionType;

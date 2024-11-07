@@ -101,6 +101,7 @@ Map<String, dynamic> _$AddProductToJson(AddProduct instance) =>
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
       'userId': instance.userId,
       'storeId': instance.storeId,
-      'addProductItems': instance.addProductItems,
+      'addProductItems':
+          instance.addProductItems.map((e) => e.toJson()).toList(),
       'amountCost': instance.amountCost,
     };

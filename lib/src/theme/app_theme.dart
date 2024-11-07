@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'app_theme.g.dart';
 
 @HiveType(typeId: 6)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class AppTheme extends BaseObject {
   @HiveField(1)
   String primaryColor;

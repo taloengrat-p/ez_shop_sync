@@ -89,6 +89,6 @@ Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
       'updateDate': instance.updateDate?.toIso8601String(),
       'updateBy': instance.updateBy,
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
-      'product': instance.product,
+      'product': instance.product?.toJson(),
       'note': instance.note,
     };

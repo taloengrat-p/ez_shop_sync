@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'tag.g.dart';
 
 @HiveType(typeId: 5)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Tag extends BaseHiveObject {
   @HiveField(7)
   final String name;

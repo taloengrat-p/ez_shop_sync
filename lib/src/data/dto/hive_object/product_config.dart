@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'product_config.g.dart';
 
 @HiveType(typeId: 13)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class ProductConfig extends BaseObject {
   @HiveField(1)
   bool enabled;

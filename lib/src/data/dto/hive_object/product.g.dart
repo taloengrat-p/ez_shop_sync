@@ -218,7 +218,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'quantity': instance.quantity,
       'ownerId': instance.ownerId,
       'priceSelected': instance.priceSelected,
-      'config': instance.config,
+      'config': instance.config?.toJson(),
     };
 
 const _$ProductStatusEnumMap = {

@@ -10,7 +10,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'store.g.dart';
 
 @HiveType(typeId: 3)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Store extends BaseHiveObject {
   @HiveField(7)
   String ownerId;

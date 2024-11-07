@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'member.g.dart';
 
 @HiveType(typeId: 11)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Member {
   @HiveField(1)
   final String uid;

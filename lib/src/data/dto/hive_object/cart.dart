@@ -8,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'cart.g.dart';
 
 @HiveType(typeId: 8)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Cart extends BaseHiveObject {
   @HiveField(7)
   String userId;
