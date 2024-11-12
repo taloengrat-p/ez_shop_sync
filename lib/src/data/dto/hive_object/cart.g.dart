@@ -18,11 +18,7 @@ class CartAdapter extends TypeAdapter<Cart> {
     };
     return Cart(
       id: fields[1] as dynamic,
-      createDate: fields[2] as dynamic,
-      createBy: fields[3] as String?,
-      updateDate: fields[4] as DateTime?,
-      updateBy: fields[5] as String?,
-      syncDatetime: fields[6] as DateTime?,
+      info: fields[2] as BaseHiveData,
       cartItems: fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
       storeId: fields[8] as String,
       userId: fields[7] as String,
@@ -32,7 +28,7 @@ class CartAdapter extends TypeAdapter<Cart> {
   @override
   void write(BinaryWriter writer, Cart obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(5)
       ..writeByte(7)
       ..write(obj.userId)
       ..writeByte(8)
@@ -42,15 +38,7 @@ class CartAdapter extends TypeAdapter<Cart> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -70,15 +58,7 @@ class CartAdapter extends TypeAdapter<Cart> {
 
 Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
       id: json['id'],
-      createDate: json['createDate'],
-      createBy: json['createBy'] as String?,
-      updateDate: json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String),
-      updateBy: json['updateBy'] as String?,
-      syncDatetime: json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String),
+      info: BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       cartItems: (json['cartItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -88,11 +68,7 @@ Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
 
 Map<String, dynamic> _$CartToJson(Cart instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'userId': instance.userId,
       'storeId': instance.storeId,
       'cartItems': instance.cartItems.map((e) => e.toJson()).toList(),

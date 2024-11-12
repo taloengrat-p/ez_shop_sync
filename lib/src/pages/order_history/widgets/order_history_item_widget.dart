@@ -42,7 +42,7 @@ class OrderHistoryItemWidget extends StatelessWidget {
                   ),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: order.createDate.toDisplayDependLocale(context),
+                    value: order.info?.createDate.toDisplayDependLocale(context),
                   )
                 ],
               ),

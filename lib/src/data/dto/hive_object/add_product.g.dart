@@ -17,24 +17,20 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AddProduct(
+      id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
       userId: fields[7] as String,
       storeId: fields[8] as String,
       addProductItems:
           fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
-      id: fields[1] as dynamic,
       amountCost: fields[10] == null ? 0 : fields[10] as num,
-    )
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, AddProduct obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(6)
       ..writeByte(7)
       ..write(obj.userId)
       ..writeByte(8)
@@ -46,15 +42,7 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -73,32 +61,22 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
 // **************************************************************************
 
 AddProduct _$AddProductFromJson(Map<String, dynamic> json) => AddProduct(
+      id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       userId: json['userId'] as String,
       storeId: json['storeId'] as String,
       addProductItems: (json['addProductItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-      id: json['id'],
       amountCost: json['amountCost'] as num,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$AddProductToJson(AddProduct instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'userId': instance.userId,
       'storeId': instance.storeId,
       'addProductItems':

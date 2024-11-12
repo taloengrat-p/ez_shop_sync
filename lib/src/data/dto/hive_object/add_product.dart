@@ -1,3 +1,6 @@
+// ignore_for_file: type_init_formals
+
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,10 +25,11 @@ class AddProduct extends BaseHiveObject {
   num amountCost;
 
   AddProduct({
+    super.id,
+    BaseHiveData? super.info,
     required this.userId,
     required this.storeId,
     required this.addProductItems,
-    super.id,
     required this.amountCost,
   });
 

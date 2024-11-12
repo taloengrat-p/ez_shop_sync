@@ -18,21 +18,18 @@ class UserDataAdapter extends TypeAdapter<UserData> {
     };
     return UserData(
       id: fields[1] as dynamic,
-      createDate: fields[2] as dynamic,
-      createBy: fields[3] as String?,
-      updateDate: fields[4] as DateTime?,
-      updateBy: fields[5] as String?,
+      info: fields[2] as BaseHiveData?,
       uid: fields[7] as String,
       storeSelected: fields[8] as String?,
       stores: fields[9] == null ? [] : (fields[9] as List?)?.cast<String>(),
       displayName: fields[10] as String?,
-    )..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, UserData obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(6)
       ..writeByte(7)
       ..write(obj.uid)
       ..writeByte(8)
@@ -44,15 +41,7 @@ class UserDataAdapter extends TypeAdapter<UserData> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -72,28 +61,19 @@ class UserDataAdapter extends TypeAdapter<UserData> {
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
       id: json['id'],
-      createDate: json['createDate'],
-      createBy: json['createBy'] as String?,
-      updateDate: json['updateDate'] == null
+      info: json['info'] == null
           ? null
-          : DateTime.parse(json['updateDate'] as String),
-      updateBy: json['updateBy'] as String?,
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       uid: json['uid'] as String,
       storeSelected: json['storeSelected'] as String?,
       stores:
           (json['stores'] as List<dynamic>?)?.map((e) => e as String).toList(),
       displayName: json['displayName'] as String?,
-    )..syncDatetime = json['syncDatetime'] == null
-        ? null
-        : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'uid': instance.uid,
       'storeSelected': instance.storeSelected,
       'stores': instance.stores,

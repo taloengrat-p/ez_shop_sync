@@ -17,24 +17,20 @@ class CategoryAdapter extends TypeAdapter<Category> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Category(
-      name: fields[7] as String,
       id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
+      name: fields[7] as String,
       parentId: fields[8] as String?,
       borderColor: fields[10] as String?,
       color: fields[9] as String?,
       iconData: (fields[11] as Map?)?.cast<String, dynamic>(),
-    )
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(7)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -48,15 +44,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -75,30 +63,20 @@ class CategoryAdapter extends TypeAdapter<Category> {
 // **************************************************************************
 
 Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
-      name: json['name'] as String,
       id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      name: json['name'] as String,
       parentId: json['parentId'] as String?,
       borderColor: json['borderColor'] as String?,
       color: json['color'] as String?,
       iconData: json['iconData'] as Map<String, dynamic>?,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'name': instance.name,
       'parentId': instance.parentId,
       'color': instance.color,

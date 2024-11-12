@@ -18,20 +18,16 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
     };
     return OrderItem(
       id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
       product: fields[7] as Product?,
       note: fields[8] as String?,
-    )
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, OrderItem obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(4)
       ..writeByte(7)
       ..write(obj.product)
       ..writeByte(8)
@@ -39,15 +35,7 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -67,28 +55,18 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
 
 OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
       id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       product: json['product'] == null
           ? null
           : Product.fromJson(json['product'] as Map<String, dynamic>),
       note: json['note'] as String?,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'product': instance.product?.toJson(),
       'note': instance.note,
     };

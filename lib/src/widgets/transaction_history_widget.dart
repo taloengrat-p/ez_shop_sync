@@ -29,10 +29,10 @@ class TransactionHistoryWidget extends StatelessWidget {
         title: transaction.getMethodType.label,
         desc: transaction.valueId,
         leading: CircleProfileWidget(
-          title: transaction.createBy?.substring(0, 2).toUpperCase(),
+          title: transaction.info?.createBy?.substring(0, 2).toUpperCase(),
           radius: 24,
         ),
-        dateTime: transaction.createDate,
+        dateTime: transaction.info?.createDate,
         trailing: Text(
           '${transaction.getTransactionType == TransactionType.income ? '+' : '-'}${transaction.totalPrice.prefixCurrency()}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(

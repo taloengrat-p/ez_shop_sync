@@ -1,5 +1,8 @@
+// ignore_for_file: type_init_formals
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -25,8 +28,9 @@ class ProductHistory extends BaseHiveObject {
   final Map<String, dynamic>? newData;
 
   ProductHistory({
-    required this.productId,
     super.id,
+    BaseHiveData? super.info,
+    required this.productId,
     required this.event,
     this.newData,
     this.oldData,

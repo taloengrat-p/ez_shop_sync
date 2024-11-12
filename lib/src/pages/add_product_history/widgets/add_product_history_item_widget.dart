@@ -42,7 +42,7 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                   ),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: addProduct.createDate.toDisplayDependLocale(context),
+                    value: addProduct.info?.createDate.toDisplayDependLocale(context),
                   )
                 ],
               ),

@@ -280,9 +280,11 @@ class BaseCubit extends Cubit<BaseState> {
 
   sortProduct(ProductSortType sortType) {
     if (sortType == ProductSortType.asc) {
-      products.sort((a, b) => a.createDate!.millisecondsSinceEpoch.compareTo(b.createDate!.millisecondsSinceEpoch));
+      products.sort(
+          (a, b) => a.info?.createDate!.millisecondsSinceEpoch.compareTo(b.info?.createDate!.millisecondsSinceEpoch));
     } else {
-      products.sort((a, b) => b.createDate!.millisecondsSinceEpoch.compareTo(a.createDate!.millisecondsSinceEpoch));
+      products.sort(
+          (a, b) => b.info?.createDate!.millisecondsSinceEpoch.compareTo(a.info?.createDate!.millisecondsSinceEpoch));
     }
   }
 

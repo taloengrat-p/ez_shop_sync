@@ -18,10 +18,7 @@ class StoreAdapter extends TypeAdapter<Store> {
     };
     return Store(
       id: fields[1] as dynamic,
-      createDate: fields[2] as dynamic,
-      createBy: fields[3] as String?,
-      updateDate: fields[4] as DateTime?,
-      updateBy: fields[5] as String?,
+      info: fields[2] as BaseHiveData?,
       ownerId: fields[7] as String,
       name: fields[8] as String,
       address: fields[9] as String?,
@@ -35,13 +32,13 @@ class StoreAdapter extends TypeAdapter<Store> {
       categories:
           fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
       members: fields[18] == null ? [] : (fields[18] as List).cast<Member>(),
-    )..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(14)
       ..writeByte(7)
       ..write(obj.ownerId)
       ..writeByte(8)
@@ -69,15 +66,7 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -97,12 +86,9 @@ class StoreAdapter extends TypeAdapter<Store> {
 
 Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       id: json['id'],
-      createDate: json['createDate'],
-      createBy: json['createBy'] as String?,
-      updateDate: json['updateDate'] == null
+      info: json['info'] == null
           ? null
-          : DateTime.parse(json['updateDate'] as String),
-      updateBy: json['updateBy'] as String?,
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       ownerId: json['ownerId'] as String,
       name: json['name'] as String,
       address: json['address'] as String?,
@@ -124,17 +110,11 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       members: (json['members'] as List<dynamic>)
           .map((e) => Member.fromJson(e as Map<String, dynamic>))
           .toList(),
-    )..syncDatetime = json['syncDatetime'] == null
-        ? null
-        : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'ownerId': instance.ownerId,
       'name': instance.name,
       'address': instance.address,

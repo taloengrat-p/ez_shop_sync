@@ -1,3 +1,6 @@
+// ignore_for_file: type_init_formals
+
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -18,7 +21,8 @@ class Tag extends BaseHiveObject {
   final String? borderColor;
 
   Tag({
-    required super.id,
+    super.id,
+    BaseHiveData? super.info,
     required this.name,
     this.color,
     this.borderColor,

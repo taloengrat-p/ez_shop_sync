@@ -19,9 +19,9 @@ class ProductHistoryItemWidget extends StatelessWidget {
     return HistoryWidget(
         title: history?.descDisplay(product: product) ?? '',
         leading: CircleProfileWidget(
-          title: history?.createBy?.substring(0, 2).toUpperCase(),
+          title: history?.info?.createBy?.substring(0, 2).toUpperCase(),
           radius: 24,
         ),
-        dateTime: history?.createDate);
+        dateTime: history?.info?.createDate);
   }
 }

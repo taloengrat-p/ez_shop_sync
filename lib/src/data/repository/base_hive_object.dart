@@ -1,3 +1,4 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/models/base_object.dart';
 import 'package:hive/hive.dart';
 
@@ -5,27 +6,11 @@ abstract class BaseHiveObject extends BaseObject {
   @HiveField(1)
   dynamic id;
 
-  @HiveField(2, defaultValue: null)
-  dynamic createDate;
-
-  @HiveField(3, defaultValue: null)
-  String? createBy;
-
-  @HiveField(4, defaultValue: null)
-  DateTime? updateDate;
-
-  @HiveField(5, defaultValue: null)
-  String? updateBy;
-
-  @HiveField(6, defaultValue: null)
-  DateTime? syncDatetime;
+  @HiveField(2)
+  BaseHiveData? info;
 
   BaseHiveObject({
-    required this.id,
-    this.createDate,
-    this.createBy,
-    this.updateDate,
-    this.updateBy,
-    this.syncDatetime,
+    this.id,
+    this.info,
   });
 }

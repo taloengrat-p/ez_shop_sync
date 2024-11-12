@@ -18,23 +18,19 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
     };
     return Transaction(
       id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
       transactionType: fields[7] as String,
       method: fields[8] as String,
       valueId: fields[9] as String,
       totalPrice: fields[10] as num,
       storeId: fields[11] as String,
-    )
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, Transaction obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(7)
       ..writeByte(7)
       ..write(obj.transactionType)
       ..writeByte(8)
@@ -48,15 +44,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -76,30 +64,20 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
 
 Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       transactionType: json['transactionType'] as String,
       method: json['method'] as String,
       valueId: json['valueId'] as String,
       totalPrice: json['totalPrice'] as num,
       storeId: json['storeId'] as String,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'transactionType': instance.transactionType,
       'method': instance.method,
       'valueId': instance.valueId,

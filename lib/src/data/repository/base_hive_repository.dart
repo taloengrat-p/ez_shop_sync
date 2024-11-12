@@ -26,10 +26,9 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     await box.put(
       id,
       request
-        ..createDate = DateTime.now()
-        ..updateDate = DateTime.now()
-        ..createBy = userId
-        ..updateBy = userId,
+        ..info?.createDate = DateTime.now()
+        ..info?.createBy = userId
+        ..info?.updateBy = userId,
     );
     request.id = id;
     return request;
@@ -41,15 +40,15 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
 
   List<T> getAll() {
     List<T> result = box.values.toList();
-    result.sort(
-        (a, b) => b.createDate?.millisecondsSinceEpoch.compareTo(a.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
+    result.sort((a, b) =>
+        b.info?.createDate?.millisecondsSinceEpoch.compareTo(a.info?.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
     return result;
   }
 
   List<T> getAllRange(int start, int end) {
     List<T> result = box.values.toList();
-    result.sort(
-        (a, b) => b.createDate?.millisecondsSinceEpoch.compareTo(a.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
+    result.sort((a, b) =>
+        b.info?.createDate?.millisecondsSinceEpoch.compareTo(a.info?.createDate?.millisecondsSinceEpoch ?? -1) ?? -1);
     return result.length < (end - start) ? result : result.sublist(start, end);
   }
 
@@ -73,8 +72,8 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     await box.put(
       id,
       updated
-        ..updateDate = DateTime.now()
-        ..updateBy = userId,
+        ..info?.updateDate = DateTime.now()
+        ..info?.updateBy = userId,
     );
 
     return updated;
@@ -86,10 +85,10 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
 
   List<T> getAllBetween({required DateTime start, required DateTime end}) {
     return getAll().where((e) {
-      final result = (e.createDate?.isAfter(start) ?? false) && (e.createDate?.isBefore(end) ?? false) ||
-          (e.createDate?.isAtSameMomentAs(start) ?? false) ||
-          (e.createDate?.isAtSameMomentAs(end) ?? false);
-      log('getAllBetween ${start.toDisplay()} to ${end.toDisplay()} but ${e.createDate!.toDisplay()} is $result');
+      final result = (e.info?.createDate?.isAfter(start) ?? false) && (e.info?.createDate?.isBefore(end) ?? false) ||
+          (e.info?.createDate?.isAtSameMomentAs(start) ?? false) ||
+          (e.info?.createDate?.isAtSameMomentAs(end) ?? false);
+      log('getAllBetween ${start.toDisplay()} to ${end.toDisplay()} but ${e.info?.createDate!.toDisplay()} is $result');
       return result;
     }).toList();
   }

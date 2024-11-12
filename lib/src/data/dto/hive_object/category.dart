@@ -1,3 +1,6 @@
+// ignore_for_file: type_init_formals
+
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -23,8 +26,9 @@ class Category extends BaseHiveObject {
   Map<String, dynamic>? iconData;
 
   Category({
+    super.id,
+    BaseHiveData? super.info,
     required this.name,
-    required super.id,
     this.parentId,
     this.borderColor,
     this.color,
@@ -33,5 +37,6 @@ class Category extends BaseHiveObject {
 
   factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$CategoryToJson(this);
 }

@@ -17,23 +17,19 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ProductHistory(
-      productId: fields[8] as String,
       id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
+      productId: fields[8] as String,
       event: fields[7] as String,
       newData: (fields[10] as Map?)?.cast<String, dynamic>(),
       oldData: (fields[9] as Map?)?.cast<String, dynamic>(),
-    )
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    );
   }
 
   @override
   void write(BinaryWriter writer, ProductHistory obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(6)
       ..writeByte(7)
       ..write(obj.event)
       ..writeByte(8)
@@ -45,15 +41,7 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -73,30 +61,20 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
 
 ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
     ProductHistory(
-      productId: json['productId'] as String,
       id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      productId: json['productId'] as String,
       event: json['event'] as String,
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String);
+    );
 
 Map<String, dynamic> _$ProductHistoryToJson(ProductHistory instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'event': instance.event,
       'productId': instance.productId,
       'oldData': instance.oldData,

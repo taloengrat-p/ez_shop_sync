@@ -18,6 +18,7 @@ class ProductAdapter extends TypeAdapter<Product> {
     };
     return Product(
       id: fields[1] as dynamic,
+      info: fields[2] as BaseHiveData?,
       name: fields[7] as String,
       description: fields[8] as String?,
       priceCategories:
@@ -37,19 +38,13 @@ class ProductAdapter extends TypeAdapter<Product> {
       quantity: fields[20] as num?,
       ownerId: fields[21] as String,
       priceSelected: fields[22] as String?,
-    )
-      ..config = fields[23] as ProductConfig?
-      ..createDate = fields[2] as dynamic
-      ..createBy = fields[3] as String?
-      ..updateDate = fields[4] as DateTime?
-      ..updateBy = fields[5] as String?
-      ..syncDatetime = fields[6] as DateTime?;
+    )..config = fields[23] as ProductConfig?;
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(17)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -83,15 +78,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.createDate)
-      ..writeByte(3)
-      ..write(obj.createBy)
-      ..writeByte(4)
-      ..write(obj.updateDate)
-      ..writeByte(5)
-      ..write(obj.updateBy)
-      ..writeByte(6)
-      ..write(obj.syncDatetime);
+      ..write(obj.info);
   }
 
   @override
@@ -165,6 +152,9 @@ class ProductStatusAdapter extends TypeAdapter<ProductStatus> {
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       id: json['id'],
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       name: json['name'] as String,
       description: json['description'] as String?,
       priceCategories: (json['priceCategories'] as Map<String, dynamic>?)?.map(
@@ -183,27 +173,13 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       quantity: json['quantity'] as num?,
       ownerId: json['ownerId'] as String,
       priceSelected: json['priceSelected'] as String?,
-    )
-      ..createDate = json['createDate']
-      ..createBy = json['createBy'] as String?
-      ..updateDate = json['updateDate'] == null
-          ? null
-          : DateTime.parse(json['updateDate'] as String)
-      ..updateBy = json['updateBy'] as String?
-      ..syncDatetime = json['syncDatetime'] == null
-          ? null
-          : DateTime.parse(json['syncDatetime'] as String)
-      ..config = json['config'] == null
-          ? null
-          : ProductConfig.fromJson(json['config'] as Map<String, dynamic>);
+    )..config = json['config'] == null
+        ? null
+        : ProductConfig.fromJson(json['config'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'id': instance.id,
-      'createDate': instance.createDate,
-      'createBy': instance.createBy,
-      'updateDate': instance.updateDate?.toIso8601String(),
-      'updateBy': instance.updateBy,
-      'syncDatetime': instance.syncDatetime?.toIso8601String(),
+      'info': instance.info?.toJson(),
       'name': instance.name,
       'description': instance.description,
       'priceCategories': instance.priceCategories,

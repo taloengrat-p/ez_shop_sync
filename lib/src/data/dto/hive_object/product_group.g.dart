@@ -1,40 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tag.dart';
+part of 'product_group.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TagAdapter extends TypeAdapter<Tag> {
+class ProductGroupAdapter extends TypeAdapter<ProductGroup> {
   @override
-  final int typeId = 5;
+  final int typeId = 16;
 
   @override
-  Tag read(BinaryReader reader) {
+  ProductGroup read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Tag(
+    return ProductGroup(
       id: fields[1] as dynamic,
       info: fields[2] as BaseHiveData?,
-      name: fields[7] as String,
-      color: fields[8] as String?,
-      borderColor: fields[9] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Tag obj) {
+  void write(BinaryWriter writer, ProductGroup obj) {
     writer
-      ..writeByte(5)
-      ..writeByte(7)
-      ..write(obj.name)
-      ..writeByte(8)
-      ..write(obj.color)
-      ..writeByte(9)
-      ..write(obj.borderColor)
+      ..writeByte(2)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -47,7 +38,7 @@ class TagAdapter extends TypeAdapter<Tag> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TagAdapter &&
+      other is ProductGroupAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -56,20 +47,15 @@ class TagAdapter extends TypeAdapter<Tag> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Tag _$TagFromJson(Map<String, dynamic> json) => Tag(
+ProductGroup _$ProductGroupFromJson(Map<String, dynamic> json) => ProductGroup(
       id: json['id'],
       info: json['info'] == null
           ? null
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
-      name: json['name'] as String,
-      color: json['color'] as String?,
-      borderColor: json['borderColor'] as String?,
     );
 
-Map<String, dynamic> _$TagToJson(Tag instance) => <String, dynamic>{
+Map<String, dynamic> _$ProductGroupToJson(ProductGroup instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'info': instance.info?.toJson(),
-      'name': instance.name,
-      'color': instance.color,
-      'borderColor': instance.borderColor,
     };

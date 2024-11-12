@@ -23,7 +23,7 @@ class StoreServerRepository {
   });
 
   Future<ApiResult<Store>> create(Store request) async {
-    request.createDate = FieldValue.serverTimestamp();
+    request.info?.createBy = FieldValue.serverTimestamp();
 
     final storeCreated = await firebaseService.storesCollection.add(
       request.toJson(),

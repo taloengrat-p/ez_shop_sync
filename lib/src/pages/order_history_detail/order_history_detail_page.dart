@@ -120,7 +120,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.orderDateTime.tr(),
-              value: _cubit.order?.createDate?.toDisplayDependLocale(context) ?? '--',
+              value: _cubit.order?.info?.createDate?.toDisplayDependLocale(context) ?? '--',
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.paymentMethod.tr(),

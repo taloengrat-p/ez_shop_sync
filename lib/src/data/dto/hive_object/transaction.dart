@@ -1,3 +1,6 @@
+// ignore_for_file: type_init_formals
+
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -27,7 +30,8 @@ class Transaction extends BaseHiveObject {
   final String storeId;
 
   Transaction({
-    required super.id,
+    super.id,
+    BaseHiveData? super.info,
     required this.transactionType,
     required this.method,
     required this.valueId,

@@ -1,3 +1,6 @@
+// ignore_for_file: type_init_formals
+
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -16,11 +19,8 @@ class UserData extends BaseHiveObject {
   @HiveField(10)
   final String? displayName;
   UserData({
-    required super.id,
-    super.createDate,
-    super.createBy,
-    super.updateDate,
-    super.updateBy,
+    super.id,
+    BaseHiveData? super.info,
     required this.uid,
     this.storeSelected,
     this.stores,
