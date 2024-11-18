@@ -48,29 +48,40 @@ class _FormCustomFieldWidgetState extends State<FormCustomFieldWidget> {
               .map(
                 (k, v) => MapEntry(
                   k,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: TextFormFieldUiWidget(
-                          key: ValueKey('${widget.tag} $k'),
-                          label: k,
-                          textInitial: v?.toString(),
-                          onChanged: (value) {
-                            widget.onFieldValueChange?.call(k, value);
-                          },
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: TextFormFieldUiWidget(
+                              key: ValueKey('${widget.tag} $k'),
+                              label: k,
+                              textInitial: v?.toString(),
+                              onChanged: (value) {
+                                widget.onFieldValueChange?.call(k, value);
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          ContainerCircleWidget(
+                            color: Colors.red,
+                            child: const Icon(CupertinoIcons.delete),
+                            onPressed: () {
+                              widget.onRemoveField?.call(k);
+                            },
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        width: 8,
+                      TextFormFieldUiWidget(
+                        // textValue: cubit.productEditor?.quantity?.toString() ?? '',
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.quantity.tr()]),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {},
                       ),
-                      ContainerCircleWidget(
-                        color: Colors.red,
-                        child: const Icon(CupertinoIcons.delete),
-                        onPressed: () {
-                          widget.onRemoveField?.call(k);
-                        },
-                      )
                     ],
                   ),
                 ),
@@ -80,32 +91,43 @@ class _FormCustomFieldWidgetState extends State<FormCustomFieldWidget> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: Row(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: TextFormFieldUiWidget(
-                        controller: _textCustomFieldNameInput,
-                        label: widget.keyLabel ?? LocaleKeys.customName.tr(),
-                        onChanged: (val) {
-                          tempCustomKey = val ?? '';
-                          widget.onTempFieldChange?.call(tempCustomKey, tempCustomValue);
-                        },
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormFieldUiWidget(
+                            controller: _textCustomFieldNameInput,
+                            label: widget.keyLabel ?? LocaleKeys.customName.tr(),
+                            onChanged: (val) {
+                              tempCustomKey = val ?? '';
+                              widget.onTempFieldChange?.call(tempCustomKey, tempCustomValue);
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: TextFormFieldUiWidget(
+                            controller: _textCustomFieldValueInput,
+                            keyboardType: widget.keyboardType,
+                            label: widget.valueLabel ?? LocaleKeys.customValue.tr(),
+                            onChanged: (value) {
+                              tempCustomValue = value ?? '';
+                              widget.onTempFieldChange?.call(tempCustomKey, tempCustomValue);
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                    const SizedBox(
-                      width: 8,
+                    TextFormFieldUiWidget(
+                      // textValue: cubit.productEditor?.quantity?.toString() ?? '',
+                      label: LocaleKeys.optionalField.tr(args: [LocaleKeys.quantity.tr()]),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {},
                     ),
-                    Expanded(
-                      child: TextFormFieldUiWidget(
-                        controller: _textCustomFieldValueInput,
-                        keyboardType: widget.keyboardType,
-                        label: widget.valueLabel ?? LocaleKeys.customValue.tr(),
-                        onChanged: (value) {
-                          tempCustomValue = value ?? '';
-                          widget.onTempFieldChange?.call(tempCustomKey, tempCustomValue);
-                        },
-                      ),
-                    )
                   ],
                 ),
               ),
