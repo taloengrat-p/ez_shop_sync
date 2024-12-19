@@ -38,6 +38,7 @@ class _AppState extends State<App> {
     super.initState();
     baseCubit = BlocProvider.of<BaseCubit>(context);
 
+    baseCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
     subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       // if (result.contains(ConnectivityResult.none)) {
       //   baseCubit.changeMode(AppMode.local);
@@ -92,46 +93,43 @@ class _AppState extends State<App> {
         navigatorKey: GetIt.I<NavigationService>().navigatorKey,
         navigatorObservers: [routeAware],
         routes: Routes.values,
-        home: _flavorBanner(
-          child: BlocListener<BaseCubit, BaseState>(
+        home: BlocListener<BaseCubit, BaseState>(
+          bloc: baseCubit,
+          listener: (context, state) {
+            log('[CUBIT][BASE] state : $state');
+          },
+          child: BlocBuilder<BaseCubit, BaseState>(
             bloc: baseCubit,
-            listener: (context, state) {
-              log('[CUBIT][BASE] state : $state');
-            },
-            child: BlocBuilder<BaseCubit, BaseState>(
-              bloc: baseCubit,
-              builder: (context, state) {
-                return Stack(
-                  children: [
-                    baseCubit.user == null ? const LoginPage() : const MainPage(),
-                    if (state is BaseLoading)
-                      Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: Colors.black.withOpacity(0.6),
-                        child: const Center(
-                          child: CupertinoActivityIndicator(
-                            color: Colors.white,
-                          ),
+            builder: (context, state) {
+              return Stack(
+                children: [
+                  baseCubit.user == null ? const LoginPage() : const MainPage(),
+                  if (state is BaseLoading)
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.black.withOpacity(0.6),
+                      child: const Center(
+                        child: CupertinoActivityIndicator(
+                          color: Colors.white,
                         ),
                       ),
-                    AnimatedPositioned(
-                      duration: baseCubit.durationAddCart,
-                      top: state is BaseAddCartSuccess ? 35 : size.height,
-                      right: state is BaseAddCartSuccess ? 20 : (size.width - 100),
-                      child: state is BaseAddCartSuccess
-                          ? const Icon(
-                              CupertinoIcons.bag,
-                              color: Colors.black,
-                            )
-                          : Container(),
                     ),
-                  ],
-                );
-              },
-            ),
+                  AnimatedPositioned(
+                    duration: baseCubit.durationAddCart,
+                    top: state is BaseAddCartSuccess ? 35 : size.height,
+                    right: state is BaseAddCartSuccess ? 20 : (size.width - 100),
+                    child: state is BaseAddCartSuccess
+                        ? const Icon(
+                            CupertinoIcons.bag,
+                            color: Colors.black,
+                          )
+                        : Container(),
+                  ),
+                ],
+              );
+            },
           ),
-          show: kDebugMode,
         ),
       ),
     );

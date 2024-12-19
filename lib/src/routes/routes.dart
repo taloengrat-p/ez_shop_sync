@@ -8,6 +8,7 @@ import 'package:ez_shop_sync/src/pages/cart/cart_page.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_page.dart';
+import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_page.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_page.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
@@ -65,6 +66,7 @@ class Routes {
   static const String ROUTE_NOTIFICATION = '/ROUTE_NOTIFICATION';
   static const String ROUTE_ADDUSER = '/ROUTE_ADDUSER';
   static const String ROUTE_NOTIFICATIONDETAIL = '/ROUTE_NOTIFICATIONDETAIL';
+  static const String ROUTE_CREATEPRODUCTDETAIL = '/ROUTE_CREATEPRODUCTDETAIL';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -98,5 +100,6 @@ class Routes {
     ROUTE_NOTIFICATION: (context) => const NotificationPage(),
     ROUTE_ADDUSER: (context) => const AddUserPage(),
     ROUTE_NOTIFICATIONDETAIL: (context) => const NotificationDetailPage(),
+    ROUTE_CREATEPRODUCTDETAIL: (context) => const CreateProductDetailPage(),
   };
 }

@@ -38,13 +38,14 @@ class ProductAdapter extends TypeAdapter<Product> {
       quantity: fields[20] as num?,
       ownerId: fields[21] as String,
       priceSelected: fields[22] as String?,
+      productTypeList: (fields[24] as List?)?.cast<ProductType>(),
     )..config = fields[23] as ProductConfig?;
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -75,6 +76,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.priceSelected)
       ..writeByte(23)
       ..write(obj.config)
+      ..writeByte(24)
+      ..write(obj.productTypeList)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -173,6 +176,9 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       quantity: json['quantity'] as num?,
       ownerId: json['ownerId'] as String,
       priceSelected: json['priceSelected'] as String?,
+      productTypeList: (json['productTypeList'] as List<dynamic>?)
+          ?.map((e) => ProductType.fromJson(e as Map<String, dynamic>))
+          .toList(),
     )..config = json['config'] == null
         ? null
         : ProductConfig.fromJson(json['config'] as Map<String, dynamic>);
@@ -195,6 +201,8 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'ownerId': instance.ownerId,
       'priceSelected': instance.priceSelected,
       'config': instance.config?.toJson(),
+      'productTypeList':
+          instance.productTypeList?.map((e) => e.toJson()).toList(),
     };
 
 const _$ProductStatusEnumMap = {

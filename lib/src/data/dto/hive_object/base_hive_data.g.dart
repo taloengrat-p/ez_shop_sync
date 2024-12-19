@@ -18,7 +18,7 @@ class BaseHiveDataAdapter extends TypeAdapter<BaseHiveData> {
     };
     return BaseHiveData(
       createDate: fields[1] as dynamic,
-      createBy: fields[2] as String?,
+      createBy: fields[2] as dynamic,
       updateDate: fields[3] as dynamic,
       updateBy: fields[4] as String?,
       syncDatetime: fields[5] as DateTime?,
@@ -58,7 +58,7 @@ class BaseHiveDataAdapter extends TypeAdapter<BaseHiveData> {
 
 BaseHiveData _$BaseHiveDataFromJson(Map<String, dynamic> json) => BaseHiveData(
       createDate: json['createDate'],
-      createBy: json['createBy'] as String?,
+      createBy: json['createBy'],
       updateDate: json['updateDate'],
       updateBy: json['updateBy'] as String?,
       syncDatetime: json['syncDatetime'] == null

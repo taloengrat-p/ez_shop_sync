@@ -108,8 +108,8 @@ class BaseCubit extends Cubit<BaseState> {
     required this.addProductRepository,
     required this.notificationRepository,
   }) : super(BaseInitial()) {
-    startAuthListen();
-    startProfileUpdateListen();
+    // startAuthListen();
+    // startProfileUpdateListen();
   }
 
   Future<void> loadAllDependencies() async {
@@ -149,19 +149,19 @@ class BaseCubit extends Cubit<BaseState> {
     );
   }
 
-  startAuthListen() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      log('authStateChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
-      setCurrentUser(user);
-    });
-  }
+  // startAuthListen() {
+  //   FirebaseAuth.instance.authStateChanges().listen((User? user) {
+  //     log('authStateChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
+  //     setCurrentUser(user);
+  //   });
+  // }
 
-  startProfileUpdateListen() {
-    FirebaseAuth.instance.userChanges().listen((User? user) {
-      log('userChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
-      setCurrentUser(user);
-    });
-  }
+  // startProfileUpdateListen() {
+  //   FirebaseAuth.instance.userChanges().listen((User? user) {
+  //     log('userChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
+  //     setCurrentUser(user);
+  //   });
+  // }
 
   loadAppTheme(AppTheme? value) {
     _appTheme = value;
@@ -294,11 +294,15 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> doGetProducts() async {
     emit(BaseLoading());
-    final allProduct = productRepository.getAllByStoreId(store!.id);
+    final result = await productRepository.getAllByStoreId(store!.id, appMode: AppMode.server);
 
-    setCurrentProduct(allProduct);
-    sortProduct(productSortType);
-    emit(BaseSuccess());
+    result.when(
+        success: (response) {
+          setCurrentProduct(response ?? []);
+          sortProduct(productSortType);
+          emit(BaseSuccess());
+        },
+        failure: (error, {errorType}) {});
   }
 
   void setCurrentProduct(List<Product> value) {
@@ -439,4 +443,6 @@ class BaseCubit extends Cubit<BaseState> {
   void setNotifications(List<Notification> response) {
     _notification = response;
   }
+
+  void clearCurrentUserData() {}
 }

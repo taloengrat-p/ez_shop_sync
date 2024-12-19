@@ -78,8 +78,10 @@ class _MainPageState extends State<MainPage> {
           builder: (context, state) {
             return BaseScaffolds(
               isLoading: state is MainLoading,
+              backgroundColor: Colors.white,
               appBar: AppbarWidget(
                 context,
+                color: Colors.transparent,
                 titleWidget: Row(
                   children: [
                     Expanded(

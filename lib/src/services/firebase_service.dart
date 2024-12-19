@@ -11,6 +11,8 @@ class FirebaseService {
 
   CollectionReference<Map<String, dynamic>> get usersCollection =>
       _firebaseFirestore.collection(FirebaseFirestoreConstance.COLLECTION_USERS);
+  CollectionReference<Map<String, dynamic>> get productCollection =>
+      _firebaseFirestore.collection(FirebaseFirestoreConstance.COLLECTION_STORE);
   CollectionReference<Map<String, dynamic>> get storesCollection =>
       _firebaseFirestore.collection(FirebaseFirestoreConstance.COLLECTION_STORE);
   CollectionReference<Map<String, dynamic>> get notificationCollection =>

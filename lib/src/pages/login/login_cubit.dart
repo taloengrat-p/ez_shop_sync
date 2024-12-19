@@ -4,13 +4,13 @@ import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository authRepository;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final BaseCubit baseCubit;
   String username = '';
   String password = '';
   // String phoneNumber = '';
@@ -19,6 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
   bool get isDisabled => username.isEmpty || password.isEmpty;
   LoginCubit({
     required this.authRepository,
+    required this.baseCubit,
   }) : super(LoginInitial());
 
   void setUsername(String? value) {
@@ -65,6 +66,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     resultLogin.when(
       success: (response) {
+        baseCubit.setCurrentUser(response.user);
         emit(LoginSuccess());
       },
       failure: (

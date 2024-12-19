@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
+      backgroundColor: Colors.white,
       appBar: AppbarWidget(
         context,
         title: cubit.baseCubit.store?.name,

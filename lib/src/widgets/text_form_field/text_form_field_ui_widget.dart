@@ -38,6 +38,8 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final double? maxLines;
   final bool? autofocus;
   final Widget? child;
+  final TextStyle? labelStyle;
+
   const TextFormFieldUiWidget({
     super.key,
     this.label,
@@ -70,6 +72,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
     this.maxLines = 1,
     this.labelSuffix,
     this.child,
+    this.labelStyle,
   });
 
   @override
@@ -114,9 +117,10 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
+                style: widget.labelStyle ??
+                    Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
               ),
               const SizedBox(
                 width: 8,
@@ -249,6 +253,16 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                   ),
             ),
           ),
+          const SizedBox(
+            height: 4,
+          ),
+          if (widget.errorText != null && widget.child != null)
+            Text(
+              widget.errorText ?? '',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.red,
+                  ),
+            )
         ],
       ),
     );

@@ -84,6 +84,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
           builder: (context, state) {
             return BaseScaffolds(
+              backgroundColor: Colors.white,
               appBar: AppbarWidget(
                 context,
                 actions: [
@@ -274,7 +275,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       children: [
         ProductDetailTitleValue(
           title: LocaleKeys.description.tr(),
-          value: cubit.productDescription,
+          value: cubit.productDescription.toString(),
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.category.tr(),

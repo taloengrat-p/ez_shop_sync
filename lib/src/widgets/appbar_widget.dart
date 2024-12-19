@@ -6,13 +6,16 @@ import 'package:flutter/services.dart';
 
 class AppbarWidget {
   String? title;
+  TextStyle? titleStyle;
   List<Widget>? actions;
   bool? centerTitle;
   Color? color;
   Color? iconThemeColor;
   SystemUiOverlayStyle? systemUiOverlayStyle;
   Widget? titleWidget;
+  PreferredSizeWidget? bottom;
   final BuildContext context;
+
   AppbarWidget(
     this.context, {
     this.title,
@@ -22,6 +25,8 @@ class AppbarWidget {
     this.iconThemeColor,
     this.systemUiOverlayStyle,
     this.titleWidget,
+    this.titleStyle,
+    this.bottom,
   });
   AppBar build() {
     final ModalRoute<dynamic>? parentRoute = ModalRoute.of(context);
@@ -51,15 +56,17 @@ class AppbarWidget {
         child: titleWidget ??
             Text(
               title ?? '',
-              style: TextStyle(
-                color: (color ?? Colors.white).getContrast(),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: titleStyle ??
+                  TextStyle(
+                    color: (color ?? Colors.white).getContrast(),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
       ),
       actions: actions,
       elevation: 0,
+      bottom: bottom,
     );
   }
 }

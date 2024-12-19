@@ -12,6 +12,11 @@ class MoreInitial extends MoreState {
   String toString() => 'MoreInitial';
 }
 
+class MoreLogoutSuccess extends MoreState {
+  @override
+  String toString() => 'MoreLogoutSuccess';
+}
+
 class MoreChangeStore extends MoreState {
   final String id;
   const MoreChangeStore(this.id);

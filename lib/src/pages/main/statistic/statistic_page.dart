@@ -80,6 +80,7 @@ class _StatisticState extends State<StatisticPage> {
         child: BlocBuilder<StatisticCubit, StatisticState>(
           builder: (context, state) {
             return BaseScaffolds(
+              backgroundColor: Colors.white,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,

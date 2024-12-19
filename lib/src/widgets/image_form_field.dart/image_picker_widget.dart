@@ -29,16 +29,11 @@ class ImagePickerWidget extends StatefulWidget {
 }
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
-  File? image;
+  File? imageEditor;
 
   @override
   void initState() {
     super.initState();
-    if (widget.path != null) {
-      setState(() {
-        image = File(widget.path!);
-      });
-    }
   }
 
   @override
@@ -47,41 +42,52 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       onTap: () async {
         final imagePicked = await ImagePickerUtils.pickImage();
 
-        if (!widget.disablePreview) {
-          if (imagePicked.isNotNull) {
-            setState(() {
-              image = imagePicked;
-            });
-          }
-        }
-
         widget.onImagePicked?.call(imagePicked);
+
+        setState(() {
+          imageEditor = imagePicked;
+        });
       },
       child: DottedBorder(
+        borderType: BorderType.Circle,
         color: Colors.grey,
         strokeWidth: 1,
-        child: image != null
-            ? Container(
-                constraints: widget.constraints,
-                height: widget.height,
-                child: Image.file(
-                  image!,
-                  fit: BoxFit.contain,
-                  width: widget.width,
+        child: SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: widget.path != null
+              ? Stack(
+                  children: [
+                    Center(
+                      child: ClipOval(
+                        child: Image.file(
+                          imageEditor ?? File(widget.path!),
+                          width: widget.width,
+                          height: widget.height,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const Center(
+                      child: Icon(
+                        Icons.camera_alt_rounded,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                )
+              : Container(
+                  padding: widget.margin,
                   height: widget.height,
-                ),
-              )
-            : Container(
-                padding: widget.margin,
-                height: widget.height,
-                width: widget.width,
-                child: const Center(
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.red,
+                  width: widget.width,
+                  child: const Center(
+                    child: Icon(
+                      Icons.camera_alt_rounded,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

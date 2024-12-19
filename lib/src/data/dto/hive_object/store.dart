@@ -49,6 +49,9 @@ class Store extends BaseHiveObject {
   @HiveField(18, defaultValue: [])
   List<Member> members;
 
+  @HiveField(19, defaultValue: [])
+  List<String>? products;
+
   Store({
     super.id,
     BaseHiveData? super.info,
@@ -64,6 +67,7 @@ class Store extends BaseHiveObject {
     this.storeTheme,
     this.categories,
     required this.members,
+    this.products,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);

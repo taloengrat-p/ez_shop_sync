@@ -31,6 +31,7 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
         members: [
           Member(uid: baseCubit.user!.uid, role: RoleType.owner.name, email: baseCubit.user!.email!),
         ],
+        products: [],
       ),
       appMode: AppMode.server,
     );

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
@@ -24,11 +25,11 @@ import 'package:injectable/injectable.dart';
 abstract class IProductRepository {
   List<Product> getAll({AppMode appMode = AppMode.local});
   Product? getById(String id, {AppMode appMode = AppMode.local});
-  Future<Product> create(CreateProductRequest request);
+  Future<Product?> create(CreateProductRequest request);
   Future<Product> update(String id, Product updated, {AppMode appMode = AppMode.local});
   Future<void> delete(String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
-  List<Product> getAllByStoreId(String id, {AppMode appMode = AppMode.local});
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
@@ -49,7 +50,7 @@ class ProductRepository implements IProductRepository {
   });
 
   @override
-  Future<Product> create(CreateProductRequest request) async {
+  Future<Product?> create(CreateProductRequest request) async {
     if (request.appMode == AppMode.local) {
       final result = await productLocalRepository.create(request.product);
 
@@ -77,7 +78,9 @@ class ProductRepository implements IProductRepository {
 
       return result;
     } else {
-      throw UnimplementedError();
+      final result = await productServerRepository.create(request.product);
+
+      return result.response;
     }
   }
 
@@ -138,11 +141,11 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  List<Product> getAllByStoreId(String id, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       return productLocalRepository.getAllByStoreId(id);
     } else {
-      throw UnimplementedError();
+      return productServerRepository.getAllByStoreId(id);
     }
   }
 

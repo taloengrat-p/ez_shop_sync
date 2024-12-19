@@ -2,6 +2,7 @@
 // ignore_for_file: type=lint
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_config.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:hive/hive.dart';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -60,6 +61,9 @@ class Product extends BaseHiveObject {
   @HiveField(23, defaultValue: null)
   ProductConfig? config;
 
+  @HiveField(24, defaultValue: null)
+  List<ProductType>? productTypeList;
+
   Product({
     super.id,
     BaseHiveData? super.info,
@@ -77,6 +81,7 @@ class Product extends BaseHiveObject {
     this.quantity,
     required this.ownerId,
     this.priceSelected,
+    this.productTypeList,
   });
 
   List<num>? get priceRange => priceCategories?.entries.map((mapEntry) => mapEntry.value).toList() ?? [];
@@ -119,6 +124,7 @@ class Product extends BaseHiveObject {
     String? ownerId,
     ProductStatus? status,
     String? priceSelected,
+    List<ProductType>? productType,
   }) {
     return Product(
       id: id ?? this.id,
@@ -136,6 +142,7 @@ class Product extends BaseHiveObject {
       ownerId: ownerId ?? this.ownerId,
       status: status ?? this.status,
       priceSelected: priceSelected ?? this.priceSelected,
+      productTypeList: productType ?? this.productTypeList,
     );
   }
 }

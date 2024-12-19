@@ -1,5 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
+import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
+import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
+import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton()
 @Injectable()
-class ProductServerRepository {}
+class ProductServerRepository {
+  final StoreRepository storeRepository;
+  final FirebaseService firebaseService;
+
+  ProductServerRepository({
+    required this.storeRepository,
+    required this.firebaseService,
+  });
+
+  Future<ApiResult<Product?>> create(Product request) async {
+    request.info?.createBy = FieldValue.serverTimestamp();
+
+    final productCreated = await firebaseService.storesCollection
+        .doc(request.storeId)
+        .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+        .add(request.toJson());
+
+    final response = await productCreated.get();
+
+    if (response.data() == null) {
+      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
+    }
+
+    return ApiResult(response: request..id = response.id);
+  }
+
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+    final products =
+        await firebaseService.storesCollection.doc(id).collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS).get();
+
+    final response = products.docs.map((e) => Product.fromJson(e.data())..id = e.id).toList();
+
+    if (products.docs.isEmpty) {
+      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
+    }
+
+    return ApiResult(response: response);
+  }
+}

@@ -18,7 +18,7 @@ class CartAdapter extends TypeAdapter<Cart> {
     };
     return Cart(
       id: fields[1] as dynamic,
-      info: fields[2] as BaseHiveData,
+      info: fields[2] as BaseHiveData?,
       cartItems: fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
       storeId: fields[8] as String,
       userId: fields[7] as String,
@@ -58,7 +58,9 @@ class CartAdapter extends TypeAdapter<Cart> {
 
 Cart _$CartFromJson(Map<String, dynamic> json) => Cart(
       id: json['id'],
-      info: BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       cartItems: (json['cartItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),

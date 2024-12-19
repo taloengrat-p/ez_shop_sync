@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
@@ -29,6 +31,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   String tempPriceCategoryName = '';
   String tempPriceCategoryValue = '';
+
+  // List<ProductType> productTypeList = [];
 
   Store? get currentStore => baseCubit.store;
   User? get currentUser => baseCubit.user;
@@ -59,8 +63,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       ownerId: currentStore!.ownerId,
       attributes: {},
       priceCategories: {},
+      productTypeList: [],
     );
   }
+
+  String? _productImage;
+  String? get productImage => _productImage;
 
   setName(String? value) {
     _productEditor?.name = value ?? '';
@@ -84,11 +92,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   void submit() async {
-    emit(CreateProductLoading());
-
-    final productId = const Uuid().v1();
-
-    createProduct(id: productId);
+    createProduct();
   }
 
   setQuantity(String? value) {
@@ -155,7 +159,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     setScreenMode(ScreenMode.edit);
   }
 
-  Future<void> createProduct({required String id}) async {
+  Future<void> createProduct() async {
     emit(CreateProductLoading());
     List<String> imageDetailFileName = [];
 
@@ -179,9 +183,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       CreateProductRequest(
         storeId: currentStore!.id,
         userId: currentUser?.uid ?? '',
-        product: _productEditor!
-          ..id = id
-          ..imagesPath = imageDetailFileName,
+        product: _productEditor!,
+        appMode: AppMode.server,
       ),
     );
 
@@ -257,5 +260,20 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         _productEditor?.priceCategories?[tempPriceCategoryName] = priceTemp;
       }
     }
+  }
+
+  void addProductType() {
+    _productEditor?.productTypeList?.add(ProductType(image: null));
+    emit(CreateProductRefresh(DateTime.now()));
+  }
+
+  void updateProductType(int index, ProductType productType) {
+    _productEditor?.productTypeList?[index] = productType;
+    emit(CreateProductUpdateProductType(productType: productType));
+  }
+
+  void setProductImage(String? path) {
+    _productImage = path;
+    emit(CreateProductRefresh(DateTime.now()));
   }
 }

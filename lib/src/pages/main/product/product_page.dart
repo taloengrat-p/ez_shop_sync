@@ -69,6 +69,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       },
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         return BaseScaffolds(
+          backgroundColor: Colors.white,
           appBar: AppbarWidget(
             context,
             centerTitle: false,

@@ -21,7 +21,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   List<ProductHistory>? productHistory;
   BaseCubit baseCubit;
 
-  String get productDescription => product?.description?.elseDisplay() ?? elseDisplay();
+  String get productDescription => product?.description ?? '';
   List<Tag> get tags => baseCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
   Category? get category => baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
   ProductDetailCubit({

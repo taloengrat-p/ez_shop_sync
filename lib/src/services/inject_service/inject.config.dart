@@ -110,8 +110,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i391.AddProductHistoryServerRepository());
     gh.singleton<_i1011.ProductLocalRepository>(
         () => _i1011.ProductLocalRepository());
-    gh.singleton<_i920.ProductServerRepository>(
-        () => _i920.ProductServerRepository());
     gh.singleton<_i206.TransactionLocalRepository>(
         () => _i206.TransactionLocalRepository());
     gh.singleton<_i889.TransactionServerRepository>(
@@ -185,12 +183,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i155.NotificationRepository>(() =>
         _i155.NotificationRepository(
             firebaseService: gh<_i228.FirebaseService>()));
-    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
-          productLocalRepository: gh<_i1011.ProductLocalRepository>(),
-          productServerRepository: gh<_i920.ProductServerRepository>(),
-          productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
-          transactionRepository: gh<_i370.TransactionRepository>(),
-        ));
     gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
           categoryLocalRepository: gh<_i334.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i442.CategoryServerRepository>(),
@@ -212,6 +204,17 @@ extension GetItInjectableX on _i174.GetIt {
           authLocalRepository: gh<_i900.AuthLocalRepository>(),
           storeRepository: gh<_i882.StoreRepository>(),
           authServerRepository: gh<_i57.AuthServerRepository>(),
+        ));
+    gh.singleton<_i920.ProductServerRepository>(
+        () => _i920.ProductServerRepository(
+              storeRepository: gh<_i882.StoreRepository>(),
+              firebaseService: gh<_i228.FirebaseService>(),
+            ));
+    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
+          productLocalRepository: gh<_i1011.ProductLocalRepository>(),
+          productServerRepository: gh<_i920.ProductServerRepository>(),
+          productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
         ));
     return this;
   }

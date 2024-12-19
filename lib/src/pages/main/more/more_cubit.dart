@@ -37,6 +37,8 @@ class MoreCubit extends Cubit<MoreState> {
 
   Future<void> doLogout() async {
     await authRepository.logout();
+    await baseCubit.setCurrentUser(null);
+    emit(MoreLogoutSuccess());
   }
 
   Future<void> changeLanguage(BuildContext context, bool value) async {

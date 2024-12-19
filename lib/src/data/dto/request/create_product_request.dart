@@ -8,5 +8,6 @@ class CreateProductRequest extends BaseRepoRequest {
     required super.storeId,
     required super.userId,
     required this.product,
+    super.appMode,
   });
 }

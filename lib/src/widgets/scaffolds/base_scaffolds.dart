@@ -19,6 +19,9 @@ class BaseScaffolds extends StatefulWidget {
   final bool isLoading;
   final Function(RouteAwareType type)? onRouteAware;
   final bool isInitialLoading;
+  final Color? backgroundColor;
+  final List<Colors>? backgroundColors;
+  final DecorationImage? imageDecoration;
   const BaseScaffolds({
     super.key,
     this.bottomNavigationBar,
@@ -29,6 +32,9 @@ class BaseScaffolds extends StatefulWidget {
     this.onRouteAware,
     this.isLoading = false,
     this.isInitialLoading = false,
+    this.backgroundColor,
+    this.backgroundColors,
+    this.imageDecoration,
   });
 
   @override
@@ -78,27 +84,46 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SafeArea(
-          top: false,
-          bottom: true,
-          child: Scaffold(
-            backgroundColor: Colors.grey.shade100,
-            drawerScrimColor: Colors.white,
-            appBar: widget.appBar,
-            body: Stack(
-              children: [
-                widget.body ?? Container(),
-                const DebuggerDragable(),
-              ],
+    return Container(
+      decoration: BoxDecoration(
+        color: widget.backgroundColor,
+        gradient: widget.backgroundColor == null
+            ? LinearGradient(
+                colors: [
+                  Colors.grey.shade800, // Start color
+                  Colors.grey.shade900, // End color
+                  Colors.black, // End color
+                  Colors.black, // End color
+                ],
+                stops: const [0.1, 0.3, 0.5, 0.6],
+                begin: Alignment.topLeft, // Gradient starting point
+                end: Alignment.bottomRight, // Gradient ending point
+              )
+            : null,
+        image: widget.imageDecoration,
+      ),
+      child: Stack(
+        children: [
+          SafeArea(
+            top: false,
+            bottom: true,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              drawerScrimColor: Colors.white,
+              appBar: widget.appBar,
+              body: Stack(
+                children: [
+                  widget.body ?? Container(),
+                  const DebuggerDragable(),
+                ],
+              ),
+              bottomNavigationBar: widget.bottomNavigationBar,
+              floatingActionButton: widget.floatingActionButton,
             ),
-            bottomNavigationBar: widget.bottomNavigationBar,
-            floatingActionButton: widget.floatingActionButton,
           ),
-        ),
-        if (widget.isLoading) const OverlayLoadingWidget(),
-      ],
+          if (widget.isLoading) const OverlayLoadingWidget(),
+        ],
+      ),
     );
   }
 }

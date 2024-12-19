@@ -12,6 +12,7 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
+import 'package:ez_shop_sync/src/pages/login/login_router.dart';
 import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
@@ -107,11 +108,15 @@ class _MorePageState extends State<MorePage> {
                 _cubit.refresh();
               }
             }
+          } else if (state is MoreLogoutSuccess) {
+            baseCubit.clearCurrentUserData();
+            LoginRouter(context).replace();
           }
         },
         child: BlocBuilder<MoreCubit, MoreState>(
           builder: (context, state) {
             return BaseScaffolds(
+              backgroundColor: Colors.white,
               isLoading: state is BaseLoading,
               appBar: AppbarWidget(
                 context,

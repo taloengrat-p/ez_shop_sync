@@ -32,13 +32,14 @@ class StoreAdapter extends TypeAdapter<Store> {
       categories:
           fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
       members: fields[18] == null ? [] : (fields[18] as List).cast<Member>(),
+      products: fields[19] == null ? [] : (fields[19] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(7)
       ..write(obj.ownerId)
       ..writeByte(8)
@@ -63,6 +64,8 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..write(obj.categories)
       ..writeByte(18)
       ..write(obj.members)
+      ..writeByte(19)
+      ..write(obj.products)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -110,6 +113,9 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       members: (json['members'] as List<dynamic>)
           .map((e) => Member.fromJson(e as Map<String, dynamic>))
           .toList(),
+      products: (json['products'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
@@ -127,4 +133,5 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'storeTheme': instance.storeTheme?.toJson(),
       'categories': instance.categories,
       'members': instance.members.map((e) => e.toJson()).toList(),
+      'products': instance.products,
     };

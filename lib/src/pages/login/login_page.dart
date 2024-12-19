@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
+import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -30,6 +32,7 @@ class _LoginState extends State<LoginPage> {
     super.initState();
     _cubit = LoginCubit(
       authRepository: GetIt.I<AuthRepository>(),
+      baseCubit: GetIt.I<BaseCubit>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -47,16 +50,30 @@ class _LoginState extends State<LoginPage> {
     return BlocProvider(
       create: (context) => _cubit,
       child: BlocListener<LoginCubit, LoginState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is LoginSuccess) {
+            MainRouter(context).replace();
+          }
+        },
         child: BlocBuilder<LoginCubit, LoginState>(
           builder: (context, state) {
             return BaseScaffolds(
+              imageDecoration: const DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/images/cover.jpg'),
+              ),
+              backgroundColor: Colors.transparent,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
+                color: Colors.transparent,
                 title: _cubit.screenMode == ScreenMode.login
                     ? LocaleKeys.loginPage_login.tr()
                     : LocaleKeys.loginPage_register.tr(),
+                titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -66,14 +83,32 @@ class _LoginState extends State<LoginPage> {
                       _cubit.screenMode == ScreenMode.register
                           ? LocaleKeys.loginPage_login.tr()
                           : LocaleKeys.loginPage_register.tr(),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                          ),
                     ),
                   )
                 ],
               ).build(),
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildPage(context, state),
+              body: Column(
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/images/shopping-bag-white.png',
+                      height: 100,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      color: Colors.white,
+                      child: _buildPage(context, state),
+                    ),
+                  ),
+                ],
               ),
             );
           },
@@ -83,17 +118,10 @@ class _LoginState extends State<LoginPage> {
   }
 
   Widget _buildPage(BuildContext context, LoginState state) {
-    final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: size.width * 0.3,
-            ),
-          ),
           const SizedBox(
             height: 16,
           ),
@@ -103,6 +131,7 @@ class _LoginState extends State<LoginPage> {
               children: [
                 TextFormFieldUiWidget(
                   label: LocaleKeys.loginPage_username.tr(),
+                  labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
                   hintText: LocaleKeys.loginPage_yourEmail.tr(),
                   errorText: state is LoginFailure ? state.errorType?.label : null,
                   onChanged: (value) {
@@ -111,6 +140,7 @@ class _LoginState extends State<LoginPage> {
                 ),
                 TextFormFieldUiWidget(
                   label: LocaleKeys.loginPage_password.tr(),
+                  labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
                   obscureText: !_cubit.isVisiblePassword,
                   errorText: state is LoginFailure ? state.errorType?.label : null,
                   onChanged: (value) {
@@ -144,7 +174,11 @@ class _LoginState extends State<LoginPage> {
             height: 32,
           ),
           ButtonWidget(
-            disabled: _cubit.isDisabled || state is LoginLoading,
+            textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+            disabled: state is LoginLoading,
             label: _cubit.screenMode == ScreenMode.login
                 ? LocaleKeys.loginPage_login.tr()
                 : LocaleKeys.loginPage_register.tr(),
