@@ -153,6 +153,22 @@ class _LoginState extends State<LoginPage> {
                     icon: Icon(_cubit.isVisiblePassword ? Icons.visibility_rounded : Icons.visibility_off_rounded),
                   ),
                 ),
+                if (_cubit.screenMode == ScreenMode.register)
+                  TextFormFieldUiWidget(
+                    label: LocaleKeys.loginPage_confirmPassword.tr(),
+                    labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
+                    obscureText: !_cubit.isVisiblePassword,
+                    errorText: state is LoginPasswordNotMatch ? LocaleKeys.loginPage_confirmPasswordInvalid.tr() : null,
+                    onChanged: (value) {
+                      _cubit.setConfirmPassword(value);
+                    },
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _cubit.toggleVisiblePassword();
+                      },
+                      icon: Icon(_cubit.isVisiblePassword ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+                    ),
+                  ),
                 // AnimatedOpacity(
                 //   opacity: _cubit.screenMode == ScreenMode.register ? 1.0 : 0.0,
                 //   duration: const Duration(milliseconds: 800),

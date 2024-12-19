@@ -86,20 +86,20 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: widget.backgroundColor,
-        gradient: widget.backgroundColor == null
-            ? LinearGradient(
-                colors: [
-                  Colors.grey.shade800, // Start color
-                  Colors.grey.shade900, // End color
-                  Colors.black, // End color
-                  Colors.black, // End color
-                ],
-                stops: const [0.1, 0.3, 0.5, 0.6],
-                begin: Alignment.topLeft, // Gradient starting point
-                end: Alignment.bottomRight, // Gradient ending point
-              )
-            : null,
+        color: widget.backgroundColor ?? Colors.white,
+        // gradient: widget.backgroundColor == null
+        //     ? LinearGradient(
+        //         colors: [
+        //           Colors.grey.shade800, // Start color
+        //           Colors.grey.shade900, // End color
+        //           Colors.black, // End color
+        //           Colors.black, // End color
+        //         ],
+        //         stops: const [0.1, 0.3, 0.5, 0.6],
+        //         begin: Alignment.topLeft, // Gradient starting point
+        //         end: Alignment.bottomRight, // Gradient ending point
+        //       )
+        //     : null,
         image: widget.imageDecoration,
       ),
       child: Stack(

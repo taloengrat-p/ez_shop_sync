@@ -64,6 +64,8 @@ class Product extends BaseHiveObject {
   @HiveField(24, defaultValue: null)
   List<ProductType>? productTypeList;
 
+  num? get allQuantity => productTypeList?.fold(0, (sum, item) => (sum ?? 0) + (item.price ?? 0));
+
   Product({
     super.id,
     BaseHiveData? super.info,
@@ -84,10 +86,10 @@ class Product extends BaseHiveObject {
     this.productTypeList,
   });
 
-  List<num>? get priceRange => priceCategories?.entries.map((mapEntry) => mapEntry.value).toList() ?? [];
+  List<num>? get priceRange => productTypeList?.map((e) => e.price ?? 0).toList() ?? [];
 
   // num
-  String get priceStringDisplay => (priceCategories?.isEmpty ?? true) || (priceRange?.isEmpty ?? true)
+  String get priceStringDisplay => (productTypeList?.isEmpty ?? true) || (priceRange?.isEmpty ?? true)
       ? ''.elseDisplay().prefixCurrency()
       : (priceRange?.length ?? false) == 1
           ? priceRange?.first.toString().prefixCurrency() ?? ''.elseDisplay()

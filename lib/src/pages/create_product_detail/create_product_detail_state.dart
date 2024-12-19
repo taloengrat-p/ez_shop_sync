@@ -33,6 +33,19 @@ class CreateProductDetailInitial extends CreateProductDetailState {
   String toString() => 'CreateProductDetailInitial';
 }
 
+class CreateProductDetailUpdateImage extends CreateProductDetailState {
+  final dynamic image;
+
+  const CreateProductDetailUpdateImage(
+    this.image,
+  );
+  @override
+  String toString() => 'CreateProductDetailUpdateImage $image';
+
+  @override
+  List<Object?> get props => [image];
+}
+
 class CreateProductDetailLoading extends CreateProductDetailState {
   @override
   String toString() => 'CreateProductDetailLoading';

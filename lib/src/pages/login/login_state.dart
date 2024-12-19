@@ -32,6 +32,11 @@ class LoginScreenModeChange extends LoginState {
   List<Object?> get props => [mode];
 }
 
+class LoginPasswordNotMatch extends LoginState {
+  @override
+  String toString() => 'LoginPasswordNotMatch';
+}
+
 class LoginInitial extends LoginState {
   @override
   String toString() => 'LoginInitial';

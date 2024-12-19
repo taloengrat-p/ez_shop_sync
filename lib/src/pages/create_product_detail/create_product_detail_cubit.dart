@@ -49,6 +49,7 @@ class CreateProductDetailCubit extends Cubit<CreateProductDetailState> {
 
   void setImage(String? value) {
     productImage = value;
+    emit(CreateProductDetailUpdateImage(productImage));
   }
 
   void setDesc(String desc) {

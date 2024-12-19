@@ -279,12 +279,16 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   sortProduct(ProductSortType sortType) {
-    if (sortType == ProductSortType.asc) {
-      products.sort(
-          (a, b) => a.info?.createDate!.millisecondsSinceEpoch.compareTo(b.info?.createDate!.millisecondsSinceEpoch));
-    } else {
-      products.sort(
-          (a, b) => b.info?.createDate!.millisecondsSinceEpoch.compareTo(a.info?.createDate!.millisecondsSinceEpoch));
+    try {
+      if (sortType == ProductSortType.asc) {
+        products.sort(
+            (a, b) => a.info?.createDate!.millisecondsSinceEpoch.compareTo(b.info?.createDate!.millisecondsSinceEpoch));
+      } else {
+        products.sort(
+            (a, b) => b.info?.createDate!.millisecondsSinceEpoch.compareTo(a.info?.createDate!.millisecondsSinceEpoch));
+      }
+    } catch (e) {
+      log('sortProduct error $e');
     }
   }
 

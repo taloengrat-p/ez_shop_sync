@@ -101,9 +101,10 @@ class _MainPageState extends State<MainPage> {
                         : const Icon(
                             CupertinoIcons.bag_badge_plus,
                           ),
-                    onPressed: () {
-                      AddProductRouter(context).navigate();
-                    },
+                    onPressed: null,
+                    //  () {
+                    //   AddProductRouter(context).navigate();
+                    // },
                   ),
                   const SizedBox(
                     width: 8,
@@ -115,9 +116,10 @@ class _MainPageState extends State<MainPage> {
                             child: const Icon(CupertinoIcons.cart),
                           )
                         : const Icon(CupertinoIcons.cart),
-                    onPressed: () {
-                      CartRouter(context).navigate();
-                    },
+                    onPressed: null,
+                    //  () {
+                    //   CartRouter(context).navigate();
+                    // },
                   ),
                   const SizedBox(
                     width: 8,

@@ -29,6 +29,7 @@ class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
       builder: (context, state) {
         return (productDetailCubit.productHistory?.isEmpty ?? true)
             ? EmptyDataWidget(
+                width: 200,
                 message: LocaleKeys.productHistory_productHistoryEmpty.tr(),
               )
             : ListView.separated(

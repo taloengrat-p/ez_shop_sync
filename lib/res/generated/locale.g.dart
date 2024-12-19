@@ -174,6 +174,8 @@ abstract class  LocaleKeys {
   static const loginPage_username = 'loginPage.username';
   static const loginPage_password = 'loginPage.password';
   static const loginPage_yourEmail = 'loginPage.yourEmail';
+  static const loginPage_confirmPassword = 'loginPage.confirmPassword';
+  static const loginPage_confirmPasswordInvalid = 'loginPage.confirmPasswordInvalid';
   static const loginPage = 'loginPage';
   static const errorMessage_loginUserNotFound = 'errorMessage.loginUserNotFound';
   static const errorMessage_loginWrongPassword = 'errorMessage.loginWrongPassword';

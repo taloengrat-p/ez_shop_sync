@@ -13,6 +13,7 @@ class LoginCubit extends Cubit<LoginState> {
   final BaseCubit baseCubit;
   String username = '';
   String password = '';
+  String confirmPassword = '';
   // String phoneNumber = '';
   ScreenMode screenMode = ScreenMode.login;
   bool isVisiblePassword = false;
@@ -34,10 +35,20 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginRefresh(password));
   }
 
+  void setConfirmPassword(String? value) {
+    confirmPassword = value ?? '';
+    emit(LoginRefresh(confirmPassword));
+  }
+
   void register() async {
+    if (password != confirmPassword) {
+      emit(LoginPasswordNotMatch());
+      return;
+    }
+
     final request = CreateRegisterRequest(
-      email: username,
-      password: password,
+      email: username.trim(),
+      password: password.trim(),
       // phoneNumber: phoneNumber,
     );
 

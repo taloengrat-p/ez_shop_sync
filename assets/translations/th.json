@@ -181,7 +181,9 @@
     "register": "สมัครสมาชิก",
     "username": "ชื่อผู้ใช้",
     "password": "รหัสผ่าน",
-    "yourEmail": "อีเมล์ของคุณ"
+    "yourEmail": "อีเมล์ของคุณ",
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "confirmPasswordInvalid": "ยืนยันรหัสผ่านไม่ถูกต้อง"
   },
   "errorMessage": {
     "loginUserNotFound": "ไม่พบผู้ใช้'",

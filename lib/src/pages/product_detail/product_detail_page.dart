@@ -245,7 +245,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ],
             ),
             Text(
-              '${cubit.product?.quantity.elseDisplay()} ${LocaleKeys.units_piece.tr()}',
+              '${cubit.product?.allQuantity.elseDisplay()} ${LocaleKeys.units_piece.tr()}',
               style: const TextStyle(fontSize: 18),
             ),
           ],

@@ -316,7 +316,7 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.tagManagement.tr(),
           value: 3,
-          disabled: false,
+          disabled: true,
           onPressed: () {
             TagManagementRouter(context).navigate();
           },
@@ -324,7 +324,7 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.categoryManagement.tr(),
           value: 3,
-          disabled: false,
+          disabled: true,
           onPressed: () {
             CategoryManagementRouter(context).navigate();
           },
@@ -407,7 +407,7 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.myMenu.tr(),
       items: [
         MenuItemModel(
-          // disabled: true,
+          disabled: true,
           title: LocaleKeys.orderHistory.tr(),
           value: 1,
           onPressed: () {
@@ -415,7 +415,7 @@ class _MorePageState extends State<MorePage> {
           },
         ),
         MenuItemModel(
-          // disabled: true,
+          disabled: true,
           title: LocaleKeys.addStockHistory.tr(),
           value: 2,
           onPressed: () {

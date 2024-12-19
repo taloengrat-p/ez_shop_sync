@@ -180,7 +180,9 @@
     "register": "Register",
     "username": "Username",
     "password": "Password",
-    "yourEmail": "Your email"
+    "yourEmail": "Your email",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordInvalid": "Confirm password invalid"
   },
   "errorMessage": {
     "loginUserNotFound": "User not found",
