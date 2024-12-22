@@ -31,7 +31,8 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
   String get displayNameOriginal => baseCubit.currentUsername;
 
-  String get profilePhoneNumber => user?.phoneNumber.elseDisplay() ?? elseDisplay();
+  String get profilePhoneNumber =>
+      user?.phoneNumber.elseDisplay() ?? elseDisplay();
 
   bool get hasEditChange => (displayNameEditor != displayNameOriginal);
   // ((phoneEditor != phoneOriginal) || (emailEditor != emailOriginal)) &&
@@ -39,7 +40,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
 
   String get profileEmail => user?.email.elseDisplay() ?? elseDisplay();
 
-  void initial() async {
+  Future<void> initial() async {
     emit(ProfileSettingsLoading());
     await user?.reload();
     displayNameEditor = displayNameOriginal;

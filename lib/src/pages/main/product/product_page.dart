@@ -33,6 +33,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -42,16 +43,26 @@ class ProductPage extends StatefulWidget {
 }
 
 class ProductPageState extends State<ProductPage> implements IProductPage {
-  late ProductCubit cubit;
+  late ProductCubit _cubit;
+  late BaseCubit _baseCubit;
   final _searchTextController = TextEditingController();
+  final _refreshListViewController = RefreshController(initialRefresh: false);
+  final _refreshGridViewController = RefreshController(initialRefresh: false);
   @override
   void initState() {
     log('[init]', name: runtimeType.toString());
     super.initState();
-    cubit = ProductCubit(
+    _baseCubit = GetIt.I.get<BaseCubit>();
+    _cubit = ProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
-      baseCubit: GetIt.I.get<BaseCubit>(),
+      baseCubit: _baseCubit,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      if (_cubit.products.isEmpty) {
+        _cubit.init();
+      }
+    });
   }
 
   @override
@@ -64,8 +75,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        cubit.init();
-        return cubit;
+        return _cubit;
       },
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         return BaseScaffolds(
@@ -73,14 +83,15 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           appBar: AppbarWidget(
             context,
             centerTitle: false,
-            title: '${LocaleKeys.inventory.tr()}${cubit.productCount}',
-            titleWidget: cubit.screenMode == ScreenMode.search
+            title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
+            titleWidget: _cubit.screenMode == ScreenMode.search
                 ? TextField(
                     controller: _searchTextController,
                     autofocus: true,
                     decoration: AppInputDecoration(
                       context,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 13, horizontal: 8),
                       suffixIcon: IconButton(
                         icon: const Icon(
                           Icons.clear,
@@ -88,25 +99,25 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                         ),
                         onPressed: () {
                           _searchTextController.clear();
-                          cubit.clearSearchText();
+                          _cubit.clearSearchText();
                         },
                       ),
                     ).build(),
-                    onChanged: cubit.setSearchText,
+                    onChanged: _cubit.setSearchText,
                   )
                 : null,
             actions: [
-              if (cubit.screenMode == ScreenMode.search)
+              if (_cubit.screenMode == ScreenMode.search)
                 TextButton(
                   onPressed: () {
                     _searchTextController.clear();
-                    cubit.doSwitchToDisplay();
+                    _cubit.doSwitchToDisplay();
                   },
                   child: Text(LocaleKeys.cancel.tr()),
                 ),
-              if (cubit.screenMode == ScreenMode.display) ...[
+              if (_cubit.screenMode == ScreenMode.display) ...[
                 ActionAppbarButtonWidget(
-                  onPressed: cubit.doSwitchToSearch,
+                  onPressed: _cubit.doSwitchToSearch,
                   child: const Icon(
                     CupertinoIcons.search,
                   ),
@@ -119,9 +130,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                     CupertinoIcons.add,
                   ),
                   onPressed: () async {
-                    final result = await CreateProductRouter(context).navigate();
+                    final result =
+                        await CreateProductRouter(context).navigate();
                     if (result is BaseArgrument && result.refresh) {
-                      cubit.init();
+                      _cubit.init();
                     }
                   },
                 ),
@@ -142,17 +154,21 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       actions: [
         IconButton(
           onPressed: () {
-            cubit.changeSortType();
+            _cubit.changeSortType();
           },
           icon: Icon(
-            cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down,
+            _cubit.sortType == ProductSortType.asc
+                ? CupertinoIcons.sort_up
+                : CupertinoIcons.sort_down,
           ),
         ),
         IconButton(
           onPressed: () {
-            cubit.changeDisplayType();
+            _cubit.changeDisplayType();
           },
-          icon: Icon(cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
+          icon: Icon(_cubit.displayType == ProductDisplayType.grid
+              ? Icons.list_rounded
+              : Icons.grid_view),
         ),
       ],
       children: [
@@ -167,58 +183,68 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       var size = MediaQuery.of(context).size;
       final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
       final double itemWidth = size.width / crossAxisCount;
-      return GridView.count(
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: (itemWidth / itemHeight),
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        children: cubit.products
-            .map(
-              (e) => GestureDetector(
-                onTap: () => onClickGoToDetailPage(e),
-                child: ProductGridItemWidget(
-                  key: ValueKey(e.id),
-                  product: e,
-                  iProductItem: this,
+      return SmartRefresher(
+        controller: _refreshGridViewController,
+        onRefresh: _onRefresh,
+        child: GridView.count(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: (itemWidth / itemHeight),
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          children: _cubit.products
+              .map(
+                (e) => GestureDetector(
+                  onTap: () => onClickGoToDetailPage(e),
+                  child: ProductGridItemWidget(
+                    key: ValueKey(e.id),
+                    product: e,
+                    iProductItem: this,
+                  ),
                 ),
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       );
     });
   }
 
   Widget buildListProduct() {
-    return ListView.separated(
-      itemCount: cubit.products.length,
-      itemBuilder: (context, index) {
-        final product = cubit.products.elementAt(index);
+    return SmartRefresher(
+      controller: _refreshListViewController,
+      onRefresh: _onRefresh,
+      child: ListView.separated(
+        itemCount: _cubit.products.length,
+        itemBuilder: (context, index) {
+          final product = _cubit.products.elementAt(index);
 
-        return GestureDetector(
-          onTap: () => onClickGoToDetailPage(product),
-          child: ProductListItemWidget(
-            product: product,
-            iProductItem: this,
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(
-          height: DimensionsKeys.gap,
-        );
-      },
+          return GestureDetector(
+            onTap: () => onClickGoToDetailPage(product),
+            child: ProductListItemWidget(
+              product: product,
+              iProductItem: this,
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(
+            height: DimensionsKeys.gap,
+          );
+        },
+      ),
     );
   }
 
   Widget buildContent() {
     var size = MediaQuery.of(context).size;
 
-    if (cubit.products.isNotEmpty) {
+    if (_cubit.products.isNotEmpty) {
       return Expanded(
         child: ContainerScrollableWidget(
           radius: DimensionsKeys.radius + 4,
           paddingAll: 8,
-          child: cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct(),
+          child: (_cubit.displayType == ProductDisplayType.grid
+              ? buildGridViewProduct()
+              : buildListProduct()),
         ),
       );
     } else {
@@ -239,7 +265,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showAddStockDialog(context, product);
 
     if (result is BottomSheetAddStockSuccess) {
-      cubit.addProductToStock(
+      _cubit.addProductToStock(
         product.copyWith(
           priceSelected: result.priceCategorySelected,
           quantity: result.qty,
@@ -254,7 +280,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showAddCartDialog(context, product);
 
     if (result is BottomSheetAddCartSuccess) {
-      cubit.addCart(
+      _cubit.addCart(
         product.copyWith(
           quantity: result.qty,
           priceSelected: result.priceCategorySelected,
@@ -268,7 +294,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showConfirmDelete(context);
 
     if (result == ConfirmDialogResult.ok) {
-      cubit.deleteProduct(productId);
+      _cubit.deleteProduct(_baseCubit.store!.id, productId);
     }
   }
 
@@ -276,17 +302,33 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   onEdit(String productId) async {
     final result = await CreateProductRouter(context).navigate(
       argruments: ProductEditArgrument(
-        cubit.products.firstWhere((e) => e.id == productId),
+        _cubit.products.firstWhere((e) => e.id == productId),
       ),
     );
   }
 
   @override
   onClickGoToDetailPage(Product product) async {
-    final result = await ProductDetailRouter(context).navigate(argruments: product);
+    final result =
+        await ProductDetailRouter(context).navigate(argruments: product);
 
     if (result is BaseArgrument && result.refresh) {
-      cubit.init();
+      _cubit.init();
+    }
+  }
+
+  void _onRefresh() async {
+    if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.requestLoading();
+    } else {
+      _refreshListViewController.requestLoading();
+    }
+    await _cubit.init();
+
+    if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.refreshCompleted();
+    } else {
+      _refreshListViewController.refreshCompleted();
     }
   }
 }

@@ -93,10 +93,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ? null
                         : () async {
                             final result = await CreateProductRouter(context)
-                                .navigate(argruments: ProductEditArgrument(cubit.product!));
+                                .navigate(
+                                    argruments:
+                                        ProductEditArgrument(cubit.product!));
 
-                            if (result is BaseArgrument && result.refresh) {
-                              cubit.refresh();
+                            if (result is CreateProductUpdateSuccess) {
+                              cubit.refresh(product: result.product);
                             }
                           },
                     child: const Icon(
@@ -131,16 +133,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     width: 8,
                   ),
                   ContainerCircleWidget(
-                    child: cubit.baseCubit.cartCount != 0
-                        ? Badge.count(
-                            count: cubit.baseCubit.cartCount,
-                            child: const Icon(CupertinoIcons.cart),
-                          )
-                        : const Icon(CupertinoIcons.cart),
-                    onPressed: () {
-                      CartRouter(context).navigate();
-                    },
-                  ),
+                      child: cubit.baseCubit.cartCount != 0
+                          ? Badge.count(
+                              count: cubit.baseCubit.cartCount,
+                              child: const Icon(CupertinoIcons.cart),
+                            )
+                          : const Icon(CupertinoIcons.cart),
+                      onPressed: null
+                      //  () {
+                      //   CartRouter(context).navigate();
+                      // },
+                      ),
                   const SizedBox(
                     width: 8,
                   ),
@@ -156,7 +159,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         children: [
                           Expanded(
                             child: ButtonIconLabelWidget(
-                              icon: const DrawableIconWidget(Drawables.settings),
+                              icon:
+                                  const DrawableIconWidget(Drawables.settings),
                               label: LocaleKeys.settings.tr(),
                               onPressed: () {
                                 ProductSettingsRouter(context).navigate();
@@ -165,17 +169,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                           Expanded(
                             child: ButtonIconLabelWidget(
-                              icon: const Icon(CupertinoIcons.cart_badge_plus),
+                              icon: const Icon(
+                                CupertinoIcons.cart_badge_plus,
+                                color: Colors.white,
+                              ),
                               color: Colors.orange,
                               label: LocaleKeys.addCart.tr(),
+                              labelStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.white),
                               onPressed: () async {
-                                final result = await DialogUtils.showAddCartDialog(context, cubit.product);
+                                final result =
+                                    await DialogUtils.showAddCartDialog(
+                                        context, cubit.product);
 
                                 if (result is BottomSheetAddCartSuccess) {
                                   cubit.addCart(
                                     cubit.product?.copyWith(
                                       quantity: result.qty,
-                                      priceSelected: result.priceCategorySelected,
+                                      priceSelected:
+                                          result.priceCategorySelected,
                                     ),
                                   );
                                 }
@@ -189,11 +203,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       child: ButtonIconLabelWidget(
                         icon: const Icon(
                           CupertinoIcons.bag_badge_plus,
+                          color: Colors.white,
                         ),
                         color: Colors.amber,
                         label: LocaleKeys.addStock.tr(),
+                        labelStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.white),
                         onPressed: () async {
-                          final result = await DialogUtils.showAddStockDialog(context, cubit.product);
+                          final result = await DialogUtils.showAddStockDialog(
+                              context, cubit.product);
 
                           if (result is BottomSheetAddStockSuccess) {
                             cubit.addStock(

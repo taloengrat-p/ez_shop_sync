@@ -9,6 +9,8 @@ class AddUserCubit extends Cubit<AddUserState> {
   String email = '';
   final StoreServerRepository storeRepository;
   final BaseCubit baseCubit;
+
+  List<RoleType>? roleSelected;
   AddUserCubit({
     required this.storeRepository,
     required this.baseCubit,
@@ -25,7 +27,7 @@ class AddUserCubit extends Cubit<AddUserState> {
       storeId: baseCubit.store!.id,
       email: email,
       storeName: baseCubit.store?.name,
-      role: RoleType.admin,
+      role: roleSelected?.first ?? RoleType.undefined,
     );
 
     result.when(
@@ -36,5 +38,9 @@ class AddUserCubit extends Cubit<AddUserState> {
         emit(AddUserFailure(errorType));
       },
     );
+  }
+
+  setRoleSelect(List<RoleType> p1) {
+    roleSelected = p1;
   }
 }

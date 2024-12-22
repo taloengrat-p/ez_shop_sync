@@ -35,7 +35,7 @@ class AppbarWidget {
       leading: (parentRoute?.impliesAppBarDismissal ?? false)
           ? ContainerCircleWidget(
               margin: const EdgeInsets.only(left: 8),
-              backgroundColor: ColorKeys.primary.withOpacity(0.3),
+              backgroundColor: ColorKeys.primary.withOpacity(0.1),
               child: Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: ColorKeys.primary,

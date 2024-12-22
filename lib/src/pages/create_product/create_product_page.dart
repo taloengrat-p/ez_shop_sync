@@ -302,9 +302,9 @@ class CreateProductPageState extends State<CreateProductPage> {
                         child: FormCustomFieldWidget<FormCreateCustomFieldArgrument>(
                           key: const ValueKey('form-create-custom-field'),
                           tag: 'form-create-custom-field',
-                          widgetEditor: FormCreateCustomField(
-                            screenMode: ScreenMode.edit,
-                          ),
+                          // widgetEditor: FormCreateCustomField(
+                          //   screenMode: ScreenMode.edit,
+                          // ),
                           widgetDisplayBuilder: (context, item) {
                             return FormCreateCustomField(
                               screenMode: ScreenMode.display,
@@ -344,7 +344,7 @@ class CreateProductPageState extends State<CreateProductPage> {
               label: cubit.screenMode == ScreenMode.create ? LocaleKeys.button_next.tr() : LocaleKeys.button_save.tr(),
               onPressed: () {
                 if (cubit.screenMode == ScreenMode.create) {
-                  cubit.submit();
+                  cubit.submitCreate();
                 } else {
                   cubit.saveEdit();
                 }

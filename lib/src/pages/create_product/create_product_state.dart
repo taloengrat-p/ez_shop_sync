@@ -24,8 +24,19 @@ class CreateProductLoading extends CreateProductState {
 }
 
 class CreateProductUpdateSuccess extends CreateProductState {
+  final Product? product;
+
+  CreateProductUpdateSuccess(this.product);
   @override
-  String toString() => 'CreateProductUpdateSuccess';
+  String toString() => 'CreateProductUpdateSuccess $product';
+
+  @override
+  List<Object?> get props => [product];
+}
+
+class CreateProductUpdateFailure extends CreateProductState {
+  @override
+  String toString() => 'CreateProductUpdateFailure';
 }
 
 class CreateProductAddCustomField extends CreateProductState {
@@ -35,7 +46,8 @@ class CreateProductAddCustomField extends CreateProductState {
   const CreateProductAddCustomField(this.name, this.value);
 
   @override
-  String toString() => 'CreateProductAddCustomField(name: $name, value: $value)';
+  String toString() =>
+      'CreateProductAddCustomField(name: $name, value: $value)';
 
   @override
   List<Object?> get props => [name, value];
