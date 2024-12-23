@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
@@ -68,7 +69,7 @@ class _AddUserState extends State<AddUserPage> {
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: "AddUser",
+                title: LocaleKeys.addUserPage_title.tr(),
                 actions: [],
               ).build(),
               body: _buildPage(context, state),
@@ -94,7 +95,7 @@ class _AddUserState extends State<AddUserPage> {
         child: Column(
           children: [
             TextFormFieldUiWidget(
-              label: 'Email',
+              label: LocaleKeys.email.tr(),
               onChanged: _cubit.doSetEmail,
               errorText: state is AddUserFailure ? state.errorType?.label : null,
             ),

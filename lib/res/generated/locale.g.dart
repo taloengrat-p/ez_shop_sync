@@ -184,5 +184,7 @@ abstract class  LocaleKeys {
   static const errorMessage_emailAlreadyUse = 'errorMessage.emailAlreadyUse';
   static const errorMessage = 'errorMessage';
   static const verifyPhoneNumber = 'verifyPhoneNumber';
+  static const addUserPage_title = 'addUserPage.title';
+  static const addUserPage = 'addUserPage';
 
 }

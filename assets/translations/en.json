@@ -191,5 +191,8 @@
     "emailInvalid": "Email format is invalid",
     "emailAlreadyUse": "This email already in use"
   },
-  "verifyPhoneNumber": "Verify phone number"
+  "verifyPhoneNumber": "Verify phone number",
+  "addUserPage": {
+    "title": "Add User"
+  }
 }

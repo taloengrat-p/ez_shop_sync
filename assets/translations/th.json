@@ -192,5 +192,8 @@
     "emailInvalid": "รูปแบบอีเมล์ไม่ถูกต้อง",
     "emailAlreadyUse": "อีเมลนี้ถูกใช้แล้ว"
   },
-  "verifyPhoneNumber": "ยืนยันหมายเลขโทรศัพท์"
+  "verifyPhoneNumber": "ยืนยันหมายเลขโทรศัพท์",
+  "addUserPage": {
+    "title": "เพิ่มผู้ใช้งาน"
+  }
 }
