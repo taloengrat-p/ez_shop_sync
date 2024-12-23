@@ -49,6 +49,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   final _searchTextController = TextEditingController();
   final _refreshListViewController = RefreshController(initialRefresh: false);
   final _refreshGridViewController = RefreshController(initialRefresh: false);
+  final _refreshEmptyViewController = RefreshController(initialRefresh: false);
   @override
   void initState() {
     log('[init]', name: runtimeType.toString());
@@ -247,11 +248,15 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           });
     } else {
       return Expanded(
-        child: Center(
-          child: EmptyDataWidget(
-            height: size.height * 0.45,
-            width: 200,
-            message: LocaleKeys.productsEmpty.tr(),
+        child: SmartRefresher(
+          controller: _refreshEmptyViewController,
+          onRefresh: _onRefresh,
+          child: Center(
+            child: EmptyDataWidget(
+              height: size.height * 0.45,
+              width: 200,
+              message: LocaleKeys.productsEmpty.tr(),
+            ),
           ),
         ),
       );
@@ -315,14 +320,18 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   void _onRefresh() async {
-    if (_cubit.displayType == ProductDisplayType.grid) {
+    if (_cubit.products.isEmpty) {
+      _refreshEmptyViewController.requestLoading();
+    } else if (_cubit.displayType == ProductDisplayType.grid) {
       _refreshGridViewController.requestLoading();
     } else {
       _refreshListViewController.requestLoading();
     }
     await _cubit.init();
 
-    if (_cubit.displayType == ProductDisplayType.grid) {
+    if (_cubit.products.isEmpty) {
+      _refreshEmptyViewController.refreshCompleted();
+    } else if (_cubit.displayType == ProductDisplayType.grid) {
       _refreshGridViewController.refreshCompleted();
     } else {
       _refreshListViewController.refreshCompleted();
