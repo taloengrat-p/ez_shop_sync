@@ -5,7 +5,8 @@ import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widg
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget {
+class TextFormFieldDropdownSelectWidget<T extends Object>
+    extends StatefulWidget {
   final String label;
   final MultiSelectController<T> controller;
   final Function(T? value)? onSelected;
@@ -38,10 +39,12 @@ class TextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget
   });
 
   @override
-  _TextFormFieldDropdownSelectWidgetState createState() => _TextFormFieldDropdownSelectWidgetState<T>();
+  _TextFormFieldDropdownSelectWidgetState createState() =>
+      _TextFormFieldDropdownSelectWidgetState<T>();
 }
 
-class _TextFormFieldDropdownSelectWidgetState<T extends Object> extends State<TextFormFieldDropdownSelectWidget<T>> {
+class _TextFormFieldDropdownSelectWidgetState<T extends Object>
+    extends State<TextFormFieldDropdownSelectWidget<T>> {
   @override
   void initState() {
     super.initState();
@@ -50,7 +53,8 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object> extends State<Te
   }
 
   @override
-  void didUpdateWidget(covariant TextFormFieldDropdownSelectWidget<T> oldWidget) {
+  void didUpdateWidget(
+      covariant TextFormFieldDropdownSelectWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     Future.delayed(
       Duration.zero,
@@ -72,7 +76,7 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object> extends State<Te
           border: OutlineInputBorder(
             gapPadding: 0,
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: ColorKeys.primary, width: 1),
+            borderSide: BorderSide(color: Colors.grey, width: 1),
           ),
         ),
         items: widget.items,
@@ -94,12 +98,12 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object> extends State<Te
           border: OutlineInputBorder(
             gapPadding: 0,
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: ColorKeys.primary, width: 1),
+            borderSide: BorderSide(color: Colors.grey, width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             gapPadding: 0,
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: ColorKeys.primary, width: 2),
+            borderSide: BorderSide(color: ColorKeys.black, width: 1.5),
           ),
         ),
         dropdownDecoration: DropdownDecoration(

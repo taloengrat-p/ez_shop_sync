@@ -91,8 +91,39 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     emit(CreateProductUpdateImages(_productEditor?.imagesPath));
   }
 
-  void submit() async {
-    createProduct();
+  void submitCreate() async {
+    emit(CreateProductLoading());
+    List<String> imageDetailFileName = [];
+
+    if (_productEditor?.imagesPath?.isNotEmpty ?? false) {
+      for (var element in _productEditor!.imagesPath!) {
+        final fileBytes = await FolderFileUtils.getFileBytes(File(element));
+        final imageName = const Uuid().v1().substring(0, 10);
+        final imageSaveModel =
+            (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+        imageDetailFileName.add(imageSaveModel.fileName);
+      }
+    }
+
+    checkTempCustomFieldRemaining();
+    checkTempPriceCategoryRemaining();
+
+    if (_productEditor == null) {
+      throw ('createProduct Product editor is Null');
+    }
+
+    final result = await productRepository.create(
+      CreateProductRequest(
+        storeId: currentStore!.id,
+        userId: currentUser?.uid ?? '',
+        product: _productEditor!,
+        appMode: AppMode.server,
+      ),
+    );
+
+    Future.delayed(Duration.zero, () {
+      emit(CreateProductSuccess(result));
+    });
   }
 
   setQuantity(String? value) {
@@ -154,43 +185,12 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   void setArgruments(ProductEditArgrument args) {
+    _productOriginal = args.product;
     _productEditor = args.product;
 
+    log('_productEditor $_productEditor');
+    emit(CreateProductInitial());
     setScreenMode(ScreenMode.edit);
-  }
-
-  Future<void> createProduct() async {
-    emit(CreateProductLoading());
-    List<String> imageDetailFileName = [];
-
-    if (_productEditor?.imagesPath?.isNotEmpty ?? false) {
-      for (var element in _productEditor!.imagesPath!) {
-        final fileBytes = await FolderFileUtils.getFileBytes(File(element));
-        final imageName = const Uuid().v1().substring(0, 10);
-        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
-        imageDetailFileName.add(imageSaveModel.fileName);
-      }
-    }
-
-    checkTempCustomFieldRemaining();
-    checkTempPriceCategoryRemaining();
-
-    if (_productEditor == null) {
-      throw ('createProduct Product editor is Null');
-    }
-
-    final result = await productRepository.create(
-      CreateProductRequest(
-        storeId: currentStore!.id,
-        userId: currentUser?.uid ?? '',
-        product: _productEditor!,
-        appMode: AppMode.server,
-      ),
-    );
-
-    Future.delayed(Duration.zero, () {
-      emit(CreateProductSuccess(result));
-    });
   }
 
   checkTempCustomFieldRemaining() {
@@ -208,8 +208,21 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     checkTempPriceCategoryRemaining();
 
     emit(CreateProductLoading());
-    await productRepository.update(_productEditor!.id, _productEditor!);
-    emit(CreateProductUpdateSuccess());
+    final result = await productRepository.update(
+      _productEditor!.storeId,
+      _productEditor!.id,
+      _productEditor!,
+      appMode: AppMode.server,
+    );
+
+    result.when(
+      success: (success) {
+        emit(CreateProductUpdateSuccess(_productEditor));
+      },
+      failure: (error, {errorType}) {
+        emit(CreateProductUpdateFailure());
+      },
+    );
   }
 
   void setTempPriceCategoryName(String? value) {

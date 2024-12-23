@@ -36,9 +36,10 @@ class ButtonIconLabelWidget extends StatelessWidget {
               child: FittedBox(
                 child: Text(
                   label,
-                  style: labelStyle?.copyWith(
-                    color: color?.getContrast(),
-                  ),
+                  style: labelStyle ??
+                      labelStyle?.copyWith(
+                        color: color?.getContrast(),
+                      ),
                 ),
               ),
             ),

@@ -10,11 +10,14 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_dropdown_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class AddUserPage extends StatefulWidget {
   const AddUserPage({
@@ -27,6 +30,7 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserState extends State<AddUserPage> {
   late AddUserCubit _cubit;
+  final _roleController = MultiSelectController<RoleType>();
 
   @override
   void initState() {
@@ -97,7 +101,38 @@ class _AddUserState extends State<AddUserPage> {
             TextFormFieldUiWidget(
               label: LocaleKeys.email.tr(),
               onChanged: _cubit.doSetEmail,
-              errorText: state is AddUserFailure ? state.errorType?.label : null,
+              errorText:
+                  state is AddUserFailure ? state.errorType?.label : null,
+            ),
+            TextFormFieldDropdownSelectWidget<RoleType>(
+              controller: _roleController,
+              singleSelect: true,
+              itemSeparator: const Divider(),
+              itemSelectd: _cubit.roleSelected,
+              items: RoleType.values.map(
+                (e) {
+                  return DropdownItem<RoleType>(
+                    label: e.name,
+                    value: e,
+                    selected: false,
+                  );
+                },
+              ).toList(),
+              itemBuilder: (item, index, onTap) {
+                return DropdownSelectItemWidget(
+                  selected: item.selected,
+                  onTap: onTap,
+                  child: Text(item.label),
+                );
+              },
+              selectedItemBuilder: (item) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 3),
+                  child: Text(item.label),
+                );
+              },
+              onSelectionChange: _cubit.setRoleSelect,
+              label: LocaleKeys.optionalField.tr(args: [LocaleKeys.tags.tr()]),
             ),
             Container(
               height: DimensionsKeys.heightBts,

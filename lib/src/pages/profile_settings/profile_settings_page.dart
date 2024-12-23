@@ -77,11 +77,11 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
           builder: (context, state) {
             return BlocListener<ProfileSettingsCubit, ProfileSettingsState>(
               listener: (context, state) async {
-                log('state $state', name: runtimeType.toString());
                 if (state is ProfileSettingsSendVerifyEmail) {
                   await DialogUtils.showAlertDialog(context,
                       title: 'Email verification sended',
-                      desc: 'Please check your email ${state.email} and login again',
+                      desc:
+                          'Please check your email ${state.email} and login again',
                       barrierDismissible: false);
 
                   ProfileSettingsRouter(context).pop();
@@ -164,8 +164,9 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                   key: const ValueKey('display-name'),
                   readOnly: _cubit.screenMode == ScreenMode.display,
                   label: 'Display name',
-                  textValue:
-                      _cubit.screenMode == ScreenMode.display ? _cubit.displayNameOriginal : _cubit.displayNameEditor,
+                  textValue: _cubit.screenMode == ScreenMode.display
+                      ? _cubit.displayNameOriginal
+                      : _cubit.displayNameEditor,
                   onChanged: _cubit.doSetName,
                 ),
                 TextFormFieldUiWidget(
@@ -179,7 +180,8 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                             final result = await DialogUtils.showConfirm(
                               context,
                               title: 'Verification email',
-                              desc: 'Confirm your email \'${_cubit.user?.email}\' address for verification',
+                              desc:
+                                  'Confirm your email \'${_cubit.user?.email}\' address for verification',
                             );
 
                             if (result == ConfirmDialogResult.ok) {
@@ -188,10 +190,14 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                           },
                     icon: Icon(
                       Icons.verified_rounded,
-                      color: (baseCubit.user?.emailVerified ?? false) ? Colors.green : Colors.grey,
+                      color: (baseCubit.user?.emailVerified ?? false)
+                          ? Colors.green
+                          : Colors.grey,
                     ),
                   ),
-                  textValue: _cubit.screenMode == ScreenMode.display ? baseCubit.user?.email : _cubit.emailEditor ?? '',
+                  textValue: _cubit.screenMode == ScreenMode.display
+                      ? baseCubit.user?.email
+                      : _cubit.emailEditor ?? '',
                   onChanged: _cubit.doSetEmail,
                 ),
                 // TextFormFieldUiWidget(
@@ -219,8 +225,10 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                   key: const ValueKey('date-created'),
                   readOnly: true,
                   label: LocaleKeys.dateTimeCreated.tr(),
-                  textValue:
-                      _cubit.baseCubit.user?.metadata.creationTime?.toLocal().toDisplayDependLocale(context) ?? '',
+                  textValue: _cubit.baseCubit.user?.metadata.creationTime
+                          ?.toLocal()
+                          .toDisplayDependLocale(context) ??
+                      '',
                 ),
               ],
             ),
