@@ -46,8 +46,8 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductRefresh(DateTime.now()));
   }
 
-  void deleteProduct(String storeId, String id) {
-    baseCubit.doDeleteProduct(storeId: storeId, productId: id);
+  Future<void> deleteProduct(String storeId, String id) async {
+    await baseCubit.doDeleteProduct(storeId: storeId, productId: id);
     emit(ProductRefresh(DateTime.now()));
   }
 

@@ -21,62 +21,58 @@ class ProductAdapter extends TypeAdapter<Product> {
       info: fields[2] as BaseHiveData?,
       name: fields[7] as String,
       description: fields[8] as String?,
-      priceCategories:
-          fields[9] == null ? {} : (fields[9] as Map?)?.cast<String, num>(),
-      category: fields[10] as String?,
-      brand: fields[11] as String?,
-      imagesPath: (fields[12] as List?)?.cast<String>(),
-      imageThumbnail: fields[13] as String?,
-      attributes: fields[14] == null
+      category: fields[9] as String?,
+      brand: fields[10] as String?,
+      imagesPath: (fields[11] as List?)?.cast<String>(),
+      imageThumbnail: fields[12] as String?,
+      attributes: fields[13] == null
           ? {}
-          : (fields[14] as Map?)?.cast<String, dynamic>(),
-      tag: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
-      storeId: fields[19] as String,
-      status: fields[16] == null
+          : (fields[13] as Map?)?.cast<String, dynamic>(),
+      tag: fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
+      storeId: fields[16] as String,
+      status: fields[15] == null
           ? ProductStatus.undefined
-          : fields[16] as ProductStatus,
-      quantity: fields[20] as num?,
-      ownerId: fields[21] as String,
-      priceSelected: fields[22] as String?,
-      productTypeList: (fields[24] as List?)?.cast<ProductType>(),
-    )..config = fields[23] as ProductConfig?;
+          : fields[15] as ProductStatus,
+      quantity: fields[17] as num?,
+      ownerId: fields[18] as String,
+      priceSelected: fields[19] as String?,
+      productTypeList: (fields[21] as List?)?.cast<ProductType>(),
+    )..config = fields[20] as ProductConfig?;
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(17)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
       ..write(obj.description)
       ..writeByte(9)
-      ..write(obj.priceCategories)
-      ..writeByte(10)
       ..write(obj.category)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.brand)
-      ..writeByte(12)
+      ..writeByte(11)
       ..write(obj.imagesPath)
-      ..writeByte(13)
+      ..writeByte(12)
       ..write(obj.imageThumbnail)
-      ..writeByte(14)
+      ..writeByte(13)
       ..write(obj.attributes)
-      ..writeByte(15)
+      ..writeByte(14)
       ..write(obj.tag)
-      ..writeByte(16)
+      ..writeByte(15)
       ..write(obj.status)
-      ..writeByte(19)
+      ..writeByte(16)
       ..write(obj.storeId)
-      ..writeByte(20)
+      ..writeByte(17)
       ..write(obj.quantity)
-      ..writeByte(21)
+      ..writeByte(18)
       ..write(obj.ownerId)
-      ..writeByte(22)
+      ..writeByte(19)
       ..write(obj.priceSelected)
-      ..writeByte(23)
+      ..writeByte(20)
       ..write(obj.config)
-      ..writeByte(24)
+      ..writeByte(21)
       ..write(obj.productTypeList)
       ..writeByte(1)
       ..write(obj.id)
@@ -160,9 +156,6 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       name: json['name'] as String,
       description: json['description'] as String?,
-      priceCategories: (json['priceCategories'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as num),
-      ),
       category: json['category'] as String?,
       brand: json['brand'] as String?,
       imagesPath: (json['imagesPath'] as List<dynamic>?)
@@ -188,7 +181,6 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'info': instance.info?.toJson(),
       'name': instance.name,
       'description': instance.description,
-      'priceCategories': instance.priceCategories,
       'category': instance.category,
       'brand': instance.brand,
       'imagesPath': instance.imagesPath,

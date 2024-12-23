@@ -7,7 +7,7 @@ part 'product_type.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ProductType extends BaseObject {
-  final dynamic id;
+  dynamic id;
   final String name;
   final num? price;
   final num? quantity;

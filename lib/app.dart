@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
@@ -40,11 +41,11 @@ class _AppState extends State<App> {
 
     baseCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
     subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      // if (result.contains(ConnectivityResult.none)) {
-      //   baseCubit.changeMode(AppMode.local);
-      // } else {
-      //   baseCubit.changeMode(AppMode.server);
-      // }
+      if (result.contains(ConnectivityResult.none)) {
+        baseCubit.changeMode(AppMode.local);
+      } else {
+        baseCubit.changeMode(AppMode.server);
+      }
     });
   }
 
@@ -104,17 +105,17 @@ class _AppState extends State<App> {
               return Stack(
                 children: [
                   baseCubit.user == null ? const LoginPage() : const MainPage(),
-                  if (state is BaseLoading)
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.black.withOpacity(0.6),
-                      child: const Center(
-                        child: CupertinoActivityIndicator(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  // if (state is BaseLoading)
+                  //   Container(
+                  //     width: double.infinity,
+                  //     height: double.infinity,
+                  //     color: Colors.black.withOpacity(0.6),
+                  //     child: const Center(
+                  //       child: CupertinoActivityIndicator(
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
                   AnimatedPositioned(
                     duration: baseCubit.durationAddCart,
                     top: state is BaseAddCartSuccess ? 35 : size.height,

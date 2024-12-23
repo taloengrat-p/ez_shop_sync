@@ -2,7 +2,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker_plus/flutter_iconpicker.dart';
+// import 'package:flutter_iconpicker_plus/flutter_iconpicker.dart';
 
 class TextFormFieldIconPickerWidget extends StatefulWidget {
   final String label;
@@ -31,20 +31,20 @@ class _TextFormFieldIconPickerWidgetState extends State<TextFormFieldIconPickerW
         children: [
           GestureDetector(
             onTap: () async {
-              IconData? icon = await FlutterIconPicker.showIconPicker(
-                context,
-                iconPackModes: [
-                  IconPack.material,
-                  IconPack.fontAwesomeIcons,
-                ],
-              );
+              // IconData? icon = await FlutterIconPicker.showIconPicker(
+              //   context,
+              //   iconPackModes: [
+              //     IconPack.material,
+              //     IconPack.fontAwesomeIcons,
+              //   ],
+              // );
 
-              if (icon != null) {
-                _iconData = IconPickerUtils.getIcon(serializeIcon(icon));
-                widget.onSelected?.call(_iconData);
-              }
+              // if (icon != null) {
+              //   _iconData = IconPickerUtils.getIcon(serializeIcon(icon));
+              //   widget.onSelected?.call(_iconData);
+              // }
 
-              setState(() {});
+              // setState(() {});
             },
             child: Container(
               width: size.width * 0.4,

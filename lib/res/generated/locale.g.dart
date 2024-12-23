@@ -186,5 +186,8 @@ abstract class  LocaleKeys {
   static const verifyPhoneNumber = 'verifyPhoneNumber';
   static const addUserPage_title = 'addUserPage.title';
   static const addUserPage = 'addUserPage';
+  static const offline_title = 'offline.title';
+  static const offline_desc = 'offline.desc';
+  static const offline = 'offline';
 
 }

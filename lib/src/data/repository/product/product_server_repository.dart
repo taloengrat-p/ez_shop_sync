@@ -29,29 +29,29 @@ class ProductServerRepository {
     final response = await productCreated.get();
 
     if (response.data() == null) {
-      return ApiResult(
-          error: null, appErrorType: AppErrorType.somethingWentWrong);
+      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
     }
 
     return ApiResult(response: request..id = response.id);
   }
 
   Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
-    final products = await firebaseService.storesCollection
-        .doc(id)
-        .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
-        .get();
+    try {
+      final products = await firebaseService.storesCollection
+          .doc(id)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+          .get();
 
-    final response = products.docs
-        .map((e) => Product.fromJson(e.data())..id = e.id)
-        .toList();
+      final response = products.docs.map((e) => Product.fromJson(e.data())..id = e.id).toList();
 
-    if (products.docs.isEmpty) {
-      return ApiResult(
-          error: null, appErrorType: AppErrorType.somethingWentWrong);
+      if (products.docs.isEmpty) {
+        return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
+      }
+
+      return ApiResult(response: response);
+    } catch (e) {
+      return ApiResult(response: []);
     }
-
-    return ApiResult(response: response);
   }
 
   Future<void> delete({
@@ -65,8 +65,7 @@ class ProductServerRepository {
         .delete();
   }
 
-  Future<ApiResult<Product>> update(Product updated,
-      {required String storeId, required String productId}) async {
+  Future<ApiResult<Product>> update(Product updated, {required String storeId, required String productId}) async {
     try {
       await firebaseService.storesCollection
           .doc(storeId)

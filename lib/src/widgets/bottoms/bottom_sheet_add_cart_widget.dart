@@ -51,15 +51,15 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
     _productEditor = widget.product.copyWith();
     productRepository = GetIt.I<ProductRepository>();
 
-    if (_productEditor.priceCategories?.length == 1) {
-      priceCategory = _productEditor.priceCategories?.keys.first;
+    if (_productEditor.productTypeList?.length == 1) {
+      priceCategory = _productEditor.productTypeList?.first.id;
     }
     super.initState();
   }
 
   num? get qtyEditor => int.tryParse(_qtyTextController.text);
   num? get priceByCategorySelected =>
-      _productEditor.priceCategories?.entries.where((mapEntry) => mapEntry.key == priceCategory).firstOrNull?.value;
+      _productEditor.productTypeList?.where((mapEntry) => mapEntry.id == priceCategory).firstOrNull?.price;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -92,7 +92,7 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
                   height: 8,
                 ),
                 PriceGroupSelectWidget(
-                  items: widget.product.priceCategories?.keys.toList() ?? [],
+                  items: widget.product.productTypeList?.toList() ?? [],
                   itemSelected: priceCategory,
                   onChange: (value) {
                     setState(() {

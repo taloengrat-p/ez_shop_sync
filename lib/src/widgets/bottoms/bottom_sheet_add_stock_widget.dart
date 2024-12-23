@@ -77,7 +77,7 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                   height: 8,
                 ),
                 PriceGroupSelectWidget(
-                  items: widget.product.priceCategories?.keys.toList() ?? [],
+                  items: widget.product.productTypeList?.toList() ?? [],
                   itemSelected: priceCategorySelected,
                   onChange: (value) {
                     setState(() {

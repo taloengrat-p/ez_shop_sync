@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -127,6 +129,7 @@ class ProductGridItemWidget extends StatelessWidget {
                           ),
                         ),
                         onTap: () {
+                          log('delete ${product.id}');
                           iProductItem?.onDelete(product.id);
                         },
                       ),

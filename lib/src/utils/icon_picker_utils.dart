@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker_plus/Serialization/iconDataSerialization.dart';
+// import 'package:flutter_iconpicker_plus/Serialization/iconDataSerialization.dart';
 
 class IconPickerUtils {
   static IconData? getIcon(Map<String, dynamic>? icondata) {
@@ -7,15 +7,17 @@ class IconPickerUtils {
       return null;
     }
 
-    final icon = deserializeIcon(icondata);
+    // final icon = deserializeIcon(icondata);
 
-    if (icon == null) {
-      return null;
-    }
+    // if (icon == null) {
+    //   return null;
+    // }
 
-    return IconData(
-      icon.codePoint,
-      fontFamily: icon.fontFamily,
-    );
+    // return IconData(
+    //   icon.codePoint,
+    //   fontFamily: icon.fontFamily,
+    // );
+
+    return null;
   }
 }

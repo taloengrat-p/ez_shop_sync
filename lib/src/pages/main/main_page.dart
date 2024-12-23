@@ -77,6 +77,7 @@ class _MainPageState extends State<MainPage> {
         child: BlocBuilder<MainCubit, MainState>(
           builder: (context, state) {
             return BaseScaffolds(
+              enableAppModeDisplay: true,
               isLoading: state is MainLoading,
               backgroundColor: Colors.white,
               appBar: AppbarWidget(

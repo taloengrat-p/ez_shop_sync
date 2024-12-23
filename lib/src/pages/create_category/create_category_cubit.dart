@@ -9,7 +9,6 @@ import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dar
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_iconpicker_plus/Serialization/iconDataSerialization.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
@@ -48,7 +47,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       id: tagId,
       name: name,
       parentId: null,
-      iconData: iconData != null ? serializeIcon(iconData!) : null,
+      // iconData: iconData != null ? serializeIcon(iconData!) : null,
       color: backgroundColor.toHex(),
       borderColor: borderColor.toHex(),
     ));

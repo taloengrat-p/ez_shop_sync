@@ -22,46 +22,46 @@ class Product extends BaseHiveObject {
   @HiveField(8, defaultValue: null)
   String? description;
 
-  @HiveField(9, defaultValue: {})
-  Map<String, num>? priceCategories;
+  // @HiveField(9, defaultValue: {})
+  // Map<String, num>? priceCategories;
 
-  @HiveField(10, defaultValue: null)
+  @HiveField(9, defaultValue: null)
   String? category;
 
-  @HiveField(11, defaultValue: null)
+  @HiveField(10, defaultValue: null)
   String? brand;
 
-  @HiveField(12, defaultValue: null)
+  @HiveField(11, defaultValue: null)
   List<String>? imagesPath;
 
-  @HiveField(13, defaultValue: null)
+  @HiveField(12, defaultValue: null)
   String? imageThumbnail;
 
-  @HiveField(14, defaultValue: {})
+  @HiveField(13, defaultValue: {})
   Map<String, dynamic>? attributes;
 
-  @HiveField(15, defaultValue: [])
+  @HiveField(14, defaultValue: [])
   List<String>? tag;
 
-  @HiveField(16, defaultValue: ProductStatus.undefined)
+  @HiveField(15, defaultValue: ProductStatus.undefined)
   ProductStatus status;
 
-  @HiveField(19)
+  @HiveField(16)
   String storeId;
 
-  @HiveField(20, defaultValue: null)
+  @HiveField(17, defaultValue: null)
   num? quantity;
 
-  @HiveField(21, defaultValue: null)
+  @HiveField(18, defaultValue: null)
   String ownerId;
 
-  @HiveField(22, defaultValue: null)
+  @HiveField(19, defaultValue: null)
   String? priceSelected;
 
-  @HiveField(23, defaultValue: null)
+  @HiveField(20, defaultValue: null)
   ProductConfig? config;
 
-  @HiveField(24, defaultValue: null)
+  @HiveField(21, defaultValue: null)
   List<ProductType>? productTypeList;
 
   num? get allQuantity => productTypeList?.fold(0, (sum, item) => (sum ?? 0) + (item.price ?? 0));
@@ -71,7 +71,7 @@ class Product extends BaseHiveObject {
     BaseHiveData? super.info,
     required this.name,
     this.description,
-    this.priceCategories,
+    // this.priceCategories,
     this.category,
     this.brand,
     this.imagesPath,
@@ -96,13 +96,7 @@ class Product extends BaseHiveObject {
           : '${priceRange?.first.prefixCurrency()} - ${priceRange?.last.prefixCurrency()}';
 
   num? get priceCurrentSelected =>
-      (priceCategories?.entries.where((mapEntry) => mapEntry.key == priceSelected).firstOrNull?.value ?? 0) *
-      (quantity ?? 0);
-
-  @override
-  String toString() {
-    return 'Product(name: $name, description: $description, priceCategories: $priceCategories, category: $category, brand: $brand, imageDetail: $imagesPath, imageThumbnail: $imageThumbnail, attributes: $attributes, tag: $tag, storeId: $storeId, quantity: $quantity, ownerId: $ownerId, priceSelected: $priceSelected)';
-  }
+      (productTypeList?.where((mapEntry) => mapEntry.id == priceSelected).firstOrNull?.price ?? 0) * (quantity ?? 0);
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
@@ -132,7 +126,7 @@ class Product extends BaseHiveObject {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
-      priceCategories: priceCategories ?? this.priceCategories,
+      // priceCategories: priceCategories ?? this.priceCategories,
       category: category ?? this.category,
       brand: brand ?? this.brand,
       imagesPath: imageDetail ?? this.imagesPath,

@@ -66,7 +66,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   currency_picker: ^2.0.21
   glassmorphism: ^3.0.0
-  flutter_iconpicker_plus: ^3.2.3
+  # flutter_iconpicker_plus: ^3.2.3
   multi_dropdown: ^3.0.1
   toastification: ^2.2.0
   lottie: ^3.1.3

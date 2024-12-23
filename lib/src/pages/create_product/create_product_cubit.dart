@@ -62,7 +62,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       status: ProductStatus.undefined,
       ownerId: currentStore!.ownerId,
       attributes: {},
-      priceCategories: {},
       productTypeList: [],
     );
   }
@@ -99,8 +98,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       for (var element in _productEditor!.imagesPath!) {
         final fileBytes = await FolderFileUtils.getFileBytes(File(element));
         final imageName = const Uuid().v1().substring(0, 10);
-        final imageSaveModel =
-            (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
         imageDetailFileName.add(imageSaveModel.fileName);
       }
     }
@@ -116,7 +114,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       CreateProductRequest(
         storeId: currentStore!.id,
         userId: currentUser?.uid ?? '',
-        product: _productEditor!,
+        product: _productEditor!
+          ..productTypeList = _productEditor!.productTypeList?.map((e) => e..id = const Uuid().v4()).toList(),
         appMode: AppMode.server,
       ),
     );
@@ -233,32 +232,32 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     tempPriceCategoryValue = value ?? '';
   }
 
-  void changedPriceCategory(String key, String? value) {
-    final priceParced = num.tryParse(value ?? '');
+  // void changedPriceCategory(String key, String? value) {
+  //   final priceParced = num.tryParse(value ?? '');
 
-    if (priceParced == null) {
-      throw ('addPriceCategory priceParced is not Number');
-    }
+  //   if (priceParced == null) {
+  //     throw ('addPriceCategory priceParced is not Number');
+  //   }
 
-    _productEditor?.priceCategories?[key] = priceParced;
-  }
+  //   _productEditor?.priceCategories?[key] = priceParced;
+  // }
 
-  void removePriceCategory(String key) {
-    _productEditor?.priceCategories?.remove(key);
-    emit(CreateProductRemoveCustomField(key));
-  }
+  // void removePriceCategory(String key) {
+  //   _productEditor?.priceCategories?.remove(key);
+  //   emit(CreateProductRemoveCustomField(key));
+  // }
 
-  void addPriceCategory(String key, String value) {
-    final priceParced = num.tryParse(value);
+  // void addPriceCategory(String key, String value) {
+  //   final priceParced = num.tryParse(value);
 
-    if (priceParced == null) {
-      throw ('addPriceCategory priceParced is not Number');
-    }
+  //   if (priceParced == null) {
+  //     throw ('addPriceCategory priceParced is not Number');
+  //   }
 
-    _productEditor?.priceCategories?[key] = priceParced;
-    clearPriceCategoryField();
-    emit(CreateProductAddCustomField(key, value));
-  }
+  //   _productEditor?.priceCategories?[key] = priceParced;
+  //   clearPriceCategoryField();
+  //   emit(CreateProductAddCustomField(key, value));
+  // }
 
   clearPriceCategoryField() {
     tempPriceCategoryName = '';
@@ -270,13 +269,21 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       num? priceTemp = num.tryParse(tempPriceCategoryValue);
 
       if (priceTemp != null) {
-        _productEditor?.priceCategories?[tempPriceCategoryName] = priceTemp;
+        _productEditor?.productTypeList?.add(ProductType(
+          image: '',
+          name: tempPriceCategoryName,
+          price: priceTemp,
+        ));
       }
     }
   }
 
   void addProductType() {
-    _productEditor?.productTypeList?.add(ProductType(image: null));
+    _productEditor?.productTypeList?.add(
+      ProductType(
+        image: null,
+      ),
+    );
     emit(CreateProductRefresh(DateTime.now()));
   }
 

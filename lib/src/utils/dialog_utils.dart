@@ -40,7 +40,7 @@ class DialogUtils {
     if (product == null) {
       throw ('showAddCartDialog product is Null');
     }
-    if (product.priceCategories?.isEmpty ?? true) {
+    if (product.productTypeList?.isEmpty ?? true) {
       await showAlertDialog(
         context,
         title: LocaleKeys.error_unableAddCart.tr(),
