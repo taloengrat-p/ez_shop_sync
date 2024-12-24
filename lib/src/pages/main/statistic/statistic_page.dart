@@ -46,7 +46,9 @@ class _StatisticState extends State<StatisticPage> {
   String get periodTitle => _cubit.periodType == PeriodType.week
       ? _cubit.dateTime.displayWeekFormat(context)
       : _cubit.dateTimeSelected.toDisplayDependLocale(context,
-          format: _cubit.periodType == PeriodType.month ? DateFormatConstance.MMMM_YYYY : DateFormatConstance.YYYY);
+          format: _cubit.periodType == PeriodType.month
+              ? DateFormatConstance.MMMM_YYYY
+              : DateFormatConstance.YYYY);
   @override
   void initState() {
     log('[_StatisticState] init');
@@ -80,11 +82,13 @@ class _StatisticState extends State<StatisticPage> {
         child: BlocBuilder<StatisticCubit, StatisticState>(
           builder: (context, state) {
             return BaseScaffolds(
+              enableAppModeDisplay: false,
               backgroundColor: Colors.white,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,
-                title: '${LocaleKeys.statistic.tr()} ( ${_cubit.periodType.label} )',
+                title:
+                    '${LocaleKeys.statistic.tr()} ( ${_cubit.periodType.label} )',
                 actions: [],
               ).build(),
               body: _buildPage(context, state),
@@ -118,11 +122,14 @@ class _StatisticState extends State<StatisticPage> {
                   child: _buildTitleStatisticInfo(
                     LocaleKeys.netProfit.tr(),
                     _cubit.netProfit.prefixCurrency(),
-                    valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: _cubit.netProfit > 0 ? Colors.green : Colors.white,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
-                        ),
+                    valueStyle:
+                        Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: _cubit.netProfit > 0
+                                  ? Colors.green
+                                  : Colors.white,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.5,
+                            ),
                   ),
                 )
               ],
@@ -140,16 +147,21 @@ class _StatisticState extends State<StatisticPage> {
                   children: [
                     Text(
                       LocaleKeys.transactionHistory.tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(),
+                      style:
+                          Theme.of(context).textTheme.titleMedium?.copyWith(),
                     ),
                     TextButton(
                       onPressed: () {
-                        TransactionStatementDetailRouter(context)
-                            .navigate(argruments: TransactionStatementDetailArgrument(_cubit.transaction));
+                        TransactionStatementDetailRouter(context).navigate(
+                            argruments: TransactionStatementDetailArgrument(
+                                _cubit.transaction));
                       },
                       child: Text(
                         LocaleKeys.seeAll.tr(),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.blueAccent),
                       ),
                     ),
                   ],
@@ -200,7 +212,8 @@ class _StatisticState extends State<StatisticPage> {
                     children: [
                       Text(
                         _cubit.periodType.getLabel,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(),
                       ),
                       TextButton(
                         onPressed: () {
@@ -214,7 +227,10 @@ class _StatisticState extends State<StatisticPage> {
                         },
                         child: Text(
                           LocaleKeys.seeDetail.tr(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.blueAccent),
                         ),
                       ),
                     ],
@@ -230,11 +246,17 @@ class _StatisticState extends State<StatisticPage> {
                           children: [
                             Text(
                               LocaleKeys.totalIncome.tr(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(),
                             ),
                             Text(
                               _cubit.totalSales.toString().formatCurrency(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -247,11 +269,17 @@ class _StatisticState extends State<StatisticPage> {
                           children: [
                             Text(
                               LocaleKeys.averageIncome.tr(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.grey.shade700),
                             ),
                             Text(
                               _cubit.averageIncome.prefixCurrency(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -276,7 +304,8 @@ class _StatisticState extends State<StatisticPage> {
     );
   }
 
-  Widget _buildTitleStatisticInfo(String title, String value, {TextStyle? valueStyle}) {
+  Widget _buildTitleStatisticInfo(String title, String value,
+      {TextStyle? valueStyle}) {
     return ContainerShadowWidget(
       padding: const EdgeInsets.all(12),
       color: ColorKeys.primary.withOpacity(0.55),
@@ -284,11 +313,18 @@ class _StatisticState extends State<StatisticPage> {
         children: [
           Text(
             title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: Colors.white),
           ),
           Text(
             value,
-            style: valueStyle ?? Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+            style: valueStyle ??
+                Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: Colors.white),
           ),
         ],
       ),
@@ -304,7 +340,10 @@ class _StatisticState extends State<StatisticPage> {
           Expanded(
             child: Text(
               periodTitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
           PopupMenuButton(

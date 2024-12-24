@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/response/create_order_response.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:injectable/injectable.dart';
 
@@ -35,6 +38,16 @@ class CartInitial extends CartState {
   String toString() => 'CartInitial';
 }
 
+class CartGetProductsSuccess extends CartState {
+  @override
+  String toString() => 'CartGetProductsSuccess';
+}
+
+class CartGetProductsFailure extends CartState {
+  @override
+  String toString() => 'CartGetProductsFailure';
+}
+
 class CartLoading extends CartState {
   @override
   String toString() => 'CartLoading';
@@ -47,7 +60,6 @@ class CartProductInsufficient extends CartState {
 
 class CartSuccess extends CartState {
   final ProductOrder? ordered;
-
   const CartSuccess(this.ordered);
 
   @override
@@ -58,14 +70,17 @@ class CartSuccess extends CartState {
 }
 
 class CartFailure extends CartState {
-  const CartFailure();
+  final ApiError apiError;
+  const CartFailure(this.apiError);
 
   @override
-  String toString() => 'CartFailure';
+  String toString() => 'CartFailure $apiError';
+  @override
+  List<Object?> get props => [apiError];
 }
 
 class CartChangePaymentMethod extends CartState {
-  final String? value;
+  final PaymentMethodType? value;
   const CartChangePaymentMethod(this.value);
 
   @override

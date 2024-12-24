@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -25,7 +27,9 @@ import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
+import 'package:ez_shop_sync/src/widgets/opacity_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +48,8 @@ class _CartState extends State<CartPage> {
   late CartCubit _cubit;
   final _listViewController = ScrollController();
   final _scrollViewController = ScrollController();
-
+  final _receiveAmountController = TextEditingController();
+  final _receiveAmountForm = GlobalKey<FormState>();
   bool _isBottomScroll = false;
   bool _canScroll = false;
 
@@ -89,8 +94,10 @@ class _CartState extends State<CartPage> {
 
     // log('canScroll $canScroll, maxScrollExtent $maxScrollExtent, minScrollExtent $minScrollExtent');
     if (canScroll != _canScroll) {
-      setState(() {
-        _canScroll = canScroll;
+      Future.delayed(Duration.zero, () {
+        setState(() {
+          _canScroll = canScroll;
+        });
       });
     }
   }
@@ -129,7 +136,10 @@ class _CartState extends State<CartPage> {
         },
         child: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
+            log('cart state : $state');
             return BaseScaffolds(
+              isInitialLoading: state is CartInitial,
+              enableAppModeDisplay: true,
               isLoading: state is CartLoading,
               appBar: AppbarWidget(
                 context,
@@ -139,46 +149,61 @@ class _CartState extends State<CartPage> {
               ).build(),
               body: _cubit.products.isEmpty
                   ? Center(
-                      child:
-                          EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.cartEmpty.tr()))
+                      child: EmptyDataWidget(
+                          height: size.height * 0.45,
+                          width: 200,
+                          message: LocaleKeys.cartEmpty.tr()))
                   : _buildPage(context, state),
               bottomNavigationBar: _cubit.products.isEmpty
                   ? ButtonWidget(
                       margin: const EdgeInsets.all(16),
                       label: LocaleKeys.gotoProductsPage.tr(),
                       onPressed: () {
-                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                        MainRouter(context).pushNamedAndRemoveUntil(
+                            argruments: const MainArgruments(1));
                       },
                     )
-                  : buildPriceLayout(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(LocaleKeys.totalAmount.tr()),
-                              Text(
-                                _cubit.totalPriceIncludeServiceCharge.toString(),
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          ButtonWidget(
-                            label: LocaleKeys.proceedToCheckout.tr(),
-                            leading: const Icon(Icons.payment_rounded),
-                            onPressed: _cubit.hasAnyError
-                                ? null
-                                : () {
-                                    _cubit.submit();
-                                  },
-                          )
-                        ],
+                  : Material(
+                      child: buildPriceLayout(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(LocaleKeys.totalAmount.tr()),
+                                Text(
+                                  _cubit.totalPriceIncludeServiceCharge
+                                      .toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            ButtonWidget(
+                              label: LocaleKeys.proceedToCheckout.tr(),
+                              leading: const Icon(Icons.payment_rounded),
+                              onPressed: _cubit.hasAnyError
+                                  ? null
+                                  : () {
+                                      if (_receiveAmountForm.currentState
+                                              ?.validate() ??
+                                          true) {
+                                        _cubit.submit();
+                                      } else {
+                                        _receiveAmountController.clear();
+                                      }
+                                    },
+                            )
+                          ],
+                        ),
                       ),
                     ),
             );
@@ -193,7 +218,11 @@ class _CartState extends State<CartPage> {
       children: [
         buildProductItems(),
         AnimatedOpacity(
-          opacity: _isBottomScroll || _canScroll == false || _cubit.products.length <= 2 ? 0 : 1,
+          opacity: _isBottomScroll ||
+                  _canScroll == false ||
+                  _cubit.products.length <= 2
+              ? 0
+              : 1,
           duration: const Duration(milliseconds: 300),
           child: Align(
             alignment: Alignment.bottomCenter,
@@ -235,9 +264,15 @@ class _CartState extends State<CartPage> {
           itemBuilder: (context, index) {
             final cartItem = _cubit.products.elementAt(index);
 
-            // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
-            final productStockItem = _cubit.productInStock[cartItem.product?.id];
-            final hasError = (productStockItem?.quantity ?? 0) < (cartItem.product?.quantity ?? 0);
+            final productStockItem = _cubit.productInStock
+                .firstWhere((e) => e.id == cartItem.product?.id);
+
+            final hasError = (productStockItem.productTypeList
+                        ?.firstWhere(
+                            (e) => e.id == cartItem.product?.priceSelected)
+                        .quantity ??
+                    0) <
+                (cartItem.product?.quantity ?? 0);
             return CartItemWidget(
               hasError: hasError,
               errorMessageType: hasError ? CartErrorType.insufficient : null,
@@ -286,7 +321,8 @@ class _CartState extends State<CartPage> {
   Widget buildPaymentMethod() {
     return ContainerShadowGroupWidget(
       title: LocaleKeys.paymentMethod.tr(),
-      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
+      margin:
+          const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       color: Colors.white,
       children: [
@@ -294,17 +330,21 @@ class _CartState extends State<CartPage> {
           mainAxisSize: MainAxisSize.min,
           gap: 4,
           children: [
-            RowBetweenWidget(
-              title: Text(
-                LocaleKeys.paymentMethodOptions_qrCode.tr(),
-              ),
-              value: CupertinoRadio(
-                activeColor: Colors.green,
-                value: PaymentType.qrcode.name,
-                groupValue: _cubit.paymentMethod,
-                onChanged: (val) {
-                  _cubit.changePaymentMethod(val);
-                },
+            OpacityWidget(
+              disabled: true,
+              child: RowBetweenWidget(
+                title: Text(
+                  LocaleKeys.paymentMethodOptions_qrCode.tr(),
+                ),
+                value: CupertinoRadio(
+                  activeColor: Colors.green,
+                  value: PaymentMethodType.qrcode,
+                  groupValue: _cubit.paymentMethod,
+                  onChanged: (val) {
+                    log('change $val');
+                    _cubit.changePaymentMethod(val);
+                  },
+                ),
               ),
             ),
             Divider(
@@ -315,7 +355,7 @@ class _CartState extends State<CartPage> {
                 LocaleKeys.paymentMethodOptions_cash.tr(),
               ),
               value: CupertinoRadio(
-                value: PaymentType.cash.name,
+                value: PaymentMethodType.cash,
                 activeColor: Colors.green,
                 groupValue: _cubit.paymentMethod,
                 onChanged: (val) {
@@ -331,7 +371,8 @@ class _CartState extends State<CartPage> {
 
   Widget buildPaymentInfo() {
     return ContainerShadowGroupWidget(
-      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
+      margin:
+          const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       color: Colors.white,
       title: LocaleKeys.paymentInfo.tr(),
@@ -343,7 +384,7 @@ class _CartState extends State<CartPage> {
             RowBetweenWidget(
               title: Text(LocaleKeys.items.tr()),
               value: Text(
-                _cubit.totalItems.prefixCurrency(),
+                _cubit.totalItems,
               ),
             ),
             RowBetweenWidget(
@@ -351,7 +392,8 @@ class _CartState extends State<CartPage> {
               value: Text(_cubit.subTotalPrice.toString().prefixCurrency()),
             ),
             RowBetweenWidget(
-              title: Text(LocaleKeys.serviceCharge.tr(args: [_cubit.serviceCharge.toString()])),
+              title: Text(LocaleKeys.serviceCharge
+                  .tr(args: [_cubit.serviceCharge.toString()])),
               value: Text(
                 _cubit.totalServiceCharge.toString().prefixCurrency(),
               ),
@@ -360,14 +402,68 @@ class _CartState extends State<CartPage> {
               color: Colors.grey.shade200,
             ),
             RowBetweenWidget(
-              title: Text(LocaleKeys.totalAmount.tr(args: [_cubit.serviceCharge.toString()])),
+              title: Text(LocaleKeys.totalAmount
+                  .tr(args: [_cubit.serviceCharge.toString()])),
               value: Text(
-                _cubit.totalPriceIncludeServiceCharge.toString().prefixCurrency(),
+                _cubit.totalPriceIncludeServiceCharge
+                    .toString()
+                    .prefixCurrency(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Colors.green,
                     ),
               ),
             ),
+            if (_cubit.paymentMethod == PaymentMethodType.cash) ...[
+              const SizedBox(
+                height: 8,
+              ),
+              RowBetweenWidget(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                title: Text(LocaleKeys.receiveAmount.tr()),
+                value: Expanded(
+                  child: Form(
+                    key: _receiveAmountForm,
+                    child: TextFormFieldUiWidget(
+                      autofocus: true,
+                      textAlign: TextAlign.end,
+                      autoCorrect: true,
+                      controller: _receiveAmountController,
+                      onChanged: (value) {
+                        _cubit.setReceiveAmount(value);
+                      },
+                      isRequired: true,
+                      validator: (value) {
+                        if (_cubit.totalPrice > (_cubit.receiveAmount ?? 0)) {
+                          return LocaleKeys.error_receiveAmountInvalid.tr();
+                        }
+
+                        if ((_cubit.paymentMethod == PaymentMethodType.cash &&
+                                _cubit.receiveAmount == null) ||
+                            (_cubit.paymentMethod == PaymentMethodType.cash &&
+                                _cubit.receiveAmount == 0)) {
+                          return LocaleKeys.error_receiveAmountInvalid.tr();
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              RowBetweenWidget(
+                title: Text(LocaleKeys.changeAmount.tr()),
+                value: Text(
+                  _cubit.receiveAmount == null
+                      ? '--'
+                      : _cubit.changeAmountDisplay.toString().prefixCurrency(),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                ),
+              ),
+            ],
           ],
         ),
       ],

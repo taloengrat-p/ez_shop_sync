@@ -15,10 +15,12 @@ class ContainerPriceCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 12),
+      padding:
+          const EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 12),
       decoration: BoxDecoration(
-        color: isSelect ? color ?? Colors.amber : null,
-        border: Border.all(color: isSelect ? Colors.transparent : color ?? Colors.amber),
+        color: isSelect ? Colors.amber : null,
+        border: Border.all(
+            color: isSelect ? Colors.transparent : color ?? Colors.amber),
         borderRadius: BorderRadius.circular(DimensionsKeys.radius / 2),
       ),
       child: Text(

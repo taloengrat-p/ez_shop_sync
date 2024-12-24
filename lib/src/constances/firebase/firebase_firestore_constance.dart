@@ -4,6 +4,7 @@ class FirebaseFirestoreConstance {
   static final String COLLECTION_USERS = 'users';
   static final String COLLECTION_STORE = 'stores';
   static final String COLLECTION_PRODUCTS = 'products';
+  static final String COLLECTION_ORDERS = 'orders';
   static final String COLLECTION_STORE_PRODUCTS = 'storeproducts';
   static final String COLLECTION_NOTIFICATIONS = 'notifications';
 }

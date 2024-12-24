@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_state.dart';
 import 'package:ez_shop_sync/src/pages/order_history/widgets/order_history_item_widget.dart';
@@ -33,6 +34,7 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
     _listViewController.addListener(() => _onScroll(_listViewController));
     _cubit = OrderHistoryCubit(
       orderRepository: GetIt.I<OrderRepository>(),
+      baseCubit: BlocProvider.of<BaseCubit>(context),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -104,7 +106,8 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
                 ),
                 onTap: () {
                   OrderHistoryDetailRouter(context).navigate(
-                    argruments: OrderHistoryDetailArgruments(productOrder: model),
+                    argruments:
+                        OrderHistoryDetailArgruments(productOrder: model),
                   );
                 },
               );

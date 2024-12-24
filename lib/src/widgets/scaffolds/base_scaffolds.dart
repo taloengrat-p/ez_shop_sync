@@ -9,6 +9,7 @@ import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/overlay_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 enum RouteAwareType {
   pop,
@@ -34,7 +35,7 @@ class BaseScaffolds extends StatefulWidget {
   const BaseScaffolds({
     super.key,
     this.bottomNavigationBar,
-    this.enableAppModeDisplay = false,
+    this.enableAppModeDisplay = true,
     this.body,
     this.appBar,
     this.floatingActionButton,
@@ -131,7 +132,8 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                       BlocBuilder<BaseCubit, BaseState>(
                         bloc: baseCubit,
                         builder: (context, state) {
-                          if ((widget.enableAppModeDisplay ?? false) && baseCubit.appMode == AppMode.local) {
+                          if ((widget.enableAppModeDisplay ?? false) &&
+                              baseCubit.appMode == AppMode.local) {
                             return Container(
                               padding: const EdgeInsets.all(8),
                               width: double.infinity,
@@ -149,7 +151,10 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                                       ),
                                       Text(
                                         LocaleKeys.offline_title.tr(),
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -158,7 +163,10 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                                   ),
                                   Text(
                                     LocaleKeys.offline_desc.tr(),
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -168,15 +176,26 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                         },
                       ),
                       Expanded(
-                        child: widget.body ?? Container(),
+                        child: widget.isInitialLoading
+                            ? Container(
+                                height: double.infinity,
+                                width: double.infinity,
+                                color: Colors.white,
+                                child: Center(
+                                  child: Lottie.asset('assets/loading.json'),
+                                ),
+                              )
+                            : widget.body ?? Container(),
                       ),
                     ],
                   ),
                   const DebuggerDragable(),
                 ],
               ),
-              bottomNavigationBar: widget.bottomNavigationBar,
-              floatingActionButton: widget.floatingActionButton,
+              bottomNavigationBar:
+                  widget.isInitialLoading ? null : widget.bottomNavigationBar,
+              floatingActionButton:
+                  widget.isInitialLoading ? null : widget.floatingActionButton,
             ),
           ),
           if (widget.isLoading) const OverlayLoadingWidget(),

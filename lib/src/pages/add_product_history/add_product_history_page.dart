@@ -61,6 +61,7 @@ class _AddProductHistoryState extends State<AddProductHistoryPage> {
         child: BlocBuilder<AddProductHistoryCubit, AddProductHistoryState>(
           builder: (context, state) {
             return BaseScaffolds(
+              enableAppModeDisplay: true,
               isLoading: state is AddProductHistoryLoading,
               appBar: AppbarWidget(
                 context,

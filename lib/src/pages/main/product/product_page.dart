@@ -76,11 +76,11 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        return _cubit;
-      },
+      create: (context) => _cubit,
       child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         return BaseScaffolds(
+          isInitialLoading: state is ProductInitial,
+          enableAppModeDisplay: false,
           backgroundColor: Colors.white,
           appBar: AppbarWidget(
             context,
@@ -92,7 +92,8 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                     autofocus: true,
                     decoration: AppInputDecoration(
                       context,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 13, horizontal: 8),
                       suffixIcon: IconButton(
                         icon: const Icon(
                           Icons.clear,
@@ -131,7 +132,8 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                     CupertinoIcons.add,
                   ),
                   onPressed: () async {
-                    final result = await CreateProductRouter(context).navigate();
+                    final result =
+                        await CreateProductRouter(context).navigate();
                     if (result is BaseArgrument && result.refresh) {
                       _cubit.init();
                     }
@@ -157,14 +159,18 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
             _cubit.changeSortType();
           },
           icon: Icon(
-            _cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down,
+            _cubit.sortType == ProductSortType.asc
+                ? CupertinoIcons.sort_up
+                : CupertinoIcons.sort_down,
           ),
         ),
         IconButton(
           onPressed: () {
             _cubit.changeDisplayType();
           },
-          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
+          icon: Icon(_cubit.displayType == ProductDisplayType.grid
+              ? Icons.list_rounded
+              : Icons.grid_view),
         ),
       ],
       children: [
@@ -175,7 +181,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   Widget buildGridViewProduct() {
     return OrientationBuilder(builder: (context, orientation) {
-      double itemHeight = 330;
+      double itemHeight = 365;
       var size = MediaQuery.of(context).size;
       final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
       final double itemWidth = size.width / crossAxisCount;
@@ -242,7 +248,9 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
               child: ContainerScrollableWidget(
                 radius: DimensionsKeys.radius + 4,
                 paddingAll: 8,
-                child: (_cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct()),
+                child: (_cubit.displayType == ProductDisplayType.grid
+                    ? buildGridViewProduct()
+                    : buildListProduct()),
               ),
             );
           });
@@ -268,6 +276,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showAddStockDialog(context, product);
 
     if (result is BottomSheetAddStockSuccess) {
+      log('onAddStock $result');
       _cubit.addProductToStock(
         product.copyWith(
           priceSelected: result.priceCategorySelected,
@@ -312,7 +321,8 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   @override
   onClickGoToDetailPage(Product product) async {
-    final result = await ProductDetailRouter(context).navigate(argruments: product);
+    final result =
+        await ProductDetailRouter(context).navigate(argruments: product);
 
     if (result is BaseArgrument && result.refresh) {
       _cubit.init();

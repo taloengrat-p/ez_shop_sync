@@ -28,7 +28,7 @@ class ProductCubit extends Cubit<ProductState> {
   ProductCubit({
     required this.productRepository,
     required this.baseCubit,
-  }) : super(ProductInitial());
+  }) : super(ProductCubitInitial());
 
   get productCount => products.isEmpty ? '' : ' ( ${products.length} )';
 
@@ -52,6 +52,7 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   Future<void> init() async {
+    emit(ProductInitial());
     await baseCubit.doGetProducts();
     emit(ProductRefresh(DateTime.now()));
   }

@@ -64,8 +64,11 @@ class Product extends BaseHiveObject {
   @HiveField(21, defaultValue: null)
   List<ProductType>? productTypeList;
 
-  num? get allQuantity => productTypeList?.fold(0, (sum, item) => (sum ?? 0) + (item.price ?? 0));
+  num? get allQuantity => productTypeList?.fold(
+      0, (sum, item) => (sum ?? 0) + (item.quantity ?? 0));
 
+  String? get productTypeSelectDisplay =>
+      productTypeList?.firstWhere((e) => e.id == priceSelected).name;
   Product({
     super.id,
     BaseHiveData? super.info,
@@ -86,19 +89,27 @@ class Product extends BaseHiveObject {
     this.productTypeList,
   });
 
-  List<num>? get priceRange => productTypeList?.map((e) => e.price ?? 0).toList() ?? [];
+  List<num>? get priceRange =>
+      productTypeList?.map((e) => e.price ?? 0).toList() ?? [];
 
   // num
-  String get priceStringDisplay => (productTypeList?.isEmpty ?? true) || (priceRange?.isEmpty ?? true)
+  String get priceStringDisplay => (productTypeList?.isEmpty ?? true) ||
+          (priceRange?.isEmpty ?? true)
       ? ''.elseDisplay().prefixCurrency()
       : (priceRange?.length ?? false) == 1
           ? priceRange?.first.toString().prefixCurrency() ?? ''.elseDisplay()
           : '${priceRange?.first.prefixCurrency()} - ${priceRange?.last.prefixCurrency()}';
 
   num? get priceCurrentSelected =>
-      (productTypeList?.where((mapEntry) => mapEntry.id == priceSelected).firstOrNull?.price ?? 0) * (quantity ?? 0);
+      (productTypeList
+              ?.where((mapEntry) => mapEntry.id == priceSelected)
+              .firstOrNull
+              ?.price ??
+          0) *
+      (quantity ?? 0);
 
-  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductToJson(this);
 

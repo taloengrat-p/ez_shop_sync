@@ -91,12 +91,14 @@ abstract class  LocaleKeys {
   static const addCart = 'addCart';
   static const cart = 'cart';
   static const totalAmount = 'totalAmount';
+  static const receiveAmount = 'receiveAmount';
   static const subTotal = 'subTotal';
   static const proceedToCheckout = 'proceedToCheckout';
   static const proceedToAddProduct = 'proceedToAddProduct';
   static const items = 'items';
   static const serviceCharge = 'serviceCharge';
   static const paymentInfo = 'paymentInfo';
+  static const changeAmount = 'changeAmount';
   static const paymentMethod = 'paymentMethod';
   static const discount = 'discount';
   static const paymentMethodOptions_qrCode = 'paymentMethodOptions.qrCode';
@@ -112,6 +114,7 @@ abstract class  LocaleKeys {
   static const error_unableCheckout = 'error.unableCheckout';
   static const error_productPriceNotYet = 'error.productPriceNotYet';
   static const error_productPriceNotEnough = 'error.productPriceNotEnough';
+  static const error_receiveAmountInvalid = 'error.receiveAmountInvalid';
   static const error = 'error';
   static const introducePage_createOwnerInfomation = 'introducePage.createOwnerInfomation';
   static const introducePage_firstName = 'introducePage.firstName';

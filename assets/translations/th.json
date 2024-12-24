@@ -92,12 +92,14 @@
   "addCart": "เพิ่มลงในรถเข็น",
   "cart": "รถเข็น",
   "totalAmount": "ยอดรวมทั้งหมด",
+  "receiveAmount": "จำนวนเงินที่ได้รับ",
   "subTotal": "ยอดรวมสั่งซื้อ",
   "proceedToCheckout": "ดำเนินการชำระเงิน",
   "proceedToAddProduct": "ดำเนินการเพิ่มสินค้า",
   "items": "รายการ",
   "serviceCharge": "ค่าบริการ ( {} % )",
   "paymentInfo": "ข้อมูลการชำระเงิน",
+  "changeAmount": "เงินทอน",
   "paymentMethod": "วิธีการชำระเงิน",
   "discount": "ส่วนลด",
   "paymentMethodOptions": {
@@ -114,7 +116,8 @@
     "unableAddCart": "ไม่สามารถเพิ่มสินค้าได้",
     "unableCheckout": "ไม่สามารถทำรายการได้",
     "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา",
-    "productPriceNotEnough": "สินค้าในคลังของคุณไม่เพียงพอ"
+    "productPriceNotEnough": "สินค้าในคลังของคุณไม่เพียงพอ",
+    "receiveAmountInvalid": "จำนวนเงินที่ได้รับไม่ถูกต้อง"
   },
   "introducePage": {
     "createOwnerInfomation": "สร้างข้อมูลเจ้าของร้าน",

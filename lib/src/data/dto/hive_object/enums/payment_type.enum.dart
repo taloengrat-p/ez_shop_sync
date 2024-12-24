@@ -1,13 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_page.dart';
 
-enum PaymentType {
+enum PaymentMethodType {
   cash,
   qrcode,
   undefined;
 
-  factory PaymentType.fromString(String? value) {
+  factory PaymentMethodType.fromString(String? value) {
     switch (value) {
       case 'cash':
         return cash;

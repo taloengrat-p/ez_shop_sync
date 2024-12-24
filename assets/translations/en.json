@@ -92,12 +92,14 @@
   "addCart": "Add Cart",
   "cart": "Cart",
   "totalAmount": "Total amount",
+  "receiveAmount": "Receive amount",
   "subTotal": "Sub Total",
   "proceedToCheckout": "Proceed To Checkout",
   "proceedToAddProduct": "Proceed To Add Product",
   "items": "Items",
   "serviceCharge": "Service Charge ( {} % )",
   "paymentInfo": "Payment information",
+  "changeAmount": "Change amount",
   "paymentMethod": "Payment Method",
   "discount": "Discount",
   "paymentMethodOptions": {
@@ -114,7 +116,8 @@
     "unableAddCart": "Unable to add cart",
     "unableCheckout": "Unable to complete the transaction",
     "productPriceNotYet": "Your product has not been priced yet.",
-    "productPriceNotEnough": "Your inventory is insufficient."
+    "productPriceNotEnough": "Your inventory is insufficient.",
+    "receiveAmountInvalid": "Receive amount invalid."
   },
   "introducePage": {
     "createOwnerInfomation": "Create Owner Infomation",

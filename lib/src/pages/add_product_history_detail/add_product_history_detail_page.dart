@@ -1,5 +1,5 @@
 import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_cubit.dart';
-import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_state.dart';   
+import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -12,7 +12,8 @@ class AddProductHistoryDetailPage extends StatefulWidget {
   });
 
   @override
-  _AddProductHistoryDetailState createState() => _AddProductHistoryDetailState();
+  _AddProductHistoryDetailState createState() =>
+      _AddProductHistoryDetailState();
 }
 
 class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
@@ -26,7 +27,6 @@ class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
     });
- 
   }
 
   @override
@@ -38,12 +38,16 @@ class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _cubit,
-      child: BlocListener<AddProductHistoryDetailCubit, AddProductHistoryDetailState>(
+      child: BlocListener<AddProductHistoryDetailCubit,
+          AddProductHistoryDetailState>(
         listener: (context, state) {},
-        child: BlocBuilder<AddProductHistoryDetailCubit, AddProductHistoryDetailState>(
+        child: BlocBuilder<AddProductHistoryDetailCubit,
+            AddProductHistoryDetailState>(
           builder: (context, state) {
             return BaseScaffolds(
-              appBar: AppbarWidget(context, 
+              enableAppModeDisplay: true,
+              appBar: AppbarWidget(
+                context,
                 centerTitle: false,
                 title: "AddProductHistoryDetail",
                 actions: [],

@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart' as orderType;
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart'
+    as orderType;
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/create_order_response.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_server_repository.dart';
@@ -22,8 +26,10 @@ import 'package:uuid/uuid.dart';
 abstract class IOrderRepository {
   List<orderType.ProductOrder> getAll({AppMode appMode = AppMode.local});
   orderType.ProductOrder? getById(String id, {AppMode appMode = AppMode.local});
-  Future<orderType.ProductOrder> create(CreateOrderRequest request);
-  Future<orderType.ProductOrder> update(String id, orderType.ProductOrder updated, {AppMode appMode = AppMode.local});
+  Future<ApiResult<orderType.ProductOrder>> create(CreateOrderRequest request);
+  Future<orderType.ProductOrder> update(
+      String id, orderType.ProductOrder updated,
+      {AppMode appMode = AppMode.local});
   Future<void> delete(String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
 }
@@ -44,19 +50,22 @@ class OrderRepository implements IOrderRepository {
   });
 
   @override
-  Future<orderType.ProductOrder> create(CreateOrderRequest request) async {
+  Future<ApiResult<orderType.ProductOrder>> create(CreateOrderRequest request,
+      {AppMode appMode = AppMode.local}) async {
     final now = DateTime.now();
-    if (request.appMode == AppMode.local) {
+    if (appMode == AppMode.local) {
       String fullUuid = const Uuid().v4();
       String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
-      String prefixedUuid = '${request.storeCode}${now.format(DateFormatConstance.YYYYMMDD_HHMMSS)}$shortUuid';
+      String prefixedUuid =
+          '${now.format(DateFormatConstance.YYYYMMDD_HHMMSS)}$shortUuid';
 
       final orderCreate = orderType.ProductOrder(
         storeId: request.storeId,
         id: prefixedUuid,
         status: OrderStatusType.complete.name,
-        cartItems: request.cart.cartItems,
+        orderItems: request.orderItems,
         paymentType: request.paymentType.name,
+        userId: request.userId,
       );
 
       final result = await orderLocalRepository.create(
@@ -64,26 +73,29 @@ class OrderRepository implements IOrderRepository {
         userId: request.userId,
       );
 
-      await transactionRepository.create(
-        CreateTransactionRequest(
-          storeId: request.storeId,
-          userId: request.userId,
-          method: TransactionMethodType.order,
-          totalPrice: request.cart.cartItems.totalPrice,
-          transactionType: TransactionType.income,
-          valueId: prefixedUuid,
-        ),
-      );
-      return result;
+      // await transactionRepository.create(
+      //   CreateTransactionRequest(
+      //     storeId: request.storeId,
+      //     userId: request.userId,
+      //     method: TransactionMethodType.order,
+      //     totalPrice: request.cart.cartItems.totalPrice,
+      //     transactionType: TransactionType.income,
+      //     valueId: prefixedUuid,
+      //   ),
+      // );
+      // return ApiResult(response:  );
+
+      return ApiResult();
     } else {
-      throw UnimplementedError();
+      return await orderServerRepository.createOrder(request);
     }
   }
 
   @override
   delete(String id, {AppMode? appMode = AppMode.local, String? name}) {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
+      ToastNotificationService.show(
+          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
       return orderLocalRepository.delete(id);
     } else {
       throw UnimplementedError();
@@ -93,7 +105,8 @@ class OrderRepository implements IOrderRepository {
   @override
   deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr());
+      ToastNotificationService.show(
+          title: LocaleKeys.notification_deleteSuccess.tr());
       return orderLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
@@ -109,20 +122,30 @@ class OrderRepository implements IOrderRepository {
     }
   }
 
-  List<orderType.ProductOrder> getAllRange(int start, int end, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<List<orderType.ProductOrder>>> getAllRange(
+    int start,
+    int end, {
+    AppMode? appMode = AppMode.local,
+    required String storeId,
+    required int limit,
+    QueryDocumentSnapshot? lastDocument,
+  }) async {
     try {
       if (appMode == AppMode.local) {
-        return orderLocalRepository.getAllRange(start, end);
+        return Future.value(
+            ApiResult(response: orderLocalRepository.getAllRange(start, end)));
       } else {
-        throw UnimplementedError();
+        return await orderServerRepository.getOrderHistoryList(
+            storeId: storeId, limit: limit, lastDocument: lastDocument);
       }
     } catch (e) {
-      return [];
+      return Future.value(ApiResult());
     }
   }
 
   @override
-  orderType.ProductOrder? getById(String id, {AppMode? appMode = AppMode.local}) {
+  orderType.ProductOrder? getById(String id,
+      {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.getById(id);
     } else {
@@ -131,7 +154,9 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  Future<orderType.ProductOrder> update(String id, orderType.ProductOrder updated, {AppMode? appMode = AppMode.local}) {
+  Future<orderType.ProductOrder> update(
+      String id, orderType.ProductOrder updated,
+      {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.update(id, updated);
     } else {
@@ -146,7 +171,10 @@ class OrderRepository implements IOrderRepository {
     AppMode? appMode = AppMode.local,
   }) {
     if (appMode == AppMode.local) {
-      return orderLocalRepository.getAllBetween(start: start, end: end).where((e) => e.storeId == storeId).toList();
+      return orderLocalRepository
+          .getAllBetween(start: start, end: end)
+          .where((e) => e.storeId == storeId)
+          .toList();
     } else {
       throw UnimplementedError();
     }

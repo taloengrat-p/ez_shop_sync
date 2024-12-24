@@ -133,17 +133,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     width: 8,
                   ),
                   ContainerCircleWidget(
-                      child: cubit.baseCubit.cartCount != 0
-                          ? Badge.count(
-                              count: cubit.baseCubit.cartCount,
-                              child: const Icon(CupertinoIcons.cart),
-                            )
-                          : const Icon(CupertinoIcons.cart),
-                      onPressed: null
-                      //  () {
-                      //   CartRouter(context).navigate();
-                      // },
-                      ),
+                    child: cubit.baseCubit.cartCount != 0
+                        ? Badge.count(
+                            count: cubit.baseCubit.cartCount,
+                            child: const Icon(CupertinoIcons.cart),
+                          )
+                        : const Icon(CupertinoIcons.cart),
+                    onPressed: () {
+                      CartRouter(context).navigate();
+                    },
+                  ),
                   const SizedBox(
                     width: 8,
                   ),

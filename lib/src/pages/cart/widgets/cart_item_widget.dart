@@ -30,7 +30,8 @@ class CartItemWidget extends StatelessWidget {
   });
 
   String get getErrorMessageLabel => switch (errorMessageType) {
-        CartErrorType.insufficient => LocaleKeys.error_productPriceNotEnough.tr(),
+        CartErrorType.insufficient =>
+          LocaleKeys.error_productPriceNotEnough.tr(),
         CartErrorType.undefined => 'undefined',
         null => throw UnimplementedError(),
       };
@@ -79,15 +80,18 @@ class CartItemWidget extends StatelessWidget {
                       ImageWidget(
                         imageUrl: cartItem.product?.imagesPath?.firstOrNull,
                         width: 120,
-                        borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+                        borderRadius:
+                            BorderRadius.circular(DimensionsKeys.radius),
                       ),
                       Expanded(
                         child: ProductInfoListItem(
                           padding: const EdgeInsets.all(8),
                           name: cartItem.product?.name ?? '',
-                          desc: cartItem.product?.description,
-                          price: cartItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
-                          priceCategory: cartItem.product?.priceSelected,
+                          desc: cartItem.product?.description ?? '',
+                          price: cartItem.product?.priceCurrentSelected
+                                  ?.prefixCurrency() ??
+                              '--',
+                          priceCategory: cartItem.product?.productTypeSelectDisplay,
                         ),
                       ),
                       Column(
@@ -118,7 +122,8 @@ class CartItemWidget extends StatelessWidget {
                 ),
                 if (errorMessageType != null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 4),
                     child: Row(
                       children: [
                         const Icon(
@@ -131,7 +136,10 @@ class CartItemWidget extends StatelessWidget {
                         ),
                         Text(
                           getErrorMessageLabel,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.red),
                         )
                       ],
                     ),

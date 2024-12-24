@@ -49,7 +49,8 @@ class _MainPageState extends State<MainPage> {
       baseCubit: baseCubit,
       userRepository: GetIt.I<UserRepository>(),
     );
-    _navigationController = CircularBottomNavigationController(_cubit.currentPage);
+    _navigationController =
+        CircularBottomNavigationController(_cubit.currentPage);
 
     _pageController = PageController(initialPage: _cubit.currentPage);
 
@@ -110,15 +111,20 @@ class _MainPageState extends State<MainPage> {
                   const SizedBox(
                     width: 8,
                   ),
-                  ContainerCircleWidget(
-                    child: _cubit.baseCubit.cartCount != 0
-                        ? Badge.count(
-                            count: _cubit.baseCubit.cartCount,
-                            child: const Icon(CupertinoIcons.cart),
-                          )
-                        : const Icon(CupertinoIcons.cart),
-                    onPressed: () {
-                      CartRouter(context).navigate();
+                  BlocBuilder(
+                    bloc: GetIt.I<BaseCubit>(),
+                    builder: (context, state) {
+                      return ContainerCircleWidget(
+                        child: _cubit.baseCubit.cartCount != 0
+                            ? Badge.count(
+                                count: _cubit.baseCubit.cartCount,
+                                child: const Icon(CupertinoIcons.cart),
+                              )
+                            : const Icon(CupertinoIcons.cart),
+                        onPressed: () {
+                          CartRouter(context).navigate();
+                        },
+                      );
                     },
                   ),
                   const SizedBox(
@@ -136,7 +142,8 @@ class _MainPageState extends State<MainPage> {
                             : const Icon(CupertinoIcons.bell),
                         onPressed: () {
                           NotificationRouter(context).navigate(
-                            argruments: NotificationArgrument(_cubit.baseCubit.notification),
+                            argruments: NotificationArgrument(
+                                _cubit.baseCubit.notification),
                           );
                         },
                       );
@@ -228,7 +235,8 @@ class _MainPageState extends State<MainPage> {
                           _pageController.jumpToPage(selectedPos);
                         } else {
                           _pageController.animateToPage(selectedPos,
-                              duration: const Duration(milliseconds: 300), curve: Curves.linear);
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.linear);
                         }
                       },
                     ),

@@ -1,4 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -6,8 +10,6 @@ import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/price_group_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class BottomSheetAddStockSuccess {
   final num qty;
@@ -18,6 +20,10 @@ class BottomSheetAddStockSuccess {
     required this.qty,
     required this.amountCost,
   });
+
+  @override
+  String toString() =>
+      'BottomSheetAddStockSuccess(qty: $qty, amountCost: $amountCost, priceCategorySelected: $priceCategorySelected)';
 }
 
 class BottomSheetAddStockWidget extends StatefulWidget {
@@ -30,7 +36,8 @@ class BottomSheetAddStockWidget extends StatefulWidget {
   });
 
   @override
-  _BottomSheetAddStockWidgetState createState() => _BottomSheetAddStockWidgetState();
+  _BottomSheetAddStockWidgetState createState() =>
+      _BottomSheetAddStockWidgetState();
 }
 
 class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
@@ -96,13 +103,15 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
                   autofocus: true,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
                     Future.delayed(
                       Duration.zero,
                       () {
                         setState(() {
-                          _qtyTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                          _qtyTextController.text =
+                              value?.trim() == '0' ? '' : value?.trim() ?? '';
                         });
                       },
                     );
@@ -112,13 +121,15 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                   controller: _costAmountTextController,
                   label: LocaleKeys.amountCost.tr(),
                   autofocus: true,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
                     Future.delayed(
                       Duration.zero,
                       () {
                         setState(() {
-                          _costAmountTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                          _costAmountTextController.text =
+                              value?.trim() == '0' ? '' : value?.trim() ?? '';
                         });
                       },
                     );
@@ -134,12 +145,14 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
             backgroundColor: Colors.amber,
             onPressed: _qtyTextController.text.isEmpty ||
                     int.tryParse(_qtyTextController.text) == null ||
-                    (priceCategorySelected == null || (priceCategorySelected?.isEmpty ?? false)) ||
+                    (priceCategorySelected == null ||
+                        (priceCategorySelected?.isEmpty ?? false)) ||
                     _costAmountTextController.text.isEmpty ||
                     int.tryParse(_costAmountTextController.text) == null
                 ? null
                 : () {
-                    final amountCost = num.tryParse(_costAmountTextController.text);
+                    final amountCost =
+                        num.tryParse(_costAmountTextController.text);
 
                     Navigator.of(context).pop(
                       BottomSheetAddStockSuccess(

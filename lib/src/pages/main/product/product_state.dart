@@ -8,6 +8,11 @@ abstract class ProductState extends Equatable {
   List<Object?> get props => [];
 }
 
+class ProductCubitInitial extends ProductState {
+  @override
+  String toString() => 'ProductCubitInitial';
+}
+
 class ProductInitial extends ProductState {
   @override
   String toString() => 'ProductInitial';

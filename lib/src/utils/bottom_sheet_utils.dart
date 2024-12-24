@@ -17,7 +17,14 @@ class BottomSheetUtils {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DimensionsKeys.radius),
           ),
-          child: builder(context),
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context)
+                  .viewInsets
+                  .bottom, // Adjust for keyboard
+            ),
+            child: builder(context),
+          ),
         );
       },
     );
@@ -36,11 +43,17 @@ class BottomSheetUtils {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return AppBottomSheet(
-          props: AppBottomSheetProps(
-            title: title ?? '',
-            body: body,
-            bottom: bottom,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+          ),
+          child: AppBottomSheet(
+            props: AppBottomSheetProps(
+              title: title ?? '',
+              body: body,
+              bottom: bottom,
+            ),
           ),
         );
       },

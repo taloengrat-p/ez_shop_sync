@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart'
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -20,7 +21,7 @@ class AddProductCubit extends Cubit<AddProductState> {
   AddProduct? _addProduct;
   List<OrderItem> get products => _products;
   TimerUtils timerUtils = TimerUtils();
-  Map<String, Product> productInStock = {};
+  List<Product> productInStock = [];
   AddProductCubit({
     required this.productRepository,
     required this.addProductHistoryRepository,
@@ -31,7 +32,9 @@ class AddProductCubit extends Cubit<AddProductState> {
   num? totalPrice;
   String get totalPriceDisplay => totalPrice?.prefixCurrency() ?? '--';
 
-  String get totalItems => products.fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0)).toString();
+  String get totalItems => products
+      .fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0))
+      .toString();
 
   bool get disabledSubmit => totalPrice == null;
 
@@ -47,7 +50,8 @@ class AddProductCubit extends Cubit<AddProductState> {
     timerUtils.debounceTime(
       const Duration(milliseconds: 500),
       () {
-        addProductRepository.decreaseQty(baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
+        addProductRepository.decreaseQty(
+            baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
       },
     );
   }
@@ -68,15 +72,17 @@ class AddProductCubit extends Cubit<AddProductState> {
     timerUtils.debounceTime(
       const Duration(milliseconds: 500),
       () {
-        addProductRepository.decreaseQty(baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
+        addProductRepository.decreaseQty(
+            baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
       },
     );
   }
 
-  void initial() {
+  void initial() async {
     _addProduct = baseCubit.addProduct;
-    _products = baseCubit.addProduct?.addProductItems.map((e) => e).toList() ?? [];
-    productInStock = getProductsByCartItems();
+    _products =
+        baseCubit.addProduct?.addProductItems.map((e) => e).toList() ?? [];
+    productInStock = await getProductsByCartItems();
     emit(AddProductInitial());
   }
 
@@ -104,13 +110,13 @@ class AddProductCubit extends Cubit<AddProductState> {
     emit(AddProductSuccess(addProductCompleted));
   }
 
-  Map<String, Product> getProductsByCartItems() {
-    final productStockFromCartItem =
-        productRepository.getByIds(_products.map((e) => e.product?.id.toString() ?? '').toList()).toList();
+  Future<List<Product>> getProductsByCartItems() async {
+    final productStockFromCartItem = await productRepository.getByIds(
+        baseCubit.store!.id,
+        _products.map((e) => e.product?.id.toString() ?? '').toList(),
+        appMode: AppMode.server);
 
-    return {
-      for (var item in productStockFromCartItem) item.id: item,
-    };
+    return productStockFromCartItem.response ?? [];
   }
 
   void setTotalPrice(String? value) {

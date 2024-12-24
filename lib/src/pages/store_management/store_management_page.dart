@@ -8,7 +8,6 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
@@ -143,13 +142,17 @@ class _StoreManagementState extends State<StoreManagementPage> {
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),
-              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeName : _cubit.nameEditor,
+              textValue: _cubit.screenMode == ScreenMode.display
+                  ? _cubit.storeName
+                  : _cubit.nameEditor,
               onChanged: _cubit.doSetName,
             ),
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.description.tr(),
-              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeDesc : _cubit.descEditor,
+              textValue: _cubit.screenMode == ScreenMode.display
+                  ? _cubit.storeDesc
+                  : _cubit.descEditor,
               onChanged: _cubit.doSetDesc,
             ),
             TextFormFieldUiWidget(

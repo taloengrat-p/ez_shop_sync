@@ -98,7 +98,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       for (var element in _productEditor!.imagesPath!) {
         final fileBytes = await FolderFileUtils.getFileBytes(File(element));
         final imageName = const Uuid().v1().substring(0, 10);
-        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+        final imageSaveModel =
+            (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
         imageDetailFileName.add(imageSaveModel.fileName);
       }
     }
@@ -115,7 +116,9 @@ class CreateProductCubit extends Cubit<CreateProductState> {
         storeId: currentStore!.id,
         userId: currentUser?.uid ?? '',
         product: _productEditor!
-          ..productTypeList = _productEditor!.productTypeList?.map((e) => e..id = const Uuid().v4()).toList(),
+          ..productTypeList = _productEditor!.productTypeList
+              ?.map((e) => e..id = const Uuid().v4())
+              .toList(),
         appMode: AppMode.server,
       ),
     );
@@ -210,7 +213,13 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     final result = await productRepository.update(
       _productEditor!.storeId,
       _productEditor!.id,
-      _productEditor!,
+      _productEditor!
+        ..productTypeList = _productEditor!.productTypeList?.map((e) {
+          if (e.id == null) {
+            e.id = const Uuid().v4();
+          }
+          return e;
+        }).toList(),
       appMode: AppMode.server,
     );
 

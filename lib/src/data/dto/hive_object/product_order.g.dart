@@ -20,26 +20,33 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       id: fields[1] as dynamic,
       info: fields[2] as BaseHiveData?,
       storeId: fields[11] == null ? '' : fields[11] as String,
+      userId: fields[12] == null ? '' : fields[12] as String,
       status: fields[7] as String,
-      cartItems: fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
+      orderItems: (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
-    )..serviceCharge = fields[10] == null ? 0 : fields[10] as num?;
+    )
+      ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
+      ..createAt = fields[13] as dynamic;
   }
 
   @override
   void write(BinaryWriter writer, ProductOrder obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
       ..write(obj.paymentType)
       ..writeByte(9)
-      ..write(obj.cartItems)
+      ..write(obj.orderItems)
       ..writeByte(10)
       ..write(obj.serviceCharge)
       ..writeByte(11)
       ..write(obj.storeId)
+      ..writeByte(12)
+      ..write(obj.userId)
+      ..writeByte(13)
+      ..write(obj.createAt)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -67,12 +74,15 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
           ? null
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       storeId: json['storeId'] as String,
+      userId: json['userId'] as String,
       status: json['status'] as String,
-      cartItems: (json['cartItems'] as List<dynamic>)
+      orderItems: (json['orderItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       paymentType: json['paymentType'] as String,
-    )..serviceCharge = json['serviceCharge'] as num?;
+    )
+      ..serviceCharge = json['serviceCharge'] as num?
+      ..createAt = json['createAt'];
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
     <String, dynamic>{
@@ -80,7 +90,9 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'info': instance.info?.toJson(),
       'status': instance.status,
       'paymentType': instance.paymentType,
-      'cartItems': instance.cartItems.map((e) => e.toJson()).toList(),
+      'orderItems': instance.orderItems.map((e) => e.toJson()).toList(),
       'serviceCharge': instance.serviceCharge,
       'storeId': instance.storeId,
+      'userId': instance.userId,
+      'createAt': instance.createAt,
     };

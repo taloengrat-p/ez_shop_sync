@@ -84,9 +84,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
           physics: const ScrollPhysics(),
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          itemCount: _cubit.order?.cartItems.length ?? 0,
+          itemCount: _cubit.order?.orderItems.length ?? 0,
           itemBuilder: (context, index) {
-            final cartItem = _cubit.order?.cartItems.elementAt(index);
+            final cartItem = _cubit.order?.orderItems.elementAt(index);
 
             // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
 
@@ -106,7 +106,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
 
   Widget buildDetailWidget() {
     return ContainerShadowGroupWidget(
-      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
+      margin:
+          const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       color: Colors.white,
       children: [
@@ -120,7 +121,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.orderDateTime.tr(),
-              value: _cubit.order?.info?.createDate?.toDisplayDependLocale(context) ?? '--',
+              value: _cubit.order?.info?.createDate
+                      ?.toDisplayDependLocale(context) ??
+                  '--',
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.paymentMethod.tr(),
@@ -133,12 +136,14 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  LocaleKeys.orderNumberOfItem.tr(args: [_cubit.order?.numberOfItems.toString() ?? '--']),
+                  LocaleKeys.orderNumberOfItem.tr(
+                      args: [_cubit.order?.numberOfItems.toString() ?? '--']),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                ProductOrderTotalAmountWidget(totalPrice: _cubit.order?.totalPriceIncludeServiceCharge),
+                ProductOrderTotalAmountWidget(
+                    totalPrice: _cubit.order?.totalPriceIncludeServiceCharge),
               ],
             )
           ],

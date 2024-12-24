@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -20,7 +21,7 @@ class OrderHistoryItemWidget extends StatelessWidget {
     required this.order,
   });
 
-  OrderItem get firstOrderItem => order.cartItems.first;
+  OrderItem get firstOrderItem => order.orderItems.first;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,9 @@ class OrderHistoryItemWidget extends StatelessWidget {
                   ),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: order.info?.createDate.toDisplayDependLocale(context),
+                    value: (order.createAt as Timestamp)
+                        .toDate()
+                        .toDisplayDependLocale(context),
                   )
                 ],
               ),
@@ -65,8 +68,10 @@ class OrderHistoryItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       name: firstOrderItem.product?.name ?? '',
                       desc: firstOrderItem.product?.description,
-                      price: firstOrderItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
-                      priceCategory: firstOrderItem.product?.priceSelected,
+                      price: firstOrderItem.product?.priceCurrentSelected
+                              ?.prefixCurrency() ??
+                          '--',
+                      priceCategory: firstOrderItem.product?.productTypeSelectDisplay,
                     ),
                   ),
                   // Column(
@@ -100,12 +105,14 @@ class OrderHistoryItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    LocaleKeys.orderNumberOfItem.tr(args: [order.numberOfItems.toString()]),
+                    LocaleKeys.orderNumberOfItem
+                        .tr(args: [order.numberOfItems.toString()]),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  ProductOrderTotalAmountWidget(totalPrice: order.totalPriceIncludeServiceCharge),
+                  ProductOrderTotalAmountWidget(
+                      totalPrice: order.totalPriceIncludeServiceCharge),
                 ],
               ),
             ),

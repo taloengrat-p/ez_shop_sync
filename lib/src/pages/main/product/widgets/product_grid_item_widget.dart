@@ -54,21 +54,39 @@ class ProductGridItemWidget extends StatelessWidget {
                         Text(
                           product.name,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         Text(
                           product.priceStringDisplay,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: Colors.orange),
                         ),
-                        if (product.quantity != null)
+                        Visibility(
+                          maintainAnimation: true,
+                          maintainSize: true,
+                          maintainState: true,
+                          visible: product.description != null,
+                          child: Text(
+                            product.description ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        if (product.allQuantity != null)
                           Text(
                             overflow: TextOverflow.ellipsis,
                             LocaleKeys.qty.tr(
                               args: [
-                                product.quantity?.toString() ?? '',
+                                product.allQuantity?.toString() ?? '',
                                 LocaleKeys.units_piece.tr(),
                               ],
                             ),
@@ -78,7 +96,8 @@ class ProductGridItemWidget extends StatelessWidget {
                   ),
                   PopupMenuButton(
                     color: Colors.white,
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
                       PopupMenuItem(
                         onTap: () {
                           iProductItem?.onAddCart(product);

@@ -100,6 +100,7 @@ class _AddProductState extends State<AddProductPage> {
         child: BlocBuilder<AddProductCubit, AddProductState>(
           builder: (context, state) {
             return BaseScaffolds(
+              enableAppModeDisplay: true,
               isLoading: state is AddProductLoading,
               appBar: AppbarWidget(
                 context,
@@ -109,15 +110,18 @@ class _AddProductState extends State<AddProductPage> {
               ).build(),
               body: _cubit.products.isEmpty
                   ? Center(
-                      child:
-                          EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.cartEmpty.tr()))
+                      child: EmptyDataWidget(
+                          height: size.height * 0.45,
+                          width: 200,
+                          message: LocaleKeys.cartEmpty.tr()))
                   : _buildPage(context, state),
               bottomNavigationBar: _cubit.products.isEmpty
                   ? ButtonWidget(
                       margin: const EdgeInsets.all(16),
                       label: LocaleKeys.gotoProductsPage.tr(),
                       onPressed: () {
-                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                        MainRouter(context).pushNamedAndRemoveUntil(
+                            argruments: const MainArgruments(1));
                       },
                     )
                   : buildPriceLayout(
@@ -135,8 +139,11 @@ class _AddProductState extends State<AddProductPage> {
                                 child: TextFormFieldUiWidget(
                                   textAlign: TextAlign.right,
                                   autofocus: true,
-                                  textValue: _cubit.totalPrice?.toString() ?? '0',
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                  textValue:
+                                      _cubit.totalPrice?.toString() ?? '0',
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
                                   onChanged: (value) {
                                     _cubit.setTotalPrice(value);
                                   },
@@ -150,7 +157,8 @@ class _AddProductState extends State<AddProductPage> {
                           ButtonWidget(
                             disabled: _cubit.disabledSubmit,
                             label: LocaleKeys.proceedToAddProduct.tr(),
-                            leading: const Icon(Icons.add_circle_outline_rounded),
+                            leading:
+                                const Icon(Icons.add_circle_outline_rounded),
                             onPressed: () {
                               _cubit.submit();
                             },
@@ -170,7 +178,11 @@ class _AddProductState extends State<AddProductPage> {
       children: [
         buildProductItems(),
         AnimatedOpacity(
-          opacity: _isBottomScroll || _canScroll == false || _cubit.products.length <= 2 ? 0 : 1,
+          opacity: _isBottomScroll ||
+                  _canScroll == false ||
+                  _cubit.products.length <= 2
+              ? 0
+              : 1,
           duration: const Duration(milliseconds: 300),
           child: Align(
             alignment: Alignment.bottomCenter,
@@ -253,7 +265,8 @@ class _AddProductState extends State<AddProductPage> {
 
   Widget buildPaymentInfo() {
     return ContainerShadowGroupWidget(
-      margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
+      margin:
+          const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       color: Colors.white,
       title: LocaleKeys.paymentInfo.tr(),

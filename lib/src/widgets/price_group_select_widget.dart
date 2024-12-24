@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_price_category_widget.dart';
@@ -20,6 +22,7 @@ class PriceGroupSelectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('PriceGroupSelectWidget $itemSelected');
     return RowGapWidget(
       gap: 12,
       children: items

@@ -41,8 +41,10 @@ class OrderItemWidget extends StatelessWidget {
                       name: order?.product?.name ?? '',
                       desc: order?.product?.description,
                       qty: order?.product?.quantity,
-                      price: order?.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
-                      priceCategory: order?.product?.priceSelected,
+                      price: order?.product?.priceCurrentSelected
+                              ?.prefixCurrency() ??
+                          '--',
+                      priceCategory: order?.product?.productTypeSelectDisplay,
                     ),
                   ),
                 ],

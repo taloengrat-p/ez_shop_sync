@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
@@ -86,13 +87,16 @@ class BaseCubit extends Cubit<BaseState> {
   int get cartCount => cart?.cartItems.length ?? 0;
   int get notificationCount => 0;
   int get addProductCount => _addProduct?.addProductItems.length ?? 0;
-  RoleType? get userRoleTypeCurrentStore => store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
+  RoleType? get userRoleTypeCurrentStore =>
+      store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
   String? get userId => user?.uid;
   String get currentUsername {
     if (user?.displayName == null && user?.email == null) {
       throw ('currentUsername user?.displayName == null && user?.email == null is Null');
     }
-    return user?.displayName ?? user?.email?.substring(0, user?.email?.indexOf("@")) ?? '--';
+    return user?.displayName ??
+        user?.email?.substring(0, user?.email?.indexOf("@")) ??
+        '--';
   }
 
   BaseCubit({
@@ -158,17 +162,22 @@ class BaseCubit extends Cubit<BaseState> {
 
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
-      log('userChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
+      log('userChanges() isClosed:: ${isClosed} $user',
+          name: runtimeType.toString());
       setCurrentUser(user);
     });
   }
 
   loadAppTheme(AppTheme? value) {
     _appTheme = value;
-    ColorKeys.primary = _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
-    ColorKeys.secondary = _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
-    ColorKeys.accent = _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
-    ColorKeys.brightness = _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
+    ColorKeys.primary =
+        _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
+    ColorKeys.secondary =
+        _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
+    ColorKeys.accent =
+        _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
+    ColorKeys.brightness =
+        _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
     emit(BaseLoadAppThemeSuccess(appTheme));
   }
 
@@ -206,7 +215,8 @@ class BaseCubit extends Cubit<BaseState> {
 
   setCurrentCartByCurrentStore() async {
     final cartLocal = GetIt.I<CartLocalRepository>().getAll();
-    final cartFinded = cartRepository.getCartsByUserIdWithCurrentStore(storeId: store!.id, userId: user!.uid);
+    final cartFinded = cartRepository.getCartsByUserIdWithCurrentStore(
+        storeId: store!.id, userId: user!.uid);
     log('setCurrentCartByCurrentStore : ${cartLocal.length}');
 
     if (cartFinded != null) {
@@ -231,7 +241,9 @@ class BaseCubit extends Cubit<BaseState> {
   setCurrentAddCartByCurrentStore(String storeId) async {
     // log('setCurrentCartByCurrentStore : ${_carts.map((e) => e.id)}');
     if (_addProducts.map((e) => e.storeId).toList().contains(storeId)) {
-      final addProductFinded = _addProducts.where((addProduct) => addProduct.storeId == storeId).firstOrNull;
+      final addProductFinded = _addProducts
+          .where((addProduct) => addProduct.storeId == storeId)
+          .firstOrNull;
       setCurrentAddProduct(addProductFinded);
     } else {
       final addProductCreated = await addProductRepository.create(
@@ -270,12 +282,15 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   changeDisplayType() {
-    productDisplayType =
-        productDisplayType == ProductDisplayType.grid ? ProductDisplayType.list : ProductDisplayType.grid;
+    productDisplayType = productDisplayType == ProductDisplayType.grid
+        ? ProductDisplayType.list
+        : ProductDisplayType.grid;
   }
 
   changeSortType() {
-    productSortType = productSortType == ProductSortType.asc ? ProductSortType.desc : ProductSortType.asc;
+    productSortType = productSortType == ProductSortType.asc
+        ? ProductSortType.desc
+        : ProductSortType.asc;
 
     sortProduct(productSortType);
   }
@@ -283,11 +298,11 @@ class BaseCubit extends Cubit<BaseState> {
   sortProduct(ProductSortType sortType) {
     try {
       if (sortType == ProductSortType.asc) {
-        products.sort(
-            (a, b) => a.info?.createDate!.millisecondsSinceEpoch.compareTo(b.info?.createDate!.millisecondsSinceEpoch));
+        products.sort((a, b) => a.info?.createDate!.millisecondsSinceEpoch
+            .compareTo(b.info?.createDate!.millisecondsSinceEpoch));
       } else {
-        products.sort(
-            (a, b) => b.info?.createDate!.millisecondsSinceEpoch.compareTo(a.info?.createDate!.millisecondsSinceEpoch));
+        products.sort((a, b) => b.info?.createDate!.millisecondsSinceEpoch
+            .compareTo(a.info?.createDate!.millisecondsSinceEpoch));
       }
     } catch (e) {
       log('sortProduct error $e');
@@ -300,7 +315,8 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> doGetProducts() async {
     emit(BaseLoading());
-    final result = await productRepository.getAllByStoreId(store!.id, appMode: AppMode.server);
+    final result = await productRepository.getAllByStoreId(store!.id,
+        appMode: AppMode.server);
 
     result.when(success: (response) {
       setCurrentProduct(response ?? []);
@@ -316,7 +332,8 @@ class BaseCubit extends Cubit<BaseState> {
     _products = value;
   }
 
-  Future<void> doDeleteProduct({required String storeId, required String productId}) async {
+  Future<void> doDeleteProduct(
+      {required String storeId, required String productId}) async {
     emit(BaseLoading());
     await productRepository.delete(storeId, productId, appMode: AppMode.server);
     _products.removeWhere((elelment) => elelment.id == productId);
@@ -371,7 +388,8 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> deleteItemFromCart(String cartItemId) async {
     emit(BaseLoading());
-    final resultCartUpdated = await cartRepository.deleteItemByIdFromCart(cart?.id, cartItemId);
+    final resultCartUpdated =
+        await cartRepository.deleteItemByIdFromCart(cart?.id, cartItemId);
 
     setCurrentCart(resultCartUpdated);
 
@@ -380,14 +398,16 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> deleteItemFromAddProduct(String addProductItemId) async {
     emit(BaseLoading());
-    final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromCart(cart?.id, addProductItemId);
+    final resultAddCartUpdated = await addProductRepository
+        .deleteItemByIdFromCart(cart?.id, addProductItemId);
 
     setCurrentAddProduct(resultAddCartUpdated);
 
     emit(BaseRemoveCartItem());
   }
 
-  Future<Product?> addStock({required Product? product, required num amountCost}) async {
+  Future<Product?> addStock(
+      {required Product? product, required num amountCost}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
@@ -398,25 +418,35 @@ class BaseCubit extends Cubit<BaseState> {
 
     emit(BaseLoading());
 
-    final addProductUpdate = await addProductRepository.addProduct(addProduct!.id, product);
+    final addProductUpdate =
+        await addProductRepository.addProduct(addProduct!.id, product);
+
     // final productUpdated = await productRepository.addProductQuantityToStock(
     //   AddProductQtyToStockrequest(
     //     productId: product.id,
     //     storeId: store!.id,
-    //     userId: user!.id,
+    //     userId: user!.uid,
     //     product: product,
     //     amountCost: amountCost,
     //   ),
+    //   appMode: AppMode.server,
     // );
 
-    // updateProductQuantity(productUpdated);
+    // productUpdated.when(
+    //   success: (response) {
+    //     updateProductQuantity(response);
+    //   },
+    //   failure: (error) {},
+    // );
+
     emit(BaseAddStockSuccess(DateTime.now()));
 
     return product;
   }
 
   void updateProductQuantity(Product? productUpdated) {
-    final productFinded = _products.where((e) => e.id == productUpdated?.id).firstOrNull;
+    final productFinded =
+        _products.where((e) => e.id == productUpdated?.id).firstOrNull;
 
     if (productFinded == null) {
       throw ('updateProductQuantity() Product is Null');

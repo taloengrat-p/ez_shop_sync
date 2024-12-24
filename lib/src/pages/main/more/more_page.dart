@@ -116,6 +116,7 @@ class _MorePageState extends State<MorePage> {
         child: BlocBuilder<MoreCubit, MoreState>(
           builder: (context, state) {
             return BaseScaffolds(
+              enableAppModeDisplay: false,
               backgroundColor: Colors.white,
               isLoading: state is BaseLoading,
               appBar: AppbarWidget(
@@ -151,7 +152,8 @@ class _MorePageState extends State<MorePage> {
             const SizedBox(
               height: 16,
             ),
-            if ((_cubit.baseCubit.userRoleTypeCurrentStore?.power ?? -1) >= RoleType.manager.power) ...[
+            if ((_cubit.baseCubit.userRoleTypeCurrentStore?.power ?? -1) >=
+                RoleType.manager.power) ...[
               _buildStoreSettings(),
               const SizedBox(
                 height: 16,
@@ -180,7 +182,8 @@ class _MorePageState extends State<MorePage> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(LocaleKeys.appVersion.tr(args: [_cubit.version, _cubit.buildNumber])),
+                child: Text(LocaleKeys.appVersion
+                    .tr(args: [_cubit.version, _cubit.buildNumber])),
               ),
             ),
             const SizedBox(
@@ -214,7 +217,9 @@ class _MorePageState extends State<MorePage> {
                       _cubit.storeName,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             overflow: TextOverflow.ellipsis,
-                            color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                            color: ColorKeys.primary
+                                .withOpacity(0.6)
+                                .getContrast(),
                           ),
                     ),
                   ),
@@ -224,7 +229,9 @@ class _MorePageState extends State<MorePage> {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             overflow: TextOverflow.ellipsis,
-                            color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                            color: ColorKeys.primary
+                                .withOpacity(0.6)
+                                .getContrast(),
                           ),
                     ),
                 ],
@@ -407,7 +414,6 @@ class _MorePageState extends State<MorePage> {
       title: LocaleKeys.myMenu.tr(),
       items: [
         MenuItemModel(
-          disabled: true,
           title: LocaleKeys.orderHistory.tr(),
           value: 1,
           onPressed: () {
