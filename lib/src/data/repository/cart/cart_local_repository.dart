@@ -44,6 +44,9 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
   }
 
   Future<Cart?> addCart(String id, Product product) async {
+    log(
+      'addCart id $id',
+    );
     Cart? cart = getById(id);
 
     if (cart == null) {
@@ -115,5 +118,9 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
         .toList();
 
     await update(cartId, cart..cartItems = cartItem);
+  }
+
+  Cart? getCartByStoreAndUserId({required String storeId, required String userId}) {
+    return getAll().where((e) => e.storeId == storeId && e.userId == userId).firstOrNull;
   }
 }

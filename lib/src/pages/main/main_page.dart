@@ -117,10 +117,9 @@ class _MainPageState extends State<MainPage> {
                             child: const Icon(CupertinoIcons.cart),
                           )
                         : const Icon(CupertinoIcons.cart),
-                    onPressed: null,
-                    //  () {
-                    //   CartRouter(context).navigate();
-                    // },
+                    onPressed: () {
+                      CartRouter(context).navigate();
+                    },
                   ),
                   const SizedBox(
                     width: 8,

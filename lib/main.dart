@@ -13,6 +13,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
@@ -111,6 +112,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(ProductHistoryAdapter());
   Hive.registerAdapter(TransactionAdapter());
   Hive.registerAdapter(AddProductAdapter());
+  Hive.registerAdapter(ProductTypeAdapter());
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);

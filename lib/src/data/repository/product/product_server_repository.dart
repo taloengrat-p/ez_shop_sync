@@ -78,4 +78,18 @@ class ProductServerRepository {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
   }
+
+  Future<ApiResult<Product>> getProduct({required String storeId, required String productId}) async {
+    try {
+      final result = await firebaseService.storesCollection
+          .doc(storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+          .doc(productId)
+          .get();
+
+      return ApiResult(response: Product.fromJson(result.data() ?? {}));
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
 }

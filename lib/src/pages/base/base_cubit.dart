@@ -14,6 +14,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/cart_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
@@ -31,6 +32,7 @@ import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 class BaseCubit extends Cubit<BaseState> {
@@ -63,7 +65,6 @@ class BaseCubit extends Cubit<BaseState> {
   List<Store> _stores = [];
   List<Tag> _tags = [];
   List<Category> _categories = [];
-  List<Cart> _carts = [];
   List<AddProduct> _addProducts = [];
   List<Notification> _notification = [];
   Cart? _cart;
@@ -77,7 +78,6 @@ class BaseCubit extends Cubit<BaseState> {
   Store? get store => _store;
   Cart? get cart => _cart;
   AddProduct? get addProduct => _addProduct;
-  List<Cart> get carts => _carts;
   List<Product> get products => _products;
   List<Store> get stores => _stores;
   List<Tag> get tags => _tags;
@@ -185,10 +185,9 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseSelectStore(_store?.id));
     // await authLocalRepository.update(user?.id, user!..storeLatest = store!.id);
 
-    // await doGetCartByCurrentUserAndStore();
-    // await doGetAddProductByCurrentUserAndStore();
-    // setCurrentAddCartByCurrentStore(store!.id);
-    // setCurrentCartByCurrentStore(store!.id);
+    await doGetAddProductByCurrentUserAndStore();
+    setCurrentAddCartByCurrentStore(store!.id);
+    setCurrentCartByCurrentStore();
     // loadAppTheme(_store?.storeTheme);
     // loadTagsByCurrentStore();
     // loadCategoryByCurrentStore();
@@ -205,26 +204,28 @@ class BaseCubit extends Cubit<BaseState> {
     // await doGetStores(_user?.storeId ?? []);
   }
 
-  setCurrentCartByCurrentStore(String storeId) async {
-    // log('setCurrentCartByCurrentStore : ${_carts.map((e) => e.id)}');
-    if (_carts.map((e) => e.storeId).toList().contains(storeId)) {
-      final cartFinded = _carts.where((cart) => cart.storeId == storeId).firstOrNull;
+  setCurrentCartByCurrentStore() async {
+    final cartLocal = GetIt.I<CartLocalRepository>().getAll();
+    final cartFinded = cartRepository.getCartsByUserIdWithCurrentStore(storeId: store!.id, userId: user!.uid);
+    log('setCurrentCartByCurrentStore : ${cartLocal.length}');
+
+    if (cartFinded != null) {
       setCurrentCart(cartFinded);
     } else {
       final cartCreated = await cartRepository.create(
         Cart(
           id: const Uuid().v1(),
-          storeId: storeId,
+          storeId: store!.id,
           userId: user?.uid ?? '--',
           cartItems: [],
         ),
       );
 
       // await userRepository.update(user!.id, user!..carts.add(cartCreated.id));
-      // setCurrentCart(cartCreated);
+      setCurrentCart(cartCreated);
     }
 
-    // log('current Cart $cart');
+    emit(BaseRefresh(DateTime.now()));
   }
 
   setCurrentAddCartByCurrentStore(String storeId) async {
@@ -255,6 +256,7 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   setCurrentCart(Cart? value) {
+    log('setCurrentCart $value');
     _cart = value;
   }
 
@@ -355,15 +357,12 @@ class BaseCubit extends Cubit<BaseState> {
       emit(BaseLoading());
       final cartUpdate = await cartRepository.addCart(_cart!.id, product);
 
+      log('cartUpdate $cartUpdate');
       emit(BaseAddCartSuccess());
       Future.delayed(durationAddCart).then((value) {
         emit(BaseAddCartAnimationSuccess());
       });
     }
-  }
-
-  Future<void> doGetCartByCurrentUserAndStore() async {
-    // _carts = cartRepository.getCartsByUserIdWithCurrentStore(user!.carts);
   }
 
   Future<void> doGetAddProductByCurrentUserAndStore() async {

@@ -7,7 +7,7 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ICartRepository {
-  List<Cart> getCartsByUserIdWithCurrentStore(List<String> request);
+  Cart? getCartsByUserIdWithCurrentStore({required String storeId, required String userId});
   Future<Cart> create(Cart request);
   Future<Cart> update(String id, Cart updated);
   Future<void> delete(String id);
@@ -53,9 +53,9 @@ class CartRepository extends BaseRepository implements ICartRepository {
   }
 
   @override
-  List<Cart> getCartsByUserIdWithCurrentStore(List<String> carts) {
+  Cart? getCartsByUserIdWithCurrentStore({required String storeId, required String userId}) {
     if (appMode == AppMode.local) {
-      return cartLocalRepository.getAllById(carts);
+      return cartLocalRepository.getCartByStoreAndUserId(storeId: storeId, userId: userId);
     } else {
       throw UnimplementedError();
     }

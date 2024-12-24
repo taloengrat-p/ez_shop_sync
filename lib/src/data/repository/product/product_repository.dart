@@ -24,16 +24,14 @@ import 'package:injectable/injectable.dart';
 
 abstract class IProductRepository {
   List<Product> getAll({AppMode appMode = AppMode.local});
-  Product? getById(String id, {AppMode appMode = AppMode.local});
+  Future<ApiResult<Product>> getById(
+      {required String storeId, required String productId, AppMode appMode = AppMode.local});
   Future<Product?> create(CreateProductRequest request);
-  Future<ApiResult<Product>> update(
-      String storeId, String productId, Product updated,
+  Future<ApiResult<Product>> update(String storeId, String productId, Product updated,
       {AppMode appMode = AppMode.local});
-  Future<void> delete(String storeId, String id,
-      {AppMode appMode = AppMode.local});
+  Future<void> delete(String storeId, String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id,
-      {AppMode appMode = AppMode.local});
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
@@ -74,9 +72,7 @@ class ProductRepository implements IProductRepository {
         ),
         desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
         onTap: (value) {
-          ProductDetailRouter(
-                  GetIt.I<NavigationService>().navigatorKey.currentContext!)
-              .navigate(
+          ProductDetailRouter(GetIt.I<NavigationService>().navigatorKey.currentContext!).navigate(
             argruments: result,
           );
         },
@@ -91,25 +87,21 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> delete(String storeId, String id,
-      {AppMode? appMode = AppMode.local, String? name}) async {
+  Future<void> delete(String storeId, String id, {AppMode? appMode = AppMode.local, String? name}) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
       return productLocalRepository.delete(id);
     } else {
       await productServerRepository.delete(storeId: storeId, productId: id);
 
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
     }
   }
 
   @override
   deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr());
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr());
       return productLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
@@ -134,11 +126,13 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  Product? getById(String id, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<Product>> getById(
+      {required String storeId, required String productId, AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      return productLocalRepository.getById(id);
+      final product = productLocalRepository.getById(productId);
+      return Future.value(ApiResult(response: product));
     } else {
-      throw UnimplementedError();
+      return await productServerRepository.getProduct(storeId: storeId, productId: productId);
     }
   }
 
@@ -146,27 +140,21 @@ class ProductRepository implements IProductRepository {
   Future<ApiResult<Product>> update(String storeId, String id, Product updated,
       {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title:
-              LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
       final resultLocal = await productLocalRepository.update(id, updated);
 
       return ApiResult(response: resultLocal);
     } else {
-      final response = await productServerRepository.update(
-          storeId: storeId, productId: id, updated);
+      final response = await productServerRepository.update(storeId: storeId, productId: id, updated);
 
-      ToastNotificationService.show(
-          title:
-              LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
 
       return response;
     }
   }
 
   @override
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       return productLocalRepository.getAllByStoreId(id);
     } else {
@@ -179,22 +167,21 @@ class ProductRepository implements IProductRepository {
     AppMode? appMode = AppMode.local,
   }) async {
     if (appMode == AppMode.local) {
-      final product = getById(request.productId);
+      final product = await getById(storeId: request.storeId, productId: request.productId);
 
       if (product == null) {
         throw ('Product ${request.productId} is Null');
       }
 
-      final newQuantity =
-          (product.quantity ?? 0) + (request.product.quantity ?? 0);
+      final newQuantity = (product.response?.quantity ?? 0) + (request.product.quantity ?? 0);
 
-      final productUpdated = await update(
-          request.storeId, product.id, product..quantity = newQuantity);
+      final productUpdated =
+          await update(request.storeId, product.response!.id, product.response!..quantity = newQuantity);
 
       final productHistory = await productHistoryRepository.create(
         CreateProductHistoryRequest(
-          productId: product.id,
-          storeId: product.storeId,
+          productId: product.response!.id,
+          storeId: product.response!.storeId,
           userId: request.userId,
           event: ProductHistoryEvent.addToStock,
           newData: {
@@ -221,22 +208,19 @@ class ProductRepository implements IProductRepository {
     }
   }
 
-  Future<void> orderCompletedUpdate(Cart? cart,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<void> orderCompletedUpdate(Cart? cart, {AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
       for (OrderItem item in cart?.cartItems ?? []) {
         if (item.product?.id != null) {
-          final product = getById(item.product!.id);
+          final product = await getById(storeId: cart!.storeId, productId: item.product!.id);
 
           if (product == null) {
             throw ('Product ${item.product!.id} is Null');
           }
 
-          final newQuantity =
-              (product.quantity ?? 0) - (item.product?.quantity ?? 0);
+          final newQuantity = (product.response?.quantity ?? 0) - (item.product?.quantity ?? 0);
 
-          await productLocalRepository.update(
-              product.id, product..quantity = newQuantity);
+          await productLocalRepository.update(product.response?.id, product.response!..quantity = newQuantity);
         }
       }
     } else {

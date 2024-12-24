@@ -23,11 +23,8 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   BaseCubit baseCubit;
 
   String get productDescription => product?.description ?? '';
-  List<Tag> get tags => baseCubit.tags
-      .where((e) => product?.tag?.contains(e.id) ?? false)
-      .toList();
-  Category? get category =>
-      baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
+  List<Tag> get tags => baseCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
+  Category? get category => baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
   ProductDetailCubit({
     required this.productHistoryRepository,
     required this.productRepository,
@@ -73,8 +70,9 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
 
   void loadTags() {}
 
-  void refresh({Product? product}) {
-    product = product ?? productRepository.getById(this.product!.id);
+  void refresh({Product? product}) async {
+    product =
+        product ?? (await productRepository.getById(storeId: product!.storeId, productId: this.product!.id)).response;
     emit(ProductDetailInitial());
   }
 
@@ -99,8 +97,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
       throw ('loadProducthistory product is Null');
     }
 
-    productHistory =
-        await productHistoryRepository.getAllByProductId(product!.id);
+    productHistory = await productHistoryRepository.getAllByProductId(product!.id);
 
     emit(ProductDetailLoadHistorySuccess());
   }
