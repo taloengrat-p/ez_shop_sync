@@ -10,6 +10,7 @@ class ProductInfoListItem extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final num? qty;
   final String? priceCategory;
+  final num? changeAmount;
 
   const ProductInfoListItem({
     super.key,
@@ -19,6 +20,7 @@ class ProductInfoListItem extends StatelessWidget {
     this.price,
     this.qty,
     this.priceCategory,
+    this.changeAmount,
   });
 
   @override
@@ -59,12 +61,16 @@ class ProductInfoListItem extends StatelessWidget {
                 ),
                 Text(
                   price!,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Colors.orange),
                 )
               ],
               if (qty != null)
                 Text(
-                  LocaleKeys.qty.tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
+                  LocaleKeys.qty
+                      .tr(args: [qty.toString(), LocaleKeys.units_piece.tr()]),
                   style: Theme.of(context).textTheme.titleMedium,
                 )
             ],

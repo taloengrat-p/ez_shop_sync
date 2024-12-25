@@ -49,6 +49,14 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
   void initState() {
     _productEditor = widget.product;
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      if (_productEditor.productTypeList?.length == 1) {
+        priceCategorySelected = _productEditor.productTypeList?.first.id;
+
+        setState(() {});
+      }
+    });
   }
 
   num? get qtyEditor => int.tryParse(_qtyTextController.text);

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
@@ -14,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({
@@ -26,12 +29,10 @@ class OrderHistoryPage extends StatefulWidget {
 
 class _OrderHistoryState extends State<OrderHistoryPage> {
   late OrderHistoryCubit _cubit;
-  final _listViewController = ScrollController();
-
+  final _refreshListViewController = RefreshController(initialRefresh: false);
   @override
   void initState() {
     super.initState();
-    _listViewController.addListener(() => _onScroll(_listViewController));
     _cubit = OrderHistoryCubit(
       orderRepository: GetIt.I<OrderRepository>(),
       baseCubit: BlocProvider.of<BaseCubit>(context),
@@ -44,15 +45,14 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
 
   @override
   void dispose() {
-    _listViewController.dispose();
     super.dispose();
   }
 
-  void _onScroll(ScrollController controller) {
-    if (controller.position.pixels == controller.position.maxScrollExtent) {
-      _cubit.loadMoreItems();
-    }
-  }
+  // void _onScroll(ScrollController controller) {
+  //   if (controller.position.pixels == controller.position.maxScrollExtent) {
+  //     _cubit.loadMoreItems();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,41 +91,66 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
     return Column(
       children: [
         Expanded(
-          child: ListView.separated(
-            controller: _listViewController,
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            itemCount: _cubit.orderItems.length,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            itemBuilder: (context, index) {
-              final model = _cubit.orderItems[index];
+          child: SmartRefresher(
+            controller: _refreshListViewController,
+            enablePullDown: true,
+            enablePullUp: true,
+            footer: const ClassicFooter(
+              loadStyle: LoadStyle.ShowWhenLoading,
+            ),
+            onRefresh: () {
+              onRefresh();
+            },
+            onLoading: () {
+              onLoadMore();
+            },
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: _cubit.orderItems.length,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              itemBuilder: (context, index) {
+                final model = _cubit.orderItems[index];
 
-              return InkWell(
-                child: OrderHistoryItemWidget(
-                  order: model,
-                ),
-                onTap: () {
-                  OrderHistoryDetailRouter(context).navigate(
-                    argruments:
-                        OrderHistoryDetailArgruments(productOrder: model),
-                  );
-                },
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const SizedBox(
-                height: 16,
-              );
-            },
+                return InkWell(
+                  child: OrderHistoryItemWidget(
+                    order: model,
+                  ),
+                  onTap: () {
+                    OrderHistoryDetailRouter(context).navigate(
+                      argruments:
+                          OrderHistoryDetailArgruments(productOrder: model),
+                    );
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(
+                  height: 16,
+                );
+              },
+            ),
           ),
         ),
-        if (state is OrderHistoryLoadMore)
-          Lottie.asset(
-            'assets/animations/load_more.json',
-            width: double.infinity,
-            height: 50,
-          )
+        // if (state is OrderHistoryLoadMore)
+        //   Lottie.asset(
+        //     'assets/animations/load_more.json',
+        //     width: double.infinity,
+        //     height: 50,
+        //   )
       ],
     );
+  }
+
+  Future<void> onRefresh() async {
+    _refreshListViewController.requestRefresh();
+    await _cubit.loadMoreItems(refresh: true);
+    _refreshListViewController.refreshCompleted();
+  }
+
+  Future<void> onLoadMore() async {
+    _refreshListViewController.requestLoading();
+    await _cubit.loadMoreItems(refresh: false);
+    _refreshListViewController.loadComplete();
   }
 }

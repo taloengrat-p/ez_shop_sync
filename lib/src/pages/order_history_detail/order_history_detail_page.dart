@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -5,6 +6,7 @@ import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -121,8 +123,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.orderDateTime.tr(),
-              value: _cubit.order?.info?.createDate
-                      ?.toDisplayDependLocale(context) ??
+              value: (_cubit.order?.createAt as Timestamp?)
+                      ?.toDate()
+                      .toDisplayDependLocale(context) ??
                   '--',
             ),
             TextTitleBoldValueWidget(
@@ -143,9 +146,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
                       ),
                 ),
                 ProductOrderTotalAmountWidget(
-                    totalPrice: _cubit.order?.totalPriceIncludeServiceCharge),
+                  totalPrice: _cubit.order?.totalPriceIncludeServiceCharge,
+                  changeAmount: _cubit.order?.changeAmount,
+                  receiveAmount: _cubit.order?.receiveAmount,
+                ),
               ],
-            )
+            ),
           ],
         ),
       ],

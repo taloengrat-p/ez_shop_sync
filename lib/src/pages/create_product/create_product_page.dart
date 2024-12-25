@@ -20,6 +20,8 @@ import 'package:ez_shop_sync/src/pages/create_product/widgets/product_type_widge
 import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
+import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -31,11 +33,14 @@ import 'package:ez_shop_sync/src/widgets/form/form_create_price_cetagory_widget.
 import 'package:ez_shop_sync/src/widgets/form/form_custom_field_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_picker_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
+import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_dropdown_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -85,11 +90,13 @@ class CreateProductPageState extends State<CreateProductPage> {
       child: BlocListener<CreateProductCubit, CreateProductState>(
         listener: (context, state) {
           log('create product state : $state, ${cubit.productEditor?.attributes}');
-          if (state is CreateProductSuccess || state is CreateProductUpdateSuccess) {
+          if (state is CreateProductSuccess ||
+              state is CreateProductUpdateSuccess) {
             CreateProductRouter(context).pop(BaseArgrument(refresh: true));
           }
         },
-        child: BlocBuilder<CreateProductCubit, CreateProductState>(builder: (context, state) {
+        child: BlocBuilder<CreateProductCubit, CreateProductState>(
+            builder: (context, state) {
           return BaseScaffolds(
             backgroundColor: Colors.white,
             appBar: AppbarWidget(
@@ -149,55 +156,61 @@ class CreateProductPageState extends State<CreateProductPage> {
                         color: ColorKeys.primary.withOpacity(0.6),
                       ),
                       TextFormFieldUiWidget(
-                        label: 'Product type',
-                        errorText: state is CreateProductProductTypeFailure ? state.message : null,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          height: 100,
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: RowGapWidget(
-                              gap: 12,
-                              children: [
-                                ...cubit.productEditor?.productTypeList
-                                        ?.asMap()
-                                        .map(
-                                          (index, e) => MapEntry(
-                                            index,
-                                            InkWell(
-                                                onTap: () async {
-                                                  final productType =
-                                                      await CreateProductDetailRouter(context).navigate(argruments: e);
+                        label: LocaleKeys.productType.tr(),
+                        errorText: state is CreateProductProductTypeFailure
+                            ? state.message
+                            : null,
+                        child: ColumnGapWidget(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          gap: 12,
+                          children: [
+                            ...cubit.productEditor?.productTypeList
+                                    ?.asMap()
+                                    .map(
+                                      (index, e) => MapEntry(
+                                        index,
+                                        InkWell(
+                                          onTap: () async {
+                                            final productType =
+                                                await CreateProductDetailRouter(
+                                                        context)
+                                                    .navigate(argruments: e);
 
-                                                  if (productType is ProductType) {
-                                                    cubit.updateProductType(index, productType);
-                                                  }
-                                                },
-                                                child: ProductTypeWidget(model: e)),
+                                            if (productType is ProductType) {
+                                              cubit.updateProductType(
+                                                  index, productType);
+                                            }
+                                          },
+                                          child: IntrinsicHeight(
+                                            child: ProductTypeWidget(
+                                              model: e,
+                                              onDelete: () {
+                                                cubit
+                                                    .onDeleteProductType(index);
+                                              },
+                                            ),
                                           ),
-                                        )
-                                        .values ??
-                                    [],
-                                if (cubit.productEditor?.productTypeList?.length != 5)
-                                  InkWell(
-                                    onTap: () {
-                                      cubit.addProductType();
-                                    },
-                                    child: DottedBorder(
-                                      child: const SizedBox(
-                                        width: 60,
-                                        height: double.infinity,
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.red,
                                         ),
                                       ),
-                                    ),
+                                    )
+                                    .values ??
+                                [],
+                            if (cubit.productEditor?.productTypeList?.length !=
+                                5)
+                              Align(
+                                alignment: Alignment.center,
+                                child: ContainerCircleWidget(
+                                  onPressed: () {
+                                    cubit.addProductType();
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.red,
                                   ),
-                              ],
-                            ),
-                          ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       // Divider(
@@ -291,15 +304,13 @@ class CreateProductPageState extends State<CreateProductPage> {
                       //     },
                       //   ),
                       // ),
-                      const SizedBox(
-                        height: 8,
-                      ),
                       Divider(
                         color: ColorKeys.primary.withOpacity(0.6),
                       ),
                       TextFormFieldUiWidget(
                         label: LocaleKeys.custom.tr(),
-                        child: FormCustomFieldWidget<FormCreateCustomFieldArgrument>(
+                        child: FormCustomFieldWidget<
+                            FormCreateCustomFieldArgrument>(
                           key: const ValueKey('form-create-custom-field'),
                           tag: 'form-create-custom-field',
                           // widgetEditor: FormCreateCustomField(
@@ -314,7 +325,8 @@ class CreateProductPageState extends State<CreateProductPage> {
                           items: cubit.productEditor?.attributes ?? {},
                           onAddCustomField: (key, value) {
                             cubit.addCustomField(key, value);
-                            Future.delayed(const Duration(milliseconds: 200), () {
+                            Future.delayed(const Duration(milliseconds: 200),
+                                () {
                               _scrollController.animateTo(
                                 _scrollController.position.maxScrollExtent,
                                 curve: Curves.easeOut,
@@ -341,7 +353,9 @@ class CreateProductPageState extends State<CreateProductPage> {
             ),
             bottomNavigationBar: ButtonWidget(
               margin: const EdgeInsets.all(16),
-              label: cubit.screenMode == ScreenMode.create ? LocaleKeys.button_next.tr() : LocaleKeys.button_save.tr(),
+              label: cubit.screenMode == ScreenMode.create
+                  ? LocaleKeys.button_next.tr()
+                  : LocaleKeys.button_save.tr(),
               onPressed: () {
                 if (cubit.screenMode == ScreenMode.create) {
                   cubit.submitCreate();

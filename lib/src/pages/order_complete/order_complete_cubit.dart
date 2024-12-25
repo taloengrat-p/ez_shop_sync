@@ -8,9 +8,9 @@ class OrderCompleteCubit extends Cubit<OrderCompleteState> {
   OrderCompleteCubit() : super(OrderCompleteInitial());
 
   DateTime? get createDate => argruments?.transactionMethodType == TransactionMethodType.order
-      ? argruments?.orderItems?.info?.createDate
+      ? argruments?.orderItems?.info?.createAt
       : argruments?.transactionMethodType == TransactionMethodType.addProduct
-          ? argruments?.addProductItems?.info?.createDate
+          ? argruments?.addProductItems?.info?.createAt
           : null;
 
   String get transactionId => switch (argruments?.transactionMethodType) {

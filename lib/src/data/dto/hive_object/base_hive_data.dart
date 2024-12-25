@@ -11,13 +11,13 @@ part 'base_hive_data.g.dart';
 @JsonSerializable(explicitToJson: true)
 class BaseHiveData extends BaseObject {
   @HiveField(1, defaultValue: null)
-  dynamic createDate;
+  dynamic createAt;
 
   @HiveField(2, defaultValue: null)
   dynamic createBy;
 
   @HiveField(3, defaultValue: null)
-  dynamic updateDate;
+  dynamic updateAt;
 
   @HiveField(4, defaultValue: null)
   String? updateBy;
@@ -26,14 +26,15 @@ class BaseHiveData extends BaseObject {
   DateTime? syncDatetime;
 
   BaseHiveData({
-    required this.createDate,
+    required this.createAt,
     this.createBy,
-    required this.updateDate,
+    required this.updateAt,
     this.updateBy,
     this.syncDatetime,
   });
 
-  factory BaseHiveData.fromJson(Map<String, dynamic> json) => _$BaseHiveDataFromJson(json);
+  factory BaseHiveData.fromJson(Map<String, dynamic> json) =>
+      _$BaseHiveDataFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$BaseHiveDataToJson(this);

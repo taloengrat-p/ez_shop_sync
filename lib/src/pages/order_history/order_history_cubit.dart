@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
@@ -26,22 +28,29 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
     emit(OrderHistorySuccess());
   }
 
-  Future<void> loadMoreItems() async {
+  Future<void> loadMoreItems({bool refresh = false}) async {
     emit(OrderHistoryLoadMore());
     final start = orderItems.length;
     final end = orderItems.length + itemLength;
+
     final orderLoaded = await orderRepository.getAllRange(
       start,
       end,
       appMode: AppMode.server,
-      lastDocument: lastDocument,
+      lastDocument: refresh ? null : lastDocument,
       storeId: baseCubit.store!.id,
       limit: 10,
     );
 
     orderLoaded.when(
       success: (response) {
-        orderItems.addAll(response);
+        if (refresh) {
+          orderItems.clear();
+        }
+
+        lastDocument = response.lastDocument;
+        orderItems.addAll(response.orders);
+        log('orderItems ${orderItems.length}');
         emit(OrderHistoryLoadMoreSuccess(start, end));
       },
       failure: (error) {

@@ -37,7 +37,13 @@ class ProductOrder extends BaseHiveObject {
 
   @HiveField(13)
   dynamic createAt;
-  
+
+  @HiveField(14)
+  num? changeAmount;
+
+  @HiveField(15)
+  num? receiveAmount;
+
   num get numberOfItems =>
       orderItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
 
@@ -59,6 +65,7 @@ class ProductOrder extends BaseHiveObject {
     required this.status,
     required this.orderItems,
     required this.paymentType,
+    this.receiveAmount,
   });
 
   factory ProductOrder.fromJson(Map<String, dynamic> json) =>

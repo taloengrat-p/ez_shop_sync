@@ -298,11 +298,11 @@ class BaseCubit extends Cubit<BaseState> {
   sortProduct(ProductSortType sortType) {
     try {
       if (sortType == ProductSortType.asc) {
-        products.sort((a, b) => a.info?.createDate!.millisecondsSinceEpoch
-            .compareTo(b.info?.createDate!.millisecondsSinceEpoch));
+        products.sort((a, b) => a.info?.createAt!.millisecondsSinceEpoch
+            .compareTo(b.info?.createAt!.millisecondsSinceEpoch));
       } else {
-        products.sort((a, b) => b.info?.createDate!.millisecondsSinceEpoch
-            .compareTo(a.info?.createDate!.millisecondsSinceEpoch));
+        products.sort((a, b) => b.info?.createAt!.millisecondsSinceEpoch
+            .compareTo(a.info?.createAt!.millisecondsSinceEpoch));
       }
     } catch (e) {
       log('sortProduct error $e');

@@ -260,7 +260,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     fontSize: 18,
                     color: ColorKeys.accent,
                   ),
-                )
+                ),
               ],
             ),
             Text(
@@ -378,7 +378,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         children: [
           TabBar(
             indicatorColor: ColorKeys.primary,
-            tabs: [
+            tabs: const [
               Tab(
                 icon: SizedBox.expand(
                   child: Icon(CupertinoIcons.time),

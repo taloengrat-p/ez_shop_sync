@@ -156,6 +156,7 @@ class CartCubit extends Cubit<CartState> {
       emit(CartProductInsufficient());
       return;
     }
+
     final orderCreated = await orderRepository.create(
       CreateOrderRequest(
         storeId: baseCubit.store?.id ?? '',
@@ -165,6 +166,8 @@ class CartCubit extends Cubit<CartState> {
             ? OrderStatusType.complete
             : OrderStatusType.waitPayment,
         paymentType: paymentMethod ?? PaymentMethodType.undefined,
+        receiveAmount: receiveAmount,
+        changeAmount: changeAmountDisplay,
       ),
       appMode: AppMode.server,
     );

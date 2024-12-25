@@ -3,7 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
+import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
@@ -12,13 +17,18 @@ import 'package:injectable/injectable.dart';
 @Injectable()
 class ProductServerRepository {
   final FirebaseService firebaseService;
-
   ProductServerRepository({
     required this.firebaseService,
   });
 
   Future<ApiResult<Product?>> create(Product request) async {
-    request.info?.createBy = FieldValue.serverTimestamp();
+    final productInfo = BaseHiveData(
+      createAt: FieldValue.serverTimestamp(),
+      updateAt: FieldValue.serverTimestamp(),
+      createBy: request.ownerId,
+      updateBy: request.ownerId,
+    );
+    request.info = productInfo;
 
     final productCreated = await firebaseService.storesCollection
         .doc(request.storeId)
@@ -26,6 +36,16 @@ class ProductServerRepository {
         .add(request.toJson());
 
     final response = await productCreated.get();
+
+    await updateHistory(
+      CreateProductHistoryRequest(
+        storeId: request.storeId,
+        userId: request.ownerId,
+        productId: response.id,
+        event: ProductHistoryEvent.create,
+        info: productInfo,
+      ),
+    );
 
     if (response.data() == null) {
       return ApiResult(
@@ -120,6 +140,64 @@ class ProductServerRepository {
           response: productResponse.map((e) => Product.fromJson(e)).toList());
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  Future<void> updateHistory(CreateProductHistoryRequest request) async {
+    request.info.updateAt = FieldValue.serverTimestamp();
+
+    await firebaseService.storesCollection
+        .doc(request.storeId)
+        .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+        .doc(request.productId)
+        .collection(FirebaseFirestoreConstance.COLLECTION_ORDER_HISTORY)
+        .add(request.toJson());
+  }
+
+  Future<void> reduceQuantity({
+    required String storeId,
+    required productId,
+    String? productTypeId,
+    required num reduceQty,
+  }) async {
+    try {
+      final currentProductRef = firebaseService.storesCollection
+          .doc(storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+          .doc(productId);
+
+      final currentProduct = await currentProductRef.get();
+
+      if (!currentProduct.exists) {
+        log('Document does not exist');
+        return;
+      }
+
+      var currentProductType = Product.fromJson(currentProduct.data() ?? {});
+
+      final currentProductTypeQty = currentProductType.productTypeList
+          ?.firstWhere((e) => e.id == productTypeId);
+
+      int? index = currentProductType.productTypeList
+          ?.indexWhere((item) => item.id == productTypeId);
+
+      if (index == -1) {
+        log('Item not found in the array');
+        return;
+      }
+
+      if ((currentProductTypeQty?.quantity ?? 0) >= reduceQty) {
+        final reducedQty = (currentProductTypeQty?.quantity ?? 0) - reduceQty;
+
+        currentProductType.productTypeList![index!].quantity = reducedQty;
+        await currentProductRef.update({
+          'productTypeList': currentProductType.productTypeList
+              ?.map((e) => e.toJson())
+              .toList(),
+        });
+      }
+    } catch (e) {
+      log('error reduceQuantity : $e');
     }
   }
 }

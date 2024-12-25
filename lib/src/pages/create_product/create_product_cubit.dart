@@ -305,4 +305,9 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     _productImage = path;
     emit(CreateProductRefresh(DateTime.now()));
   }
+
+  void onDeleteProductType(int index) {
+    _productEditor?.productTypeList?.removeAt(index);
+    emit(CreateProductRefresh(DateTime.now()));
+  }
 }

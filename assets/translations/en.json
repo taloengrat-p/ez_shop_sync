@@ -201,5 +201,6 @@
   "offline": {
     "title": "Offline Mode Enabled",
     "desc": "Limited features are available until you're back online."
-  }
+  },
+  "productType": "Product type"
 }

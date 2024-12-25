@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
@@ -63,12 +64,13 @@ class ProductRepository implements IProductRepository {
 
       await productHistoryRepository.create(
         CreateProductHistoryRequest(
-          storeId: request.storeId,
-          userId: request.userId,
-          event: ProductHistoryEvent.create,
-          productId: result.id,
-          newData: {},
-        ),
+            storeId: request.storeId,
+            userId: request.userId,
+            event: ProductHistoryEvent.create,
+            productId: result.id,
+            newData: {},
+            info: BaseHiveData(
+                createAt: DateTime.now(), updateAt: DateTime.now())),
       );
 
       ToastNotificationService.show(
@@ -205,15 +207,16 @@ class ProductRepository implements IProductRepository {
 
       final productHistory = await productHistoryRepository.create(
         CreateProductHistoryRequest(
-          productId: product.response!.id,
-          storeId: product.response!.storeId,
-          userId: request.userId,
-          event: ProductHistoryEvent.addToStock,
-          newData: {
-            "priceCategory": request.product.priceSelected,
-            "qty": request.product.quantity,
-          },
-        ),
+            productId: product.response!.id,
+            storeId: product.response!.storeId,
+            userId: request.userId,
+            event: ProductHistoryEvent.addToStock,
+            newData: {
+              "priceCategory": request.product.priceSelected,
+              "qty": request.product.quantity,
+            },
+            info: BaseHiveData(
+                createAt: DateTime.now(), updateAt: DateTime.now())),
       );
 
       await transactionRepository.create(
@@ -255,5 +258,23 @@ class ProductRepository implements IProductRepository {
     } else {
       throw UnimplementedError();
     }
+  }
+
+  Future<void> updateHistory(CreateProductHistoryRequest request) async {
+    await productServerRepository.updateHistory(request);
+  }
+
+  Future<void> reduceQuantity({
+    required String storeId,
+    required productId,
+    String? productTypeId,
+    required num reduceQty,
+  }) async {
+    await productServerRepository.reduceQuantity(
+      storeId: storeId,
+      productId: productId,
+      productTypeId: productTypeId,
+      reduceQty: reduceQty,
+    );
   }
 }

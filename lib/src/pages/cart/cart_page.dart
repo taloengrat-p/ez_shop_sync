@@ -87,6 +87,9 @@ class _CartState extends State<CartPage> {
   }
 
   checkCanScroll() {
+    if (_cubit.products.isEmpty) {
+      return;
+    }
     final maxScrollExtent = _listViewController.position.maxScrollExtent;
     final minScrollExtent = _listViewController.position.minScrollExtent;
 

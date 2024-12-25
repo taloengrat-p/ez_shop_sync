@@ -6,6 +6,7 @@ enum ProductHistoryEvent {
   delete,
   addToStock,
   removeFromStock,
+  order,
   undefined;
 
   factory ProductHistoryEvent.fromString(String? value) {
@@ -20,6 +21,8 @@ enum ProductHistoryEvent {
         return ProductHistoryEvent.addToStock;
       case 'removefromstock':
         return ProductHistoryEvent.removeFromStock;
+      case 'order':
+        return ProductHistoryEvent.order;
 
       default:
         return ProductHistoryEvent.undefined;
@@ -39,6 +42,8 @@ enum ProductHistoryEvent {
         return 'addtostock';
       case ProductHistoryEvent.removeFromStock:
         return 'removefromstock';
+      case ProductHistoryEvent.order:
+        return 'order';
 
       default:
         return 'undefined';

@@ -77,10 +77,10 @@ class StatisticCubit extends Cubit<StatisticState> {
       // Normalize the date to ignore time (only keep the year, month, day)
 
       DateTime date = periodType == PeriodType.week
-          ? DateTime(item.info?.createDate!.year, item.info?.createDate!.month, item.info?.createDate!.day)
+          ? DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.day)
           : periodType == PeriodType.month
-              ? DateTime(item.info?.createDate!.year, item.info?.createDate!.month, item.info?.createDate!.day)
-              : DateTime(item.info?.createDate!.year, item.info?.createDate!.month);
+              ? DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.day)
+              : DateTime(item.info?.createAt!.year, item.info?.createAt!.month);
 
       if (groupedItems.containsKey(date)) {
         groupedItems[date]!.add(item);
@@ -99,13 +99,13 @@ class StatisticCubit extends Cubit<StatisticState> {
 
     for (var item in items) {
       if (groupedItems.containsKey(
-          DateTime(item.info?.createDate!.year, item.info?.createDate!.month, item.info?.createDate!.getWeekMonth()))) {
+          DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.getWeekMonth()))) {
         groupedItems[DateTime(
-                item.info?.createDate!.year, item.info?.createDate!.month, item.info?.createDate!.getWeekMonth())]!
+                item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.getWeekMonth())]!
             .add(item);
       } else {
         groupedItems[DateTime(
-            item.info?.createDate!.year, item.info?.createDate!.month, item.info?.createDate!.getWeekMonth())] = [item];
+            item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.getWeekMonth())] = [item];
       }
     }
 

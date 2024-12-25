@@ -22,9 +22,6 @@ class Product extends BaseHiveObject {
   @HiveField(8, defaultValue: null)
   String? description;
 
-  // @HiveField(9, defaultValue: {})
-  // Map<String, num>? priceCategories;
-
   @HiveField(9, defaultValue: null)
   String? category;
 

@@ -17,9 +17,9 @@ class BaseHiveDataAdapter extends TypeAdapter<BaseHiveData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return BaseHiveData(
-      createDate: fields[1] as dynamic,
+      createAt: fields[1] as dynamic,
       createBy: fields[2] as dynamic,
-      updateDate: fields[3] as dynamic,
+      updateAt: fields[3] as dynamic,
       updateBy: fields[4] as String?,
       syncDatetime: fields[5] as DateTime?,
     );
@@ -30,11 +30,11 @@ class BaseHiveDataAdapter extends TypeAdapter<BaseHiveData> {
     writer
       ..writeByte(5)
       ..writeByte(1)
-      ..write(obj.createDate)
+      ..write(obj.createAt)
       ..writeByte(2)
       ..write(obj.createBy)
       ..writeByte(3)
-      ..write(obj.updateDate)
+      ..write(obj.updateAt)
       ..writeByte(4)
       ..write(obj.updateBy)
       ..writeByte(5)
@@ -57,9 +57,9 @@ class BaseHiveDataAdapter extends TypeAdapter<BaseHiveData> {
 // **************************************************************************
 
 BaseHiveData _$BaseHiveDataFromJson(Map<String, dynamic> json) => BaseHiveData(
-      createDate: json['createDate'],
+      createAt: json['createAt'],
       createBy: json['createBy'],
-      updateDate: json['updateDate'],
+      updateAt: json['updateAt'],
       updateBy: json['updateBy'] as String?,
       syncDatetime: json['syncDatetime'] == null
           ? null
@@ -68,9 +68,9 @@ BaseHiveData _$BaseHiveDataFromJson(Map<String, dynamic> json) => BaseHiveData(
 
 Map<String, dynamic> _$BaseHiveDataToJson(BaseHiveData instance) =>
     <String, dynamic>{
-      'createDate': instance.createDate,
+      'createAt': instance.createAt,
       'createBy': instance.createBy,
-      'updateDate': instance.updateDate,
+      'updateAt': instance.updateAt,
       'updateBy': instance.updateBy,
       'syncDatetime': instance.syncDatetime?.toIso8601String(),
     };

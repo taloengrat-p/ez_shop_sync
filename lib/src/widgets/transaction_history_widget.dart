@@ -32,7 +32,7 @@ class TransactionHistoryWidget extends StatelessWidget {
           title: transaction.info?.createBy?.substring(0, 2).toUpperCase(),
           radius: 24,
         ),
-        dateTime: transaction.info?.createDate,
+        dateTime: transaction.info?.createAt,
         trailing: Text(
           '${transaction.getTransactionType == TransactionType.income ? '+' : '-'}${transaction.totalPrice.prefixCurrency()}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(

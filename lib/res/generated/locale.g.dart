@@ -192,5 +192,6 @@ abstract class  LocaleKeys {
   static const offline_title = 'offline.title';
   static const offline_desc = 'offline.desc';
   static const offline = 'offline';
+  static const productType = 'productType';
 
 }

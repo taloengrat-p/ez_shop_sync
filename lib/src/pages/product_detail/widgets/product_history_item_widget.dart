@@ -22,6 +22,6 @@ class ProductHistoryItemWidget extends StatelessWidget {
           title: history?.info?.createBy?.substring(0, 2).toUpperCase(),
           radius: 24,
         ),
-        dateTime: history?.info?.createDate);
+        dateTime: history?.info?.createAt);
   }
 }

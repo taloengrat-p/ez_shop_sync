@@ -24,15 +24,17 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       status: fields[7] as String,
       orderItems: (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
+      receiveAmount: fields[15] as num?,
     )
       ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
-      ..createAt = fields[13] as dynamic;
+      ..createAt = fields[13] as dynamic
+      ..changeAmount = fields[14] as num?;
   }
 
   @override
   void write(BinaryWriter writer, ProductOrder obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
@@ -47,6 +49,10 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       ..write(obj.userId)
       ..writeByte(13)
       ..write(obj.createAt)
+      ..writeByte(14)
+      ..write(obj.changeAmount)
+      ..writeByte(15)
+      ..write(obj.receiveAmount)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -80,9 +86,11 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       paymentType: json['paymentType'] as String,
+      receiveAmount: json['receiveAmount'] as num?,
     )
       ..serviceCharge = json['serviceCharge'] as num?
-      ..createAt = json['createAt'];
+      ..createAt = json['createAt']
+      ..changeAmount = json['changeAmount'] as num?;
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
     <String, dynamic>{
@@ -95,4 +103,6 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'storeId': instance.storeId,
       'userId': instance.userId,
       'createAt': instance.createAt,
+      'changeAmount': instance.changeAmount,
+      'receiveAmount': instance.receiveAmount,
     };

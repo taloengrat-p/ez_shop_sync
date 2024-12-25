@@ -19,7 +19,7 @@ class ProductType extends BaseObject {
   final num? price;
 
   @HiveField(4)
-  final num? quantity;
+  num? quantity;
 
   @HiveField(5)
   final String? image;
@@ -36,7 +36,8 @@ class ProductType extends BaseObject {
     this.desc,
   });
 
-  factory ProductType.fromJson(Map<String, dynamic> json) => _$ProductTypeFromJson(json);
+  factory ProductType.fromJson(Map<String, dynamic> json) =>
+      _$ProductTypeFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductTypeToJson(this);
 }

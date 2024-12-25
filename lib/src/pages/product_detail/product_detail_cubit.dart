@@ -4,7 +4,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
@@ -23,8 +22,11 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   BaseCubit baseCubit;
 
   String get productDescription => product?.description ?? '';
-  List<Tag> get tags => baseCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
-  Category? get category => baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
+  List<Tag> get tags => baseCubit.tags
+      .where((e) => product?.tag?.contains(e.id) ?? false)
+      .toList();
+  Category? get category =>
+      baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
   ProductDetailCubit({
     required this.productHistoryRepository,
     required this.productRepository,
@@ -71,8 +73,10 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   void loadTags() {}
 
   void refresh({Product? product}) async {
-    product =
-        product ?? (await productRepository.getById(storeId: product!.storeId, productId: this.product!.id)).response;
+    product = product ??
+        (await productRepository.getById(
+                storeId: product!.storeId, productId: this.product!.id))
+            .response;
     emit(ProductDetailInitial());
   }
 
@@ -97,7 +101,8 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
       throw ('loadProducthistory product is Null');
     }
 
-    productHistory = await productHistoryRepository.getAllByProductId(product!.id);
+    productHistory =
+        await productHistoryRepository.getAllByProductId(product!.id);
 
     emit(ProductDetailLoadHistorySuccess());
   }

@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
@@ -57,7 +59,7 @@ class OrderRepository implements IOrderRepository {
       String fullUuid = const Uuid().v4();
       String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
       String prefixedUuid =
-          '${now.format(DateFormatConstance.YYYYMMDD_HHMMSS)}$shortUuid';
+          '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
 
       final orderCreate = orderType.ProductOrder(
         storeId: request.storeId,
@@ -122,7 +124,7 @@ class OrderRepository implements IOrderRepository {
     }
   }
 
-  Future<ApiResult<List<orderType.ProductOrder>>> getAllRange(
+  Future<ApiResult<OrderHistoryResponse>> getAllRange(
     int start,
     int end, {
     AppMode? appMode = AppMode.local,
@@ -133,7 +135,12 @@ class OrderRepository implements IOrderRepository {
     try {
       if (appMode == AppMode.local) {
         return Future.value(
-            ApiResult(response: orderLocalRepository.getAllRange(start, end)));
+          ApiResult(
+            response: OrderHistoryResponse(
+              orders: orderLocalRepository.getAllRange(start, end),
+            ),
+          ),
+        );
       } else {
         return await orderServerRepository.getOrderHistoryList(
             storeId: storeId, limit: limit, lastDocument: lastDocument);
@@ -179,4 +186,14 @@ class OrderRepository implements IOrderRepository {
       throw UnimplementedError();
     }
   }
+}
+
+class OrderHistoryResponse {
+  final List<orderType.ProductOrder> orders;
+  final QueryDocumentSnapshot? lastDocument;
+
+  OrderHistoryResponse({
+    required this.orders,
+    this.lastDocument,
+  });
 }

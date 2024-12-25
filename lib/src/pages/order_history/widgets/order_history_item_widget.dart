@@ -71,7 +71,8 @@ class OrderHistoryItemWidget extends StatelessWidget {
                       price: firstOrderItem.product?.priceCurrentSelected
                               ?.prefixCurrency() ??
                           '--',
-                      priceCategory: firstOrderItem.product?.productTypeSelectDisplay,
+                      priceCategory:
+                          firstOrderItem.product?.productTypeSelectDisplay,
                     ),
                   ),
                   // Column(
@@ -112,7 +113,10 @@ class OrderHistoryItemWidget extends StatelessWidget {
                         ),
                   ),
                   ProductOrderTotalAmountWidget(
-                      totalPrice: order.totalPriceIncludeServiceCharge),
+                    totalPrice: order.totalPriceIncludeServiceCharge,
+                    changeAmount: order.changeAmount,
+                    receiveAmount: order.receiveAmount,
+                  ),
                 ],
               ),
             ),

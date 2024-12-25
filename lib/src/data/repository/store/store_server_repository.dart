@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
@@ -23,7 +24,14 @@ class StoreServerRepository {
   });
 
   Future<ApiResult<Store>> create(Store request) async {
-    request.info?.createBy = FieldValue.serverTimestamp();
+    final productInfo = BaseHiveData(
+      createAt: FieldValue.serverTimestamp(),
+      updateAt: FieldValue.serverTimestamp(),
+      createBy: request.ownerId,
+      updateBy: request.ownerId,
+    );
+
+    request.info = productInfo;
 
     final storeCreated = await firebaseService.storesCollection.add(
       request.toJson(),
@@ -32,7 +40,8 @@ class StoreServerRepository {
     final response = await storeCreated.get();
 
     if (response.data() == null) {
-      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
+      return ApiResult(
+          error: null, appErrorType: AppErrorType.somethingWentWrong);
     }
 
     firebaseService.usersCollection.doc(firebaseService.userUid).set(
@@ -50,12 +59,16 @@ class StoreServerRepository {
 
   Future<ApiResult<List<Store>>> getAll() async {
     try {
-      final userResponse = await firebaseService.usersCollection.doc(firebaseService.userUid).get();
+      final userResponse = await firebaseService.usersCollection
+          .doc(firebaseService.userUid)
+          .get();
       final userData = userResponse.data();
       final List storesOfUser = userData?['stores'];
 
       var snapshots = await Future.wait(
-        storesOfUser.map((id) => firebaseService.storesCollection.doc(id).get()).toList(),
+        storesOfUser
+            .map((id) => firebaseService.storesCollection.doc(id).get())
+            .toList(),
       );
 
       List<Store> stores = snapshots.map(
@@ -81,10 +94,12 @@ class StoreServerRepository {
       var user = await firebaseService.usersCollection.get();
 
       if (user.docs.any((e) => e.get('email') == email)) {
-        var storeResponse = await firebaseService.storesCollection.doc(storeId).get();
+        var storeResponse =
+            await firebaseService.storesCollection.doc(storeId).get();
         final store = Store.fromJson(storeResponse.data() ?? {});
         if (store.members.any((e) => e.email == email)) {
-          return ApiResult(error: {}, appErrorType: AppErrorType.storeAlreadyThisUser);
+          return ApiResult(
+              error: {}, appErrorType: AppErrorType.storeAlreadyThisUser);
         }
 
         notificationRepository.createInvite(
@@ -111,7 +126,8 @@ class StoreServerRepository {
     }
   }
 
-  Future<ApiResult> acceptInvitation(String? notiId, String? storeId, Map<String, dynamic>? payload) async {
+  Future<ApiResult> acceptInvitation(
+      String? notiId, String? storeId, Map<String, dynamic>? payload) async {
     // try {
     await firebaseService.storesCollection.doc(storeId).set(
       {
