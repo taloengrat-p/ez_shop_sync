@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
+import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
@@ -28,7 +30,9 @@ class _OrderCompleteState extends State<OrderCompletePage> {
   @override
   void initState() {
     super.initState();
-    _cubit = OrderCompleteCubit();
+    _cubit = OrderCompleteCubit(
+      baseCubit: BlocProvider.of<BaseCubit>(context),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
@@ -55,13 +59,17 @@ class _OrderCompleteState extends State<OrderCompletePage> {
             return BaseScaffolds(
               body: _buildPage(context, state),
               bottomNavigationBar: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
                 child: ButtonWidget(
                   backgroundColor: Colors.black,
                   height: 44,
                   label: LocaleKeys.backToHomePage.tr(),
                   onPressed: () {
-                    MainRouter(context).pushNamedAndRemoveUntil();
+                    MainRouter(context).pushNamedAndRemoveUntil(
+                        argruments: const MainArgruments(
+                      1,
+                    ));
                   },
                 ),
               ),
@@ -99,7 +107,8 @@ class _OrderCompleteState extends State<OrderCompletePage> {
                 height: 32,
               ),
               if (_cubit.createDate != null)
-                Text(_cubit.createDate.toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
+                Text(_cubit.createDate.toDisplayDependLocale(context,
+                    format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
               const SizedBox(
                 height: 16,
               ),
@@ -124,7 +133,10 @@ class _OrderCompleteState extends State<OrderCompletePage> {
         Flexible(
           child: Text(
             title,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(
@@ -141,13 +153,15 @@ class _OrderCompleteState extends State<OrderCompletePage> {
                   ),
             ),
             onTap: () {
-              if (_cubit.argruments?.transactionMethodType == TransactionMethodType.order) {
+              if (_cubit.argruments?.transactionMethodType ==
+                  TransactionMethodType.order) {
                 OrderHistoryDetailRouter(context).replace(
                   argruments: OrderHistoryDetailArgruments(
                     productOrder: _cubit.argruments?.orderItems,
                   ),
                 );
-              } else if (_cubit.argruments?.transactionMethodType == TransactionMethodType.addProduct) {
+              } else if (_cubit.argruments?.transactionMethodType ==
+                  TransactionMethodType.addProduct) {
                 OrderHistoryDetailRouter(context).replace(
                   argruments: OrderHistoryDetailArgruments(
                     productOrder: _cubit.argruments?.orderItems,
