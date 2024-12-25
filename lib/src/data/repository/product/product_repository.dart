@@ -8,6 +8,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_t
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
@@ -275,6 +276,15 @@ class ProductRepository implements IProductRepository {
       productId: productId,
       productTypeId: productTypeId,
       reduceQty: reduceQty,
+    );
+  }
+
+  Future<ApiResult<List<ProductHistory>>> getProductHistory(
+      {required String productId, required String storeId, int? limit}) async {
+    return await productServerRepository.getProductHistory(
+      productId: productId,
+      storeId: storeId,
+      limit: limit,
     );
   }
 }

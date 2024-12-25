@@ -1,3 +1,4 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
@@ -14,7 +15,7 @@ class CreateOrderRequest {
   final OrderStatusType status;
   final num? receiveAmount;
   final num? changeAmount;
-  dynamic createAt;
+  BaseHiveData? info;
 
   CreateOrderRequest({
     required this.storeId,
@@ -24,6 +25,7 @@ class CreateOrderRequest {
     required this.status,
     this.changeAmount,
     this.receiveAmount,
+    this.info,
   });
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>

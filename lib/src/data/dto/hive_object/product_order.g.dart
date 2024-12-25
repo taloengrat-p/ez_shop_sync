@@ -27,14 +27,13 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       receiveAmount: fields[15] as num?,
     )
       ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
-      ..createAt = fields[13] as dynamic
       ..changeAmount = fields[14] as num?;
   }
 
   @override
   void write(BinaryWriter writer, ProductOrder obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(10)
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
@@ -47,8 +46,6 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       ..write(obj.storeId)
       ..writeByte(12)
       ..write(obj.userId)
-      ..writeByte(13)
-      ..write(obj.createAt)
       ..writeByte(14)
       ..write(obj.changeAmount)
       ..writeByte(15)
@@ -89,7 +86,6 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
       receiveAmount: json['receiveAmount'] as num?,
     )
       ..serviceCharge = json['serviceCharge'] as num?
-      ..createAt = json['createAt']
       ..changeAmount = json['changeAmount'] as num?;
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
@@ -102,7 +98,6 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'serviceCharge': instance.serviceCharge,
       'storeId': instance.storeId,
       'userId': instance.userId,
-      'createAt': instance.createAt,
       'changeAmount': instance.changeAmount,
       'receiveAmount': instance.receiveAmount,
     };

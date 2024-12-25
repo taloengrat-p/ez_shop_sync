@@ -1,19 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart'
-    as orderType;
-import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
-import 'package:ez_shop_sync/src/data/dto/response/create_order_response.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_server_repository.dart';
@@ -21,16 +14,14 @@ import 'package:ez_shop_sync/src/data/repository/transactions/transaction_reposi
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/list_order_item_extension.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class IOrderRepository {
-  List<orderType.ProductOrder> getAll({AppMode appMode = AppMode.local});
-  orderType.ProductOrder? getById(String id, {AppMode appMode = AppMode.local});
-  Future<ApiResult<orderType.ProductOrder>> create(CreateOrderRequest request);
-  Future<orderType.ProductOrder> update(
-      String id, orderType.ProductOrder updated,
+  List<ProductOrder> getAll({AppMode appMode = AppMode.local});
+  ProductOrder? getById(String id, {AppMode appMode = AppMode.local});
+  Future<ApiResult<ProductOrder>> create(CreateOrderRequest request);
+  Future<ProductOrder> update(String id, ProductOrder updated,
       {AppMode appMode = AppMode.local});
   Future<void> delete(String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
@@ -52,7 +43,7 @@ class OrderRepository implements IOrderRepository {
   });
 
   @override
-  Future<ApiResult<orderType.ProductOrder>> create(CreateOrderRequest request,
+  Future<ApiResult<ProductOrder>> create(CreateOrderRequest request,
       {AppMode appMode = AppMode.local}) async {
     final now = DateTime.now();
     if (appMode == AppMode.local) {
@@ -61,7 +52,7 @@ class OrderRepository implements IOrderRepository {
       String prefixedUuid =
           '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
 
-      final orderCreate = orderType.ProductOrder(
+      final orderCreate = ProductOrder(
         storeId: request.storeId,
         id: prefixedUuid,
         status: OrderStatusType.complete.name,
@@ -116,7 +107,7 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  List<orderType.ProductOrder> getAll({AppMode? appMode = AppMode.local}) {
+  List<ProductOrder> getAll({AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.getAll();
     } else {
@@ -151,8 +142,7 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  orderType.ProductOrder? getById(String id,
-      {AppMode? appMode = AppMode.local}) {
+  ProductOrder? getById(String id, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.getById(id);
     } else {
@@ -161,8 +151,7 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  Future<orderType.ProductOrder> update(
-      String id, orderType.ProductOrder updated,
+  Future<ProductOrder> update(String id, ProductOrder updated,
       {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
       return orderLocalRepository.update(id, updated);
@@ -171,7 +160,7 @@ class OrderRepository implements IOrderRepository {
     }
   }
 
-  List<orderType.ProductOrder> getAllBetween(
+  List<ProductOrder> getAllBetween(
     String storeId, {
     required DateTime start,
     required DateTime end,
@@ -186,10 +175,15 @@ class OrderRepository implements IOrderRepository {
       throw UnimplementedError();
     }
   }
+
+  Future<ApiResult<ProductOrder>> getOrderHistoryDetail(
+      String storeId, String id) async {
+    return await orderServerRepository.getOrderHistory(storeId, id);
+  }
 }
 
 class OrderHistoryResponse {
-  final List<orderType.ProductOrder> orders;
+  final List<ProductOrder> orders;
   final QueryDocumentSnapshot? lastDocument;
 
   OrderHistoryResponse({

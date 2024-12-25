@@ -140,6 +140,7 @@
     "addToStockFormat": "Add {} {} into stock.",
     "removeFromStockFormat": "Remove {} {} {} from stock.",
     "productHistoryEmpty": "Your product history is empty",
+    "productHistoryOrder": "Ordered",
     "create": "Create",
     "update": "Update",
     "remove": "Remove",

@@ -17,6 +17,8 @@ CreateProductHistoryRequest _$CreateProductHistoryRequestFromJson(
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,
       info: BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      addStockId: json['addStockId'] as String?,
+      orderId: json['orderId'] as String?,
     );
 
 Map<String, dynamic> _$CreateProductHistoryRequestToJson(
@@ -30,6 +32,8 @@ Map<String, dynamic> _$CreateProductHistoryRequestToJson(
       'oldData': instance.oldData,
       'newData': instance.newData,
       'info': instance.info.toJson(),
+      'orderId': instance.orderId,
+      'addStockId': instance.addStockId,
     };
 
 const _$ProductHistoryEventEnumMap = {

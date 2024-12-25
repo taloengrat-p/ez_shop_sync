@@ -27,6 +27,18 @@ class ProductHistory extends BaseHiveObject {
   @HiveField(10)
   final Map<String, dynamic>? newData;
 
+  @HiveField(11)
+  final String? productTypeId;
+
+  @HiveField(12)
+  final num? quantity;
+
+  @HiveField(13)
+  final String? orderId;
+
+  @HiveField(14)
+  final String? stockId;
+
   ProductHistory({
     super.id,
     BaseHiveData? super.info,
@@ -34,9 +46,14 @@ class ProductHistory extends BaseHiveObject {
     required this.event,
     this.newData,
     this.oldData,
+    this.productTypeId,
+    this.quantity,
+    this.orderId,
+    this.stockId,
   });
 
-  factory ProductHistory.fromJson(Map<String, dynamic> json) => _$ProductHistoryFromJson(json);
+  factory ProductHistory.fromJson(Map<String, dynamic> json) =>
+      _$ProductHistoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductHistoryToJson(this);
 
@@ -52,6 +69,8 @@ class ProductHistory extends BaseHiveObject {
         return LocaleKeys.productHistory_addStock.tr();
       case ProductHistoryEvent.removeFromStock:
         return LocaleKeys.productHistory_removeFromStockFormat.tr();
+      case ProductHistoryEvent.order:
+        return LocaleKeys.productHistory_productHistoryOrder.tr();
       default:
         return 'Undefined';
     }
@@ -76,8 +95,10 @@ class ProductHistory extends BaseHiveObject {
         final newDataValue = newData?['data'];
 
         return oldDataValue != null
-            ? LocaleKeys.productHistory_updateFormat.tr(args: [fieldName, oldDataValue, newDataValue])
-            : LocaleKeys.productHistory_updateFirstFormat.tr(args: [fieldName, newDataValue]);
+            ? LocaleKeys.productHistory_updateFormat
+                .tr(args: [fieldName, oldDataValue, newDataValue])
+            : LocaleKeys.productHistory_updateFirstFormat
+                .tr(args: [fieldName, newDataValue]);
       case ProductHistoryEvent.delete:
         final priceCategpry = oldData?['priceCategpry'];
         final productName = product?.name;
@@ -93,14 +114,16 @@ class ProductHistory extends BaseHiveObject {
       case ProductHistoryEvent.addToStock:
         final priceCategpry = newData?['priceCategory'];
         final qty = newData?['qty'];
-        final addStockName = priceCategpry ?? product?.name ?? LocaleKeys.products.tr();
+        final addStockName =
+            priceCategpry ?? product?.name ?? LocaleKeys.products.tr();
 
         return LocaleKeys.productHistory_addToStockFormat
             .tr(args: [addStockName, '$qty ${LocaleKeys.units_piece.tr()}']);
       case ProductHistoryEvent.removeFromStock:
         final priceCategpry = oldData?['priceCategpry'];
         final qty = oldData?['qty'];
-        final removedName = priceCategpry ?? product?.name ?? LocaleKeys.products.tr();
+        final removedName =
+            priceCategpry ?? product?.name ?? LocaleKeys.products.tr();
 
         return LocaleKeys.productHistory_removeFromStockFormat.tr(
           args: [
@@ -109,7 +132,8 @@ class ProductHistory extends BaseHiveObject {
             LocaleKeys.units_piece.tr(),
           ],
         );
-
+      case ProductHistoryEvent.order:
+        return orderId ?? '--';
       default:
         return 'Undefined messsage.';
     }

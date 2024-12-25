@@ -135,6 +135,7 @@ abstract class  LocaleKeys {
   static const productHistory_addToStockFormat = 'productHistory.addToStockFormat';
   static const productHistory_removeFromStockFormat = 'productHistory.removeFromStockFormat';
   static const productHistory_productHistoryEmpty = 'productHistory.productHistoryEmpty';
+  static const productHistory_productHistoryOrder = 'productHistory.productHistoryOrder';
   static const productHistory_create = 'productHistory.create';
   static const productHistory_update = 'productHistory.update';
   static const productHistory_remove = 'productHistory.remove';

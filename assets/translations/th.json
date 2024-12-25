@@ -140,6 +140,7 @@
     "addToStockFormat": "เพิ่ม {} {} ลงในคลังสิงค้า",
     "removeFromStockFormat": "ลบ {} {} {} ออกจากคลังสินค้า",
     "productHistoryEmpty": "สินค้าของคุณไม่มีประวัติ",
+    "productHistoryOrder": "ทำรายการซื้อ",
     "create": "สร้าง",
     "update": "อัพเดต",
     "remove": "ลบ",

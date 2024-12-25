@@ -101,9 +101,21 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
       throw ('loadProducthistory product is Null');
     }
 
-    productHistory =
-        await productHistoryRepository.getAllByProductId(product!.id);
+    final result = await productRepository.getProductHistory(
+      productId: product!.id,
+      storeId: product!.storeId,
+      limit: 10,
+    );
 
-    emit(ProductDetailLoadHistorySuccess());
+    result.when(
+      success: (response) {
+        productHistory = response;
+
+        emit(ProductDetailLoadHistorySuccess());
+      },
+      failure: (error) {
+        emit(ProductDetailLoadHistoryFailure());
+      },
+    );
   }
 }

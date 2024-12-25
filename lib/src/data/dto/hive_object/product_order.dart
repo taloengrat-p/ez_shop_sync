@@ -35,9 +35,6 @@ class ProductOrder extends BaseHiveObject {
   @HiveField(12, defaultValue: '')
   String userId;
 
-  @HiveField(13)
-  dynamic createAt;
-
   @HiveField(14)
   num? changeAmount;
 

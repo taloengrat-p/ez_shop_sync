@@ -30,18 +30,29 @@ class OrderServerRepository {
     try {
       final now = DateTime.now();
       String fullUuid = const Uuid().v4();
-      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
+      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 6);
       String orderId =
           '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
 
       final createAt = FieldValue.serverTimestamp();
-      request.createAt = createAt;
-      await firebaseService.storesCollection
+      final info = BaseHiveData(
+        createAt: createAt,
+        updateAt: createAt,
+        createBy: request.userId,
+        updateBy: request.userId,
+      );
+      request.info = info;
+
+      final refOrderCreated = firebaseService.storesCollection
           .doc(request.storeId)
           .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-          .doc(orderId)
-          .set(request.toJson());
+          .doc(orderId);
 
+      await refOrderCreated.set(request.toJson());
+
+      final orderCreated = await refOrderCreated.get();
+
+      final infoResponse = BaseHiveData.fromJson(orderCreated.data()?['info']);
       for (var orderItem in request.orderItems) {
         await productRepository.reduceQuantity(
           storeId: request.storeId,
@@ -57,12 +68,8 @@ class OrderServerRepository {
             productId: orderItem.product!.id,
             productTypeId: orderItem.product?.priceSelected,
             event: ProductHistoryEvent.order,
-            info: BaseHiveData(
-              createAt: createAt,
-              updateAt: createAt,
-              createBy: request.userId,
-              updateBy: request.userId,
-            ),
+            orderId: orderId,
+            info: infoResponse,
           ),
         );
       }
@@ -76,6 +83,7 @@ class OrderServerRepository {
           paymentType: request.paymentType.name,
           userId: request.userId,
           receiveAmount: request.receiveAmount,
+          info: infoResponse,
         ),
       );
     } catch (e) {
@@ -95,7 +103,7 @@ class OrderServerRepository {
         snapshot = await firebaseService.storesCollection
             .doc(storeId)
             .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-            .orderBy('createAt', descending: true)
+            .orderBy('info.createAt', descending: true)
             .limit(limit)
             .startAfterDocument(lastDocument)
             .get();
@@ -103,7 +111,7 @@ class OrderServerRepository {
         snapshot = await firebaseService.storesCollection
             .doc(storeId)
             .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-            .orderBy('createAt', descending: true)
+            .orderBy('info.createAt', descending: true)
             .limit(limit)
             .get();
       }
@@ -115,6 +123,23 @@ class OrderServerRepository {
         response: OrderHistoryResponse(
             orders: response, lastDocument: snapshot.docs.last),
       );
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  Future<ApiResult<ProductOrder>> getOrderHistory(
+      String storeId, String id) async {
+    try {
+      final result = await firebaseService.storesCollection
+          .doc(storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
+          .doc(id)
+          .get();
+
+      final resultData = result.data() ?? {};
+      final productOrder = ProductOrder.fromJson(resultData)..id = result.id;
+      return ApiResult(response: productOrder);
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }

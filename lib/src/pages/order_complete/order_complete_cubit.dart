@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
@@ -13,9 +14,9 @@ class OrderCompleteCubit extends Cubit<OrderCompleteState> {
 
   DateTime? get createDate => argruments?.transactionMethodType ==
           TransactionMethodType.order
-      ? argruments?.orderItems?.info?.createAt
+      ? (argruments?.orderItems?.info?.createAt as Timestamp).toDate()
       : argruments?.transactionMethodType == TransactionMethodType.addProduct
-          ? argruments?.addProductItems?.info?.createAt
+          ? (argruments?.addProductItems?.info?.createAt as Timestamp).toDate()
           : null;
 
   String get transactionId => switch (argruments?.transactionMethodType) {

@@ -23,13 +23,17 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
       event: fields[7] as String,
       newData: (fields[10] as Map?)?.cast<String, dynamic>(),
       oldData: (fields[9] as Map?)?.cast<String, dynamic>(),
+      productTypeId: fields[11] as String?,
+      quantity: fields[12] as num?,
+      orderId: fields[13] as String?,
+      stockId: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductHistory obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(10)
       ..writeByte(7)
       ..write(obj.event)
       ..writeByte(8)
@@ -38,6 +42,14 @@ class ProductHistoryAdapter extends TypeAdapter<ProductHistory> {
       ..write(obj.oldData)
       ..writeByte(10)
       ..write(obj.newData)
+      ..writeByte(11)
+      ..write(obj.productTypeId)
+      ..writeByte(12)
+      ..write(obj.quantity)
+      ..writeByte(13)
+      ..write(obj.orderId)
+      ..writeByte(14)
+      ..write(obj.stockId)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -69,6 +81,10 @@ ProductHistory _$ProductHistoryFromJson(Map<String, dynamic> json) =>
       event: json['event'] as String,
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,
+      productTypeId: json['productTypeId'] as String?,
+      quantity: json['quantity'] as num?,
+      orderId: json['orderId'] as String?,
+      stockId: json['stockId'] as String?,
     );
 
 Map<String, dynamic> _$ProductHistoryToJson(ProductHistory instance) =>
@@ -79,4 +95,8 @@ Map<String, dynamic> _$ProductHistoryToJson(ProductHistory instance) =>
       'productId': instance.productId,
       'oldData': instance.oldData,
       'newData': instance.newData,
+      'productTypeId': instance.productTypeId,
+      'quantity': instance.quantity,
+      'orderId': instance.orderId,
+      'stockId': instance.stockId,
     };

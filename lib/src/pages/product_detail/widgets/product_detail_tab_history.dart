@@ -1,5 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
+import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
+import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/widgets/product_history_item_widget.dart';
@@ -11,7 +15,8 @@ class ProductDetailTabHistory extends StatefulWidget {
   const ProductDetailTabHistory({super.key});
 
   @override
-  State<ProductDetailTabHistory> createState() => _ProductDetailTabHistoryState();
+  State<ProductDetailTabHistory> createState() =>
+      _ProductDetailTabHistoryState();
 }
 
 class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
@@ -37,7 +42,10 @@ class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
                 itemCount: productDetailCubit.productHistory?.length ?? 0,
                 itemBuilder: (context, index) {
                   final history = productDetailCubit.productHistory?[index];
-                  return ProductHistoryItemWidget(history: history);
+                  return InkWell(
+                    onTap: () => doHandleProductHistoryItemClick(history),
+                    child: ProductHistoryItemWidget(history: history),
+                  );
                 },
                 separatorBuilder: (context, index) {
                   return const Divider(
@@ -47,5 +55,15 @@ class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
               );
       },
     );
+  }
+
+  doHandleProductHistoryItemClick(ProductHistory? history) {
+    if (history?.eventType == ProductHistoryEvent.order) {
+      if (history?.orderId != null) {
+        OrderHistoryDetailRouter(context).navigate(
+          argruments: OrderHistoryDetailArgruments(orderId: history!.orderId),
+        );
+      }
+    }
   }
 }

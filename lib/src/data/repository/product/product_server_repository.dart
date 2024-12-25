@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -198,6 +199,29 @@ class ProductServerRepository {
       }
     } catch (e) {
       log('error reduceQuantity : $e');
+    }
+  }
+
+  Future<ApiResult<List<ProductHistory>>> getProductHistory(
+      {required productId, required String storeId, int? limit}) async {
+    try {
+      final result = await firebaseService.storesCollection
+          .doc(storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+          .doc(productId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_ORDER_HISTORY)
+          .orderBy('info.createAt', descending: true)
+          .limit(limit ?? 10)
+          .get();
+
+      final productHistoryResponse = result.docs;
+
+      return ApiResult(
+          response: productHistoryResponse
+              .map((e) => ProductHistory.fromJson(e.data()))
+              .toList());
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
   }
 }

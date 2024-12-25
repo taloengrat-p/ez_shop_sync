@@ -53,6 +53,11 @@ class OrderHistoryDetailInitial extends OrderHistoryDetailState {
   String toString() => 'OrderHistoryDetailInitial';
 }
 
+class OrderHistoryDetailInitialLoading extends OrderHistoryDetailState {
+  @override
+  String toString() => 'OrderHistoryDetailInitialLoading';
+}
+
 class OrderHistoryDetailLoading extends OrderHistoryDetailState {
   @override
   String toString() => 'OrderHistoryDetailLoading';
