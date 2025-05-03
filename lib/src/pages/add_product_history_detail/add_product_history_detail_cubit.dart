@@ -2,5 +2,5 @@ import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_hi
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddProductHistoryDetailCubit extends Cubit<AddProductHistoryDetailState> {
-  AddProductHistoryDetailCubit() : super(AddProductHistoryDetailInitial()) {}
+  AddProductHistoryDetailCubit() : super(AddProductHistoryDetailInitial());
 }

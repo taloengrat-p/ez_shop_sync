@@ -72,7 +72,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget buildBody() {
     return BodyWidget(
       title: LocaleKeys.transactions.tr(),
-      actions: [],
+      actions: const [],
       header: Container(
         color: ColorKeys.primary,
         child: Row(
@@ -110,23 +110,23 @@ class _TransactionPageState extends State<TransactionPage> {
           ],
         ),
       ),
-      children: [],
+      children: const [],
     );
   }
 
   Future<void> onCreateInvoice() async {
     final items = [
-      BottomMenuItem(
+      const BottomMenuItem(
         label: 'Camera',
         leading: Icon(Icons.photo_camera),
         value: 1,
       ),
-      BottomMenuItem(
+      const BottomMenuItem(
         label: 'Photo Gallary',
-        leading: const Icon(Icons.photo),
+        leading: Icon(Icons.photo),
         value: 2,
       ),
-      BottomMenuItem(
+      const BottomMenuItem(
         label: 'Product in Stock',
         leading: Icon(CupertinoIcons.cube_box),
         value: 3,

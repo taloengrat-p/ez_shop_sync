@@ -6,9 +6,9 @@ import 'package:ez_shop_sync/src/pages/create_product_detail/models/product_cate
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateProductDetailCubit extends Cubit<CreateProductDetailState> {
-  CreateProductDetailCubit() : super(CreateProductDetailInitial()) {}
+  CreateProductDetailCubit() : super(CreateProductDetailInitial());
 
-  List<ProductCategory> _items = [];
+  final List<ProductCategory> _items = [];
   List<ProductCategory> get items => _items;
   ProductType? product;
 

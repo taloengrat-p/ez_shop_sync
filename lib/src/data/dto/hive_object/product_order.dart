@@ -1,7 +1,6 @@
 // ignore_for_file: type_init_formals
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';

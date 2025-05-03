@@ -6,22 +6,20 @@ import 'text_form_field_ui_widget.dart';
 class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
   TextFormFieldMobileUiWidget({
     super.key,
-    required String label,
-    required bool isRequired,
-    required String hintText,
-    TextEditingController? controller,
-    Function()? onBlur,
-    Iterable<String>? autofillHints,
-    Function(String? value)? onChanged,
-    String? errorText,
-    final String? textInitial,
+    required String super.label,
+    required super.isRequired,
+    required String super.hintText,
+    super.controller,
+    super.onBlur,
+    super.autofillHints = null,
+    super.onChanged,
+    super.errorText,
+    super.textInitial,
     Function(String? value)? additionalValidator,
     super.onFieldSubmitted,
     super.focusNode,
-    final String? textValue,
+    super.textValue,
   }) : super(
-          controller: controller,
-          label: label,
           validator: (value) {
             final resultDefaultValidate =
                 _defaultMobileNumberValidator(value, isRequired);
@@ -38,14 +36,6 @@ class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
 
             return null;
           },
-          autofillHints: autofillHints,
-          hintText: hintText,
-          onChanged: onChanged,
-          onBlur: onBlur,
-          errorText: errorText,
-          isRequired: isRequired,
-          textInitial: textInitial,
-          textValue: textValue,
         );
 
   static String? _defaultMobileNumberValidator(String? value, bool isRequired) {

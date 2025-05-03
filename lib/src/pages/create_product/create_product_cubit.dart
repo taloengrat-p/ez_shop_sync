@@ -215,9 +215,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       _productEditor!.id,
       _productEditor!
         ..productTypeList = _productEditor!.productTypeList?.map((e) {
-          if (e.id == null) {
-            e.id = const Uuid().v4();
-          }
+          e.id ??= const Uuid().v4();
           return e;
         }).toList(),
       appMode: AppMode.server,

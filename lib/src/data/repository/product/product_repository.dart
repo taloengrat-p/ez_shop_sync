@@ -196,10 +196,6 @@ class ProductRepository implements IProductRepository {
       final product =
           await getById(storeId: request.storeId, productId: request.productId);
 
-      if (product == null) {
-        throw ('Product ${request.productId} is Null');
-      }
-
       final newQuantity =
           (product.response?.quantity ?? 0) + (request.product.quantity ?? 0);
 
@@ -244,10 +240,6 @@ class ProductRepository implements IProductRepository {
         if (item.product?.id != null) {
           final product = await getById(
               storeId: cart!.storeId, productId: item.product!.id);
-
-          if (product == null) {
-            throw ('Product ${item.product!.id} is Null');
-          }
 
           final newQuantity =
               (product.response?.quantity ?? 0) - (item.product?.quantity ?? 0);

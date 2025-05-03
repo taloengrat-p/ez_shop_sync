@@ -66,7 +66,7 @@ class BaseCubit extends Cubit<BaseState> {
   List<Store> _stores = [];
   List<Tag> _tags = [];
   List<Category> _categories = [];
-  List<AddProduct> _addProducts = [];
+  final List<AddProduct> _addProducts = [];
   List<Notification> _notification = [];
   Cart? _cart;
   AddProduct? _addProduct;
@@ -163,7 +163,7 @@ class BaseCubit extends Cubit<BaseState> {
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       log(
-        'userChanges() isClosed:: ${isClosed} $user',
+        'userChanges() isClosed:: $isClosed $user',
         name: runtimeType.toString(),
       );
       setCurrentUser(user);

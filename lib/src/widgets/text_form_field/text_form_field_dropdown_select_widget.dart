@@ -76,7 +76,7 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object>
           border: OutlineInputBorder(
             gapPadding: 0,
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey, width: 1),
+            borderSide: const BorderSide(color: Colors.grey, width: 1),
           ),
         ),
         items: widget.items,
@@ -98,7 +98,7 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object>
           border: OutlineInputBorder(
             gapPadding: 0,
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey, width: 1),
+            borderSide: const BorderSide(color: Colors.grey, width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             gapPadding: 0,

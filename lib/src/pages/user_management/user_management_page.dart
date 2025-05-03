@@ -65,7 +65,7 @@ class _UserManagementState extends State<UserManagementPage> {
               bottomNavigationBar: ButtonWidget(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 label: 'Add',
-                leading: Icon(Icons.add_circle_outline_rounded),
+                leading: const Icon(Icons.add_circle_outline_rounded),
                 onPressed: () {
                   AddUserRouter(context).navigate();
                 },

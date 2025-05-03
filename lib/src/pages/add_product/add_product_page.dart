@@ -43,7 +43,7 @@ class _AddProductState extends State<AddProductPage> {
   final _listViewController = ScrollController();
   final _scrollViewController = ScrollController();
   bool _isBottomScroll = false;
-  bool _canScroll = false;
+  final bool _canScroll = false;
 
   void _onScroll() {
     final pixel = _listViewController.position.pixels;

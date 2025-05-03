@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
@@ -10,7 +9,6 @@ import 'package:ez_shop_sync/src/pages/base/base_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_cubit.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
-import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';

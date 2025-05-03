@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 

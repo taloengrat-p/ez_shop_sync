@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_price_category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';

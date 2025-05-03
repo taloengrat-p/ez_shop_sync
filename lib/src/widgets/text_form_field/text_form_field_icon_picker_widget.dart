@@ -1,5 +1,4 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_iconpicker_plus/flutter_iconpicker.dart';

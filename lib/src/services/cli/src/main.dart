@@ -363,26 +363,26 @@ extension ColorWrapper on String {
   static const String cyan = '\x1B[36m'; // Cyan:    \x1B[36m
   static const String endfix = '\x1B[0m';
   String toGreenColor() {
-    return '$green${this}$endfix';
+    return '$green$this$endfix';
   }
 
   String toRedColor() {
-    return '$red${this}$endfix';
+    return '$red$this$endfix';
   }
 
   String toYellowColor() {
-    return '$yellow${this}$endfix';
+    return '$yellow$this$endfix';
   }
 
   String toBlackColor() {
-    return '$black${this}$endfix';
+    return '$black$this$endfix';
   }
 
   String toWhiteColor() {
-    return '$white${this}$endfix';
+    return '$white$this$endfix';
   }
 
   String toCyan() {
-    return '$cyan${this}$endfix';
+    return '$cyan$this$endfix';
   }
 }

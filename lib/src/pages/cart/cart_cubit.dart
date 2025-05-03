@@ -23,7 +23,7 @@ class CartCubit extends Cubit<CartState> {
   ProductRepository productRepository;
 
   BaseCubit baseCubit;
-  num _serviceCharge = 0;
+  final num _serviceCharge = 0;
   TimerUtils timerUtils = TimerUtils();
   List<OrderItem> _products = [];
   Cart? _cart;

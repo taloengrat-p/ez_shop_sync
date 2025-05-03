@@ -95,6 +95,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 actions: [
                   ContainerCircleWidget(
+                    onPressed: null,
                     child: _cubit.baseCubit.addProductCount != 0
                         ? Badge.count(
                             count: _cubit.baseCubit.addProductCount,
@@ -103,7 +104,6 @@ class _MainPageState extends State<MainPage> {
                         : const Icon(
                             CupertinoIcons.bag_badge_plus,
                           ),
-                    onPressed: null,
                     //  () {
                     //   AddProductRouter(context).navigate();
                     // },
@@ -164,7 +164,7 @@ class _MainPageState extends State<MainPage> {
                       _navigationController.value = value;
                       _cubit.setCurrentPageView(value);
                     },
-                    children: [
+                    children: const [
                       HomePage(),
                       ProductPage(),
                       StatisticPage(),

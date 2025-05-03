@@ -70,7 +70,7 @@ class ConfirmDialogUiWidget {
                                   if (title != null) ...[
                                     Text(
                                       title!,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black,
                                         fontSize: 18,

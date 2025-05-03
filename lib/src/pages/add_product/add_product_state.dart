@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class AddProductState extends Equatable {
   const AddProductState([List props = const []]) : super();

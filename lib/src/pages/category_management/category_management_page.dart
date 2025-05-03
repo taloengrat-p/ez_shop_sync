@@ -77,7 +77,7 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
                               },
                               child: Text(
                                 LocaleKeys.cancel.tr(),
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             )
                           : ContainerCircleWidget(

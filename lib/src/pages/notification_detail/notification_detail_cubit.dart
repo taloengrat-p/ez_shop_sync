@@ -8,7 +8,7 @@ class NotificationDetailCubit extends Cubit<NotificationDetailState> {
 
   NotificationDetailCubit({
     required this.storeServerRepository,
-  }) : super(NotificationDetailInitial()) {}
+  }) : super(NotificationDetailInitial());
 
   void intialize(NotificationDetailArgrument argrument) {
     this.argrument = argrument;

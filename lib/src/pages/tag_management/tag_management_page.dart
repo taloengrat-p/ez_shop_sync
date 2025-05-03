@@ -74,7 +74,7 @@ class _TagManagementState extends State<TagManagementPage> {
                               },
                               child: Text(
                                 LocaleKeys.cancel.tr(),
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             )
                           : ContainerCircleWidget(

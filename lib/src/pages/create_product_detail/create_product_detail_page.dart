@@ -86,7 +86,7 @@ class _CreateProductDetailState extends State<CreateProductDetailPage> {
                                 onTap: () {
                                   _cubit.addCategory();
                                 },
-                                child: SizedBox(
+                                child: const SizedBox(
                                   width: 40,
                                   height: double.infinity,
                                   child: Center(

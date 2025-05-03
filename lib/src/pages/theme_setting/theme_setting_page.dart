@@ -130,7 +130,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                       height: 20,
                       width: double.infinity,
                       color: _cubit.primary,
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -157,46 +157,46 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                         ),
                         child: Row(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 3,
                             ),
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 5,
                               backgroundColor: Colors.white,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 3,
                             ),
                             Text(
                               _cubit.storeName,
-                              style: TextStyle(fontSize: 3),
+                              style: const TextStyle(fontSize: 3),
                             ),
-                            Spacer(),
-                            CircleAvatar(
+                            const Spacer(),
+                            const CircleAvatar(
                               radius: 2,
                               backgroundColor: Colors.white,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 3,
                             ),
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 2,
                               backgroundColor: Colors.white,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 3,
                             ),
                           ],
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     ButtonWidget(
                       label: 'Button',
                       height: 15,
                       backgroundColor: _cubit.accent,
-                      textStyle: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
-                      margin: EdgeInsets.all(
+                      textStyle: const TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
+                      margin: const EdgeInsets.all(
                         3,
                       ),
                       radius: 3,

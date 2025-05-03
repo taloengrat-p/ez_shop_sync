@@ -25,5 +25,6 @@ class AppTheme extends BaseObject {
   factory AppTheme.fromJson(Map<String, dynamic> json) => _$AppThemeFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  @override
   Map<String, dynamic> toJson() => _$AppThemeToJson(this);
 }

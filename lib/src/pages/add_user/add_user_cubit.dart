@@ -14,7 +14,7 @@ class AddUserCubit extends Cubit<AddUserState> {
   AddUserCubit({
     required this.storeRepository,
     required this.baseCubit,
-  }) : super(AddUserInitial()) {}
+  }) : super(AddUserInitial());
 
   doSetEmail(String? value) {
     email = value?.trim() ?? '';

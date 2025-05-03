@@ -31,5 +31,6 @@ class Tag extends BaseHiveObject {
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  @override
   Map<String, dynamic> toJson() => _$TagToJson(this);
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';

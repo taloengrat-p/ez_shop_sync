@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_cubit.dart';

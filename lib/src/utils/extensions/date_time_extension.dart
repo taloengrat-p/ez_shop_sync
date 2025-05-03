@@ -107,7 +107,7 @@ extension DateTimeExtension on DateTime {
     int daysToSunday = DateTime.sunday - weekStart.weekday;
     DateTime weekEnd = weekStart.add(Duration(days: daysToSunday));
     // If the week end is beyond the last day of the month, set it to the last day of the month
-    DateTime lastDayOfMonth = DateTime(year, month + 1, 1).subtract(Duration(days: 1));
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 1).subtract(const Duration(days: 1));
     if (weekEnd.month > month) {
       weekEnd = lastDayOfMonth;
     }
@@ -134,7 +134,7 @@ extension DateTimeExtension on DateTime {
     // Add each first day of the week until we reach the next month
     while (startDay.month == month) {
       firstDaysOfWeeks = startDay;
-      startDay = startDay.add(Duration(days: 7)); // Move to the next week
+      startDay = startDay.add(const Duration(days: 7)); // Move to the next week
     }
 
     return firstDaysOfWeeks;

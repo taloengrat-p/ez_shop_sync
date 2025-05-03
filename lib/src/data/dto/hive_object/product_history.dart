@@ -55,6 +55,7 @@ class ProductHistory extends BaseHiveObject {
   factory ProductHistory.fromJson(Map<String, dynamic> json) =>
       _$ProductHistoryFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$ProductHistoryToJson(this);
 
   String titleDisplay({Product? product}) {

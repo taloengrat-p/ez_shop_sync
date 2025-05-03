@@ -96,7 +96,7 @@ class _MorePageState extends State<MorePage> {
               if (result is PinVerifySuccess) {
                 await Future.delayed(Duration.zero, () async {
                   PinSetupRouter(context).navigate(
-                    argruments: PinSetupArgruments(
+                    argruments: const PinSetupArgruments(
                       title: 'Create New PIN',
                       desc: 'Enter the code for new PIN',
                     ),
@@ -257,11 +257,11 @@ class _MorePageState extends State<MorePage> {
                 if (_cubit.stores.isNotEmpty)
                   ContainerCircleWidget(
                     color: ColorKeys.secondary.getContrast(),
+                    onPressed: onHandleChangeStore,
                     child: const Icon(
                       Icons.swap_horiz_rounded,
                       color: Colors.white,
                     ),
-                    onPressed: onHandleChangeStore,
                   )
               ],
             ),

@@ -7,7 +7,7 @@ class AddProductHistoryCubit extends Cubit<AddProductHistoryState> {
   final AddProductHistoryRepository addProductHistoryRepository;
   AddProductHistoryCubit({
     required this.addProductHistoryRepository,
-  }) : super(AddProductHistoryInitial()) {}
+  }) : super(AddProductHistoryInitial());
 
   final int itemLength = 10;
 

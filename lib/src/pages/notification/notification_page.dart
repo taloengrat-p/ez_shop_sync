@@ -80,10 +80,10 @@ class _NotificationState extends State<NotificationPage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   child: Icon(Icons.store_mall_directory_rounded),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Expanded(

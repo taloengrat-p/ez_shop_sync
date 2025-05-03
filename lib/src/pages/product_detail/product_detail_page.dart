@@ -149,7 +149,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ).build(),
               body: buildBody(),
-              bottomNavigationBar: Container(
+              bottomNavigationBar: SizedBox(
                 height: 60,
                 child: Row(
                   children: [

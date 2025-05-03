@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';

@@ -32,7 +32,7 @@ class BodyWidget extends StatelessWidget {
                   children: [
                     Text(
                       title ?? '',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     const Spacer(),
                     ...actions?.toList() ?? []

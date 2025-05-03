@@ -54,7 +54,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
         emit(OrderHistoryLoadMoreSuccess(start, end));
       },
       failure: (error) {
-        emit(OrderHistoryFailure());
+        emit(const OrderHistoryFailure());
       },
     );
   }

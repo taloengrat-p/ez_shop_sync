@@ -116,7 +116,7 @@ class ActionButtonGroupWidget extends StatelessWidget {
             width: double.infinity,
             type: ButtonUiType.secondary,
             label: cancelLabel ?? LocaleKeys.cancel.tr(),
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
               color: Colors.grey,

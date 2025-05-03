@@ -7,7 +7,6 @@ import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';

@@ -204,7 +204,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                                   onPressed: () {
                                     cubit.addProductType();
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.add,
                                     color: Colors.red,
                                   ),

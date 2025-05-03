@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart' as local;
 
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';

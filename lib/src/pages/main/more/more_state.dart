@@ -31,7 +31,7 @@ class MoreChangeStore extends MoreState {
 class MoreRefresh extends MoreState {
   final DateTime dateTime;
 
-  MoreRefresh(this.dateTime);
+  const MoreRefresh(this.dateTime);
 
   @override
   String toString() => 'MoreRefresh';

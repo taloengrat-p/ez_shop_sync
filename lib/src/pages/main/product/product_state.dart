@@ -21,7 +21,7 @@ class ProductInitial extends ProductState {
 class ProductRefresh extends ProductState {
   final DateTime dateTime;
 
-  ProductRefresh(this.dateTime);
+  const ProductRefresh(this.dateTime);
 
   @override
   String toString() => 'ProductRefresh';

@@ -106,7 +106,7 @@ class _AppPinWidgetState extends State<AppPinWidget> {
           if (widget.token != null)
             Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Text(widget.token!),
