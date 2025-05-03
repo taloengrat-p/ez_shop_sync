@@ -21,10 +21,7 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
   Future<AddProduct> createIfNotExist(CreateAddProductRequest request) async {
     AddProduct? result = getById(request.addProduct.id);
     if (result == null) {
-      return await create(
-        request.addProduct,
-        userId: request.userId,
-      );
+      return await create(request.addProduct, userId: request.userId);
     } else {
       return result;
     }
@@ -41,10 +38,7 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
       throw ('Cart get By id $id is Null');
     }
 
-    return await update(
-      id,
-      result..addProductItems.removeWhere((item) => item.id == addProductItemId),
-    );
+    return await update(id, result..addProductItems.removeWhere((item) => item.id == addProductItemId));
   }
 
   Future<AddProduct?> addProduct(String id, Product product) async {
@@ -62,26 +56,22 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
       return await update(
         id,
         addProduct
-          ..addProductItems = addProduct.addProductItems
-              .map(
-                (OrderItem item) => item.product?.id == product.id
-                    ? item.copyWith(
-                        product: item.product?.copyWith(
-                          quantity: (item.product?.quantity ?? 0) + (product.quantity ?? 0),
-                        ),
-                      )
-                    : item,
-              )
-              .toList(),
+          ..addProductItems =
+              addProduct.addProductItems
+                  .map(
+                    (OrderItem item) =>
+                        item.product?.id == product.id
+                            ? item.copyWith(
+                              product: item.product?.copyWith(
+                                quantity: (item.product?.quantity ?? 0) + (product.quantity ?? 0),
+                              ),
+                            )
+                            : item,
+                  )
+                  .toList(),
       );
     } else {
-      return await update(
-        id,
-        addProduct
-          ..addProductItems.add(
-            OrderItem(id: const Uuid().v1(), product: product),
-          ),
-      );
+      return await update(id, addProduct..addProductItems.add(OrderItem(id: const Uuid().v1(), product: product)));
     }
   }
 
@@ -95,10 +85,15 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
       throw ('increaseQty() addProduct is Null');
     }
 
-    final addProductItem = addProduct.addProductItems
-        .map((e) =>
-            e.id == productId ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0))) : e)
-        .toList();
+    final addProductItem =
+        addProduct.addProductItems
+            .map(
+              (e) =>
+                  e.id == productId
+                      ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
+                      : e,
+            )
+            .toList();
 
     await update(addProductId, addProduct..addProductItems = addProductItem);
   }
@@ -113,10 +108,15 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
       throw ('increaseQty() addProduct is Null');
     }
 
-    final addProductItem = addProduct.addProductItems
-        .map((e) =>
-            e.id == productId ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0))) : e)
-        .toList();
+    final addProductItem =
+        addProduct.addProductItems
+            .map(
+              (e) =>
+                  e.id == productId
+                      ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
+                      : e,
+            )
+            .toList();
 
     await update(addProductId, addProduct..addProductItems = addProductItem);
   }

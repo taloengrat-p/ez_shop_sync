@@ -162,8 +162,10 @@ class BaseCubit extends Cubit<BaseState> {
 
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
-      log('userChanges() isClosed:: ${isClosed} $user',
-          name: runtimeType.toString());
+      log(
+        'userChanges() isClosed:: ${isClosed} $user',
+        name: runtimeType.toString(),
+      );
       setCurrentUser(user);
     });
   }
@@ -191,12 +193,17 @@ class BaseCubit extends Cubit<BaseState> {
   setCurrentStore(Store? value) async {
     _store = value;
 
-    emit(BaseSelectStore(_store?.id));
     // await authLocalRepository.update(user?.id, user!..storeLatest = store!.id);
 
+    if (value == null) {
+      throw ('setCurrentStore store == null');
+    }
+
     await doGetAddProductByCurrentUserAndStore();
-    setCurrentAddCartByCurrentStore(store!.id);
+    setCurrentAddCartByCurrentStore(store?.id);
     setCurrentCartByCurrentStore();
+
+    emit(BaseSelectStore(_store?.id));
     // loadAppTheme(_store?.storeTheme);
     // loadTagsByCurrentStore();
     // loadCategoryByCurrentStore();
@@ -216,7 +223,9 @@ class BaseCubit extends Cubit<BaseState> {
   setCurrentCartByCurrentStore() async {
     final cartLocal = GetIt.I<CartLocalRepository>().getAll();
     final cartFinded = cartRepository.getCartsByUserIdWithCurrentStore(
-        storeId: store!.id, userId: user!.uid);
+      storeId: store!.id,
+      userId: user!.uid,
+    );
     log('setCurrentCartByCurrentStore : ${cartLocal.length}');
 
     if (cartFinded != null) {
@@ -239,11 +248,11 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   setCurrentAddCartByCurrentStore(String storeId) async {
-    // log('setCurrentCartByCurrentStore : ${_carts.map((e) => e.id)}');
     if (_addProducts.map((e) => e.storeId).toList().contains(storeId)) {
-      final addProductFinded = _addProducts
-          .where((addProduct) => addProduct.storeId == storeId)
-          .firstOrNull;
+      final addProductFinded =
+          _addProducts
+              .where((addProduct) => addProduct.storeId == storeId)
+              .firstOrNull;
       setCurrentAddProduct(addProductFinded);
     } else {
       final addProductCreated = await addProductRepository.create(
@@ -282,15 +291,17 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   changeDisplayType() {
-    productDisplayType = productDisplayType == ProductDisplayType.grid
-        ? ProductDisplayType.list
-        : ProductDisplayType.grid;
+    productDisplayType =
+        productDisplayType == ProductDisplayType.grid
+            ? ProductDisplayType.list
+            : ProductDisplayType.grid;
   }
 
   changeSortType() {
-    productSortType = productSortType == ProductSortType.asc
-        ? ProductSortType.desc
-        : ProductSortType.asc;
+    productSortType =
+        productSortType == ProductSortType.asc
+            ? ProductSortType.desc
+            : ProductSortType.asc;
 
     sortProduct(productSortType);
   }
@@ -298,11 +309,17 @@ class BaseCubit extends Cubit<BaseState> {
   sortProduct(ProductSortType sortType) {
     try {
       if (sortType == ProductSortType.asc) {
-        products.sort((a, b) => a.info?.createAt!.millisecondsSinceEpoch
-            .compareTo(b.info?.createAt!.millisecondsSinceEpoch));
+        products.sort(
+          (a, b) => a.info?.createAt!.millisecondsSinceEpoch.compareTo(
+            b.info?.createAt!.millisecondsSinceEpoch,
+          ),
+        );
       } else {
-        products.sort((a, b) => b.info?.createAt!.millisecondsSinceEpoch
-            .compareTo(a.info?.createAt!.millisecondsSinceEpoch));
+        products.sort(
+          (a, b) => b.info?.createAt!.millisecondsSinceEpoch.compareTo(
+            a.info?.createAt!.millisecondsSinceEpoch,
+          ),
+        );
       }
     } catch (e) {
       log('sortProduct error $e');
@@ -315,25 +332,32 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> doGetProducts() async {
     emit(BaseLoading());
-    final result = await productRepository.getAllByStoreId(store!.id,
-        appMode: AppMode.server);
+    final result = await productRepository.getAllByStoreId(
+      store!.id,
+      appMode: AppMode.server,
+    );
 
-    result.when(success: (response) {
-      setCurrentProduct(response ?? []);
-      // sortProduct(productSortType);
-      emit(BaseSuccess());
-    }, failure: (error, {errorType}) {
-      setCurrentProduct([]);
-      emit(BaseFailure());
-    });
+    result.when(
+      success: (response) {
+        setCurrentProduct(response ?? []);
+        // sortProduct(productSortType);
+        emit(BaseSuccess());
+      },
+      failure: (error, {errorType}) {
+        setCurrentProduct([]);
+        emit(BaseFailure());
+      },
+    );
   }
 
   void setCurrentProduct(List<Product> value) {
     _products = value;
   }
 
-  Future<void> doDeleteProduct(
-      {required String storeId, required String productId}) async {
+  Future<void> doDeleteProduct({
+    required String storeId,
+    required String productId,
+  }) async {
     emit(BaseLoading());
     await productRepository.delete(storeId, productId, appMode: AppMode.server);
     _products.removeWhere((elelment) => elelment.id == productId);
@@ -366,10 +390,7 @@ class BaseCubit extends Cubit<BaseState> {
     // setCurrentUser(localUser: resultUpdated);
   }
 
-  void addCart({
-    Offset? offset,
-    required Product? product,
-  }) async {
+  void addCart({Offset? offset, required Product? product}) async {
     if (_cart != null && product != null) {
       emit(BaseLoading());
       final cartUpdate = await cartRepository.addCart(_cart!.id, product);
@@ -388,8 +409,10 @@ class BaseCubit extends Cubit<BaseState> {
 
   Future<void> deleteItemFromCart(String cartItemId) async {
     emit(BaseLoading());
-    final resultCartUpdated =
-        await cartRepository.deleteItemByIdFromCart(cart?.id, cartItemId);
+    final resultCartUpdated = await cartRepository.deleteItemByIdFromCart(
+      cart?.id,
+      cartItemId,
+    );
 
     setCurrentCart(resultCartUpdated);
 
@@ -406,8 +429,10 @@ class BaseCubit extends Cubit<BaseState> {
     emit(BaseRemoveCartItem());
   }
 
-  Future<Product?> addStock(
-      {required Product? product, required num amountCost}) async {
+  Future<Product?> addStock({
+    required Product? product,
+    required num amountCost,
+  }) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
@@ -418,8 +443,10 @@ class BaseCubit extends Cubit<BaseState> {
 
     emit(BaseLoading());
 
-    final addProductUpdate =
-        await addProductRepository.addProduct(addProduct!.id, product);
+    final addProductUpdate = await addProductRepository.addProduct(
+      addProduct!.id,
+      product,
+    );
 
     // final productUpdated = await productRepository.addProductQuantityToStock(
     //   AddProductQtyToStockrequest(

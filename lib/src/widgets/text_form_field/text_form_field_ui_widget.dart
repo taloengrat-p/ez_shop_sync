@@ -117,20 +117,14 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
             children: [
               Text(
                 label,
-                style: widget.labelStyle ??
-                    Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                style:
+                    widget.labelStyle ?? Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                width: 8,
-              ),
+              const SizedBox(width: 8),
               if (widget.labelSuffix.isNotNull) widget.labelSuffix!,
             ],
           ),
-          const SizedBox(
-            height: 6,
-          ),
+          const SizedBox(height: 6),
         ],
       );
     } else {
@@ -157,11 +151,10 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
         children: [
           buildLabel(widget.label),
           Theme(
-            data: Theme.of(context).copyWith(
-              splashColor: Colors.transparent,
-            ),
+            data: Theme.of(context).copyWith(splashColor: Colors.transparent),
             child: SizedBox(
-              child: widget.child ??
+              child:
+                  widget.child ??
                   TextFormField(
                     textInputAction: widget.textInputAction,
                     smartDashesType: SmartDashesType.disabled,
@@ -171,9 +164,8 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     keyboardType: widget.keyboardType ?? TextInputType.text,
                     textAlign: widget.textAlign ?? TextAlign.start,
                     autofocus: widget.autofocus ?? false,
-                    autovalidateMode: isBlured
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
+
+                    autovalidateMode: isBlured ? AutovalidateMode.always : AutovalidateMode.disabled,
                     readOnly: widget.readOnly,
                     autofillHints: widget.autofillHints,
                     focusNode: widget.focusNode,
@@ -186,8 +178,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     validator: (value) {
                       if ((value?.isEmpty ?? true) && widget.isRequired) {
                         return widget.customMessageRequired ??
-                            LocaleKeys.requiredErrorMessage
-                                .tr(args: [widget.label?.toLowerCase() ?? '']);
+                            LocaleKeys.requiredErrorMessage.tr(args: [widget.label?.toLowerCase() ?? '']);
                       }
 
                       return widget.validator?.call(doValiedate(value));
@@ -239,35 +230,28 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                     //     borderSide: BorderSide(color: Colors.red, width: 1.5),
                     //   ),
                     // ),
-                    decoration: AppInputDecoration(
-                      context,
-                      contentPadding: widget.contentPadding ??
-                          const EdgeInsets.symmetric(
-                              vertical: 13, horizontal: 8),
-                      readOnly: widget.readOnly,
-                      suffixIcon: widget.autoCompleteType ==
-                              TextFormFieldUiType.password
-                          ? getSuffixPasswordType()
-                          : widget.suffixIcon,
-                      errorText: widget.errorText,
-                      hintText: widget.hintText,
-                    ).build(),
+                    decoration:
+                        AppInputDecoration(
+                          context,
+                          contentPadding:
+                              widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                          readOnly: widget.readOnly,
+                          suffixIcon:
+                              widget.autoCompleteType == TextFormFieldUiType.password
+                                  ? getSuffixPasswordType()
+                                  : widget.suffixIcon,
+                          errorText: widget.errorText,
+                          hintText: widget.hintText,
+                        ).build(),
                     onChanged: (value) {
                       widget.onChanged?.call(value);
                     },
                   ),
             ),
           ),
-          const SizedBox(
-            height: 4,
-          ),
+          const SizedBox(height: 4),
           if (widget.errorText != null && widget.child != null)
-            Text(
-              widget.errorText ?? '',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.red,
-                  ),
-            )
+            Text(widget.errorText ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red)),
         ],
       ),
     );
@@ -284,8 +268,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
           _isVisible = !_isVisible;
         });
       },
-      icon: Icon(
-          _isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+      icon: Icon(_isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded),
     );
   }
 
