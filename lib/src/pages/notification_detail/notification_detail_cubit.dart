@@ -1,14 +1,15 @@
 import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class NotificationDetailCubit extends Cubit<NotificationDetailState> {
-  NotificationDetailArgrument? argrument;
   final StoreServerRepository storeServerRepository;
 
-  NotificationDetailCubit({
-    required this.storeServerRepository,
-  }) : super(NotificationDetailInitial());
+  NotificationDetailArgrument? argrument;
+
+  NotificationDetailCubit({required this.storeServerRepository}) : super(NotificationDetailInitial());
 
   void intialize(NotificationDetailArgrument argrument) {
     this.argrument = argrument;

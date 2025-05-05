@@ -2,9 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
@@ -21,26 +18,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class CreateTagPage extends StatefulWidget {
-  const CreateTagPage({
-    super.key,
-  });
+  const CreateTagPage({super.key});
 
   @override
   _CreateTagState createState() => _CreateTagState();
 }
 
 class _CreateTagState extends State<CreateTagPage> {
-  late CreateTagCubit _cubit;
+  final _cubit = GetIt.I<CreateTagCubit>();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = CreateTagCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<AppCubit>(),
-      tagRepository: GetIt.I<TagRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -54,36 +44,30 @@ class _CreateTagState extends State<CreateTagPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<CreateTagCubit, CreateTagState>(
-        listener: (context, state) {
-          if (state is CreateTagSuccess) {
-            CreateTagRouter(context).pop(state);
-          }
+    return BlocListener<CreateTagCubit, CreateTagState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is CreateTagSuccess) {
+          CreateTagRouter(context).pop(state);
+        }
+      },
+      child: BlocBuilder<CreateTagCubit, CreateTagState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.createTag.tr(), actions: []).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar: ButtonWidget(
+              margin: const EdgeInsets.all(8),
+              label: LocaleKeys.create.tr(),
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  _cubit.doSubmit();
+                }
+              },
+            ),
+          );
         },
-        child: BlocBuilder<CreateTagCubit, CreateTagState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.createTag.tr(),
-                actions: [],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: ButtonWidget(
-                margin: const EdgeInsets.all(8),
-                label: LocaleKeys.create.tr(),
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    _cubit.doSubmit();
-                  }
-                },
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -106,32 +90,18 @@ class _CreateTagState extends State<CreateTagPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
               TextFormFieldUiWidget(
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,
                 autofocus: true,
                 isRequired: true,
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormFieldColorPickerWidget(
-                label: LocaleKeys.backgroundColor.tr(),
-                onSelected: _cubit.setColor,
-              ),
-              TextFormFieldColorPickerWidget(
-                label: LocaleKeys.borderColor.tr(),
-                onSelected: _cubit.setBorderColor,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Container(
-                height: DimensionsKeys.heightBts,
-              ),
+              const SizedBox(height: 8),
+              TextFormFieldColorPickerWidget(label: LocaleKeys.backgroundColor.tr(), onSelected: _cubit.setColor),
+              TextFormFieldColorPickerWidget(label: LocaleKeys.borderColor.tr(), onSelected: _cubit.setBorderColor),
+              const SizedBox(height: 16),
+              Container(height: DimensionsKeys.heightBts),
             ],
           ),
         ),

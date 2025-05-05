@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
@@ -36,8 +35,7 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton(env: [Flavor.DEV])
-@Singleton(env: [Flavor.DEV])
+@Singleton()
 class AppCubit extends Cubit<AppState> {
   AppTheme? _appTheme;
 

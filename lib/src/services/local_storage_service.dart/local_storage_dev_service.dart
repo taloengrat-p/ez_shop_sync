@@ -6,8 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@Singleton(as: LocalStorageService, env: [Flavor.DEV, Flavor.PROD])
-@Injectable(as: LocalStorageService, env: [Flavor.DEV, Flavor.PROD])
+@Singleton(as: LocalStorageService)
 class LocalStorageDevService implements LocalStorageService {
   SharedPreferences? prefs;
   FlutterSecureStorage secureStorage = const FlutterSecureStorage();

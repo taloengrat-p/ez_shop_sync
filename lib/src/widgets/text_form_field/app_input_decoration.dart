@@ -32,31 +32,19 @@ class AppInputDecoration {
       contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
       suffixIcon: suffixIcon,
       suffix: suffix,
-      border: OutlineInputBorder(
-        borderRadius: border,
-      ),
+      border: OutlineInputBorder(borderRadius: border),
       focusedBorder: OutlineInputBorder(
         borderRadius: border,
         borderSide: const BorderSide(color: Colors.black, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: border,
-        borderSide: const BorderSide(
-          color: Colors.grey,
-          width: 1.0,
-        ),
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
       ),
       labelStyle: const TextStyle(fontSize: 17),
-      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w300,
-            color: Colors.grey,
-          ),
+      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
       hintText: hintText,
-      errorStyle: const TextStyle(
-        color: Colors.red,
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-      ),
+      errorStyle: const TextStyle(color: Colors.red, fontSize: 15, fontWeight: FontWeight.w400),
       errorMaxLines: 4,
       errorText: errorText,
       errorBorder: OutlineInputBorder(

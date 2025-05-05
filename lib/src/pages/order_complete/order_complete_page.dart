@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
@@ -14,25 +13,21 @@ import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class OrderCompletePage extends StatefulWidget {
-  const OrderCompletePage({
-    super.key,
-  });
+  const OrderCompletePage({super.key});
 
   @override
   _OrderCompleteState createState() => _OrderCompleteState();
 }
 
 class _OrderCompleteState extends State<OrderCompletePage> {
-  late OrderCompleteCubit _cubit;
+  final _cubit = GetIt.I<OrderCompleteCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = OrderCompleteCubit(
-      baseCubit: BlocProvider.of<AppCubit>(context),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
@@ -50,32 +45,27 @@ class _OrderCompleteState extends State<OrderCompletePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<OrderCompleteCubit, OrderCompleteState>(
-        listener: (context, state) {},
-        child: BlocBuilder<OrderCompleteCubit, OrderCompleteState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              body: _buildPage(context, state),
-              bottomNavigationBar: Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                child: ButtonWidget(
-                  backgroundColor: Colors.black,
-                  height: 44,
-                  label: LocaleKeys.backToHomePage.tr(),
-                  onPressed: () {
-                    MainRouter(context).pushNamedAndRemoveUntil(
-                        argruments: const MainArgruments(
-                      1,
-                    ));
-                  },
-                ),
+    return BlocListener<OrderCompleteCubit, OrderCompleteState>(
+      bloc: _cubit,
+      listener: (context, state) {},
+      child: BlocBuilder<OrderCompleteCubit, OrderCompleteState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            body: _buildPage(context, state),
+            bottomNavigationBar: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+              child: ButtonWidget(
+                backgroundColor: Colors.black,
+                height: 44,
+                label: LocaleKeys.backToHomePage.tr(),
+                onPressed: () {
+                  MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -88,35 +78,15 @@ class _OrderCompleteState extends State<OrderCompletePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 50,
-              ),
-              const Icon(
-                Icons.check_circle_rounded,
-                size: 100,
-                color: Colors.green,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                _cubit.argruments?.title ?? '',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(
-                height: 32,
-              ),
+              const SizedBox(height: 50),
+              const Icon(Icons.check_circle_rounded, size: 100, color: Colors.green),
+              const SizedBox(height: 16),
+              Text(_cubit.argruments?.title ?? '', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 32),
               if (_cubit.createDate != null)
-                Text(_cubit.createDate.toDisplayDependLocale(context,
-                    format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
-              const SizedBox(
-                height: 16,
-              ),
-              if (_cubit.transactionId.isNotEmpty)
-                buildTitleValueInfo(
-                  LocaleKeys.orderId.tr(),
-                  _cubit.transactionId,
-                ),
+                Text(_cubit.createDate.toDisplayDependLocale(context, format: DateFormatConstance.D_MMM_YYYY_HH_mm)),
+              const SizedBox(height: 16),
+              if (_cubit.transactionId.isNotEmpty) buildTitleValueInfo(LocaleKeys.orderId.tr(), _cubit.transactionId),
             ],
           ),
         ),
@@ -131,42 +101,28 @@ class _OrderCompleteState extends State<OrderCompletePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Flexible(
-          child: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
-          ),
+          child: Text(title, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
         ),
-        const SizedBox(
-          width: 8,
-        ),
+        const SizedBox(width: 8),
         Expanded(
           child: InkWell(
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue,
-                    decorationColor: Colors.blue,
-                  ),
+                decoration: TextDecoration.underline,
+                color: Colors.blue,
+                decorationColor: Colors.blue,
+              ),
             ),
             onTap: () {
-              if (_cubit.argruments?.transactionMethodType ==
-                  TransactionMethodType.order) {
-                OrderHistoryDetailRouter(context).replace(
-                  argruments: OrderHistoryDetailArgruments(
-                    productOrder: _cubit.argruments?.orderItems,
-                  ),
-                );
-              } else if (_cubit.argruments?.transactionMethodType ==
-                  TransactionMethodType.addProduct) {
-                OrderHistoryDetailRouter(context).replace(
-                  argruments: OrderHistoryDetailArgruments(
-                    productOrder: _cubit.argruments?.orderItems,
-                  ),
-                );
+              if (_cubit.argruments?.transactionMethodType == TransactionMethodType.order) {
+                OrderHistoryDetailRouter(
+                  context,
+                ).replace(argruments: OrderHistoryDetailArgruments(productOrder: _cubit.argruments?.orderItems));
+              } else if (_cubit.argruments?.transactionMethodType == TransactionMethodType.addProduct) {
+                OrderHistoryDetailRouter(
+                  context,
+                ).replace(argruments: OrderHistoryDetailArgruments(productOrder: _cubit.argruments?.orderItems));
               }
             },
           ),

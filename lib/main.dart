@@ -41,6 +41,7 @@ FutureOr<void> main() async {
   await initialHiveDB();
 
   await setupConfiguration();
+
   await GetIt.I<LocalStorageService>().init();
 
   runApp(
@@ -48,7 +49,7 @@ FutureOr<void> main() async {
       path: 'assets/translations',
       supportedLocales: const [ApplicationConstance.localeEN, ApplicationConstance.localeTH],
       fallbackLocale: ApplicationConstance.localeEN,
-      child: MultiBlocProvider(providers: [BlocProvider(create: (context) => GetIt.I<AppCubit>())], child: const App()),
+      child: MultiBlocProvider(providers: [BlocProvider.value(value: GetIt.I<AppCubit>())], child: const App()),
     ),
   );
 }

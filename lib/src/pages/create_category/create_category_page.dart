@@ -2,9 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
-import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
@@ -22,25 +19,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class CreateCategoryPage extends StatefulWidget {
-  const CreateCategoryPage({
-    super.key,
-  });
+  const CreateCategoryPage({super.key});
 
   @override
   _CreateCategoryState createState() => _CreateCategoryState();
 }
 
 class _CreateCategoryState extends State<CreateCategoryPage> {
-  late CreateCategoryCubit _cubit;
+  final _cubit = GetIt.I<CreateCategoryCubit>();
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    _cubit = CreateCategoryCubit(
-      categoryRepository: GetIt.I<CategoryRepository>(),
-      baseCubit: GetIt.I<AppCubit>(),
-      storeRepository: GetIt.I<StoreRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -54,36 +44,31 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<CreateCategoryCubit, CreateCategoryState>(
-        listener: (context, state) {
-          if (state is CreateCategorySuccess) {
-            CreateCategoryRouter(context).pop(state);
-          }
+    return BlocListener<CreateCategoryCubit, CreateCategoryState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is CreateCategorySuccess) {
+          CreateCategoryRouter(context).pop(state);
+        }
+      },
+      child: BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(context, centerTitle: false, title: LocaleKeys.createCategory.tr(), actions: []).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar: ButtonWidget(
+              margin: const EdgeInsets.all(8),
+              label: LocaleKeys.create.tr(),
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  _cubit.doSubmit();
+                }
+              },
+            ),
+          );
         },
-        child: BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.createCategory.tr(),
-                actions: [],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: ButtonWidget(
-                margin: const EdgeInsets.all(8),
-                label: LocaleKeys.create.tr(),
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    _cubit.doSubmit();
-                  }
-                },
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -107,36 +92,19 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormFieldIconPickerWidget(
-                label: LocaleKeys.icon.tr(),
-                onSelected: _cubit.setIcon,
-              ),
+              const SizedBox(height: 16),
+              TextFormFieldIconPickerWidget(label: LocaleKeys.icon.tr(), onSelected: _cubit.setIcon),
               TextFormFieldUiWidget(
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,
                 autofocus: true,
                 isRequired: true,
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormFieldColorPickerWidget(
-                label: LocaleKeys.backgroundColor.tr(),
-                onSelected: _cubit.setColor,
-              ),
-              TextFormFieldColorPickerWidget(
-                label: LocaleKeys.borderColor.tr(),
-                onSelected: _cubit.setBorderColor,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Container(
-                height: DimensionsKeys.heightBts,
-              ),
+              const SizedBox(height: 8),
+              TextFormFieldColorPickerWidget(label: LocaleKeys.backgroundColor.tr(), onSelected: _cubit.setColor),
+              TextFormFieldColorPickerWidget(label: LocaleKeys.borderColor.tr(), onSelected: _cubit.setBorderColor),
+              const SizedBox(height: 16),
+              Container(height: DimensionsKeys.heightBts),
             ],
           ),
         ),

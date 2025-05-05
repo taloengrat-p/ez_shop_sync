@@ -4,7 +4,9 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product_detail/models/product_category.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class CreateProductDetailCubit extends Cubit<CreateProductDetailState> {
   CreateProductDetailCubit() : super(CreateProductDetailInitial());
 

@@ -1,10 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
@@ -24,25 +21,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class CategoryManagementPage extends StatefulWidget {
-  const CategoryManagementPage({
-    super.key,
-  });
+  const CategoryManagementPage({super.key});
 
   @override
   _CategoryManagementState createState() => _CategoryManagementState();
 }
 
 class _CategoryManagementState extends State<CategoryManagementPage> {
-  late CategoryManagementCubit _cubit;
+  final _cubit = GetIt.I<CategoryManagementCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = CategoryManagementCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
-      appCubit: GetIt.I<AppCubit>(),
-      categoryRepository: GetIt.I<CategoryRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -56,45 +46,43 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<CategoryManagementCubit, CategoryManagementState>(
-        listener: (context, state) {},
-        child: BlocBuilder<CategoryManagementCubit, CategoryManagementState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.categoryManagement.tr(),
-                actions: [
-                  if (_cubit.tags.isNotEmpty)
-                    SizedBox(
-                      child: _cubit.screenMode == ScreenMode.delete
-                          ? TextButton(
-                              onPressed: () {
-                                _cubit.toggleDeleteMode();
-                              },
-                              child: Text(
-                                LocaleKeys.cancel.tr(),
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            )
-                          : ContainerCircleWidget(
-                              color: Colors.red,
-                              onPressed: () {
-                                _cubit.toggleDeleteMode();
-                              },
-                              child: const Icon(CupertinoIcons.delete),
-                            ),
-                    )
-                ],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: _buildButtom(context, state),
-            );
-          },
-        ),
+    return BlocListener<CategoryManagementCubit, CategoryManagementState>(
+      bloc: _cubit,
+      listener: (context, state) {},
+      child: BlocBuilder<CategoryManagementCubit, CategoryManagementState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.categoryManagement.tr(),
+                  actions: [
+                    if (_cubit.tags.isNotEmpty)
+                      SizedBox(
+                        child:
+                            _cubit.screenMode == ScreenMode.delete
+                                ? TextButton(
+                                  onPressed: () {
+                                    _cubit.toggleDeleteMode();
+                                  },
+                                  child: Text(LocaleKeys.cancel.tr(), style: const TextStyle(color: Colors.black)),
+                                )
+                                : ContainerCircleWidget(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    _cubit.toggleDeleteMode();
+                                  },
+                                  child: const Icon(CupertinoIcons.delete),
+                                ),
+                      ),
+                  ],
+                ).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar: _buildButtom(context, state),
+          );
+        },
       ),
     );
   }
@@ -102,41 +90,31 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
   Widget _buildPage(BuildContext context, CategoryManagementState state) {
     final size = MediaQuery.of(context).size;
     return _cubit.tags.isEmpty
-        ? Center(
-            child: EmptyDataWidget(
-              height: size.height * 0.45,
-              width: 200,
-              message: LocaleKeys.categoryEmpty.tr(),
-            ),
-          )
+        ? Center(child: EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.categoryEmpty.tr()))
         : SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  children: _cubit.tags
-                      .map(
-                        (e) => ContainerSelectWidget(
-                          isSelect: _cubit.selected[e.id] ?? false,
-                          margin: const EdgeInsets.only(top: 12, left: 12),
-                          onChange: () {
-                            _cubit.setSelect(e.id);
-                          },
-                          child: CategoryWidget(
-                            icon: IconPickerUtils.getIcon(e.iconData),
-                            model: e,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Wrap(
+                children:
+                    _cubit.tags
+                        .map(
+                          (e) => ContainerSelectWidget(
+                            isSelect: _cubit.selected[e.id] ?? false,
+                            margin: const EdgeInsets.only(top: 12, left: 12),
+                            onChange: () {
+                              _cubit.setSelect(e.id);
+                            },
+                            child: CategoryWidget(icon: IconPickerUtils.getIcon(e.iconData), model: e),
                           ),
-                        ),
-                      )
-                      .toList(),
-                ),
-                Container(
-                  height: DimensionsKeys.heightBts,
-                ),
-              ],
-            ),
-          );
+                        )
+                        .toList(),
+              ),
+              Container(height: DimensionsKeys.heightBts),
+            ],
+          ),
+        );
   }
 
   Widget _buildButtom(BuildContext context, CategoryManagementState state) {
@@ -144,9 +122,10 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
       disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty ? true : false,
       margin: const EdgeInsets.all(8),
       backgroundColor: _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
-      label: _cubit.screenMode == ScreenMode.delete
-          ? LocaleKeys.delete.tr()
-          : LocaleKeys.createCategory.tr().toUpperCase(),
+      label:
+          _cubit.screenMode == ScreenMode.delete
+              ? LocaleKeys.delete.tr()
+              : LocaleKeys.createCategory.tr().toUpperCase(),
       onPressed: () async {
         if (_cubit.screenMode == ScreenMode.display) {
           final result = await CreateCategoryRouter(context).navigate();

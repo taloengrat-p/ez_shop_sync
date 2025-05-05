@@ -9,19 +9,21 @@ import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_stora
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+@Singleton()
 class MoreCubit extends Cubit<MoreState> {
-  AppCubit baseCubit;
+  AppCubit appCubit;
   AuthRepository authRepository;
   final UserRepository userRepository;
-  List<Store> get stores => baseCubit.stores;
+  List<Store> get stores => appCubit.stores;
   late Locale locale;
   String version = '';
   String buildNumber = '';
   LocalStorageService localStorageService;
   MoreCubit({
-    required this.baseCubit,
+    required this.appCubit,
     required this.localStorageService,
     required this.authRepository,
     required this.userRepository,
@@ -29,15 +31,15 @@ class MoreCubit extends Cubit<MoreState> {
     getAppVersion();
   }
 
-  String get storeShortName => baseCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
+  String get storeShortName => appCubit.store?.name.toSubStringFirstToIndex(2) ?? '';
 
-  String get storeName => baseCubit.store?.name ?? '';
+  String get storeName => appCubit.store?.name ?? '';
 
-  Store? get currentStore => baseCubit.store;
+  Store? get currentStore => appCubit.store;
 
   Future<void> doLogout() async {
     await authRepository.logout();
-    await baseCubit.setCurrentUser(null);
+    await appCubit.setCurrentUser(null);
     emit(MoreLogoutSuccess());
   }
 
@@ -78,7 +80,7 @@ class MoreCubit extends Cubit<MoreState> {
   void selectStore(String id) async {
     emit(MoreLoading());
     final result = await userRepository.updateSelectedStore(id);
-    baseCubit.setCurrentStoreById(id);
+    appCubit.setCurrentStoreById(id);
     result.when(
       success: (success) {
         emit(MoreChangeStore(id));

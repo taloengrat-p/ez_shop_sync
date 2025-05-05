@@ -5,11 +5,7 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
-import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/period_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
 import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_statement_detail_router.dart';
@@ -39,7 +35,7 @@ class StatisticPage extends StatefulWidget {
 }
 
 class _StatisticState extends State<StatisticPage> {
-  late StatisticCubit _cubit;
+  final _cubit = GetIt.I<StatisticCubit>();
 
   String get periodTitle =>
       _cubit.periodType == PeriodType.week
@@ -51,12 +47,7 @@ class _StatisticState extends State<StatisticPage> {
   @override
   void initState() {
     log('[_StatisticState] init');
-    _cubit = StatisticCubit(
-      baseCubit: GetIt.I<AppCubit>(),
-      orderRepository: GetIt.I<OrderRepository>(),
-      categoryRepository: GetIt.I<CategoryRepository>(),
-      transactionRepository: GetIt.I<TransactionRepository>(),
-    );
+
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -72,34 +63,33 @@ class _StatisticState extends State<StatisticPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<StatisticCubit, StatisticState>(
-        listener: (context, state) {
-          log('state ${_cubit.transaction.length}');
+    return BlocListener<StatisticCubit, StatisticState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        log('state ${_cubit.transaction.length}');
+      },
+      child: BlocBuilder<StatisticCubit, StatisticState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            enableAppModeDisplay: false,
+            backgroundColor: Colors.white,
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: '${LocaleKeys.statistic_title.tr()} ( ${_cubit.periodType.label} )',
+                  actions: [],
+                ).build(),
+            body:
+                _cubit.transaction.isEmpty
+                    ? EmptyDataWidget(
+                      icon: CupertinoIcons.chart_bar_square,
+                      message: LocaleKeys.statistic_emptyMessage.tr(),
+                    )
+                    : _buildPage(context, state),
+          );
         },
-        child: BlocBuilder<StatisticCubit, StatisticState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              enableAppModeDisplay: false,
-              backgroundColor: Colors.white,
-              appBar:
-                  AppbarWidget(
-                    context,
-                    centerTitle: false,
-                    title: '${LocaleKeys.statistic_title.tr()} ( ${_cubit.periodType.label} )',
-                    actions: [],
-                  ).build(),
-              body:
-                  _cubit.transaction.isEmpty
-                      ? EmptyDataWidget(
-                        icon: CupertinoIcons.chart_bar_square,
-                        message: LocaleKeys.statistic_emptyMessage.tr(),
-                      )
-                      : _buildPage(context, state),
-            );
-          },
-        ),
       ),
     );
   }

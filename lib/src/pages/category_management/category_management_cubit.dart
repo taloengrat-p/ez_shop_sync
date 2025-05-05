@@ -9,12 +9,15 @@ import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class CategoryManagementCubit extends Cubit<CategoryManagementState> {
+  final AppCubit appCubit;
+  final StoreRepository storeRepository;
+  final CategoryRepository categoryRepository;
+
   ScreenMode screenMode = ScreenMode.display;
-  AppCubit appCubit;
-  StoreRepository storeRepository;
-  CategoryRepository categoryRepository;
   Map<String, bool> selected = {};
   bool get selectedEmpty => selected.isEmpty || selected.values.every((e) => e == false);
   List<Category> get tags => appCubit.categories;

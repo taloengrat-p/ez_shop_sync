@@ -4,17 +4,17 @@ import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_r
 import 'package:ez_shop_sync/src/pages/add_user/add_user_state.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton(signalsReady: true)
 class AddUserCubit extends Cubit<AddUserState> {
-  String email = '';
   final StoreServerRepository storeRepository;
-  final AppCubit baseCubit;
+  final AppCubit appCubit;
+
+  String email = '';
 
   List<RoleType>? roleSelected;
-  AddUserCubit({
-    required this.storeRepository,
-    required this.baseCubit,
-  }) : super(AddUserInitial());
+  AddUserCubit({required this.storeRepository, required this.appCubit}) : super(AddUserInitial());
 
   doSetEmail(String? value) {
     email = value?.trim() ?? '';
@@ -24,9 +24,9 @@ class AddUserCubit extends Cubit<AddUserState> {
   Future<void> submit() async {
     emit(AddUserLoading());
     final ApiResult result = await storeRepository.sendInviteToStore(
-      storeId: baseCubit.store!.id,
+      storeId: appCubit.store!.id,
       email: email,
-      storeName: baseCubit.store?.name,
+      storeName: appCubit.store?.name,
       role: roleSelected?.first ?? RoleType.undefined,
     );
 

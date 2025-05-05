@@ -1,7 +1,9 @@
 import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class VerifyPhoneNumberCubit extends Cubit<VerifyPhoneNumberState> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   VerifyPhoneNumberArgrument? argrument;

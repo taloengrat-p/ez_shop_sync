@@ -1,4 +1,3 @@
-
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_cubit.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -15,14 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late HomeCubit cubit;
+  final cubit = GetIt.I<HomeCubit>();
 
   @override
   void initState() {
     super.initState();
-    cubit = HomeCubit(
-      baseCubit: GetIt.I<AppCubit>(),
-    );
   }
 
   @override
@@ -38,10 +34,7 @@ class _HomePageState extends State<HomePage> {
         return BaseScaffolds(
           enableAppModeDisplay: false,
           backgroundColor: Colors.white,
-          appBar: AppbarWidget(
-            context,
-            title: cubit.baseCubit.store?.name,
-          ).build(),
+          appBar: AppbarWidget(context, title: cubit.appCubit.store?.name).build(),
         );
       },
     );

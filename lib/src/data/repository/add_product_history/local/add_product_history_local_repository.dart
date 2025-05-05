@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
@@ -10,8 +11,8 @@ import 'package:ez_shop_sync/src/data/repository/base_hive_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton()
-@Injectable()
+@Singleton(env: [Flavor.DEV])
+@Injectable(env: [Flavor.DEV])
 class AddProductHistoryLocalRepository extends BaseHiveRepository<String, AddProduct> {
   AddProductHistoryLocalRepository() : super(boxName: HiveBoxConstance.addProductHistory);
 

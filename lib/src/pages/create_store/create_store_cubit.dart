@@ -4,16 +4,18 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class CreateStoreCubit extends Cubit<CreateStoreState> {
   final StoreRepository storeRepository;
   final UserRepository userRepository;
-  CreateStoreArgrument? argruments;
   final AppCubit appCubit;
+
+  CreateStoreArgrument? argruments;
   String name = '';
   String desc = '';
   CreateStoreCubit({required this.storeRepository, required this.appCubit, required this.userRepository})

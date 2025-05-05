@@ -7,10 +7,12 @@ import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository authRepository;
-  final AppCubit baseCubit;
+  final AppCubit appCubit;
   String username = '';
   String password = '';
   String confirmPassword = '';
@@ -18,16 +20,11 @@ class LoginCubit extends Cubit<LoginState> {
   ScreenMode screenMode = ScreenMode.login;
   bool isVisiblePassword = false;
   bool get isDisabled => username.isEmpty || password.isEmpty;
-  LoginCubit({
-    required this.authRepository,
-    required this.baseCubit,
-  }) : super(LoginInitial());
+  LoginCubit({required this.authRepository, required this.appCubit}) : super(LoginInitial());
 
   void setUsername(String? value) {
     username = value ?? '';
-    emit(
-      LoginRefresh(username),
-    );
+    emit(LoginRefresh(username));
   }
 
   void setPassword(String? value) {
@@ -53,10 +50,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     emit(LoginLoading());
-    final result = await authRepository.register(
-      request,
-      appMode: AppMode.server,
-    );
+    final result = await authRepository.register(request, appMode: AppMode.server);
 
     result.when(
       success: (response) {},
@@ -67,23 +61,16 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void login() async {
-    final request = LoginRequest(
-      appMode: AppMode.server,
-      username: username.trim(),
-      password: password.trim(),
-    );
+    final request = LoginRequest(appMode: AppMode.server, username: username.trim(), password: password.trim());
     emit(LoginLoading());
     final resultLogin = await authRepository.login(request);
 
     resultLogin.when(
       success: (response) {
-        baseCubit.setCurrentUser(response.user);
+        appCubit.setCurrentUser(response.user);
         emit(LoginSuccess());
       },
-      failure: (
-        error, {
-        AppErrorType? errorType,
-      }) {
+      failure: (error, {AppErrorType? errorType}) {
         emit(LoginFailure(error, errorType: errorType));
       },
     );

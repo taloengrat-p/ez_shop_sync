@@ -1,46 +1,27 @@
 import 'dart:developer';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
-import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
-import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/widgets/product_type_widget.dart';
 import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_router.dart';
-import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
-import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
-import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
-import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/form/form_create_custom_field.dart';
-import 'package:ez_shop_sync/src/widgets/form/form_create_price_cetagory_widget.dart';
 import 'package:ez_shop_sync/src/widgets/form/form_custom_field_widget.dart';
-import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_form_field.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
-import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
-import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
-import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_dropdown_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -54,7 +35,7 @@ class CreateProductPage extends StatefulWidget {
 }
 
 class CreateProductPageState extends State<CreateProductPage> {
-  late CreateProductCubit cubit;
+  final _cubit = GetIt.I<CreateProductCubit>();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -65,45 +46,32 @@ class CreateProductPageState extends State<CreateProductPage> {
   @override
   void initState() {
     super.initState();
-    cubit = CreateProductCubit(
-      productRepository: GetIt.I<ProductRepository>(),
-      appCubit: GetIt.I<AppCubit>(),
-    );
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timstamp) {
-        final args = ModalRoute.of(context)?.settings.arguments;
+    WidgetsBinding.instance.addPostFrameCallback((timstamp) {
+      final args = ModalRoute.of(context)?.settings.arguments;
 
-        if (args is ProductEditArgrument) {
-          cubit.setArgruments(args);
-        }
-      },
-    );
+      if (args is ProductEditArgrument) {
+        _cubit.setArgruments(args);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        return cubit;
+    return BlocListener<CreateProductCubit, CreateProductState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        log('create product state : $state, ${_cubit.productEditor?.attributes}');
+        if (state is CreateProductSuccess || state is CreateProductUpdateSuccess) {
+          CreateProductRouter(context).pop(BaseArgrument(refresh: true));
+        }
       },
-      child: BlocListener<CreateProductCubit, CreateProductState>(
-        listener: (context, state) {
-          log('create product state : $state, ${cubit.productEditor?.attributes}');
-          if (state is CreateProductSuccess ||
-              state is CreateProductUpdateSuccess) {
-            CreateProductRouter(context).pop(BaseArgrument(refresh: true));
-          }
-        },
-        child: BlocBuilder<CreateProductCubit, CreateProductState>(
-            builder: (context, state) {
+      child: BlocBuilder<CreateProductCubit, CreateProductState>(
+        bloc: _cubit,
+        builder: (context, state) {
           return BaseScaffolds(
             backgroundColor: Colors.white,
-            appBar: AppbarWidget(
-              context,
-              title: LocaleKeys.createProduct.tr(),
-              actions: [],
-            ).build(),
+            appBar: AppbarWidget(context, title: LocaleKeys.createProduct.tr(), actions: []).build(),
             body: SingleChildScrollView(
               controller: _scrollController,
               child: Padding(
@@ -111,38 +79,28 @@ class CreateProductPageState extends State<CreateProductPage> {
                 child: Form(
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
+                      const SizedBox(height: 16),
                       ImagePickerWidget(
                         height: 150,
                         width: 150,
-                        path: cubit.productImage,
+                        path: _cubit.productImage,
                         onImagePicked: (file) {
-                          cubit.setProductImage(file?.path);
+                          _cubit.setProductImage(file?.path);
                         },
                       ),
-                      const SizedBox(
-                        height: 32,
-                      ),
+                      const SizedBox(height: 32),
                       TextFormFieldUiWidget(
-                        textValue: cubit.productEditor?.name,
+                        textValue: _cubit.productEditor?.name,
                         label: LocaleKeys.name.tr(),
-                        onChanged: cubit.setName,
+                        onChanged: _cubit.setName,
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
+                      const SizedBox(height: 8),
                       TextFormFieldUiWidget(
-                        textValue: cubit.productEditor?.description,
-                        label: LocaleKeys.optionalField.tr(
-                          args: [LocaleKeys.description.tr()],
-                        ),
-                        onChanged: cubit.setDescription,
+                        textValue: _cubit.productEditor?.description,
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.description.tr()]),
+                        onChanged: _cubit.setDescription,
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
+                      const SizedBox(height: 8),
                       // TextFormFieldUiWidget(
                       //   textValue: cubit.productEditor?.quantity?.toString() ?? '',
                       //   label: LocaleKeys.optionalField.tr(args: [LocaleKeys.quantity.tr()]),
@@ -152,42 +110,35 @@ class CreateProductPageState extends State<CreateProductPage> {
                       // const SizedBox(
                       //   height: 8,
                       // ),
-                      Divider(
-                        color: ColorKeys.primary.withOpacity(0.6),
-                      ),
+                      Divider(color: ColorKeys.primary.withOpacity(0.6)),
                       TextFormFieldUiWidget(
                         label: LocaleKeys.productType.tr(),
-                        errorText: state is CreateProductProductTypeFailure
-                            ? state.message
-                            : null,
+                        errorText: state is CreateProductProductTypeFailure ? state.message : null,
                         child: ColumnGapWidget(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           gap: 12,
                           children: [
-                            ...cubit.productEditor?.productTypeList
+                            ..._cubit.productEditor?.productTypeList
                                     ?.asMap()
                                     .map(
                                       (index, e) => MapEntry(
                                         index,
                                         InkWell(
                                           onTap: () async {
-                                            final productType =
-                                                await CreateProductDetailRouter(
-                                                        context)
-                                                    .navigate(argruments: e);
+                                            final productType = await CreateProductDetailRouter(
+                                              context,
+                                            ).navigate(argruments: e);
 
                                             if (productType is ProductType) {
-                                              cubit.updateProductType(
-                                                  index, productType);
+                                              _cubit.updateProductType(index, productType);
                                             }
                                           },
                                           child: IntrinsicHeight(
                                             child: ProductTypeWidget(
                                               model: e,
                                               onDelete: () {
-                                                cubit
-                                                    .onDeleteProductType(index);
+                                                _cubit.onDeleteProductType(index);
                                               },
                                             ),
                                           ),
@@ -196,18 +147,14 @@ class CreateProductPageState extends State<CreateProductPage> {
                                     )
                                     .values ??
                                 [],
-                            if (cubit.productEditor?.productTypeList?.length !=
-                                5)
+                            if (_cubit.productEditor?.productTypeList?.length != 5)
                               Align(
                                 alignment: Alignment.center,
                                 child: ContainerCircleWidget(
                                   onPressed: () {
-                                    cubit.addProductType();
+                                    _cubit.addProductType();
                                   },
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: Colors.red,
-                                  ),
+                                  child: const Icon(Icons.add, color: Colors.red),
                                 ),
                               ),
                           ],
@@ -304,29 +251,22 @@ class CreateProductPageState extends State<CreateProductPage> {
                       //     },
                       //   ),
                       // ),
-                      Divider(
-                        color: ColorKeys.primary.withOpacity(0.6),
-                      ),
+                      Divider(color: ColorKeys.primary.withOpacity(0.6)),
                       TextFormFieldUiWidget(
                         label: LocaleKeys.custom.tr(),
-                        child: FormCustomFieldWidget<
-                            FormCreateCustomFieldArgrument>(
+                        child: FormCustomFieldWidget<FormCreateCustomFieldArgrument>(
                           key: const ValueKey('form-create-custom-field'),
                           tag: 'form-create-custom-field',
                           // widgetEditor: FormCreateCustomField(
                           //   screenMode: ScreenMode.edit,
                           // ),
                           widgetDisplayBuilder: (context, item) {
-                            return FormCreateCustomField(
-                              screenMode: ScreenMode.display,
-                              model: item,
-                            );
+                            return FormCreateCustomField(screenMode: ScreenMode.display, model: item);
                           },
-                          items: cubit.productEditor?.attributes ?? {},
+                          items: _cubit.productEditor?.attributes ?? {},
                           onAddCustomField: (key, value) {
-                            cubit.addCustomField(key, value);
-                            Future.delayed(const Duration(milliseconds: 200),
-                                () {
+                            _cubit.addCustomField(key, value);
+                            Future.delayed(const Duration(milliseconds: 200), () {
                               _scrollController.animateTo(
                                 _scrollController.position.maxScrollExtent,
                                 curve: Curves.easeOut,
@@ -335,14 +275,14 @@ class CreateProductPageState extends State<CreateProductPage> {
                             });
                           },
                           onRemoveField: (key) {
-                            cubit.removeCustomField(key);
+                            _cubit.removeCustomField(key);
                           },
                           onFieldValueChange: (key, value) {
-                            cubit.changedCustomField(key, value);
+                            _cubit.changedCustomField(key, value);
                           },
                           onTempFieldChange: (key, value) {
-                            cubit.setTempCustomName(key);
-                            cubit.setTempCustomValue(value);
+                            _cubit.setTempCustomName(key);
+                            _cubit.setTempCustomValue(value);
                           },
                         ),
                       ),
@@ -353,19 +293,17 @@ class CreateProductPageState extends State<CreateProductPage> {
             ),
             bottomNavigationBar: ButtonWidget(
               margin: const EdgeInsets.all(16),
-              label: cubit.screenMode == ScreenMode.create
-                  ? LocaleKeys.button_next.tr()
-                  : LocaleKeys.button_save.tr(),
+              label: _cubit.screenMode == ScreenMode.create ? LocaleKeys.button_next.tr() : LocaleKeys.button_save.tr(),
               onPressed: () {
-                if (cubit.screenMode == ScreenMode.create) {
-                  cubit.submitCreate();
+                if (_cubit.screenMode == ScreenMode.create) {
+                  _cubit.submitCreate();
                 } else {
-                  cubit.saveEdit();
+                  _cubit.saveEdit();
                 }
               },
             ),
           );
-        }),
+        },
       ),
     );
   }

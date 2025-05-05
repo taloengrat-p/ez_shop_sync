@@ -10,10 +10,12 @@ import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dar
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
+@Singleton()
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
-  final AppCubit baseCubit;
+  final AppCubit appCubit;
   final CategoryRepository categoryRepository;
   final StoreRepository storeRepository;
 
@@ -22,9 +24,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   Color borderColor = Colors.white;
   IconData? iconData;
 
-  Store? get currentStore => baseCubit.store;
+  Store? get currentStore => appCubit.store;
 
-  CreateCategoryCubit({required this.baseCubit, required this.categoryRepository, required this.storeRepository})
+  CreateCategoryCubit({required this.appCubit, required this.categoryRepository, required this.storeRepository})
     : super(CreateCategoryInitial());
 
   setName(String? value) {
@@ -43,8 +45,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     final tagId = const Uuid().v1();
     final tagCreated = await categoryRepository.create(
       BaseRepoRequest(
-        storeId: baseCubit.storeId ?? '',
-        userId: baseCubit.userId ?? '',
+        storeId: appCubit.storeId ?? '',
+        userId: appCubit.userId ?? '',
         data: Category(
           id: tagId,
           name: name,
@@ -60,15 +62,15 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       success: (tagResponse) async {
         final storeUpdated = await storeRepository.update(
           BaseRepoRequest(
-            storeId: baseCubit.storeId ?? '',
-            userId: baseCubit.userId ?? '',
+            storeId: appCubit.storeId ?? '',
+            userId: appCubit.userId ?? '',
             data: currentStore!..categories?.add(tagResponse.id),
           ),
         );
 
         storeUpdated.when(
           success: (response) {
-            baseCubit.loadCategoryByCurrentStore();
+            appCubit.loadCategoryByCurrentStore();
             log('storeUpdated ${response.tags}');
             emit(CreateCategorySuccess(tagResponse));
           },

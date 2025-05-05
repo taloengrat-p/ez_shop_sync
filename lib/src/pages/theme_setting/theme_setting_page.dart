@@ -1,32 +1,29 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_preview_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_color_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
 
 class ThemeSettingPage extends StatefulWidget {
-  const ThemeSettingPage({
-    super.key,
-  });
+  const ThemeSettingPage({super.key});
 
   @override
   _ThemeSettingState createState() => _ThemeSettingState();
 }
 
 class _ThemeSettingState extends State<ThemeSettingPage> {
-  late ThemeSettingCubit _cubit;
+  final _cubit = GetIt.I<ThemeSettingCubit>();
   final primaryController = GlobalKey<TextFormFieldColorPickerWidgetState>();
   final secondaryController = GlobalKey<TextFormFieldColorPickerWidgetState>();
   final accentController = GlobalKey<TextFormFieldColorPickerWidgetState>();
@@ -34,11 +31,6 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
   @override
   void initState() {
     super.initState();
-
-    _cubit = ThemeSettingCubit(
-      baseCubit: GetIt.I<AppCubit>(),
-      storeRepository: GetIt.I<StoreRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -52,54 +44,53 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<ThemeSettingCubit, ThemeSettingState>(
-        listener: (context, state) {
-          if (state is ThemeSettingSuccess) {
-            ThemeSettingRouter(context).pop(state);
-          } else if (state is ThemeSettingReset) {
-            primaryController.currentState?.reset();
-            secondaryController.currentState?.reset();
-            accentController.currentState?.reset();
-            backgroundController.currentState?.reset();
-          }
-        },
-        child: BlocBuilder<ThemeSettingCubit, ThemeSettingState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.themeSettings.tr(),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      _cubit.reset();
-                    },
-                    child: Text(
-                      'Reset',
-                      style: TextStyle(
-                        color: GetIt.I<AppCubit>().appTheme?.primaryColor.toColor().getContrast(),
+    return BlocListener<ThemeSettingCubit, ThemeSettingState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is ThemeSettingSuccess) {
+          ThemeSettingRouter(context).pop(state);
+        } else if (state is ThemeSettingReset) {
+          primaryController.currentState?.reset();
+          secondaryController.currentState?.reset();
+          accentController.currentState?.reset();
+          backgroundController.currentState?.reset();
+        }
+      },
+      child: BlocBuilder<ThemeSettingCubit, ThemeSettingState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.themeSettings.tr(),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        _cubit.reset();
+                      },
+                      child: Text(
+                        'Reset',
+                        style: TextStyle(color: GetIt.I<AppCubit>().appTheme?.primaryColor.toColor().getContrast()),
                       ),
                     ),
-                  )
-                ],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: ButtonWidget(
-                disabled: false,
-                margin: const EdgeInsets.all(16),
-                label: 'SAVE',
-                onPressed: _cubit.hasChange
-                    ? () {
+                  ],
+                ).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar: ButtonWidget(
+              disabled: false,
+              margin: const EdgeInsets.all(16),
+              label: 'SAVE',
+              onPressed:
+                  _cubit.hasChange
+                      ? () {
                         _cubit.doSaveAppTheme();
                       }
-                    : null,
-              ),
-            );
-          },
-        ),
+                      : null,
+            ),
+          );
+        },
       ),
     );
   }
@@ -116,13 +107,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                 width: 80,
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(0.0, 1.0),
-                      blurRadius: 1.0,
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black, offset: Offset(0.0, 1.0), blurRadius: 1.0)],
                 ),
                 child: Column(
                   children: [
@@ -132,18 +117,9 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                       color: _cubit.primary,
                       child: const Row(
                         children: [
-                          Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
-                            size: 10,
-                          ),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          Text(
-                            'data',
-                            style: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
-                          )
+                          Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 10),
+                          SizedBox(width: 2),
+                          Text('data', style: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -151,41 +127,18 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                       child: Container(
                         height: 20,
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: _cubit.secondary,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+                        decoration: BoxDecoration(color: _cubit.secondary, borderRadius: BorderRadius.circular(4)),
                         child: Row(
                           children: [
-                            const SizedBox(
-                              width: 3,
-                            ),
-                            const CircleAvatar(
-                              radius: 5,
-                              backgroundColor: Colors.white,
-                            ),
-                            const SizedBox(
-                              width: 3,
-                            ),
-                            Text(
-                              _cubit.storeName,
-                              style: const TextStyle(fontSize: 3),
-                            ),
+                            const SizedBox(width: 3),
+                            const CircleAvatar(radius: 5, backgroundColor: Colors.white),
+                            const SizedBox(width: 3),
+                            Text(_cubit.storeName, style: const TextStyle(fontSize: 3)),
                             const Spacer(),
-                            const CircleAvatar(
-                              radius: 2,
-                              backgroundColor: Colors.white,
-                            ),
-                            const SizedBox(
-                              width: 3,
-                            ),
-                            const CircleAvatar(
-                              radius: 2,
-                              backgroundColor: Colors.white,
-                            ),
-                            const SizedBox(
-                              width: 3,
-                            ),
+                            const CircleAvatar(radius: 2, backgroundColor: Colors.white),
+                            const SizedBox(width: 3),
+                            const CircleAvatar(radius: 2, backgroundColor: Colors.white),
+                            const SizedBox(width: 3),
                           ],
                         ),
                       ),
@@ -196,9 +149,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                       height: 15,
                       backgroundColor: _cubit.accent,
                       textStyle: const TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
-                      margin: const EdgeInsets.all(
-                        3,
-                      ),
+                      margin: const EdgeInsets.all(3),
                       radius: 3,
                       onPressed: () {},
                     ),
@@ -206,9 +157,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             TextFormFieldColorPickerWidget(
               key: primaryController,
               label: 'Primary Color',

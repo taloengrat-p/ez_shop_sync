@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
@@ -45,13 +44,6 @@ class ProductPage extends StatefulWidget {
 
 class ProductPageState extends State<ProductPage> implements IProductPage {
   final _cubit = GetIt.I<ProductCubit>();
-  final _cubit1 = GetIt.I<ProductCubit>();
-  final _cubit2 = GetIt.I<ProductCubit>();
-  final appCubit = GetIt.I.get<AppCubit>();
-  final appCubit1 = GetIt.I.get<AppCubit>();
-  final appCubit2 = GetIt.I.get<AppCubit>();
-  final transactionRepo1 = GetIt.I.get<TransactionRepository>();
-  final transactionRepo2 = GetIt.I.get<TransactionRepository>();
 
   final _searchTextController = TextEditingController();
   final _refreshListViewController = RefreshController(initialRefresh: false);
@@ -59,10 +51,6 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   final _refreshEmptyViewController = RefreshController(initialRefresh: false);
   @override
   void initState() {
-    log('[init]', name: runtimeType.toString());
-    log('[check appCubit singleton] ${appCubit1 == appCubit2}', name: runtimeType.toString());
-    log('[check product singleton] ${_cubit1 == _cubit2}', name: runtimeType.toString());
-    log('[check transactionRepo singleton] ${transactionRepo1 == transactionRepo2}', name: runtimeType.toString());
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
@@ -80,71 +68,69 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocBuilder<ProductCubit, ProductState>(
-        builder: (context, state) {
-          return BaseScaffolds(
-            isInitialLoading: state is ProductInitial,
-            enableAppModeDisplay: false,
-            backgroundColor: Colors.white,
-            appBar:
-                AppbarWidget(
-                  context,
-                  centerTitle: false,
-                  title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
-                  titleWidget:
-                      _cubit.screenMode == ScreenMode.search
-                          ? TextField(
-                            controller: _searchTextController,
-                            autofocus: true,
-                            decoration:
-                                AppInputDecoration(
-                                  context,
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.clear, color: Colors.black),
-                                    onPressed: () {
-                                      _searchTextController.clear();
-                                      _cubit.clearSearchText();
-                                    },
-                                  ),
-                                ).build(),
-                            onChanged: _cubit.setSearchText,
-                          )
-                          : null,
-                  actions: [
-                    if (_cubit.screenMode == ScreenMode.search)
-                      TextButton(
-                        onPressed: () {
-                          _searchTextController.clear();
-                          _cubit.doSwitchToDisplay();
-                        },
-                        child: Text(LocaleKeys.cancel.tr()),
-                      ),
-                    if (_cubit.screenMode == ScreenMode.display) ...[
-                      ActionAppbarButtonWidget(
-                        onPressed: _cubit.doSwitchToSearch,
-                        child: const Icon(CupertinoIcons.search),
-                      ),
-                      const SizedBox(width: 5),
-                      ActionAppbarButtonWidget(
-                        child: const Icon(CupertinoIcons.add),
-                        onPressed: () async {
-                          final result = await CreateProductRouter(context).navigate();
-                          if (result is BaseArgrument && result.refresh) {
-                            _cubit.init();
-                          }
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                    ],
+    return BlocBuilder<ProductCubit, ProductState>(
+      bloc: _cubit,
+      builder: (context, state) {
+        return BaseScaffolds(
+          isInitialLoading: state is ProductInitial,
+          enableAppModeDisplay: false,
+          backgroundColor: Colors.white,
+          appBar:
+              AppbarWidget(
+                context,
+                centerTitle: false,
+                title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
+                titleWidget:
+                    _cubit.screenMode == ScreenMode.search
+                        ? TextField(
+                          controller: _searchTextController,
+                          autofocus: true,
+                          decoration:
+                              AppInputDecoration(
+                                context,
+                                contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.clear, color: Colors.black),
+                                  onPressed: () {
+                                    _searchTextController.clear();
+                                    _cubit.clearSearchText();
+                                  },
+                                ),
+                              ).build(),
+                          onChanged: _cubit.setSearchText,
+                        )
+                        : null,
+                actions: [
+                  if (_cubit.screenMode == ScreenMode.search)
+                    TextButton(
+                      onPressed: () {
+                        _searchTextController.clear();
+                        _cubit.doSwitchToDisplay();
+                      },
+                      child: Text(LocaleKeys.cancel.tr()),
+                    ),
+                  if (_cubit.screenMode == ScreenMode.display) ...[
+                    ActionAppbarButtonWidget(
+                      onPressed: _cubit.doSwitchToSearch,
+                      child: const Icon(CupertinoIcons.search),
+                    ),
+                    const SizedBox(width: 5),
+                    ActionAppbarButtonWidget(
+                      child: const Icon(CupertinoIcons.add),
+                      onPressed: () async {
+                        final result = await CreateProductRouter(context).navigate();
+                        if (result is BaseArgrument && result.refresh) {
+                          _cubit.init();
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 8),
                   ],
-                ).build(),
-            body: buildBody(),
-          );
-        },
-      ),
+                ],
+              ).build(),
+          body: buildBody(),
+        );
+      },
     );
   }
 
@@ -225,7 +211,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
     if (_cubit.products.isNotEmpty) {
       return BlocBuilder<AppCubit, AppState>(
-        bloc: appCubit,
+        bloc: _cubit.appCubit,
         builder: (context, baseState) {
           return Expanded(
             child: ContainerScrollableWidget(
@@ -276,7 +262,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showConfirmDelete(context);
 
     if (result == ConfirmDialogResult.ok) {
-      _cubit.deleteProduct(appCubit.store!.id, productId);
+      _cubit.deleteProduct(_cubit.appCubit.store!.id, productId);
     }
   }
 

@@ -1,45 +1,37 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_state.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
 
 class TagManagementPage extends StatefulWidget {
-  const TagManagementPage({
-    super.key,
-  });
+  const TagManagementPage({super.key});
 
   @override
   _TagManagementState createState() => _TagManagementState();
 }
 
 class _TagManagementState extends State<TagManagementPage> {
-  late TagManagementCubit _cubit;
+  final _cubit = GetIt.I<TagManagementCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = TagManagementCubit(
-      appCubit: GetIt.I<AppCubit>(),
-      storeRepository: GetIt.I<StoreRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       setState(() {});
@@ -53,45 +45,43 @@ class _TagManagementState extends State<TagManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<TagManagementCubit, TagManagementState>(
-        listener: (context, state) {},
-        child: BlocBuilder<TagManagementCubit, TagManagementState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.tagManagement.tr(),
-                actions: [
-                  if (_cubit.tags.isNotEmpty)
-                    SizedBox(
-                      child: _cubit.screenMode == ScreenMode.delete
-                          ? TextButton(
-                              onPressed: () {
-                                _cubit.toggleDeleteMode();
-                              },
-                              child: Text(
-                                LocaleKeys.cancel.tr(),
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            )
-                          : ContainerCircleWidget(
-                              color: Colors.red,
-                              onPressed: () {
-                                _cubit.toggleDeleteMode();
-                              },
-                              child: const Icon(CupertinoIcons.delete),
-                            ),
-                    )
-                ],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: _buildButtom(context, state),
-            );
-          },
-        ),
+    return BlocListener<TagManagementCubit, TagManagementState>(
+      bloc: _cubit,
+      listener: (context, state) {},
+      child: BlocBuilder<TagManagementCubit, TagManagementState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.tagManagement.tr(),
+                  actions: [
+                    if (_cubit.tags.isNotEmpty)
+                      SizedBox(
+                        child:
+                            _cubit.screenMode == ScreenMode.delete
+                                ? TextButton(
+                                  onPressed: () {
+                                    _cubit.toggleDeleteMode();
+                                  },
+                                  child: Text(LocaleKeys.cancel.tr(), style: const TextStyle(color: Colors.black)),
+                                )
+                                : ContainerCircleWidget(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    _cubit.toggleDeleteMode();
+                                  },
+                                  child: const Icon(CupertinoIcons.delete),
+                                ),
+                      ),
+                  ],
+                ).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar: _buildButtom(context, state),
+          );
+        },
       ),
     );
   }
@@ -99,38 +89,31 @@ class _TagManagementState extends State<TagManagementPage> {
   Widget _buildPage(BuildContext context, TagManagementState state) {
     final size = MediaQuery.of(context).size;
     return _cubit.tags.isEmpty
-        ? Center(
-            child: EmptyDataWidget(
-              height: size.height * 0.45,
-              width: 200,
-              message: LocaleKeys.tagEmpty.tr(),
-            ),
-          )
+        ? Center(child: EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.tagEmpty.tr()))
         : SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  children: _cubit.tags
-                      .map(
-                        (e) => ContainerSelectWidget(
-                          isSelect: _cubit.selected[e.id] ?? false,
-                          margin: const EdgeInsets.only(top: 12, left: 12),
-                          onChange: () {
-                            _cubit.setSelect(e.id);
-                          },
-                          child: TagWidget(model: e),
-                        ),
-                      )
-                      .toList(),
-                ),
-                Container(
-                  height: DimensionsKeys.heightBts,
-                ),
-              ],
-            ),
-          );
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Wrap(
+                children:
+                    _cubit.tags
+                        .map(
+                          (e) => ContainerSelectWidget(
+                            isSelect: _cubit.selected[e.id] ?? false,
+                            margin: const EdgeInsets.only(top: 12, left: 12),
+                            onChange: () {
+                              _cubit.setSelect(e.id);
+                            },
+                            child: TagWidget(model: e),
+                          ),
+                        )
+                        .toList(),
+              ),
+              Container(height: DimensionsKeys.heightBts),
+            ],
+          ),
+        );
   }
 
   Widget _buildButtom(BuildContext context, TagManagementState state) {

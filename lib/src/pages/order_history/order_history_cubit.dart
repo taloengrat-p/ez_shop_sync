@@ -7,20 +7,19 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class OrderHistoryCubit extends Cubit<OrderHistoryState> {
   final int itemLength = 10;
 
   OrderRepository orderRepository;
-  AppCubit baseCubit;
+  final AppCubit appCubit;
 
   List<ProductOrder> orderItems = [];
   QueryDocumentSnapshot? lastDocument;
 
-  OrderHistoryCubit({
-    required this.orderRepository,
-    required this.baseCubit,
-  }) : super(OrderHistoryInitial());
+  OrderHistoryCubit({required this.orderRepository, required this.appCubit}) : super(OrderHistoryInitial());
 
   Future<void> initialze() async {
     emit(OrderHistoryLoading());
@@ -38,7 +37,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
       end,
       appMode: AppMode.server,
       lastDocument: refresh ? null : lastDocument,
-      storeId: baseCubit.store!.id,
+      storeId: appCubit.store!.id,
       limit: 10,
     );
 

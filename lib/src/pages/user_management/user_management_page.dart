@@ -1,39 +1,31 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';
+import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
-import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/profile_widget.dart';
+import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:get_it/get_it.dart';
 
 class UserManagementPage extends StatefulWidget {
-  const UserManagementPage({
-    super.key,
-  });
+  const UserManagementPage({super.key});
 
   @override
   _UserManagementState createState() => _UserManagementState();
 }
 
 class _UserManagementState extends State<UserManagementPage> {
-  late UserManagementCubit _cubit;
+  final _cubit = GetIt.I<UserManagementCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = UserManagementCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<AppCubit>(),
-    );
-
     WidgetsBinding.instance.addPostFrameCallback((time) {
       _cubit.initial();
     });
@@ -46,33 +38,26 @@ class _UserManagementState extends State<UserManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<UserManagementCubit, UserManagementState>(
-        listener: (context, state) {},
-        child: BlocBuilder<UserManagementCubit, UserManagementState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.userManagement.tr(),
-                actions: [],
-              ).build(),
-              body: SingleChildScrollView(
-                child: _buildPage(context, state),
-              ),
-              bottomNavigationBar: ButtonWidget(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                label: 'Add',
-                leading: const Icon(Icons.add_circle_outline_rounded),
-                onPressed: () {
-                  AddUserRouter(context).navigate();
-                },
-              ),
-            );
-          },
-        ),
+    return BlocListener<UserManagementCubit, UserManagementState>(
+      bloc: _cubit,
+      listener: (context, state) {},
+      child: BlocBuilder<UserManagementCubit, UserManagementState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(context, centerTitle: false, title: LocaleKeys.userManagement.tr(), actions: []).build(),
+            body: SingleChildScrollView(child: _buildPage(context, state)),
+            bottomNavigationBar: ButtonWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              label: 'Add',
+              leading: const Icon(Icons.add_circle_outline_rounded),
+              onPressed: () {
+                AddUserRouter(context).navigate();
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -102,9 +87,7 @@ class _UserManagementState extends State<UserManagementPage> {
         );
       },
       separatorBuilder: (context, index) {
-        return const Divider(
-          color: Colors.grey,
-        );
+        return const Divider(color: Colors.grey);
       },
     );
   }

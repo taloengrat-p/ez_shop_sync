@@ -5,11 +5,8 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
+import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/login/login_router.dart';
@@ -29,7 +26,6 @@ import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
-import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
@@ -51,20 +47,12 @@ class MorePage extends StatefulWidget {
 }
 
 class _MorePageState extends State<MorePage> {
-  late MoreCubit _cubit;
-  late AppCubit baseCubit;
+  final _cubit = GetIt.I<MoreCubit>();
 
   @override
   void initState() {
     log('[init]', name: runtimeType.toString());
     super.initState();
-
-    _cubit = MoreCubit(
-      baseCubit: GetIt.I<AppCubit>(),
-      localStorageService: GetIt.I<LocalStorageService>(),
-      authRepository: GetIt.I<AuthRepository>(),
-      userRepository: GetIt.I<UserRepository>(),
-    );
   }
 
   @override
@@ -81,114 +69,83 @@ class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
     log('${context.locale}', name: runtimeType.toString());
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<MoreCubit, MoreState>(
-        listener: (context, state) async {
-          if (state is MoreClickPinSetting) {
-            if (state.type == PinType.create) {
-              final result = await PinSetupRouter(context).navigate();
+    return BlocListener<MoreCubit, MoreState>(
+      bloc: _cubit,
+      listener: (context, state) async {
+        if (state is MoreClickPinSetting) {
+          if (state.type == PinType.create) {
+            final result = await PinSetupRouter(context).navigate();
+
+            _cubit.refresh();
+          } else if (state.type == PinType.setting) {
+            final result = await PinVerifyRouter(context).navigate();
+
+            if (result is PinVerifySuccess) {
+              await Future.delayed(Duration.zero, () async {
+                PinSetupRouter(context).navigate(
+                  argruments: const PinSetupArgruments(title: 'Create New PIN', desc: 'Enter the code for new PIN'),
+                );
+              });
 
               _cubit.refresh();
-            } else if (state.type == PinType.setting) {
-              final result = await PinVerifyRouter(context).navigate();
-
-              if (result is PinVerifySuccess) {
-                await Future.delayed(Duration.zero, () async {
-                  PinSetupRouter(context).navigate(
-                    argruments: const PinSetupArgruments(
-                      title: 'Create New PIN',
-                      desc: 'Enter the code for new PIN',
-                    ),
-                  );
-                });
-
-                _cubit.refresh();
-              } else {
-                _cubit.refresh();
-              }
+            } else {
+              _cubit.refresh();
             }
-          } else if (state is MoreLogoutSuccess) {
-            baseCubit.clearCurrentUserData();
-            LoginRouter(context).replace();
           }
+        } else if (state is MoreLogoutSuccess) {
+          _cubit.appCubit.clearCurrentUserData();
+          LoginRouter(context).replace();
+        }
+      },
+      child: BlocBuilder<MoreCubit, MoreState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            enableAppModeDisplay: false,
+            backgroundColor: Colors.white,
+            isLoading: state is AppLoading,
+            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.menu.tr(), actions: []).build(),
+            body: SingleChildScrollView(child: buildBody()),
+          );
         },
-        child: BlocBuilder<MoreCubit, MoreState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              enableAppModeDisplay: false,
-              backgroundColor: Colors.white,
-              isLoading: state is AppLoading,
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.menu.tr(),
-                actions: [],
-              ).build(),
-              body: SingleChildScrollView(
-                child: buildBody(),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
 
   Widget buildBody() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: DimensionsKeys.pagePaddingHzt,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildStoreProfile(),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             _buildMenuSettings(),
-            const SizedBox(
-              height: 16,
-            ),
-            if ((_cubit.baseCubit.userRoleTypeCurrentStore?.power ?? -1) >=
-                RoleType.manager.power) ...[
+            const SizedBox(height: 16),
+            if ((_cubit.appCubit.userRoleTypeCurrentStore?.power ?? -1) >= RoleType.manager.power) ...[
               _buildStoreSettings(),
-              const SizedBox(
-                height: 16,
-              )
+              const SizedBox(height: 16),
             ],
             _buildUserSettings(),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             _buildAppSettings(),
-            const SizedBox(
-              height: 32,
-            ),
+            const SizedBox(height: 32),
             ButtonWidget(
               label: LocaleKeys.logout.tr(),
               backgroundColor: Colors.red,
-              leading: const Icon(
-                Icons.logout_rounded,
-              ),
+              leading: const Icon(Icons.logout_rounded),
               onPressed: _cubit.doLogout,
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(LocaleKeys.appVersion
-                    .tr(args: [_cubit.version, _cubit.buildNumber])),
+                child: Text(LocaleKeys.appVersion.tr(args: [_cubit.version, _cubit.buildNumber])),
               ),
             ),
-            const SizedBox(
-              height: DimensionsKeys.heightBts * 1.75,
-            ),
+            const SizedBox(height: DimensionsKeys.heightBts * 1.75),
           ],
         ),
       ),
@@ -205,22 +162,15 @@ class _MorePageState extends State<MorePage> {
             Expanded(
               child: Row(
                 children: [
-                  if (_cubit.stores.isNotEmpty)
-                    CircleProfileWidget(
-                      title: _cubit.storeShortName,
-                    ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  if (_cubit.stores.isNotEmpty) CircleProfileWidget(title: _cubit.storeShortName),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       _cubit.storeName,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            overflow: TextOverflow.ellipsis,
-                            color: ColorKeys.primary
-                                .withOpacity(0.6)
-                                .getContrast(),
-                          ),
+                        overflow: TextOverflow.ellipsis,
+                        color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                      ),
                     ),
                   ),
                   if (_cubit.storeName.isEmpty)
@@ -228,41 +178,30 @@ class _MorePageState extends State<MorePage> {
                       'Create first store',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            overflow: TextOverflow.ellipsis,
-                            color: ColorKeys.primary
-                                .withOpacity(0.6)
-                                .getContrast(),
-                          ),
+                        overflow: TextOverflow.ellipsis,
+                        color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                      ),
                     ),
                 ],
               ),
             ),
-            const SizedBox(
-              width: 8,
-            ),
+            const SizedBox(width: 8),
             Row(
               children: [
                 ContainerCircleWidget(
                   color: ColorKeys.secondary.getContrast(),
-                  child: const Icon(
-                    Icons.add_business_rounded,
-                  ),
+                  child: const Icon(Icons.add_business_rounded),
                   onPressed: () {
                     CreateStoreRouter(context).navigate();
                   },
                 ),
-                const SizedBox(
-                  width: 8,
-                ),
+                const SizedBox(width: 8),
                 if (_cubit.stores.isNotEmpty)
                   ContainerCircleWidget(
                     color: ColorKeys.secondary.getContrast(),
                     onPressed: onHandleChangeStore,
-                    child: const Icon(
-                      Icons.swap_horiz_rounded,
-                      color: Colors.white,
-                    ),
-                  )
+                    child: const Icon(Icons.swap_horiz_rounded, color: Colors.white),
+                  ),
               ],
             ),
           ],
@@ -272,29 +211,27 @@ class _MorePageState extends State<MorePage> {
   }
 
   void onHandleChangeStore() async {
-    final result = await BottomSheetUtils.showDragable(context,
-        title: 'Your Store',
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ..._cubit.stores.map(
-                (e) => BottomMenuItem(
-                  label: e.name,
-                  leading: CircleProfileWidget(
-                    title: e.name.toSubStringFirstToIndex(2),
-                  ),
-                  value: e.id,
-                  trailing: e.id == _cubit.currentStore?.id
-                      ? const Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.green,
-                        )
-                      : null,
-                ),
+    final result = await BottomSheetUtils.showDragable(
+      context,
+      title: 'Your Store',
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ..._cubit.stores.map(
+              (e) => BottomMenuItem(
+                label: e.name,
+                leading: CircleProfileWidget(title: e.name.toSubStringFirstToIndex(2)),
+                value: e.id,
+                trailing:
+                    e.id == _cubit.currentStore?.id
+                        ? const Icon(Icons.check_circle_rounded, color: Colors.green)
+                        : null,
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
     if (result != null) {
       // TO DO
       _cubit.selectStore(result);
@@ -359,11 +296,7 @@ class _MorePageState extends State<MorePage> {
             PasswordSettingRouter(context).navigate();
           },
         ),
-        MenuItemModel(
-          title: LocaleKeys.pinSetting.tr(),
-          value: 1,
-          onPressed: _cubit.clickPinSetting,
-        ),
+        MenuItemModel(title: LocaleKeys.pinSetting.tr(), value: 1, onPressed: _cubit.clickPinSetting),
       ],
     );
   }
@@ -378,18 +311,14 @@ class _MorePageState extends State<MorePage> {
           trailing: Row(
             children: [
               Text(LocaleKeys.languageEn.tr()),
-              const SizedBox(
-                width: 4,
-              ),
+              const SizedBox(width: 4),
               Switch.adaptive(
                 value: context.locale == const Locale('th'),
                 activeColor: ColorKeys.primary,
                 inactiveTrackColor: ColorKeys.primary,
                 onChanged: (val) => _cubit.changeLanguage(context, val),
               ),
-              const SizedBox(
-                width: 4,
-              ),
+              const SizedBox(width: 4),
               Text(LocaleKeys.languageTh.tr()),
             ],
           ),

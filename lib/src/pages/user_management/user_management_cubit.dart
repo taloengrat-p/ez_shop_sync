@@ -3,18 +3,17 @@ import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class UserManagementCubit extends Cubit<UserManagementState> {
   final StoreRepository storeRepository;
-  final AppCubit baseCubit;
+  final AppCubit appCubit;
   List<Member> members = [];
-  UserManagementCubit({
-    required this.storeRepository,
-    required this.baseCubit,
-  }) : super(UserManagementInitial());
+  UserManagementCubit({required this.storeRepository, required this.appCubit}) : super(UserManagementInitial());
 
   initial() async {
     emit(UserManagementLoading());
-    members = baseCubit.store?.members ?? [];
+    members = appCubit.store?.members ?? [];
   }
 }

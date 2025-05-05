@@ -8,15 +8,17 @@ import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class StoreManagementCubit extends Cubit<StoreManagementState> {
-  final AppCubit baseCubit;
+  final AppCubit appCubit;
   final StoreRepository storeRepository;
   final UserRepository userRepository;
   ScreenMode screenMode = ScreenMode.display;
 
-  Store? get store => baseCubit.store;
-  StoreManagementCubit({required this.storeRepository, required this.baseCubit, required this.userRepository})
+  Store? get store => appCubit.store;
+  StoreManagementCubit({required this.storeRepository, required this.appCubit, required this.userRepository})
     : super(StoreManagementInitial());
 
   UserData? owner;
@@ -52,9 +54,9 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
 
     final storeBuffer = store;
     await storeRepository.delete(
-      BaseRepoRequest(storeId: baseCubit.storeId ?? '', userId: baseCubit.userId ?? '', data: store?.id ?? ''),
+      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: store?.id ?? ''),
     );
-    baseCubit.setCurrentUser(baseCubit.user);
+    appCubit.setCurrentUser(appCubit.user);
     emit(StoreManagementDeleteSuccess(storeBuffer));
   }
 
@@ -74,8 +76,8 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
     emit(StoreManagementLoading());
     await storeRepository.update(
       BaseRepoRequest(
-        storeId: baseCubit.storeId ?? '',
-        userId: baseCubit.userId ?? '',
+        storeId: appCubit.storeId ?? '',
+        userId: appCubit.userId ?? '',
         data:
             store!
               ..name = nameEditor?.trim() ?? ''

@@ -2,9 +2,6 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
@@ -21,25 +18,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class CreateStorePage extends StatefulWidget {
-  const CreateStorePage({
-    super.key,
-  });
+  const CreateStorePage({super.key});
 
   @override
   _CreateStoreState createState() => _CreateStoreState();
 }
 
 class _CreateStoreState extends State<CreateStorePage> {
-  late CreateStoreCubit _cubit;
+  final _cubit = GetIt.I<CreateStoreCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = CreateStoreCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
-      appCubit: GetIt.I<AppCubit>(),
-      userRepository: GetIt.I<UserRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
@@ -57,87 +47,67 @@ class _CreateStoreState extends State<CreateStorePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<CreateStoreCubit, CreateStoreState>(
-        listener: (context, state) {
-          if (state is CreateStoreSuccess) {
-            if (_cubit.argruments != null) {
-              OrderCompleteRouter(context).replace(
-                argruments: const OrderCompleteArgrument(
-                  title: 'Create Store Success',
-                  from: Routes.ROUTE_CREATESTORE,
-                ),
-              );
-            } else {
-              CreateStoreRouter(context).pop();
-            }
+    return BlocListener<CreateStoreCubit, CreateStoreState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is CreateStoreSuccess) {
+          if (_cubit.argruments != null) {
+            OrderCompleteRouter(context).replace(
+              argruments: const OrderCompleteArgrument(title: 'Create Store Success', from: Routes.ROUTE_CREATESTORE),
+            );
+          } else {
+            CreateStoreRouter(context).pop();
           }
-        },
-        child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              isLoading: state is CreateStoreLoading,
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.createStore.tr(),
-                actions: [
-                  if (_cubit.argruments != null)
-                    TextButton(
-                      onPressed: () {
-                        MainRouter(context).replace();
-                      },
-                      child: Text(
-                        'Skip',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.blueAccent,
-                            ),
+        }
+      },
+      child: BlocBuilder<CreateStoreCubit, CreateStoreState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            isLoading: state is CreateStoreLoading,
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.createStore.tr(),
+                  actions: [
+                    if (_cubit.argruments != null)
+                      TextButton(
+                        onPressed: () {
+                          MainRouter(context).replace();
+                        },
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                        ),
                       ),
-                    ),
-                ],
-              ).build(),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Form(
-                    child: Column(
-                      children: [
-                        const CircleAvatar(
-                          radius: 44,
-                          child: Icon(
-                            Icons.store_mall_directory_rounded,
-                            size: 44,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextFormFieldUiWidget(
-                          label: LocaleKeys.name.tr(),
-                          onChanged: _cubit.setName,
-                          autofocus: true,
-                        ),
-                        TextFormFieldUiWidget(
-                          label: LocaleKeys.description.tr(),
-                          onChanged: _cubit.setDescription,
-                        ),
-                      ],
-                    ),
+                  ],
+                ).build(),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  child: Column(
+                    children: [
+                      const CircleAvatar(radius: 44, child: Icon(Icons.store_mall_directory_rounded, size: 44)),
+                      const SizedBox(height: 16),
+                      TextFormFieldUiWidget(label: LocaleKeys.name.tr(), onChanged: _cubit.setName, autofocus: true),
+                      TextFormFieldUiWidget(label: LocaleKeys.description.tr(), onChanged: _cubit.setDescription),
+                    ],
                   ),
                 ),
               ),
-              bottomNavigationBar: ButtonWidget(
-                disabled: _cubit.name.isEmpty,
-                margin: const EdgeInsets.all(16),
-                label: 'CREATE',
-                onPressed: () {
-                  _cubit.submit();
-                },
-              ),
-            );
-          },
-        ),
+            ),
+            bottomNavigationBar: ButtonWidget(
+              disabled: _cubit.name.isEmpty,
+              margin: const EdgeInsets.all(16),
+              label: 'CREATE',
+              onPressed: () {
+                _cubit.submit();
+              },
+            ),
+          );
+        },
       ),
     );
   }

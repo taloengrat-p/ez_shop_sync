@@ -41,29 +41,28 @@ class _NotificationState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<NotificationCubit, NotificationState>(
-        listener: (context, state) {},
-        child: BlocBuilder<NotificationCubit, NotificationState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              onRefresh: () async {
-                _cubit.initial(force: true);
-              },
-              isEmpty: _cubit.notifications.isEmpty,
-              emptyIcon: Icons.notifications,
-              appBar:
-                  AppbarWidget(
-                    context,
-                    centerTitle: false,
-                    title: LocaleKeys.notifications_title.tr(),
-                    actions: [],
-                  ).build(),
-              body: _buildPage(context, state),
-            );
-          },
-        ),
+    return BlocListener<NotificationCubit, NotificationState>(
+      bloc: _cubit,
+      listener: (context, state) {},
+      child: BlocBuilder<NotificationCubit, NotificationState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            onRefresh: () async {
+              _cubit.initial(force: true);
+            },
+            isEmpty: _cubit.notifications.isEmpty,
+            emptyIcon: Icons.notifications,
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.notifications_title.tr(),
+                  actions: [],
+                ).build(),
+            body: _buildPage(context, state),
+          );
+        },
       ),
     );
   }

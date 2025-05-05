@@ -11,17 +11,22 @@ import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
+@Injectable()
 class AddProductCubit extends Cubit<AddProductState> {
   final ProductRepository productRepository;
   final AddProductHistoryRepository addProductHistoryRepository;
   final AddProductRepository addProductRepository;
   final AppCubit appCubit;
+
   List<OrderItem> _products = [];
   AddProduct? _addProduct;
   List<OrderItem> get products => _products;
   TimerUtils timerUtils = TimerUtils();
   List<Product> productInStock = [];
+
   AddProductCubit({
     required this.productRepository,
     required this.addProductHistoryRepository,

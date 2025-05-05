@@ -5,11 +5,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
@@ -106,95 +102,91 @@ class _CartState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<CartCubit, CartState>(
-        listener: (context, state) {
-          if (state is CartRemoveItemSuccess) {
-            checkCanScroll();
-          } else if (state is CartSuccess) {
-            OrderCompleteRouter(context).replace(
-              argruments: OrderCompleteArgrument(
-                title: LocaleKeys.orderCompleteTitle.tr(),
-                orderItems: state.ordered,
-                transactionMethodType: TransactionMethodType.order,
-                from: Routes.ROUTE_CART,
-              ),
-            );
-          } else if (state is CartProductInsufficient) {
-            DialogUtils.showAlertDialog(
-              context,
-              title: LocaleKeys.error_unableCheckout.tr(),
-              desc: LocaleKeys.error_productPriceNotEnough.tr(),
-            );
-          }
-        },
-        child: BlocBuilder<CartCubit, CartState>(
-          builder: (context, state) {
-            log('cart state : $state');
-            return BaseScaffolds(
-              isInitialLoading: state is CartInitial,
-              enableAppModeDisplay: true,
-              isLoading: state is CartLoading,
-              appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.cart.tr(), actions: []).build(),
-              body:
-                  _cubit.products.isEmpty
-                      ? Center(
-                        child: EmptyDataWidget(
-                          height: size.height * 0.45,
-                          width: 200,
-                          message: LocaleKeys.cartEmpty.tr(),
-                        ),
-                      )
-                      : _buildPage(context, state),
-              bottomNavigationBar:
-                  _cubit.products.isEmpty
-                      ? ButtonWidget(
-                        margin: const EdgeInsets.all(16),
-                        label: LocaleKeys.gotoProductsPage.tr(),
-                        onPressed: () {
-                          MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
-                        },
-                      )
-                      : Material(
-                        child: buildPriceLayout(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(LocaleKeys.totalAmount.tr()),
-                                  Text(
-                                    _cubit.totalPriceIncludeServiceCharge.toString(),
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              ButtonWidget(
-                                label: LocaleKeys.proceedToCheckout.tr(),
-                                leading: const Icon(Icons.payment_rounded),
-                                onPressed:
-                                    _cubit.hasAnyError
-                                        ? null
-                                        : () {
-                                          if (_receiveAmountForm.currentState?.validate() ?? true) {
-                                            _cubit.submit();
-                                          } else {
-                                            _receiveAmountController.clear();
-                                          }
-                                        },
-                              ),
-                            ],
-                          ),
+    return BlocListener<CartCubit, CartState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is CartRemoveItemSuccess) {
+          checkCanScroll();
+        } else if (state is CartSuccess) {
+          OrderCompleteRouter(context).replace(
+            argruments: OrderCompleteArgrument(
+              title: LocaleKeys.orderCompleteTitle.tr(),
+              orderItems: state.ordered,
+              transactionMethodType: TransactionMethodType.order,
+              from: Routes.ROUTE_CART,
+            ),
+          );
+        } else if (state is CartProductInsufficient) {
+          DialogUtils.showAlertDialog(
+            context,
+            title: LocaleKeys.error_unableCheckout.tr(),
+            desc: LocaleKeys.error_productPriceNotEnough.tr(),
+          );
+        }
+      },
+      child: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          log('cart state : $state');
+          return BaseScaffolds(
+            isInitialLoading: state is CartInitial,
+            enableAppModeDisplay: true,
+            isLoading: state is CartLoading,
+            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.cart.tr(), actions: []).build(),
+            body:
+                _cubit.products.isEmpty
+                    ? Center(
+                      child: EmptyDataWidget(
+                        height: size.height * 0.45,
+                        width: 200,
+                        message: LocaleKeys.cartEmpty.tr(),
+                      ),
+                    )
+                    : _buildPage(context, state),
+            bottomNavigationBar:
+                _cubit.products.isEmpty
+                    ? ButtonWidget(
+                      margin: const EdgeInsets.all(16),
+                      label: LocaleKeys.gotoProductsPage.tr(),
+                      onPressed: () {
+                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                      },
+                    )
+                    : Material(
+                      child: buildPriceLayout(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(LocaleKeys.totalAmount.tr()),
+                                Text(
+                                  _cubit.totalPriceIncludeServiceCharge.toString(),
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            ButtonWidget(
+                              label: LocaleKeys.proceedToCheckout.tr(),
+                              leading: const Icon(Icons.payment_rounded),
+                              onPressed:
+                                  _cubit.hasAnyError
+                                      ? null
+                                      : () {
+                                        if (_receiveAmountForm.currentState?.validate() ?? true) {
+                                          _cubit.submit();
+                                        } else {
+                                          _receiveAmountController.clear();
+                                        }
+                                      },
+                            ),
+                          ],
                         ),
                       ),
-            );
-          },
-        ),
+                    ),
+          );
+        },
       ),
     );
   }

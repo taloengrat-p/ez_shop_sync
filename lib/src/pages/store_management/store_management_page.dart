@@ -1,10 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
@@ -21,25 +18,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class StoreManagementPage extends StatefulWidget {
-  const StoreManagementPage({
-    super.key,
-  });
+  const StoreManagementPage({super.key});
 
   @override
   _StoreManagementState createState() => _StoreManagementState();
 }
 
 class _StoreManagementState extends State<StoreManagementPage> {
-  late StoreManagementCubit _cubit;
+  final _cubit = GetIt.I<StoreManagementCubit>();
 
   @override
   void initState() {
     super.initState();
-    _cubit = StoreManagementCubit(
-      storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<AppCubit>(),
-      userRepository: GetIt.I<UserRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       _cubit.initial();
@@ -53,78 +43,72 @@ class _StoreManagementState extends State<StoreManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _cubit,
-      child: BlocListener<StoreManagementCubit, StoreManagementState>(
-        listener: (context, state) {
-          if (state is StoreManagementDeleteSuccess) {
-            StoreManagementRouter(context).pop(state);
-          }
-        },
-        child: BlocBuilder<StoreManagementCubit, StoreManagementState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppbarWidget(
-                context,
-                centerTitle: false,
-                title: LocaleKeys.storeManagement.tr(),
-                actions: [
-                  if (_cubit.screenMode == ScreenMode.edit)
-                    TextButton(
-                      child: Text(LocaleKeys.cancel.tr()),
-                      onPressed: () {
-                        _cubit.doCancelEdit();
-                      },
-                    ),
-                  if (_cubit.screenMode == ScreenMode.display) ...[
-                    ContainerCircleWidget(
-                      onPressed: _cubit.doEdit,
-                      child: const Icon(
-                        CupertinoIcons.pencil,
+    return BlocListener<StoreManagementCubit, StoreManagementState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is StoreManagementDeleteSuccess) {
+          StoreManagementRouter(context).pop(state);
+        }
+      },
+      child: BlocBuilder<StoreManagementCubit, StoreManagementState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: LocaleKeys.storeManagement.tr(),
+                  actions: [
+                    if (_cubit.screenMode == ScreenMode.edit)
+                      TextButton(
+                        child: Text(LocaleKeys.cancel.tr()),
+                        onPressed: () {
+                          _cubit.doCancelEdit();
+                        },
                       ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    ContainerCircleWidget(
-                      color: Colors.red,
-                      child: const Icon(
-                        CupertinoIcons.delete,
-                      ),
-                      onPressed: () async {
-                        final result = await ConfirmDialogUiWidget(
-                          context,
-                          title: 'ลบร้านค้า',
-                          desc: 'ยืนยันการลบ',
-                          confirmColor: Colors.red,
-                        ).show();
+                    if (_cubit.screenMode == ScreenMode.display) ...[
+                      ContainerCircleWidget(onPressed: _cubit.doEdit, child: const Icon(CupertinoIcons.pencil)),
+                      const SizedBox(width: 8),
+                      ContainerCircleWidget(
+                        color: Colors.red,
+                        child: const Icon(CupertinoIcons.delete),
+                        onPressed: () async {
+                          final result =
+                              await ConfirmDialogUiWidget(
+                                context,
+                                title: 'ลบร้านค้า',
+                                desc: 'ยืนยันการลบ',
+                                confirmColor: Colors.red,
+                              ).show();
 
-                        if (result == ConfirmDialogResult.ok) {
-                          _cubit.doDelete();
-                        }
-                      },
-                    ),
+                          if (result == ConfirmDialogResult.ok) {
+                            _cubit.doDelete();
+                          }
+                        },
+                      ),
+                    ],
                   ],
-                ],
-              ).build(),
-              body: _buildPage(context, state),
-              bottomNavigationBar: _cubit.screenMode == ScreenMode.edit
-                  ? ButtonWidget(
+                ).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar:
+                _cubit.screenMode == ScreenMode.edit
+                    ? ButtonWidget(
                       margin: const EdgeInsets.symmetric(
                         horizontal: DimensionsKeys.pagePaddingHzt,
                         vertical: DimensionsKeys.l,
                       ),
                       label: LocaleKeys.button_save.tr(),
-                      onPressed: _cubit.hasChange
-                          ? () {
-                              _cubit.doSave();
-                            }
-                          : null,
+                      onPressed:
+                          _cubit.hasChange
+                              ? () {
+                                _cubit.doSave();
+                              }
+                              : null,
                     )
-                  : null,
-            );
-          },
-        ),
+                    : null,
+          );
+        },
       ),
     );
   }
@@ -142,17 +126,13 @@ class _StoreManagementState extends State<StoreManagementPage> {
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),
-              textValue: _cubit.screenMode == ScreenMode.display
-                  ? _cubit.storeName
-                  : _cubit.nameEditor,
+              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeName : _cubit.nameEditor,
               onChanged: _cubit.doSetName,
             ),
             TextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.description.tr(),
-              textValue: _cubit.screenMode == ScreenMode.display
-                  ? _cubit.storeDesc
-                  : _cubit.descEditor,
+              textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeDesc : _cubit.descEditor,
               onChanged: _cubit.doSetDesc,
             ),
             TextFormFieldUiWidget(

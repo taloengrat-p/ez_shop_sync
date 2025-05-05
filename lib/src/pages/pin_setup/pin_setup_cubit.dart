@@ -3,15 +3,15 @@ import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/crypto_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class PinSetupCubit extends Cubit<PinSetupState> {
   String pin = '';
   String confirm = '';
   LocalStorageService localStorageService;
   PinSetupArgruments? argrument;
-  PinSetupCubit({
-    required this.localStorageService,
-  }) : super(PinSetupInitial());
+  PinSetupCubit({required this.localStorageService}) : super(PinSetupInitial());
 
   void setPin(String value) {
     pin = value;
@@ -28,10 +28,8 @@ class PinSetupCubit extends Cubit<PinSetupState> {
 
   void initPIN(String pin) async {
     ResultEncryp pinEncrypt = CryptoUtils.encrypPassword(pin);
-    await localStorageService.setSecure(
-        ApplicationConstance.securePINKey, pinEncrypt.value);
-    await localStorageService.setSecure(
-        ApplicationConstance.securePINsalt, pinEncrypt.salt);
+    await localStorageService.setSecure(ApplicationConstance.securePINKey, pinEncrypt.value);
+    await localStorageService.setSecure(ApplicationConstance.securePINsalt, pinEncrypt.salt);
 
     emit(PinSetupAllSuccess('${pinEncrypt.value}:${pinEncrypt.salt}'));
   }

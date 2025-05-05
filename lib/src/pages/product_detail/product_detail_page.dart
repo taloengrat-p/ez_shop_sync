@@ -4,8 +4,6 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
@@ -40,208 +38,165 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({
-    super.key,
-  });
+  const ProductDetailPage({super.key});
 
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  late ProductDetailCubit cubit;
-  late AppCubit baseCubit;
+  final _cubit = GetIt.I<ProductDetailCubit>();
+  late AppCubit appCubit;
   @override
   void initState() {
     super.initState();
 
-    baseCubit = GetIt.I<AppCubit>();
-    cubit = ProductDetailCubit(
-      productRepository: GetIt.I<ProductRepository>(),
-      baseCubit: baseCubit,
-      productHistoryRepository: GetIt.I<ProductHistoryRepository>(),
-    );
+    appCubit = GetIt.I<AppCubit>();
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
 
       if (argruments is Product) {
-        cubit.setArgrument(argruments);
+        _cubit.setArgrument(argruments);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => cubit,
-      child: BlocListener<ProductDetailCubit, ProductDetailState>(
-        listener: (context, state) {
-          if (state is ProductDetailDelete) {
-            ProductDetailRouter(context).pop(BaseArgrument(refresh: true));
-          }
-        },
-        child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              backgroundColor: Colors.white,
-              appBar: AppbarWidget(
-                context,
-                actions: [
-                  ContainerCircleWidget(
-                    onPressed: cubit.product == null
-                        ? null
-                        : () async {
-                            final result = await CreateProductRouter(context)
-                                .navigate(
-                                    argruments:
-                                        ProductEditArgrument(cubit.product!));
+    return BlocListener<ProductDetailCubit, ProductDetailState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is ProductDetailDelete) {
+          ProductDetailRouter(context).pop(BaseArgrument(refresh: true));
+        }
+      },
+      child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            backgroundColor: Colors.white,
+            appBar:
+                AppbarWidget(
+                  context,
+                  actions: [
+                    ContainerCircleWidget(
+                      onPressed:
+                          _cubit.product == null
+                              ? null
+                              : () async {
+                                final result = await CreateProductRouter(
+                                  context,
+                                ).navigate(argruments: ProductEditArgrument(_cubit.product!));
 
-                            if (result is CreateProductUpdateSuccess) {
-                              cubit.refresh(product: result.product);
-                            }
-                          },
-                    child: const Icon(
-                      CupertinoIcons.pencil,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ContainerCircleWidget(
-                    color: Colors.red,
-                    child: const Icon(
-                      CupertinoIcons.delete,
-                    ),
-                    onPressed: () {
-                      ConfirmDialogUiWidget(
-                        context,
-                        title: LocaleKeys.confirmDeleteTitle.tr(),
-                        desc: LocaleKeys.confirmDeleteDesc.tr(),
-                        confirmLabel: LocaleKeys.delete.tr(),
-                        confirmColor: Colors.red,
-                      ).show().then(
-                        (val) {
-                          if (val == ConfirmDialogResult.ok) {
-                            cubit.deleteProduct();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ContainerCircleWidget(
-                    child: cubit.baseCubit.cartCount != 0
-                        ? Badge.count(
-                            count: cubit.baseCubit.cartCount,
-                            child: const Icon(CupertinoIcons.cart),
-                          )
-                        : const Icon(CupertinoIcons.cart),
-                    onPressed: () {
-                      CartRouter(context).navigate();
-                    },
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                ],
-              ).build(),
-              body: buildBody(),
-              bottomNavigationBar: SizedBox(
-                height: 60,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ButtonIconLabelWidget(
-                              icon:
-                                  const DrawableIconWidget(Drawables.settings),
-                              label: LocaleKeys.settings.tr(),
-                              onPressed: () {
-                                ProductSettingsRouter(context).navigate();
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: ButtonIconLabelWidget(
-                              icon: const Icon(
-                                CupertinoIcons.cart_badge_plus,
-                                color: Colors.white,
-                              ),
-                              color: Colors.orange,
-                              label: LocaleKeys.addCart.tr(),
-                              labelStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: Colors.white),
-                              onPressed: () async {
-                                final result =
-                                    await DialogUtils.showAddCartDialog(
-                                        context, cubit.product);
-
-                                if (result is BottomSheetAddCartSuccess) {
-                                  cubit.addCart(
-                                    cubit.product?.copyWith(
-                                      quantity: result.qty,
-                                      priceSelected:
-                                          result.priceCategorySelected,
-                                    ),
-                                  );
+                                if (result is CreateProductUpdateSuccess) {
+                                  _cubit.refresh(product: result.product);
                                 }
                               },
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: const Icon(CupertinoIcons.pencil),
                     ),
-                    Expanded(
-                      child: ButtonIconLabelWidget(
-                        icon: const Icon(
-                          CupertinoIcons.bag_badge_plus,
-                          color: Colors.white,
-                        ),
-                        color: Colors.amber,
-                        label: LocaleKeys.addStock.tr(),
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.white),
-                        onPressed: () async {
-                          final result = await DialogUtils.showAddStockDialog(
-                              context, cubit.product);
-
-                          if (result is BottomSheetAddStockSuccess) {
-                            cubit.addStock(
-                              cubit.product?.copyWith(
-                                priceSelected: result.priceCategorySelected,
-                                quantity: result.qty,
-                              ),
-                              result.amountCost,
-                            );
+                    const SizedBox(width: 8),
+                    ContainerCircleWidget(
+                      color: Colors.red,
+                      child: const Icon(CupertinoIcons.delete),
+                      onPressed: () {
+                        ConfirmDialogUiWidget(
+                          context,
+                          title: LocaleKeys.confirmDeleteTitle.tr(),
+                          desc: LocaleKeys.confirmDeleteDesc.tr(),
+                          confirmLabel: LocaleKeys.delete.tr(),
+                          confirmColor: Colors.red,
+                        ).show().then((val) {
+                          if (val == ConfirmDialogResult.ok) {
+                            _cubit.deleteProduct();
                           }
-                        },
-                      ),
+                        });
+                      },
                     ),
+                    const SizedBox(width: 8),
+                    ContainerCircleWidget(
+                      child:
+                          _cubit.appCubit.cartCount != 0
+                              ? Badge.count(count: _cubit.appCubit.cartCount, child: const Icon(CupertinoIcons.cart))
+                              : const Icon(CupertinoIcons.cart),
+                      onPressed: () {
+                        CartRouter(context).navigate();
+                      },
+                    ),
+                    const SizedBox(width: 8),
                   ],
-                ),
+                ).build(),
+            body: buildBody(),
+            bottomNavigationBar: SizedBox(
+              height: 60,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ButtonIconLabelWidget(
+                            icon: const DrawableIconWidget(Drawables.settings),
+                            label: LocaleKeys.settings.tr(),
+                            onPressed: () {
+                              ProductSettingsRouter(context).navigate();
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: ButtonIconLabelWidget(
+                            icon: const Icon(CupertinoIcons.cart_badge_plus, color: Colors.white),
+                            color: Colors.orange,
+                            label: LocaleKeys.addCart.tr(),
+                            labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                            onPressed: () async {
+                              final result = await DialogUtils.showAddCartDialog(context, _cubit.product);
+
+                              if (result is BottomSheetAddCartSuccess) {
+                                _cubit.addCart(
+                                  _cubit.product?.copyWith(
+                                    quantity: result.qty,
+                                    priceSelected: result.priceCategorySelected,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ButtonIconLabelWidget(
+                      icon: const Icon(CupertinoIcons.bag_badge_plus, color: Colors.white),
+                      color: Colors.amber,
+                      label: LocaleKeys.addStock.tr(),
+                      labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                      onPressed: () async {
+                        final result = await DialogUtils.showAddStockDialog(context, _cubit.product);
+
+                        if (result is BottomSheetAddStockSuccess) {
+                          _cubit.addStock(
+                            _cubit.product?.copyWith(priceSelected: result.priceCategorySelected, quantity: result.qty),
+                            result.amountCost,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
   List<Widget> _buildTitle() {
     return [
-      ImageCarouselPreviewWidget(imagesUrl: cubit.imageMerged),
-      const SizedBox(
-        height: DimensionsKeys.m,
-      ),
+      ImageCarouselPreviewWidget(imagesUrl: _cubit.imageMerged),
+      const SizedBox(height: DimensionsKeys.m),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
@@ -251,39 +206,29 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  cubit.product?.name.elseDisplay() ?? elseDisplay(),
+                  _cubit.product?.name.elseDisplay() ?? elseDisplay(),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  cubit.product?.priceStringDisplay ?? elseDisplay(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: ColorKeys.accent,
-                  ),
+                  _cubit.product?.priceStringDisplay ?? elseDisplay(),
+                  style: TextStyle(fontSize: 18, color: ColorKeys.accent),
                 ),
               ],
             ),
             Text(
-              '${cubit.product?.allQuantity.elseDisplay()} ${LocaleKeys.units_piece.tr()}',
+              '${_cubit.product?.allQuantity.elseDisplay()} ${LocaleKeys.units_piece.tr()}',
               style: const TextStyle(fontSize: 18),
             ),
           ],
         ),
-      )
+      ),
     ];
   }
 
   Widget _buildContent() {
-    final data = cubit.product?.attributes
-            ?.map(
-              (k, v) => MapEntry(
-                k,
-                ProductDetailTitleValue(
-                  title: k,
-                  value: v,
-                ),
-              ),
-            )
+    final data =
+        _cubit.product?.attributes
+            ?.map((k, v) => MapEntry(k, ProductDetailTitleValue(title: k, value: v)))
             .values
             .toList() ??
         [];
@@ -292,28 +237,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       gap: 16,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ProductDetailTitleValue(
-          title: LocaleKeys.description.tr(),
-          value: cubit.productDescription.toString(),
-        ),
+        ProductDetailTitleValue(title: LocaleKeys.description.tr(), value: _cubit.productDescription.toString()),
         ProductDetailTitleValue(
           title: LocaleKeys.category.tr(),
-          widgetValues: cubit.category == null
-              ? []
-              : [
-                  CategoryWidget(
-                    model: cubit.category!,
-                    icon: IconPickerUtils.getIcon(cubit.category!.iconData),
-                  )
-                ],
+          widgetValues:
+              _cubit.category == null
+                  ? []
+                  : [CategoryWidget(model: _cubit.category!, icon: IconPickerUtils.getIcon(_cubit.category!.iconData))],
         ),
         ProductDetailTitleValue(
           title: LocaleKeys.tags.tr(),
-          widgetValues: cubit.tags
-              .map((e) => TagWidget(
-                    model: e,
-                  ))
-              .toList(),
+          widgetValues: _cubit.tags.map((e) => TagWidget(model: e)).toList(),
         ),
         ...data,
       ],
@@ -329,39 +263,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ..._buildTitle(),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _buildContent(),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: 450,
-                width: double.infinity,
-                child: _buildTabContent(),
-              ),
+              const SizedBox(height: 16),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 16.0), child: _buildContent()),
+              const SizedBox(height: 16),
+              SizedBox(height: 450, width: double.infinity, child: _buildTabContent()),
             ],
           ),
         ),
         BlocBuilder(
-          bloc: baseCubit,
+          bloc: appCubit,
           builder: (context, baseState) {
             final size = MediaQuery.of(context).size;
 
             return AnimatedPositioned(
-              duration: baseCubit.durationAddCart,
+              duration: appCubit.durationAddCart,
               top: baseState is AppAddCartSuccess ? 0 : size.height,
               right: baseState is AppAddCartSuccess ? 20 : (size.width - 100),
-              child: baseState is AppAddCartSuccess
-                  ? const Icon(
-                      CupertinoIcons.bag,
-                      color: Colors.black,
-                    )
-                  : Container(),
+              child: baseState is AppAddCartSuccess ? const Icon(CupertinoIcons.bag, color: Colors.black) : Container(),
             );
           },
         ),
@@ -379,26 +297,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           TabBar(
             indicatorColor: ColorKeys.primary,
             tabs: const [
-              Tab(
-                icon: SizedBox.expand(
-                  child: Icon(CupertinoIcons.time),
-                ),
-              ),
-              Tab(
-                icon: SizedBox.expand(
-                  child: Icon(CupertinoIcons.chart_bar_square),
-                ),
-              ),
+              Tab(icon: SizedBox.expand(child: Icon(CupertinoIcons.time))),
+              Tab(icon: SizedBox.expand(child: Icon(CupertinoIcons.chart_bar_square))),
             ],
           ),
-          const Expanded(
-            child: TabBarView(
-              children: [
-                ProductDetailTabHistory(),
-                ProductDetailTabData(),
-              ],
-            ),
-          ),
+          const Expanded(child: TabBarView(children: [ProductDetailTabHistory(), ProductDetailTabData()])),
         ],
       ),
     );

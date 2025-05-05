@@ -8,7 +8,9 @@ import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   late Color primary;
   late Color secondary;
@@ -16,17 +18,17 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   late Color backgroundColor;
 
   StoreRepository storeRepository;
-  AppCubit baseCubit;
+  AppCubit appCubit;
 
-  String get storeName => baseCubit.store?.name ?? '';
-  Store? get store => baseCubit.store;
+  String get storeName => appCubit.store?.name ?? '';
+  Store? get store => appCubit.store;
 
   bool get hasChange =>
       primary != ColorKeys.primary ||
       secondary != ColorKeys.secondary ||
       accent != ColorKeys.accent ||
       backgroundColor != ColorKeys.brightness;
-  ThemeSettingCubit({required this.baseCubit, required this.storeRepository}) : super(ThemeSettingInitial()) {
+  ThemeSettingCubit({required this.appCubit, required this.storeRepository}) : super(ThemeSettingInitial()) {
     initColor();
   }
 
@@ -61,8 +63,8 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
     emit(ThemeSettingLoading());
     storeRepository.update(
       BaseRepoRequest(
-        storeId: baseCubit.storeId ?? '',
-        userId: baseCubit.userId ?? '',
+        storeId: appCubit.storeId ?? '',
+        userId: appCubit.userId ?? '',
         data:
             store!
               ..storeTheme = AppTheme(
@@ -79,7 +81,7 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
     ColorKeys.accent = accent;
     ColorKeys.brightness = backgroundColor;
     emit(ThemeSettingSuccess());
-    baseCubit.refresh();
+    appCubit.refresh();
   }
 
   void reset() {

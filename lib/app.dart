@@ -30,16 +30,16 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late StreamSubscription<List<ConnectivityResult>> subscription;
-  final baseCubit = GetIt.I.get<AppCubit>();
+  final appCubit = GetIt.I.get<AppCubit>();
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      baseCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
+      appCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
       subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
         if (result.contains(ConnectivityResult.none)) {
-          baseCubit.changeMode(AppMode.local);
+          appCubit.changeMode(AppMode.local);
         } else {
-          baseCubit.changeMode(AppMode.server);
+          appCubit.changeMode(AppMode.server);
         }
       });
     });
@@ -57,7 +57,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    baseCubit.deviceSize = size;
+    appCubit.deviceSize = size;
 
     return ToastificationWrapper(
       child: MaterialApp(
@@ -89,16 +89,16 @@ class _AppState extends State<App> {
         navigatorObservers: [routeAware],
         routes: Routes.values,
         home: BlocListener<AppCubit, AppState>(
-          bloc: baseCubit,
+          bloc: appCubit,
           listener: (context, state) {
             log('[CUBIT][BASE] state : $state');
           },
           child: BlocBuilder<AppCubit, AppState>(
-            bloc: baseCubit,
+            bloc: appCubit,
             builder: (context, state) {
               return Stack(
                 children: [
-                  baseCubit.user == null ? const LoginPage() : const MainPage(),
+                  appCubit.user == null ? const LoginPage() : const MainPage(),
                   // if (state is BaseLoading)
                   //   Container(
                   //     width: double.infinity,
@@ -111,7 +111,7 @@ class _AppState extends State<App> {
                   //     ),
                   //   ),
                   AnimatedPositioned(
-                    duration: baseCubit.durationAddCart,
+                    duration: appCubit.durationAddCart,
                     top: state is AppAddCartSuccess ? 35 : size.height,
                     right: state is AppAddCartSuccess ? 20 : (size.width - 100),
                     child:

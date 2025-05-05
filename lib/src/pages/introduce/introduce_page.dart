@@ -4,15 +4,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_state.dart';
 import 'package:ez_shop_sync/src/pages/introduce/widgets/step_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_state.dart';
-import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
@@ -30,8 +27,7 @@ class IntroduceFlowPage extends StatefulWidget {
 }
 
 class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
-  late IntroduceCubit cubit;
-  late AppCubit baseCubit;
+  final _cubit = GetIt.I<IntroduceCubit>();
   final _introKey = GlobalKey<IntroductionScreenState>();
   final _firstNameFocusNode = FocusNode();
   final _lastNameFocusNode = FocusNode();
@@ -44,13 +40,6 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   @override
   void initState() {
     super.initState();
-
-    baseCubit = BlocProvider.of<AppCubit>(context);
-    cubit = IntroduceCubit(
-      authRepository: GetIt.I<AuthRepository>(),
-      baseCubit: baseCubit,
-      localStorageService: GetIt.I<LocalStorageService>(),
-    );
   }
 
   TextStyle get buttonTextStyle => TextStyle(color: ColorKeys.primary);
@@ -63,28 +52,22 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => cubit,
-      child: BlocListener<IntroduceCubit, IntroduceState>(
-        listener: (context, state) async {
-          if (state is IntroduceSuccess) {
-            MainRouter(context).replace();
-          }
-        },
-        child: BlocBuilder<IntroduceCubit, IntroduceState>(
-          builder: (context, state) {
-            return BaseScaffolds(
-              appBar: AppBar(
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                backgroundColor: Colors.white,
-              ),
-              body: state is IntroduceSuccess
-                  ? Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      color: Colors.white,
-                    )
-                  : IntroductionScreen(
+    return BlocListener<IntroduceCubit, IntroduceState>(
+      bloc: _cubit,
+      listener: (context, state) async {
+        if (state is IntroduceSuccess) {
+          MainRouter(context).replace();
+        }
+      },
+      child: BlocBuilder<IntroduceCubit, IntroduceState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            appBar: AppBar(systemOverlayStyle: SystemUiOverlayStyle.dark, backgroundColor: Colors.white),
+            body:
+                state is IntroduceSuccess
+                    ? Container(height: double.infinity, width: double.infinity, color: Colors.white)
+                    : IntroductionScreen(
                       key: _introKey,
                       globalBackgroundColor: Colors.white,
                       scrollPhysics: const NeverScrollableScrollPhysics(),
@@ -98,8 +81,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 label: LocaleKeys.storeName.tr(),
                                 focusNode: _storeNameFocusNode,
-                                textInitial: cubit.storeName,
-                                onChanged: cubit.setStoreName,
+                                textInitial: _cubit.storeName,
+                                onChanged: _cubit.setStoreName,
                                 textInputAction: TextInputAction.next,
                                 hintText: LocaleKeys.yourStoreName.tr(),
                                 onFieldSubmitted: (value) {
@@ -109,12 +92,12 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 label: LocaleKeys.description.tr(),
                                 focusNode: _storeDescFocusNode,
-                                textInitial: cubit.storeName,
-                                onChanged: cubit.setStoreDesc,
+                                textInitial: _cubit.storeName,
+                                onChanged: _cubit.setStoreDesc,
                                 textInputAction: TextInputAction.done,
                                 hintText: LocaleKeys.yourStoreName.tr(),
                                 onFieldSubmitted: (value) {
-                                  if (cubit.enableNext) {
+                                  if (_cubit.enableNext) {
                                     _introKey.currentState?.next();
                                   }
                                 },
@@ -131,9 +114,9 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 label: LocaleKeys.introducePage_firstName.tr(),
                                 focusNode: _firstNameFocusNode,
-                                textInitial: cubit.firstName,
+                                textInitial: _cubit.firstName,
                                 hintText: LocaleKeys.introducePage_yourFirstName.tr(),
-                                onChanged: cubit.setFirstName,
+                                onChanged: _cubit.setFirstName,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
                                   FocusScope.of(context).requestFocus(_lastNameFocusNode);
@@ -142,8 +125,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 label: LocaleKeys.introducePage_lastName.tr(),
                                 focusNode: _lastNameFocusNode,
-                                textInitial: cubit.lastName,
-                                onChanged: cubit.setLastName,
+                                textInitial: _cubit.lastName,
+                                onChanged: _cubit.setLastName,
                                 hintText: LocaleKeys.introducePage_yourLastName.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
@@ -153,8 +136,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 focusNode: _emailFocusNode,
                                 label: LocaleKeys.email.tr(),
-                                textInitial: cubit.email,
-                                onChanged: cubit.setEmail,
+                                textInitial: _cubit.email,
+                                onChanged: _cubit.setEmail,
                                 hintText: LocaleKeys.introducePage_yourEmail.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
@@ -164,12 +147,12 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                               TextFormFieldUiWidget(
                                 focusNode: _phoneNumber,
                                 label: LocaleKeys.phoneNumber.tr(),
-                                textInitial: cubit.phoneNumber,
-                                onChanged: cubit.setPhoneNumber,
+                                textInitial: _cubit.phoneNumber,
+                                onChanged: _cubit.setPhoneNumber,
                                 hintText: LocaleKeys.introducePage_yourPhoneNumber.tr(),
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
-                                  if (cubit.enableNext) {
+                                  if (_cubit.enableNext) {
                                     _introKey.currentState?.next();
                                   }
                                 },
@@ -183,46 +166,23 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                             number: 3,
                             title: 'Check your infomation',
                             children: [
-                              Text(
-                                'Store Name : ${cubit.storeName}',
-                                style: labelInfomationTextStyle,
-                              ),
-                              const SizedBox(
-                                height: DimensionsKeys.m,
-                              ),
-                              Text(
-                                'First Name : ${cubit.firstName}',
-                                style: labelInfomationTextStyle,
-                              ),
-                              const SizedBox(
-                                height: DimensionsKeys.m,
-                              ),
-                              Text(
-                                'Last Name : ${cubit.lastName}',
-                                style: labelInfomationTextStyle,
-                              ),
-                              const SizedBox(
-                                height: DimensionsKeys.m,
-                              ),
-                              Text(
-                                'Email : ${cubit.email}',
-                                style: labelInfomationTextStyle,
-                              ),
-                              const SizedBox(
-                                height: DimensionsKeys.m,
-                              ),
-                              Text(
-                                'Phone number : ${cubit.phoneNumber}',
-                                style: labelInfomationTextStyle,
-                              ),
+                              Text('Store Name : ${_cubit.storeName}', style: labelInfomationTextStyle),
+                              const SizedBox(height: DimensionsKeys.m),
+                              Text('First Name : ${_cubit.firstName}', style: labelInfomationTextStyle),
+                              const SizedBox(height: DimensionsKeys.m),
+                              Text('Last Name : ${_cubit.lastName}', style: labelInfomationTextStyle),
+                              const SizedBox(height: DimensionsKeys.m),
+                              Text('Email : ${_cubit.email}', style: labelInfomationTextStyle),
+                              const SizedBox(height: DimensionsKeys.m),
+                              Text('Phone number : ${_cubit.phoneNumber}', style: labelInfomationTextStyle),
                             ],
                           ),
                         ),
                       ],
-                      showBackButton: cubit.currentStep != 0,
+                      showBackButton: _cubit.currentStep != 0,
                       showDoneButton: true,
                       showSkipButton: false,
-                      showNextButton: cubit.currentStep != 2,
+                      showNextButton: _cubit.currentStep != 2,
                       back: ButtonWidget(
                         label: LocaleKeys.button_back.tr(),
                         onPressed: () {
@@ -235,17 +195,18 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                           final result = await PinSetupRouter(context).navigate();
 
                           if (result is PinSetupAllSuccess) {
-                            cubit.doSubmit();
+                            _cubit.doSubmit();
                           }
                         },
                       ),
                       next: ButtonWidget(
                         label: LocaleKeys.button_next.tr(),
-                        onPressed: cubit.enableNext
-                            ? () {
-                                _introKey.currentState?.next();
-                              }
-                            : null,
+                        onPressed:
+                            _cubit.enableNext
+                                ? () {
+                                  _introKey.currentState?.next();
+                                }
+                                : null,
                       ),
                       // overrideBack: ButtonWidget(
                       //   label: 'Back',
@@ -260,7 +221,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                       //   onPressed: () {},
                       // ),
                       onChange: (value) {
-                        cubit.onStepChange(value);
+                        _cubit.onStepChange(value);
                       },
                       onDone: () {
                         log('onDone Click');
@@ -274,9 +235,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                         activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
                       ),
                     ),
-            );
-          },
-        ),
+          );
+        },
       ),
     );
   }

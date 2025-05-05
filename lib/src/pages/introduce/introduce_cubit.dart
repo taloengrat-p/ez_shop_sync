@@ -3,7 +3,9 @@ import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class IntroduceCubit extends Cubit<IntroduceState> {
   int currentStep = 0;
   String storeName = '';
@@ -13,9 +15,9 @@ class IntroduceCubit extends Cubit<IntroduceState> {
   String email = '';
   String _phoneNumber = '';
 
-  AppCubit baseCubit;
-  AuthRepository authRepository;
-  LocalStorageService localStorageService;
+  final AppCubit appCubit;
+  final AuthRepository authRepository;
+  final LocalStorageService localStorageService;
 
   String get phoneNumber => _phoneNumber;
 
@@ -31,11 +33,8 @@ class IntroduceCubit extends Cubit<IntroduceState> {
     return true;
   }
 
-  IntroduceCubit({
-    required this.authRepository,
-    required this.baseCubit,
-    required this.localStorageService,
-  }) : super(IntroduceInitial());
+  IntroduceCubit({required this.authRepository, required this.appCubit, required this.localStorageService})
+    : super(IntroduceInitial());
 
   void onStepChange(int value) {
     currentStep = value;

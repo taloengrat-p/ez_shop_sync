@@ -10,19 +10,22 @@ import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
+@Singleton()
 class CreateTagCubit extends Cubit<CreateTagState> {
+  final AppCubit appCubit;
+  final StoreRepository storeRepository;
+  final TagRepository tagRepository;
+
   String name = '';
   Color backgroundColor = Colors.white;
   Color borderColor = Colors.white;
-  AppCubit baseCubit;
-  StoreRepository storeRepository;
-  TagRepository tagRepository;
 
-  Store? get currentStore => baseCubit.store;
+  Store? get currentStore => appCubit.store;
 
-  CreateTagCubit({required this.storeRepository, required this.baseCubit, required this.tagRepository})
+  CreateTagCubit({required this.storeRepository, required this.appCubit, required this.tagRepository})
     : super(CreateTagInitial());
 
   setName(String? value) {
@@ -41,8 +44,8 @@ class CreateTagCubit extends Cubit<CreateTagState> {
     final tagId = const Uuid().v1();
     final tagCreated = await tagRepository.create(
       BaseRepoRequest(
-        storeId: baseCubit.storeId ?? '',
-        userId: baseCubit.userId ?? '',
+        storeId: appCubit.storeId ?? '',
+        userId: appCubit.userId ?? '',
         data: Tag(id: tagId, name: name, color: backgroundColor.toHex(), borderColor: borderColor.toHex()),
       ),
     );
@@ -51,15 +54,15 @@ class CreateTagCubit extends Cubit<CreateTagState> {
       success: (tagResponse) async {
         final storeUpdated = await storeRepository.update(
           BaseRepoRequest(
-            storeId: baseCubit.storeId ?? '',
-            userId: baseCubit.userId ?? '',
+            storeId: appCubit.storeId ?? '',
+            userId: appCubit.userId ?? '',
             data: currentStore!..tags?.add(tagCreated.response?.id),
           ),
         );
 
         storeUpdated.when(
           success: (response) {
-            baseCubit.loadTagsByCurrentStore();
+            appCubit.loadTagsByCurrentStore();
             log('storeUpdated ${storeUpdated.response?.tags}');
             emit(CreateTagSuccess(tagResponse));
           },

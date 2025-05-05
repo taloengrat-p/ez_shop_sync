@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/transaction/transaction_cubit.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
@@ -25,15 +24,11 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  late TransactionCubit cubit;
+  final cubit = GetIt.I<TransactionCubit>();
   @override
   void initState() {
     super.initState();
     log('[init]', name: runtimeType.toString());
-
-    cubit = TransactionCubit(
-      baseCubit: GetIt.I<AppCubit>(),
-    );
   }
 
   @override
@@ -45,11 +40,7 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffolds(
-      appBar: AppbarWidget(
-        context,
-        title: cubit.baseCubit.store?.name,
-        centerTitle: false,
-      ).build(),
+      appBar: AppbarWidget(context, title: cubit.appCubit.store?.name, centerTitle: false).build(),
       body: Stack(
         children: [
           buildBody(),
@@ -58,10 +49,7 @@ class _TransactionPageState extends State<TransactionPage> {
             child: Container(
               width: double.infinity,
               margin: const EdgeInsets.only(bottom: 28),
-              child: const CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 36,
-              ),
+              child: const CircleAvatar(backgroundColor: Colors.white, radius: 36),
             ),
           ),
         ],
@@ -83,16 +71,11 @@ class _TransactionPageState extends State<TransactionPage> {
                 axis: Axis.vertical,
                 isLabelUpperCase: false,
                 backgroundColor: ColorKeys.primary,
-                icon: const Icon(
-                  Icons.history_rounded,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.history_rounded, color: Colors.white),
                 onPressed: () {},
               ),
             ),
-            const SizedBox(
-              width: 8,
-            ),
+            const SizedBox(width: 8),
             Expanded(
               child: ButtonWidget(
                 label: 'Create Invoice',
@@ -100,10 +83,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 axis: Axis.vertical,
                 isLabelUpperCase: false,
                 backgroundColor: ColorKeys.primary,
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.add, color: Colors.white),
                 onPressed: onCreateInvoice,
               ),
             ),
@@ -116,21 +96,9 @@ class _TransactionPageState extends State<TransactionPage> {
 
   Future<void> onCreateInvoice() async {
     final items = [
-      const BottomMenuItem(
-        label: 'Camera',
-        leading: Icon(Icons.photo_camera),
-        value: 1,
-      ),
-      const BottomMenuItem(
-        label: 'Photo Gallary',
-        leading: Icon(Icons.photo),
-        value: 2,
-      ),
-      const BottomMenuItem(
-        label: 'Product in Stock',
-        leading: Icon(CupertinoIcons.cube_box),
-        value: 3,
-      ),
+      const BottomMenuItem(label: 'Camera', leading: Icon(Icons.photo_camera), value: 1),
+      const BottomMenuItem(label: 'Photo Gallary', leading: Icon(Icons.photo), value: 2),
+      const BottomMenuItem(label: 'Product in Stock', leading: Icon(CupertinoIcons.cube_box), value: 3),
     ];
     final result = await BottomSheetUtils.showDragable(
       context,
@@ -141,11 +109,7 @@ class _TransactionPageState extends State<TransactionPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ...items.map(
-              (e) => e,
-            )
-          ],
+          children: <Widget>[...items.map((e) => e)],
         ),
       ),
     );

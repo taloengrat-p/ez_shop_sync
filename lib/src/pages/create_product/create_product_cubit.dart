@@ -15,11 +15,13 @@ import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart'
 import 'package:ez_shop_sync/src/utils/folder_file_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
+@Singleton()
 class CreateProductCubit extends Cubit<CreateProductState> {
-  ProductRepository productRepository;
-  AppCubit appCubit;
+  final ProductRepository productRepository;
+  final AppCubit appCubit;
   //
   ScreenMode _screenMode = ScreenMode.create;
 
@@ -50,9 +52,9 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     _productEditor = Product(
       id: '',
       name: '',
-      storeId: currentStore!.id,
+      storeId: currentStore?.id ?? '',
       status: ProductStatus.undefined,
-      ownerId: currentStore!.ownerId,
+      ownerId: currentStore?.ownerId ?? '',
       attributes: {},
       productTypeList: [],
     );

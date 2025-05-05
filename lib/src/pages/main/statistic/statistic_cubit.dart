@@ -1,7 +1,6 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
@@ -11,13 +10,16 @@ import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton()
 class StatisticCubit extends Cubit<StatisticState> {
+  final AppCubit appCubit;
+  final CategoryRepository categoryRepository;
+  final OrderRepository orderRepository;
+  final TransactionRepository transactionRepository;
+
   DateTime _dateTimeSelected = DateTime.now();
-  CategoryRepository categoryRepository;
-  OrderRepository orderRepository;
-  TransactionRepository transactionRepository;
-  AppCubit baseCubit;
   PeriodType periodType = PeriodType.week;
 
   List<DateTime> get dateTime =>
@@ -49,7 +51,7 @@ class StatisticCubit extends Cubit<StatisticState> {
   StatisticCubit({
     required this.categoryRepository,
     required this.orderRepository,
-    required this.baseCubit,
+    required this.appCubit,
     required this.transactionRepository,
   }) : super(StatisticInitial());
 
@@ -126,7 +128,7 @@ class StatisticCubit extends Cubit<StatisticState> {
 
   initialize() async {
     final result = await orderRepository.getAllBetween(
-      baseCubit.store?.id ?? '',
+      appCubit.store?.id ?? '',
       start:
           periodType == PeriodType.week
               ? DateTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, 0, 0, 0, 0)
@@ -144,7 +146,7 @@ class StatisticCubit extends Cubit<StatisticState> {
     result.when(
       success: (response) async {
         _ordered = response;
-        final transactionResult = await transactionRepository.getAllByStoreId(baseCubit.store?.id ?? '');
+        final transactionResult = await transactionRepository.getAllByStoreId(appCubit.store?.id ?? '');
 
         transactionResult.when(
           success: (response) {
