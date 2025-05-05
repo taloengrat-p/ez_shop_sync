@@ -1,5 +1,5 @@
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +13,7 @@ class IntroduceCubit extends Cubit<IntroduceState> {
   String email = '';
   String _phoneNumber = '';
 
-  BaseCubit baseCubit;
+  AppCubit baseCubit;
   AuthRepository authRepository;
   LocalStorageService localStorageService;
 

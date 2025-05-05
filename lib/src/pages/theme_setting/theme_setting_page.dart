@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
@@ -36,7 +36,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
     super.initState();
 
     _cubit = ThemeSettingCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
       storeRepository: GetIt.I<StoreRepository>(),
     );
 
@@ -80,7 +80,7 @@ class _ThemeSettingState extends State<ThemeSettingPage> {
                     child: Text(
                       'Reset',
                       style: TextStyle(
-                        color: GetIt.I<BaseCubit>().appTheme?.primaryColor.toColor().getContrast(),
+                        color: GetIt.I<AppCubit>().appTheme?.primaryColor.toColor().getContrast(),
                       ),
                     ),
                   )

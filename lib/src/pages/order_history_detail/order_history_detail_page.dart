@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
@@ -35,7 +35,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
     super.initState();
     _cubit = OrderHistoryDetailCubit(
       orderRepository: GetIt.I<OrderRepository>(),
-      baseCubit: BlocProvider.of<BaseCubit>(context),
+      baseCubit: BlocProvider.of<AppCubit>(context),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

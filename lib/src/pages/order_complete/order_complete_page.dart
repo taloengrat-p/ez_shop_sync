@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_cubit.dart';
@@ -31,7 +31,7 @@ class _OrderCompleteState extends State<OrderCompletePage> {
   void initState() {
     super.initState();
     _cubit = OrderCompleteCubit(
-      baseCubit: BlocProvider.of<BaseCubit>(context),
+      baseCubit: BlocProvider.of<AppCubit>(context),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

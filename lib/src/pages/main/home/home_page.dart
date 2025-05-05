@@ -1,5 +1,5 @@
 
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_cubit.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     cubit = HomeCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
   }
 
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: GetIt.I<BaseCubit>(),
+      bloc: GetIt.I<AppCubit>(),
       builder: (context, state) {
         return BaseScaffolds(
           enableAppModeDisplay: false,

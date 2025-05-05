@@ -4,8 +4,8 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_cubit.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/profile_settings/profile_settings_state.dart';
@@ -33,13 +33,13 @@ class ProfileSettingsPage extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettingsPage> {
   late ProfileSettingsCubit _cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
   @override
   void initState() {
-    baseCubit = GetIt.I<BaseCubit>();
+    baseCubit = GetIt.I<AppCubit>();
     _cubit = ProfileSettingsCubit(
       userRepository: GetIt.I<UserRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
 
     super.initState();
@@ -61,14 +61,14 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
         BlocProvider<ProfileSettingsCubit>(
           create: (context) => _cubit,
         ),
-        BlocProvider<BaseCubit>(
-          create: (context) => GetIt.I<BaseCubit>(),
+        BlocProvider<AppCubit>(
+          create: (context) => GetIt.I<AppCubit>(),
         ),
       ],
-      child: BlocConsumer<BaseCubit, BaseState>(
-          bloc: GetIt.I<BaseCubit>(),
+      child: BlocConsumer<AppCubit, AppState>(
+          bloc: GetIt.I<AppCubit>(),
           listener: (context, state) {
-            if (state is BaseUserChange) {
+            if (state is AppUserChange) {
               _cubit.refresh();
             }
           },

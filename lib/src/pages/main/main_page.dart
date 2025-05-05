@@ -4,13 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
-import 'package:ez_shop_sync/src/pages/introduce/introduce_page.dart';
-import 'package:ez_shop_sync/src/pages/introduce/introduce_router.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
@@ -39,18 +36,14 @@ class _MainPageState extends State<MainPage> {
   late CircularBottomNavigationController _navigationController;
   late PageController _pageController;
   late MainCubit _cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
 
   @override
   void initState() {
     super.initState();
-    baseCubit = BlocProvider.of<BaseCubit>(context);
-    _cubit = MainCubit(
-      baseCubit: baseCubit,
-      userRepository: GetIt.I<UserRepository>(),
-    );
-    _navigationController =
-        CircularBottomNavigationController(_cubit.currentPage);
+    baseCubit = BlocProvider.of<AppCubit>(context);
+    _cubit = MainCubit(baseCubit: baseCubit, userRepository: GetIt.I<UserRepository>());
+    _navigationController = CircularBottomNavigationController(_cubit.currentPage);
 
     _pageController = PageController(initialPage: _cubit.currentPage);
 
@@ -70,9 +63,7 @@ class _MainPageState extends State<MainPage> {
       child: BlocListener<MainCubit, MainState>(
         listener: (context, state) {
           if (state is MainGotoIntroduceFlow) {
-            CreateStoreRouter(context).pushNamedAndRemoveUntil(
-              argruments: const CreateStoreArgrument(true),
-            );
+            CreateStoreRouter(context).pushNamedAndRemoveUntil(argruments: const CreateStoreArgrument(true));
           }
         },
         child: BlocBuilder<MainCubit, MainState>(
@@ -81,79 +72,66 @@ class _MainPageState extends State<MainPage> {
               enableAppModeDisplay: true,
               isLoading: state is MainLoading,
               backgroundColor: Colors.white,
-              appBar: AppbarWidget(
-                context,
-                color: Colors.transparent,
-                titleWidget: Row(
-                  children: [
-                    Expanded(
-                      child: ProfileWidget(
-                        name: _cubit.username ?? '',
+              appBar:
+                  AppbarWidget(
+                    context,
+                    color: Colors.transparent,
+                    titleWidget: Row(children: [Expanded(child: ProfileWidget(name: _cubit.username ?? ''))]),
+                    actions: [
+                      ContainerCircleWidget(
+                        onPressed: null,
+                        child:
+                            _cubit.baseCubit.addProductCount != 0
+                                ? Badge.count(
+                                  count: _cubit.baseCubit.addProductCount,
+                                  child: const Icon(CupertinoIcons.bag_badge_plus),
+                                )
+                                : const Icon(CupertinoIcons.bag_badge_plus),
+                        //  () {
+                        //   AddProductRouter(context).navigate();
+                        // },
                       ),
-                    ),
-                  ],
-                ),
-                actions: [
-                  ContainerCircleWidget(
-                    onPressed: null,
-                    child: _cubit.baseCubit.addProductCount != 0
-                        ? Badge.count(
-                            count: _cubit.baseCubit.addProductCount,
-                            child: const Icon(CupertinoIcons.bag_badge_plus),
-                          )
-                        : const Icon(
-                            CupertinoIcons.bag_badge_plus,
-                          ),
-                    //  () {
-                    //   AddProductRouter(context).navigate();
-                    // },
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  BlocBuilder(
-                    bloc: GetIt.I<BaseCubit>(),
-                    builder: (context, state) {
-                      return ContainerCircleWidget(
-                        child: _cubit.baseCubit.cartCount != 0
-                            ? Badge.count(
-                                count: _cubit.baseCubit.cartCount,
-                                child: const Icon(CupertinoIcons.cart),
-                              )
-                            : const Icon(CupertinoIcons.cart),
-                        onPressed: () {
-                          CartRouter(context).navigate();
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  BlocBuilder(
-                    bloc: GetIt.I<BaseCubit>(),
-                    builder: (context, state) {
-                      return ContainerCircleWidget(
-                        child: _cubit.baseCubit.notification.isNotEmpty
-                            ? Badge.count(
-                                count: _cubit.baseCubit.notification.length,
-                                child: const Icon(CupertinoIcons.bell),
-                              )
-                            : const Icon(CupertinoIcons.bell),
-                        onPressed: () {
-                          NotificationRouter(context).navigate(
-                            argruments: NotificationArgrument(
-                                _cubit.baseCubit.notification),
+                      const SizedBox(width: 8),
+                      BlocBuilder(
+                        bloc: GetIt.I<AppCubit>(),
+                        builder: (context, state) {
+                          return ContainerCircleWidget(
+                            child:
+                                _cubit.baseCubit.cartCount != 0
+                                    ? Badge.count(
+                                      count: _cubit.baseCubit.cartCount,
+                                      child: const Icon(CupertinoIcons.cart),
+                                    )
+                                    : const Icon(CupertinoIcons.cart),
+                            onPressed: () {
+                              CartRouter(context).navigate();
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                ],
-              ).build(),
+                      ),
+                      const SizedBox(width: 8),
+                      BlocBuilder(
+                        bloc: GetIt.I<AppCubit>(),
+                        builder: (context, state) {
+                          return ContainerCircleWidget(
+                            child:
+                                _cubit.baseCubit.notification.isNotEmpty
+                                    ? Badge.count(
+                                      count: _cubit.baseCubit.notification.length,
+                                      child: const Icon(CupertinoIcons.bell),
+                                    )
+                                    : const Icon(CupertinoIcons.bell),
+                            onPressed: () {
+                              NotificationRouter(
+                                context,
+                              ).navigate(argruments: NotificationArgrument(_cubit.baseCubit.notification));
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ).build(),
               body: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -164,12 +142,7 @@ class _MainPageState extends State<MainPage> {
                       _navigationController.value = value;
                       _cubit.setCurrentPageView(value);
                     },
-                    children: const [
-                      HomePage(),
-                      ProductPage(),
-                      StatisticPage(),
-                      MorePage(),
-                    ],
+                    children: const [HomePage(), ProductPage(), StatisticPage(), MorePage()],
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
@@ -180,18 +153,14 @@ class _MainPageState extends State<MainPage> {
                           LocaleKeys.home.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
-                          labelStyle: TextStyle(
-                            color: ColorKeys.primary,
-                          ),
+                          labelStyle: TextStyle(color: ColorKeys.primary),
                         ),
                         TabItem(
                           CupertinoIcons.bag,
                           LocaleKeys.products.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
-                          labelStyle: TextStyle(
-                            color: ColorKeys.primary,
-                          ),
+                          labelStyle: TextStyle(color: ColorKeys.primary),
                         ),
                         // TabItem(
                         //   CupertinoIcons.money_dollar_circle,
@@ -204,21 +173,17 @@ class _MainPageState extends State<MainPage> {
                         // ),
                         TabItem(
                           CupertinoIcons.chart_bar_square,
-                          LocaleKeys.statistic.tr(),
+                          LocaleKeys.statistic_title.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
-                          labelStyle: TextStyle(
-                            color: ColorKeys.primary,
-                          ),
+                          labelStyle: TextStyle(color: ColorKeys.primary),
                         ),
                         TabItem(
                           Icons.menu_rounded,
                           LocaleKeys.menu.tr(),
                           ColorKeys.white,
                           circleStrokeColor: ColorKeys.primary,
-                          labelStyle: TextStyle(
-                            color: ColorKeys.primary,
-                          ),
+                          labelStyle: TextStyle(color: ColorKeys.primary),
                         ),
                       ],
                       circleStrokeWidth: 1.5,
@@ -234,13 +199,15 @@ class _MainPageState extends State<MainPage> {
                         if ((selectedPos - _cubit.currentPage).abs() > 1) {
                           _pageController.jumpToPage(selectedPos);
                         } else {
-                          _pageController.animateToPage(selectedPos,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.linear);
+                          _pageController.animateToPage(
+                            selectedPos,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.linear,
+                          );
                         }
                       },
                     ),
-                  )
+                  ),
                 ],
               ),
             );

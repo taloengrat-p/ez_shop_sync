@@ -9,7 +9,7 @@ import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
@@ -43,7 +43,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartState extends State<CartPage> {
-  late CartCubit _cubit;
+  final _cubit = GetIt.I.get<CartCubit>();
   final _listViewController = ScrollController();
   final _scrollViewController = ScrollController();
   final _receiveAmountController = TextEditingController();
@@ -69,12 +69,6 @@ class _CartState extends State<CartPage> {
     super.initState();
 
     _listViewController.addListener(_onScroll);
-    _cubit = CartCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
-      cartRepository: GetIt.I<CartRepository>(),
-      orderRepository: GetIt.I<OrderRepository>(),
-      productRepository: GetIt.I<ProductRepository>(),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
       _cubit.initial();
@@ -85,13 +79,13 @@ class _CartState extends State<CartPage> {
   }
 
   checkCanScroll() {
-    if (_cubit.products.isEmpty) {
+    if (_cubit.products.isEmpty || _listViewController.positions.isEmpty) {
       return;
     }
     final maxScrollExtent = _listViewController.position.maxScrollExtent;
     final minScrollExtent = _listViewController.position.minScrollExtent;
 
-    final canScroll = maxScrollExtent > minScrollExtent;
+    final canScroll = maxScrollExtent >= minScrollExtent;
 
     // log('canScroll $canScroll, maxScrollExtent $maxScrollExtent, minScrollExtent $minScrollExtent');
     if (canScroll != _canScroll) {

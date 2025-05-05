@@ -8,24 +8,13 @@ class ApiResult<T> {
   final T? response;
   final Object? error;
   final AppErrorType? appErrorType;
-  ApiResult({
-    this.response,
-    this.error,
-    this.appErrorType,
-  });
+  ApiResult({this.response, this.error, this.appErrorType});
 
-  when({
-    required Function(T response) success,
-    required Function(ApiError error) failure,
-  }) {
+  when({required Function(T response) success, Function(ApiError error)? failure}) {
     if (response != null && response is T) {
       success.call(response as T);
-    }
-
-    if (error != null) {
-      failure.call(
-        ApiError(error: error, errorType: appErrorType ?? AppErrorType.somethingWentWrong),
-      );
+    } else {
+      failure?.call(ApiError(error: error, errorType: appErrorType ?? AppErrorType.somethingWentWrong));
     }
   }
 }
@@ -33,8 +22,5 @@ class ApiResult<T> {
 class ApiError {
   final Object? error;
   final AppErrorType errorType;
-  const ApiError({
-    this.error,
-    required this.errorType,
-  });
+  const ApiError({this.error, required this.errorType});
 }

@@ -1,11 +1,19 @@
 flavors:
   dev:
     app:
-      name: "Ez Shop Sync -DEV"
+      name: "Ez Shop Sync-DEV"
     android:
       applicationId: "com.taloengratp.ezshopsync.dev"
     ios:
       bundleId: "com.taloengratp.ezshopsync.dev"
+
+  stg:
+    app:
+      name: "Ez Shop Sync-STG"
+    android:
+      applicationId: "com.taloengratp.ezshopsync.stg"
+    ios:
+      bundleId: "com.taloengratp.ezshopsync.stg"
 
   prod:
     app:

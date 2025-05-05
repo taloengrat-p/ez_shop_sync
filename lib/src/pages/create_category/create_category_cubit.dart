@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
-  final BaseCubit baseCubit;
+  final AppCubit baseCubit;
   final CategoryRepository categoryRepository;
   final StoreRepository storeRepository;
 
@@ -23,11 +24,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   Store? get currentStore => baseCubit.store;
 
-  CreateCategoryCubit({
-    required this.baseCubit,
-    required this.categoryRepository,
-    required this.storeRepository,
-  }) : super(CreateCategoryInitial());
+  CreateCategoryCubit({required this.baseCubit, required this.categoryRepository, required this.storeRepository})
+    : super(CreateCategoryInitial());
 
   setName(String? value) {
     name = value?.trim() ?? '';
@@ -43,23 +41,40 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(CreateCategoryLoading());
 
     final tagId = const Uuid().v1();
-    final tagCreated = await categoryRepository.create(Category(
-      id: tagId,
-      name: name,
-      parentId: null,
-      // iconData: iconData != null ? serializeIcon(iconData!) : null,
-      color: backgroundColor.toHex(),
-      borderColor: borderColor.toHex(),
-    ));
-
-    final storeUpdated = await storeRepository.update(
-      currentStore!.id,
-      currentStore!..categories?.add(tagCreated.id),
+    final tagCreated = await categoryRepository.create(
+      BaseRepoRequest(
+        storeId: baseCubit.storeId ?? '',
+        userId: baseCubit.userId ?? '',
+        data: Category(
+          id: tagId,
+          name: name,
+          parentId: null,
+          // iconData: iconData != null ? serializeIcon(iconData!) : null,
+          color: backgroundColor.toHex(),
+          borderColor: borderColor.toHex(),
+        ),
+      ),
     );
 
-    baseCubit.loadCategoryByCurrentStore();
-    log('storeUpdated ${storeUpdated.tags}');
-    emit(CreateCategorySuccess(tagCreated));
+    tagCreated.when(
+      success: (tagResponse) async {
+        final storeUpdated = await storeRepository.update(
+          BaseRepoRequest(
+            storeId: baseCubit.storeId ?? '',
+            userId: baseCubit.userId ?? '',
+            data: currentStore!..categories?.add(tagResponse.id),
+          ),
+        );
+
+        storeUpdated.when(
+          success: (response) {
+            baseCubit.loadCategoryByCurrentStore();
+            log('storeUpdated ${response.tags}');
+            emit(CreateCategorySuccess(tagResponse));
+          },
+        );
+      },
+    );
   }
 
   setBorderColor(Color value) {

@@ -1,7 +1,8 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
@@ -15,7 +16,7 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   late Color backgroundColor;
 
   StoreRepository storeRepository;
-  BaseCubit baseCubit;
+  AppCubit baseCubit;
 
   String get storeName => baseCubit.store?.name ?? '';
   Store? get store => baseCubit.store;
@@ -25,10 +26,7 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
       secondary != ColorKeys.secondary ||
       accent != ColorKeys.accent ||
       backgroundColor != ColorKeys.brightness;
-  ThemeSettingCubit({
-    required this.baseCubit,
-    required this.storeRepository,
-  }) : super(ThemeSettingInitial()) {
+  ThemeSettingCubit({required this.baseCubit, required this.storeRepository}) : super(ThemeSettingInitial()) {
     initColor();
   }
 
@@ -62,14 +60,18 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   doSaveAppTheme() {
     emit(ThemeSettingLoading());
     storeRepository.update(
-      store!.id,
-      store!
-        ..storeTheme = AppTheme(
-          primaryColor: primary.toHex(),
-          secondaryColor: secondary.toHex(),
-          accentColor: accent.toHex(),
-          backgroundColor: backgroundColor.toHex(),
-        ),
+      BaseRepoRequest(
+        storeId: baseCubit.storeId ?? '',
+        userId: baseCubit.userId ?? '',
+        data:
+            store!
+              ..storeTheme = AppTheme(
+                primaryColor: primary.toHex(),
+                secondaryColor: secondary.toHex(),
+                accentColor: accent.toHex(),
+                backgroundColor: backgroundColor.toHex(),
+              ),
+      ),
     );
 
     ColorKeys.primary = primary;

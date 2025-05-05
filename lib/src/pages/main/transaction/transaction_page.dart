@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/transaction/transaction_cubit.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
@@ -32,7 +32,7 @@ class _TransactionPageState extends State<TransactionPage> {
     log('[init]', name: runtimeType.toString());
 
     cubit = TransactionCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
   }
 

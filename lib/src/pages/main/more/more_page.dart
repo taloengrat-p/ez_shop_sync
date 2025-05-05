@@ -8,8 +8,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart'
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/login/login_router.dart';
@@ -52,7 +52,7 @@ class MorePage extends StatefulWidget {
 
 class _MorePageState extends State<MorePage> {
   late MoreCubit _cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _MorePageState extends State<MorePage> {
     super.initState();
 
     _cubit = MoreCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
       localStorageService: GetIt.I<LocalStorageService>(),
       authRepository: GetIt.I<AuthRepository>(),
       userRepository: GetIt.I<UserRepository>(),
@@ -118,7 +118,7 @@ class _MorePageState extends State<MorePage> {
             return BaseScaffolds(
               enableAppModeDisplay: false,
               backgroundColor: Colors.white,
-              isLoading: state is BaseLoading,
+              isLoading: state is AppLoading,
               appBar: AppbarWidget(
                 context,
                 centerTitle: false,

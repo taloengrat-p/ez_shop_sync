@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_cubit.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -25,11 +25,11 @@ class TransactionsChartDetailsPage extends StatefulWidget {
 
 class _TransactionsChartDetailsState extends State<TransactionsChartDetailsPage> {
   late TransactionsChartDetailsCubit _cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
   @override
   void initState() {
     super.initState();
-    baseCubit = GetIt.I<BaseCubit>();
+    baseCubit = GetIt.I<AppCubit>();
     _cubit = TransactionsChartDetailsCubit();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

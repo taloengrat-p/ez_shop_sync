@@ -9,8 +9,18 @@ import 'package:injectable/injectable.dart';
 class ProductLocalRepository extends BaseHiveRepository<String, Product> {
   ProductLocalRepository() : super(boxName: HiveBoxConstance.product);
 
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) {
-    return Future.value(ApiResult(response: getAll().where((e) => e.storeId == id).toList()));
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+    final allResult = await getAll();
+
+    allResult.when(
+      success: (response) {
+        return Future.value(ApiResult(response: response.where((e) => e.storeId == id).toList()));
+      },
+      failure: (error) {
+        return Future.value(ApiResult(error: error));
+      },
+    );
+    return Future.value(ApiResult(error: 'getAllByStoreId failure'));
   }
 
   updateQuantity(String id, Product product) {}

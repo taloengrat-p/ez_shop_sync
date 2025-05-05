@@ -1,10 +1,14 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
+// ignore_for_file: constant_identifier_names
+
 abstract class  LocaleKeys {
   static const locale = 'locale';
   static const createYourStoreName = 'createYourStoreName';
   static const storeSettings = 'storeSettings';
   static const menu = 'menu';
+  static const statistic_title = 'statistic.title';
+  static const statistic_emptyMessage = 'statistic.emptyMessage';
   static const statistic = 'statistic';
   static const transactions = 'transactions';
   static const products = 'products';
@@ -68,6 +72,7 @@ abstract class  LocaleKeys {
   static const notification_createSuccess = 'notification.createSuccess';
   static const notification_createSuccessSeeDetail = 'notification.createSuccessSeeDetail';
   static const notification_createNewPINTitle = 'notification.createNewPINTitle';
+  static const notification_emptyMessage = 'notification.emptyMessage';
   static const notification = 'notification';
   static const createPINTitle = 'createPINTitle';
   static const createPINDesc = 'createPINDesc';
@@ -194,5 +199,7 @@ abstract class  LocaleKeys {
   static const offline_desc = 'offline.desc';
   static const offline = 'offline';
   static const productType = 'productType';
+  static const notifications_title = 'notifications.title';
+  static const notifications = 'notifications';
 
 }

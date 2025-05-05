@@ -9,14 +9,16 @@ part of 'create_product_history_request.dart';
 CreateProductHistoryRequest _$CreateProductHistoryRequestFromJson(
         Map<String, dynamic> json) =>
     CreateProductHistoryRequest(
-      storeId: json['storeId'] as String,
+      storeId: json['storeId'] as String?,
       productTypeId: json['productTypeId'] as String?,
-      userId: json['userId'] as String,
+      userId: json['userId'] as String?,
       productId: json['productId'] as String,
-      event: $enumDecode(_$ProductHistoryEventEnumMap, json['event']),
+      data: $enumDecode(_$ProductHistoryEventEnumMap, json['data']),
       newData: json['newData'] as Map<String, dynamic>?,
       oldData: json['oldData'] as Map<String, dynamic>?,
-      info: BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       addStockId: json['addStockId'] as String?,
       orderId: json['orderId'] as String?,
     );
@@ -26,12 +28,12 @@ Map<String, dynamic> _$CreateProductHistoryRequestToJson(
     <String, dynamic>{
       'storeId': instance.storeId,
       'userId': instance.userId,
+      'info': instance.info?.toJson(),
+      'data': _$ProductHistoryEventEnumMap[instance.data]!,
       'productId': instance.productId,
       'productTypeId': instance.productTypeId,
-      'event': _$ProductHistoryEventEnumMap[instance.event]!,
       'oldData': instance.oldData,
       'newData': instance.newData,
-      'info': instance.info.toJson(),
       'orderId': instance.orderId,
       'addStockId': instance.addStockId,
     };

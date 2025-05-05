@@ -3,7 +3,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_cubit.dart';
@@ -37,7 +37,7 @@ class _TagManagementState extends State<TagManagementPage> {
   void initState() {
     super.initState();
     _cubit = TagManagementCubit(
-      baseCubit: GetIt.I<BaseCubit>(),
+      appCubit: GetIt.I<AppCubit>(),
       storeRepository: GetIt.I<StoreRepository>(),
     );
 

@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
@@ -32,7 +32,7 @@ class _LoginState extends State<LoginPage> {
     super.initState();
     _cubit = LoginCubit(
       authRepository: GetIt.I<AuthRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

@@ -6,85 +6,49 @@ import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_config.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_config.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
-import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
-import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 import 'app.dart';
+import 'firebase_options.dart';
 
 FutureOr<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await EasyLocalization.ensureInitialized();
 
   await initialHiveDB();
 
   await setupConfiguration();
-
   await GetIt.I<LocalStorageService>().init();
-
-  GetIt.instance.registerSingleton<BaseCubit>(
-    BaseCubit(
-      localStorageService: GetIt.I<LocalStorageService>(),
-      authLocalRepository: GetIt.I<AuthLocalRepository>(),
-      storeRepository: GetIt.I<StoreRepository>(),
-      productRepository: GetIt.I<ProductRepository>(),
-      navigationService: GetIt.I<NavigationService>(),
-      tagRepository: GetIt.I<TagRepository>(),
-      categoryRepository: GetIt.I<CategoryRepository>(),
-      cartRepository: GetIt.I<CartRepository>(),
-      userRepository: GetIt.I<UserRepository>(),
-      addProductRepository: GetIt.I<AddProductRepository>(),
-      notificationRepository: GetIt.I<NotificationRepository>(),
-    ),
-  );
 
   runApp(
     EasyLocalization(
       path: 'assets/translations',
       supportedLocales: const [ApplicationConstance.localeEN, ApplicationConstance.localeTH],
       fallbackLocale: ApplicationConstance.localeEN,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => GetIt.I<BaseCubit>(),
-          ),
-        ],
-        child: const App(),
-      ),
+      child: MultiBlocProvider(providers: [BlocProvider(create: (context) => GetIt.I<AppCubit>())], child: const App()),
     ),
   );
 }

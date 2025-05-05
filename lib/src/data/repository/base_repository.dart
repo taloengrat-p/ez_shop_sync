@@ -1,6 +1,6 @@
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 
-abstract class BaseRepository {
+abstract class BaseRepository<T> {
   AppMode _appMode = AppMode.local;
   AppMode get appMode => _appMode;
 

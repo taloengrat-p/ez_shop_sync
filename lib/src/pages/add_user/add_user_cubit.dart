@@ -1,14 +1,14 @@
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_state.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddUserCubit extends Cubit<AddUserState> {
   String email = '';
   final StoreServerRepository storeRepository;
-  final BaseCubit baseCubit;
+  final AppCubit baseCubit;
 
   List<RoleType>? roleSelected;
   AddUserCubit({

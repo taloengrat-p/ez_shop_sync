@@ -10,11 +10,12 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/local/product_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/server/product_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
@@ -24,27 +25,29 @@ import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
-abstract class IProductRepository {
-  List<Product> getAll({AppMode appMode = AppMode.local});
-  Future<ApiResult<Product>> getById(
-      {required String storeId,
-      required String productId,
-      AppMode appMode = AppMode.local});
-  Future<Product?> create(CreateProductRequest request);
-  Future<ApiResult<Product>> update(
-      String storeId, String productId, Product updated,
-      {AppMode appMode = AppMode.local});
-  Future<void> delete(String storeId, String id,
-      {AppMode appMode = AppMode.local});
-  Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id,
-      {AppMode appMode = AppMode.local});
-}
+// abstract class IProductRepository {
+//   List<Product> getAll({AppMode appMode = AppMode.local});
+//   Future<ApiResult<Product>> getById({
+//     required String storeId,
+//     required String productId,
+//     AppMode appMode = AppMode.local,
+//   });
+//   Future<Product?> create(CreateProductRequest request);
+//   Future<ApiResult<Product>> update(
+//     String storeId,
+//     String productId,
+//     Product updated, {
+//     AppMode appMode = AppMode.local,
+//   });
+//   Future<void> delete(String storeId, String id, {AppMode appMode = AppMode.local});
+//   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
+//   Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode appMode = AppMode.local});
+// }
 
 @Singleton()
 @Injectable()
-class ProductRepository implements IProductRepository {
-  String name = '';
+class ProductRepository extends IRepository<Product> {
+  String name = 'Product';
 
   ProductLocalRepository productLocalRepository;
   ProductServerRepository productServerRepository;
@@ -56,66 +59,62 @@ class ProductRepository implements IProductRepository {
     required this.productServerRepository,
     required this.productHistoryRepository,
     required this.transactionRepository,
-  });
+  }) : super(AppMode.server);
 
   @override
-  Future<Product?> create(CreateProductRequest request) async {
-    if (request.appMode == AppMode.local) {
-      final result = await productLocalRepository.create(request.product);
+  Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
+    if (appMode == AppMode.local) {
+      final resultCreate = await productLocalRepository.create(request);
 
-      await productHistoryRepository.create(
-        CreateProductHistoryRequest(
-            storeId: request.storeId,
-            userId: request.userId,
-            event: ProductHistoryEvent.create,
-            productId: result.id,
-            newData: {},
-            info: BaseHiveData(
-                createAt: DateTime.now(), updateAt: DateTime.now())),
-      );
-
-      ToastNotificationService.show(
-        title: LocaleKeys.notification_createSuccess.tr(
-          args: [result.name],
-        ),
-        desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
-        onTap: (value) {
-          ProductDetailRouter(
-                  GetIt.I<NavigationService>().navigatorKey.currentContext!)
-              .navigate(
-            argruments: result,
+      resultCreate.when(
+        success: (response) async {
+          await productHistoryRepository.create(
+            BaseRepoRequest(
+              storeId: request.storeId,
+              userId: request.userId,
+              data: ProductHistory(productId: response.id, event: request.data.toString()),
+              info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
+            ),
           );
+
+          ToastNotificationService.show(
+            title: LocaleKeys.notification_createSuccess.tr(args: [response.name]),
+            desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
+            onTap: (value) {
+              ProductDetailRouter(
+                GetIt.I<NavigationService>().navigatorKey.currentContext!,
+              ).navigate(argruments: response);
+            },
+          );
+
+          return resultCreate;
+        },
+        failure: (error) {
+          return resultCreate;
         },
       );
 
-      return result;
+      return resultCreate;
     } else {
-      final result = await productServerRepository.create(request.product);
-
-      return result.response;
+      return await productServerRepository.create(request.data);
     }
   }
 
   @override
-  Future<void> delete(String storeId, String id,
-      {AppMode? appMode = AppMode.local, String? name}) async {
+  Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
-      return productLocalRepository.delete(id);
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      return productLocalRepository.delete(request.data);
     } else {
-      await productServerRepository.delete(storeId: storeId, productId: id);
-
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      return await productServerRepository.delete(request);
     }
   }
 
   @override
-  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
+  deleteAllByIds(List<String> ids) {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr());
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr());
       return productLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
@@ -123,7 +122,7 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
-  List<Product> getAll({AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<List<Product>>> getAll() async {
     if (appMode == AppMode.local) {
       return productLocalRepository.getAll();
     } else {
@@ -131,56 +130,42 @@ class ProductRepository implements IProductRepository {
     }
   }
 
-  Future<ApiResult<List<Product>>> getByIds(String storeId, List<String> ids,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<List<Product>>> getByIds(
+    String? storeId,
+    List<String> ids, {
+    AppMode? appMode = AppMode.local,
+  }) async {
     if (appMode == AppMode.local) {
-      final products = productLocalRepository.getAllById(ids);
-      return Future.value(ApiResult(response: products));
+      return await productLocalRepository.getAllById(ids);
     } else {
-      return await productServerRepository.getAllByIds(
-          storeId: storeId, productIds: ids);
+      return await productServerRepository.getAllByIds(storeId: storeId ?? '', productIds: ids);
     }
   }
 
   @override
-  Future<ApiResult<Product>> getById(
-      {required String storeId,
-      required String productId,
-      AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<Product>> getById(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      final product = productLocalRepository.getById(productId);
-      return Future.value(ApiResult(response: product));
+      return await productLocalRepository.getById(request.data);
     } else {
-      return await productServerRepository.getProduct(
-          storeId: storeId, productId: productId);
+      return await productServerRepository.getProduct(storeId: request.storeId ?? '', productId: request.data);
     }
   }
 
   @override
-  Future<ApiResult<Product>> update(String storeId, String id, Product updated,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<Product>> update(BaseRepoRequest<Product> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title:
-              LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
-      final resultLocal = await productLocalRepository.update(id, updated);
-
-      return ApiResult(response: resultLocal);
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: ['Product']));
+      return await productLocalRepository.update(request);
     } else {
-      final response = await productServerRepository.update(
-          storeId: storeId, productId: id, updated);
+      final response = await productServerRepository.update(request);
 
-      ToastNotificationService.show(
-          title:
-              LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: ['Product']));
 
       return response;
     }
   }
 
-  @override
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
     if (appMode == AppMode.local) {
       return productLocalRepository.getAllByStoreId(id);
     } else {
@@ -188,64 +173,82 @@ class ProductRepository implements IProductRepository {
     }
   }
 
-  Future<ApiResult<Product>> addProductQuantityToStock(
-    AddProductQtyToStockrequest request, {
-    AppMode? appMode = AppMode.local,
-  }) async {
+  Future<ApiResult<Product>> addProductQuantityToStock(AddProductQtyToStockrequest request) async {
     if (appMode == AppMode.local) {
-      final product =
-          await getById(storeId: request.storeId, productId: request.productId);
+      final product = await getById(
+        BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: request.productId),
+      );
 
-      final newQuantity =
-          (product.response?.quantity ?? 0) + (request.product.quantity ?? 0);
+      final newQuantity = (product.response?.quantity ?? 0) + (request.data.quantity ?? 0);
 
-      final productUpdated = await update(request.storeId, product.response!.id,
-          product.response!..quantity = newQuantity);
+      product.when(
+        success: (response) async {
+          final productUpdated = await update(
+            BaseRepoRequest(
+              storeId: request.storeId,
+              userId: request.userId,
+              data: product.response!..quantity = newQuantity,
+            ),
+          );
 
-      final productHistory = await productHistoryRepository.create(
-        CreateProductHistoryRequest(
-            productId: product.response!.id,
-            storeId: product.response!.storeId,
-            userId: request.userId,
-            event: ProductHistoryEvent.addToStock,
-            newData: {
-              "priceCategory": request.product.priceSelected,
-              "qty": request.product.quantity,
+          final productHistory = await productHistoryRepository.create(
+            BaseRepoRequest(
+              storeId: request.storeId,
+              userId: request.userId,
+              data: ProductHistory(
+                productId: response.id,
+                event: ProductHistoryEvent.addToStock.name,
+                newData: {"priceCategory": request.data.priceSelected, "qty": request.data.quantity},
+                info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
+              ),
+              info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
+            ),
+          );
+
+          productHistory.when(
+            success: (response) async {
+              await transactionRepository.createTransaction(
+                CreateTransactionRequest(
+                  storeId: request.storeId ?? '',
+                  userId: request.userId ?? '',
+                  method: TransactionMethodType.addProduct,
+                  totalPrice: request.amountCost,
+                  transactionType: TransactionType.expenses,
+                  valueId: response.id,
+                ),
+              );
             },
-            info: BaseHiveData(
-                createAt: DateTime.now(), updateAt: DateTime.now())),
-      );
+          );
 
-      await transactionRepository.create(
-        CreateTransactionRequest(
-          storeId: request.storeId,
-          userId: request.userId,
-          method: TransactionMethodType.addProduct,
-          totalPrice: request.amountCost,
-          transactionType: TransactionType.expenses,
-          valueId: productHistory.id,
-        ),
+          return productUpdated;
+        },
+        failure: (error) {},
       );
-
-      return productUpdated;
     } else {
       throw UnimplementedError();
     }
+
+    return ApiResult(error: 'addProductQuantityToStock error');
   }
 
-  Future<void> orderCompletedUpdate(Cart? cart,
-      {AppMode? appMode = AppMode.local}) async {
+  Future<void> orderCompletedUpdate(BaseRepoRequest<Cart> request) async {
     if (appMode == AppMode.local) {
-      for (OrderItem item in cart?.cartItems ?? []) {
+      for (OrderItem item in request.data.cartItems) {
         if (item.product?.id != null) {
+          // final product = await getById(storeId: cart!.storeId, productId: item.product!.id);
           final product = await getById(
-              storeId: cart!.storeId, productId: item.product!.id);
+            BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: item.product?.id),
+          );
 
-          final newQuantity =
-              (product.response?.quantity ?? 0) - (item.product?.quantity ?? 0);
+          final newQuantity = (product.response?.quantity ?? 0) - (item.product?.quantity ?? 0);
 
           await productLocalRepository.update(
-              product.response?.id, product.response!..quantity = newQuantity);
+            BaseRepoRequest(
+              storeId: request.storeId,
+              userId: request.userId,
+              data: product.response!..quantity = newQuantity,
+            ),
+          );
         }
       }
     } else {
@@ -271,12 +274,22 @@ class ProductRepository implements IProductRepository {
     );
   }
 
-  Future<ApiResult<List<ProductHistory>>> getProductHistory(
-      {required String productId, required String storeId, int? limit}) async {
-    return await productServerRepository.getProductHistory(
-      productId: productId,
-      storeId: storeId,
-      limit: limit,
-    );
+  Future<ApiResult<List<ProductHistory>>> getProductHistory({
+    required String productId,
+    required String storeId,
+    int? limit,
+  }) async {
+    return await productServerRepository.getProductHistory(productId: productId, storeId: storeId, limit: limit);
+  }
+
+  @override
+  Future<ApiResult<List<Product>>> getAllByIds(List<String> ids) {
+    throw throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
   }
 }

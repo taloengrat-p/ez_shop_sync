@@ -1,4 +1,4 @@
-import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_state.dart';

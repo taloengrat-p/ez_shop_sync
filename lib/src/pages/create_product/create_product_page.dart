@@ -10,7 +10,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
@@ -67,7 +67,7 @@ class CreateProductPageState extends State<CreateProductPage> {
     super.initState();
     cubit = CreateProductCubit(
       productRepository: GetIt.I<ProductRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      appCubit: GetIt.I<AppCubit>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback(

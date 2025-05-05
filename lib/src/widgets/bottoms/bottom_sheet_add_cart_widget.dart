@@ -3,8 +3,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
@@ -13,29 +14,23 @@ import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class BottomSheetAddCartSuccess {
   final num qty;
   final String? priceCategorySelected;
 
-  const BottomSheetAddCartSuccess({
-    required this.qty,
-    required this.priceCategorySelected,
-  });
+  const BottomSheetAddCartSuccess({required this.qty, required this.priceCategorySelected});
 }
 
 class BottomSheetAddCartWidget extends StatefulWidget {
   final Product product;
 
-  const BottomSheetAddCartWidget({
-    super.key,
-    required this.product,
-  });
+  const BottomSheetAddCartWidget({super.key, required this.product});
 
   @override
-  _BottomSheetAddCartWidgetState createState() =>
-      _BottomSheetAddCartWidgetState();
+  _BottomSheetAddCartWidgetState createState() => _BottomSheetAddCartWidgetState();
 }
 
 class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
@@ -45,8 +40,10 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
   String? priceCategory;
   bool isLoading = false;
   bool isProductNotEnoughError = false;
+  late AppCubit appCubit;
   @override
   void initState() {
+    appCubit = BlocProvider.of<AppCubit>(context);
     _productEditor = widget.product.copyWith();
     productRepository = GetIt.I<ProductRepository>();
 
@@ -61,10 +58,8 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
   }
 
   num? get qtyEditor => int.tryParse(_qtyTextController.text);
-  num? get priceByCategorySelected => _productEditor.productTypeList
-      ?.where((mapEntry) => mapEntry.id == priceCategory)
-      .firstOrNull
-      ?.price;
+  num? get priceByCategorySelected =>
+      _productEditor.productTypeList?.where((mapEntry) => mapEntry.id == priceCategory).firstOrNull?.price;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -78,26 +73,16 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
               children: [
                 Row(
                   children: [
-                    ImageWidget(
-                      imageUrl: _productEditor.imagesPath?.firstOrNull,
-                      width: 80,
-                      height: 80,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
+                    ImageWidget(imageUrl: _productEditor.imagesPath?.firstOrNull, width: 80, height: 80),
+                    const SizedBox(width: 8),
                     ProductInfoListItem(
                       name: _productEditor.name,
                       desc: _productEditor.description,
-                      price: ((priceByCategorySelected ?? 0) * (qtyEditor ?? 0))
-                          .toString()
-                          .prefixCurrency(),
+                      price: ((priceByCategorySelected ?? 0) * (qtyEditor ?? 0)).toString().prefixCurrency(),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 PriceGroupSelectWidget(
                   items: widget.product.productTypeList?.toList() ?? [],
                   itemSelected: priceCategory,
@@ -115,23 +100,16 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
                   autofocus: true,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
-                    Future.delayed(
-                      Duration.zero,
-                      () {
-                        setState(() {
-                          isProductNotEnoughError = false;
-                          _qtyTextController.text =
-                              value?.trim() == '0' ? '' : value?.trim() ?? '';
-                        });
-                      },
-                    );
+                    Future.delayed(Duration.zero, () {
+                      setState(() {
+                        isProductNotEnoughError = false;
+                        _qtyTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                      });
+                    });
                   },
-                  errorText: isProductNotEnoughError
-                      ? LocaleKeys.error_productPriceNotEnough.tr()
-                      : null,
+                  errorText: isProductNotEnoughError ? LocaleKeys.error_productPriceNotEnough.tr() : null,
                 ),
               ],
             ),
@@ -142,43 +120,44 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
             label: LocaleKeys.addCart.tr(),
             leading: const Icon(CupertinoIcons.cart_badge_plus),
             backgroundColor: Colors.orange,
-            onPressed: _qtyTextController.text.isEmpty ||
-                    int.tryParse(_qtyTextController.text) == null ||
-                    (priceCategory == null || (priceCategory?.isEmpty ?? false))
-                ? null
-                : () async {
-                    if (isLoading) {
-                      return;
-                    }
+            onPressed:
+                _qtyTextController.text.isEmpty ||
+                        int.tryParse(_qtyTextController.text) == null ||
+                        (priceCategory == null || (priceCategory?.isEmpty ?? false))
+                    ? null
+                    : () async {
+                      if (appCubit.storeId == null || appCubit.userId == null) {
+                        return;
+                      }
+                      if (isLoading) {
+                        return;
+                      }
 
-                    setState(() {
-                      isLoading = true;
-                    });
-
-                    final productFromDb = await productRepository.getById(
-                        storeId: _productEditor.storeId,
-                        productId: _productEditor.id,
-                        appMode: AppMode.server);
-
-                    if ((productFromDb.response?.productTypeList
-                                ?.firstWhere((e) => e.id == priceCategory)
-                                .quantity ??
-                            0) <
-                        (int.tryParse(_qtyTextController.text) ?? 0)) {
                       setState(() {
-                        isProductNotEnoughError = true;
-                        isLoading = false;
+                        isLoading = true;
                       });
-                      return;
-                    }
 
-                    Navigator.of(context).pop(
-                      BottomSheetAddCartSuccess(
-                        qty: num.parse(_qtyTextController.text),
-                        priceCategorySelected: priceCategory,
-                      ),
-                    );
-                  },
+                      final productFromDb = await productRepository.getById(
+                        BaseRepoRequest(storeId: appCubit.storeId!, userId: appCubit.userId!, data: _productEditor.id),
+                      );
+
+                      if ((productFromDb.response?.productTypeList?.firstWhere((e) => e.id == priceCategory).quantity ??
+                              0) <
+                          (int.tryParse(_qtyTextController.text) ?? 0)) {
+                        setState(() {
+                          isProductNotEnoughError = true;
+                          isLoading = false;
+                        });
+                        return;
+                      }
+
+                      Navigator.of(context).pop(
+                        BottomSheetAddCartSuccess(
+                          qty: num.parse(_qtyTextController.text),
+                          priceCategorySelected: priceCategory,
+                        ),
+                      );
+                    },
           ),
         ],
       ),

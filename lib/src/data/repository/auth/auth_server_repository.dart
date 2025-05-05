@@ -1,8 +1,7 @@
-
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/login_request.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/i_auth_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:firebase_auth/firebase_auth.dart' as server;
@@ -37,16 +36,15 @@ class AuthServerRepository implements IAuthRepository {
         appErrorType = AppErrorType.wrongPassword;
       }
 
-      return ApiResult(
-        error: e,
-        appErrorType: appErrorType,
-      );
+      return ApiResult(error: e, appErrorType: appErrorType);
     }
   }
 
   @override
-  Future<ApiResult<server.UserCredential>> register(CreateRegisterRequest request,
-      {AppMode appMode = AppMode.local}) async {
+  Future<ApiResult<server.UserCredential>> register(
+    CreateRegisterRequest request, {
+    AppMode appMode = AppMode.local,
+  }) async {
     try {
       final UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: request.email,
@@ -66,10 +64,7 @@ class AuthServerRepository implements IAuthRepository {
         appErrorType = AppErrorType.emailAlreadyInUse;
       }
 
-      return ApiResult(
-        error: e,
-        appErrorType: appErrorType,
-      );
+      return ApiResult(error: e, appErrorType: appErrorType);
     }
   }
 }

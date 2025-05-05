@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_state.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -37,7 +37,7 @@ class _AddUserState extends State<AddUserPage> {
     super.initState();
     _cubit = AddUserCubit(
       storeRepository: GetIt.I<StoreServerRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

@@ -4,7 +4,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_router.dart';
 import 'package:ez_shop_sync/src/pages/create_tag/create_tag_state.dart';
@@ -38,7 +38,7 @@ class _CreateTagState extends State<CreateTagPage> {
     super.initState();
     _cubit = CreateTagCubit(
       storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
       tagRepository: GetIt.I<TagRepository>(),
     );
 

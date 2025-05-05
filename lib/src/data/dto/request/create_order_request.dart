@@ -2,34 +2,28 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'create_order_request.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class CreateOrderRequest {
-  final String storeId;
-  final String userId;
-  final List<OrderItem> orderItems;
   final PaymentMethodType paymentType;
   final OrderStatusType status;
   final num? receiveAmount;
   final num? changeAmount;
-  BaseHiveData? info;
-
+  final List<OrderItem> orderItems;
   CreateOrderRequest({
-    required this.storeId,
-    required this.userId,
-    required this.orderItems,
     required this.paymentType,
     required this.status,
     this.changeAmount,
     this.receiveAmount,
-    this.info,
+    required this.orderItems,
   });
 
-  factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
-      _$CreateOrderRequestFromJson(json);
+  factory CreateOrderRequest.fromJson(Map<String, dynamic> json) => _$CreateOrderRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$CreateOrderRequestToJson(this);
 }

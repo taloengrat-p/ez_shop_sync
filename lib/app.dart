@@ -4,8 +4,8 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/login/login_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/routes/routes.dart';
@@ -30,20 +30,21 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late StreamSubscription<List<ConnectivityResult>> subscription;
-  late BaseCubit baseCubit;
+  final baseCubit = GetIt.I.get<AppCubit>();
   @override
   void initState() {
-    super.initState();
-    baseCubit = BlocProvider.of<BaseCubit>(context);
-
-    baseCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
-    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      if (result.contains(ConnectivityResult.none)) {
-        baseCubit.changeMode(AppMode.local);
-      } else {
-        baseCubit.changeMode(AppMode.server);
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      baseCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
+      subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+        if (result.contains(ConnectivityResult.none)) {
+          baseCubit.changeMode(AppMode.local);
+        } else {
+          baseCubit.changeMode(AppMode.server);
+        }
+      });
     });
+
+    super.initState();
   }
 
   @override
@@ -66,37 +67,33 @@ class _AppState extends State<App> {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         theme: ThemeData(
-          textTheme: GoogleFonts.promptTextTheme(
-            Theme.of(context).textTheme,
-          ),
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: MaterialColor(
-              Colors.black.value,
-              <int, Color>{
-                50: Colors.black.withOpacity(0.05),
-                100: Colors.black.withOpacity(0.1),
-                200: Colors.black.withOpacity(0.2),
-                300: Colors.black.withOpacity(0.3),
-                400: Colors.black.withOpacity(0.4),
-                500: Colors.black.withOpacity(0.5),
-                600: Colors.black.withOpacity(0.6),
-                700: Colors.black.withOpacity(0.7),
-                800: Colors.black.withOpacity(0.8),
-                900: Colors.black.withOpacity(0.9),
-              },
-            ),
-          ).copyWith(),
+          textTheme: GoogleFonts.promptTextTheme(Theme.of(context).textTheme),
+          colorScheme:
+              ColorScheme.fromSwatch(
+                primarySwatch: MaterialColor(Colors.black.value, <int, Color>{
+                  50: Colors.black.withOpacity(0.05),
+                  100: Colors.black.withOpacity(0.1),
+                  200: Colors.black.withOpacity(0.2),
+                  300: Colors.black.withOpacity(0.3),
+                  400: Colors.black.withOpacity(0.4),
+                  500: Colors.black.withOpacity(0.5),
+                  600: Colors.black.withOpacity(0.6),
+                  700: Colors.black.withOpacity(0.7),
+                  800: Colors.black.withOpacity(0.8),
+                  900: Colors.black.withOpacity(0.9),
+                }),
+              ).copyWith(),
           primarySwatch: Colors.blue,
         ),
         navigatorKey: GetIt.I<NavigationService>().navigatorKey,
         navigatorObservers: [routeAware],
         routes: Routes.values,
-        home: BlocListener<BaseCubit, BaseState>(
+        home: BlocListener<AppCubit, AppState>(
           bloc: baseCubit,
           listener: (context, state) {
             log('[CUBIT][BASE] state : $state');
           },
-          child: BlocBuilder<BaseCubit, BaseState>(
+          child: BlocBuilder<AppCubit, AppState>(
             bloc: baseCubit,
             builder: (context, state) {
               return Stack(
@@ -115,14 +112,10 @@ class _AppState extends State<App> {
                   //   ),
                   AnimatedPositioned(
                     duration: baseCubit.durationAddCart,
-                    top: state is BaseAddCartSuccess ? 35 : size.height,
-                    right: state is BaseAddCartSuccess ? 20 : (size.width - 100),
-                    child: state is BaseAddCartSuccess
-                        ? const Icon(
-                            CupertinoIcons.bag,
-                            color: Colors.black,
-                          )
-                        : Container(),
+                    top: state is AppAddCartSuccess ? 35 : size.height,
+                    right: state is AppAddCartSuccess ? 20 : (size.width - 100),
+                    child:
+                        state is AppAddCartSuccess ? const Icon(CupertinoIcons.bag, color: Colors.black) : Container(),
                   ),
                 ],
               );
@@ -133,19 +126,14 @@ class _AppState extends State<App> {
     );
   }
 
-  Widget _flavorBanner({
-    required Widget child,
-    bool show = true,
-  }) =>
+  Widget _flavorBanner({required Widget child, bool show = true}) =>
       show
           ? Banner(
-              location: BannerLocation.topStart,
-              message: F.name,
-              color: Colors.green.withOpacity(0.6),
-              textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
-              child: child,
-            )
-          : Container(
-              child: child,
-            );
+            location: BannerLocation.topStart,
+            message: F.name,
+            color: Colors.green.withOpacity(0.6),
+            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
+            child: child,
+          )
+          : Container(child: child);
 }

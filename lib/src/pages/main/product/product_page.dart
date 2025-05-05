@@ -4,13 +4,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
@@ -44,8 +44,15 @@ class ProductPage extends StatefulWidget {
 }
 
 class ProductPageState extends State<ProductPage> implements IProductPage {
-  late ProductCubit _cubit;
-  late BaseCubit _baseCubit;
+  final _cubit = GetIt.I<ProductCubit>();
+  final _cubit1 = GetIt.I<ProductCubit>();
+  final _cubit2 = GetIt.I<ProductCubit>();
+  final appCubit = GetIt.I.get<AppCubit>();
+  final appCubit1 = GetIt.I.get<AppCubit>();
+  final appCubit2 = GetIt.I.get<AppCubit>();
+  final transactionRepo1 = GetIt.I.get<TransactionRepository>();
+  final transactionRepo2 = GetIt.I.get<TransactionRepository>();
+
   final _searchTextController = TextEditingController();
   final _refreshListViewController = RefreshController(initialRefresh: false);
   final _refreshGridViewController = RefreshController(initialRefresh: false);
@@ -53,12 +60,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   @override
   void initState() {
     log('[init]', name: runtimeType.toString());
+    log('[check appCubit singleton] ${appCubit1 == appCubit2}', name: runtimeType.toString());
+    log('[check product singleton] ${_cubit1 == _cubit2}', name: runtimeType.toString());
+    log('[check transactionRepo singleton] ${transactionRepo1 == transactionRepo2}', name: runtimeType.toString());
     super.initState();
-    _baseCubit = GetIt.I.get<BaseCubit>();
-    _cubit = ProductCubit(
-      productRepository: GetIt.I<ProductRepository>(),
-      baseCubit: _baseCubit,
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       if (_cubit.products.isEmpty) {
@@ -77,77 +82,69 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _cubit,
-      child: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
-        return BaseScaffolds(
-          isInitialLoading: state is ProductInitial,
-          enableAppModeDisplay: false,
-          backgroundColor: Colors.white,
-          appBar: AppbarWidget(
-            context,
-            centerTitle: false,
-            title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
-            titleWidget: _cubit.screenMode == ScreenMode.search
-                ? TextField(
-                    controller: _searchTextController,
-                    autofocus: true,
-                    decoration: AppInputDecoration(
-                      context,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 13, horizontal: 8),
-                      suffixIcon: IconButton(
-                        icon: const Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                        ),
+      child: BlocBuilder<ProductCubit, ProductState>(
+        builder: (context, state) {
+          return BaseScaffolds(
+            isInitialLoading: state is ProductInitial,
+            enableAppModeDisplay: false,
+            backgroundColor: Colors.white,
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
+                  titleWidget:
+                      _cubit.screenMode == ScreenMode.search
+                          ? TextField(
+                            controller: _searchTextController,
+                            autofocus: true,
+                            decoration:
+                                AppInputDecoration(
+                                  context,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.clear, color: Colors.black),
+                                    onPressed: () {
+                                      _searchTextController.clear();
+                                      _cubit.clearSearchText();
+                                    },
+                                  ),
+                                ).build(),
+                            onChanged: _cubit.setSearchText,
+                          )
+                          : null,
+                  actions: [
+                    if (_cubit.screenMode == ScreenMode.search)
+                      TextButton(
                         onPressed: () {
                           _searchTextController.clear();
-                          _cubit.clearSearchText();
+                          _cubit.doSwitchToDisplay();
+                        },
+                        child: Text(LocaleKeys.cancel.tr()),
+                      ),
+                    if (_cubit.screenMode == ScreenMode.display) ...[
+                      ActionAppbarButtonWidget(
+                        onPressed: _cubit.doSwitchToSearch,
+                        child: const Icon(CupertinoIcons.search),
+                      ),
+                      const SizedBox(width: 5),
+                      ActionAppbarButtonWidget(
+                        child: const Icon(CupertinoIcons.add),
+                        onPressed: () async {
+                          final result = await CreateProductRouter(context).navigate();
+                          if (result is BaseArgrument && result.refresh) {
+                            _cubit.init();
+                          }
                         },
                       ),
-                    ).build(),
-                    onChanged: _cubit.setSearchText,
-                  )
-                : null,
-            actions: [
-              if (_cubit.screenMode == ScreenMode.search)
-                TextButton(
-                  onPressed: () {
-                    _searchTextController.clear();
-                    _cubit.doSwitchToDisplay();
-                  },
-                  child: Text(LocaleKeys.cancel.tr()),
-                ),
-              if (_cubit.screenMode == ScreenMode.display) ...[
-                ActionAppbarButtonWidget(
-                  onPressed: _cubit.doSwitchToSearch,
-                  child: const Icon(
-                    CupertinoIcons.search,
-                  ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                ActionAppbarButtonWidget(
-                  child: const Icon(
-                    CupertinoIcons.add,
-                  ),
-                  onPressed: () async {
-                    final result =
-                        await CreateProductRouter(context).navigate();
-                    if (result is BaseArgrument && result.refresh) {
-                      _cubit.init();
-                    }
-                  },
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-              ]
-            ],
-          ).build(),
-          body: buildBody(),
-        );
-      }),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ).build(),
+            body: buildBody(),
+          );
+        },
+      ),
     );
   }
 
@@ -158,57 +155,48 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           onPressed: () {
             _cubit.changeSortType();
           },
-          icon: Icon(
-            _cubit.sortType == ProductSortType.asc
-                ? CupertinoIcons.sort_up
-                : CupertinoIcons.sort_down,
-          ),
+          icon: Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
         ),
         IconButton(
           onPressed: () {
             _cubit.changeDisplayType();
           },
-          icon: Icon(_cubit.displayType == ProductDisplayType.grid
-              ? Icons.list_rounded
-              : Icons.grid_view),
+          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
         ),
       ],
-      children: [
-        buildContent(),
-      ],
+      children: [buildContent()],
     );
   }
 
   Widget buildGridViewProduct() {
-    return OrientationBuilder(builder: (context, orientation) {
-      double itemHeight = 365;
-      var size = MediaQuery.of(context).size;
-      final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
-      final double itemWidth = size.width / crossAxisCount;
-      return SmartRefresher(
-        controller: _refreshGridViewController,
-        enablePullDown: true,
-        onRefresh: _onRefresh,
-        child: GridView.count(
-          crossAxisCount: crossAxisCount,
-          childAspectRatio: (itemWidth / itemHeight),
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          children: _cubit.products
-              .map(
-                (e) => GestureDetector(
-                  onTap: () => onClickGoToDetailPage(e),
-                  child: ProductGridItemWidget(
-                    key: ValueKey(e.id),
-                    product: e,
-                    iProductItem: this,
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      );
-    });
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        double itemHeight = 365;
+        var size = MediaQuery.of(context).size;
+        final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
+        final double itemWidth = size.width / crossAxisCount;
+        return SmartRefresher(
+          controller: _refreshGridViewController,
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          child: GridView.count(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: (itemWidth / itemHeight),
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            children:
+                _cubit.products
+                    .map(
+                      (e) => GestureDetector(
+                        onTap: () => onClickGoToDetailPage(e),
+                        child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
+                      ),
+                    )
+                    .toList(),
+          ),
+        );
+      },
+    );
   }
 
   Widget buildListProduct() {
@@ -222,16 +210,11 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
           return GestureDetector(
             onTap: () => onClickGoToDetailPage(product),
-            child: ProductListItemWidget(
-              product: product,
-              iProductItem: this,
-            ),
+            child: ProductListItemWidget(product: product, iProductItem: this),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(
-            height: DimensionsKeys.gap,
-          );
+          return const SizedBox(height: DimensionsKeys.gap);
         },
       ),
     );
@@ -241,30 +224,25 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     var size = MediaQuery.of(context).size;
 
     if (_cubit.products.isNotEmpty) {
-      return BlocBuilder<BaseCubit, BaseState>(
-          bloc: _baseCubit,
-          builder: (context, baseState) {
-            return Expanded(
-              child: ContainerScrollableWidget(
-                radius: DimensionsKeys.radius + 4,
-                paddingAll: 8,
-                child: (_cubit.displayType == ProductDisplayType.grid
-                    ? buildGridViewProduct()
-                    : buildListProduct()),
-              ),
-            );
-          });
+      return BlocBuilder<AppCubit, AppState>(
+        bloc: appCubit,
+        builder: (context, baseState) {
+          return Expanded(
+            child: ContainerScrollableWidget(
+              radius: DimensionsKeys.radius + 4,
+              paddingAll: 8,
+              child: (_cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct()),
+            ),
+          );
+        },
+      );
     } else {
       return Expanded(
         child: SmartRefresher(
           controller: _refreshEmptyViewController,
           onRefresh: _onRefresh,
           child: Center(
-            child: EmptyDataWidget(
-              height: size.height * 0.45,
-              width: 200,
-              message: LocaleKeys.productsEmpty.tr(),
-            ),
+            child: EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.productsEmpty.tr()),
           ),
         ),
       );
@@ -278,10 +256,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     if (result is BottomSheetAddStockSuccess) {
       log('onAddStock $result');
       _cubit.addProductToStock(
-        product.copyWith(
-          priceSelected: result.priceCategorySelected,
-          quantity: result.qty,
-        ),
+        product.copyWith(priceSelected: result.priceCategorySelected, quantity: result.qty),
         result.amountCost,
       );
     }
@@ -292,12 +267,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showAddCartDialog(context, product);
 
     if (result is BottomSheetAddCartSuccess) {
-      _cubit.addCart(
-        product.copyWith(
-          quantity: result.qty,
-          priceSelected: result.priceCategorySelected,
-        ),
-      );
+      _cubit.addCart(product.copyWith(quantity: result.qty, priceSelected: result.priceCategorySelected));
     }
   }
 
@@ -306,23 +276,20 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     final result = await DialogUtils.showConfirmDelete(context);
 
     if (result == ConfirmDialogResult.ok) {
-      _cubit.deleteProduct(_baseCubit.store!.id, productId);
+      _cubit.deleteProduct(appCubit.store!.id, productId);
     }
   }
 
   @override
   onEdit(String productId) async {
-    final result = await CreateProductRouter(context).navigate(
-      argruments: ProductEditArgrument(
-        _cubit.products.firstWhere((e) => e.id == productId),
-      ),
-    );
+    final result = await CreateProductRouter(
+      context,
+    ).navigate(argruments: ProductEditArgrument(_cubit.products.firstWhere((e) => e.id == productId)));
   }
 
   @override
   onClickGoToDetailPage(Product product) async {
-    final result =
-        await ProductDetailRouter(context).navigate(argruments: product);
+    final result = await ProductDetailRouter(context).navigate(argruments: product);
 
     if (result is BaseArgrument && result.refresh) {
       _cubit.init();

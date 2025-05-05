@@ -5,24 +5,27 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.en
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable()
+@Singleton()
 class CartCubit extends Cubit<CartState> {
-  CartRepository cartRepository;
-  OrderRepository orderRepository;
-  ProductRepository productRepository;
+  final CartRepository cartRepository;
+  final OrderRepository orderRepository;
+  final ProductRepository productRepository;
+  final AppCubit appCubit;
 
-  BaseCubit baseCubit;
   final num _serviceCharge = 0;
   TimerUtils timerUtils = TimerUtils();
   List<OrderItem> _products = [];
@@ -30,13 +33,12 @@ class CartCubit extends Cubit<CartState> {
   List<OrderItem> get products => _products;
   CartCubit({
     required this.cartRepository,
-    required this.baseCubit,
+    required this.appCubit,
     required this.orderRepository,
     required this.productRepository,
   }) : super(CartInitial());
 
-  num get totalPrice => products.fold(
-      0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0)));
+  num get totalPrice => products.fold(0.0, (sum, item) => sum + ((item.product?.priceCurrentSelected ?? 0)));
 
   num get totalServiceCharge => (totalPrice * serviceChargeValue);
 
@@ -46,36 +48,30 @@ class CartCubit extends Cubit<CartState> {
 
   num get totalPriceIncludeServiceCharge => totalPrice + totalServiceCharge;
 
-  String get totalPriceDisplay =>
-      totalPriceIncludeServiceCharge.prefixCurrency();
+  String get totalPriceDisplay => totalPriceIncludeServiceCharge.prefixCurrency();
 
-  String get totalItems => products
-      .fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0))
-      .toString();
+  String get totalItems => products.fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0)).toString();
   num? receiveAmount;
   num get subTotalPrice => totalPrice;
-  bool get hasAnyError => products.any(
-        (item) {
-          // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
+  bool get hasAnyError => products.any((item) {
+    // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
 
-          if (productInStock.isEmpty) {
-            return false;
-          }
+    if (productInStock.isEmpty) {
+      return false;
+    }
 
-          try {
-            final productStockItem = productInStock
-                .firstWhere((e) => e.id == item.product?.id)
-                .productTypeList
-                ?.firstWhere((e) => e.id == item.product?.priceSelected);
+    try {
+      final productStockItem = productInStock
+          .firstWhere((e) => e.id == item.product?.id)
+          .productTypeList
+          ?.firstWhere((e) => e.id == item.product?.priceSelected);
 
-            final hasError = (productStockItem?.quantity ?? 0) <
-                (item.product?.quantity ?? 0);
-            return hasError;
-          } catch (e) {
-            return false;
-          }
-        },
-      );
+      final hasError = (productStockItem?.quantity ?? 0) < (item.product?.quantity ?? 0);
+      return hasError;
+    } catch (e) {
+      return false;
+    }
+  });
   PaymentMethodType? paymentMethod = PaymentMethodType.undefined;
 
   List<Product> productInStock = [];
@@ -91,14 +87,20 @@ class CartCubit extends Cubit<CartState> {
     item.product?.quantity = (_products[index].product?.quantity ?? 0) + 1;
     emit(CartIncrease(productId: item.id, qty: item.product!.quantity!));
 
-    timerUtils.debounceTime(
-      const Duration(milliseconds: 500),
-      () {
-        log('[perform] increase');
-        cartRepository.increaseQty(
-            baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
-      },
-    );
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+      log('[perform] increase');
+      cartRepository.increaseQty(
+        BaseRepoRequest(
+          storeId: appCubit.storeId ?? '',
+          userId: appCubit.userId,
+          data: CartIncreaseQtyRequest(
+            cartId: appCubit.cart?.id,
+            productId: item.product?.id,
+            qty: item.product?.quantity ?? 0,
+          ),
+        ),
+      );
+    });
   }
 
   void decreaseProductQtyByIndex(int index) {
@@ -114,26 +116,32 @@ class CartCubit extends Cubit<CartState> {
     item.product?.quantity = _products[index].product!.quantity! - 1;
     emit(CartDecrease(productId: item.id, qty: item.product!.quantity!));
 
-    timerUtils.debounceTime(
-      const Duration(milliseconds: 500),
-      () {
-        log('[perform] decrease');
-        cartRepository.decreaseQty(
-            baseCubit.cart?.id, item.product?.id, item.product?.quantity ?? 0);
-      },
-    );
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+      log('[perform] decrease');
+      cartRepository.decreaseQty(
+        BaseRepoRequest(
+          storeId: appCubit.storeId,
+          userId: appCubit.userId,
+          data: CartDecreaseQtyRequest(
+            cartId: appCubit.cart?.id,
+            productId: item.product?.id,
+            qty: item.product?.quantity ?? 0,
+          ),
+        ),
+      );
+    });
   }
 
   void initial() async {
     emit(CartInitial());
-    _cart = baseCubit.cart;
-    _products = baseCubit.cart?.cartItems.map((e) => e).toList() ?? [];
+    _cart = appCubit.cart;
+    _products = appCubit.cart?.cartItems.map((e) => e).toList() ?? [];
     paymentMethod = PaymentMethodType.cash;
     productInStock = await getProductsByCartItems();
   }
 
   void deleteItemFromCart(String id) async {
-    await baseCubit.deleteItemFromCart(id);
+    await appCubit.deleteItemFromCart(id);
     _products.removeWhere((e) => e.id == id);
     emit(CartRemoveItemSuccess(id));
   }
@@ -157,19 +165,18 @@ class CartCubit extends Cubit<CartState> {
       return;
     }
 
-    final orderCreated = await orderRepository.create(
-      CreateOrderRequest(
-        storeId: baseCubit.store?.id ?? '',
-        userId: baseCubit.user?.uid ?? '',
-        orderItems: _cart?.cartItems ?? [],
-        status: paymentMethod == PaymentMethodType.cash
-            ? OrderStatusType.complete
-            : OrderStatusType.waitPayment,
-        paymentType: paymentMethod ?? PaymentMethodType.undefined,
-        receiveAmount: receiveAmount,
-        changeAmount: changeAmountDisplay,
+    final orderCreated = await orderRepository.createFromCart(
+      BaseRepoRequest(
+        storeId: appCubit.store?.id ?? '',
+        userId: appCubit.user?.uid ?? '',
+        data: CreateOrderRequest(
+          orderItems: _cart?.cartItems ?? [],
+          status: paymentMethod == PaymentMethodType.cash ? OrderStatusType.complete : OrderStatusType.waitPayment,
+          paymentType: paymentMethod ?? PaymentMethodType.undefined,
+          receiveAmount: receiveAmount,
+          changeAmount: changeAmountDisplay,
+        ),
       ),
-      appMode: AppMode.server,
     );
 
     orderCreated.when(
@@ -177,13 +184,14 @@ class CartCubit extends Cubit<CartState> {
         if (_cart != null) {
           // await productRepository.orderCompletedUpdate(_cart);
           await cartRepository.update(
-            _cart!.id,
-            _cart!..cartItems = [],
+            BaseRepoRequest(
+              storeId: appCubit.store?.id ?? '',
+              userId: appCubit.user?.uid ?? '',
+              data: _cart!..cartItems = [],
+            ),
           );
         }
-        emit(
-          CartSuccess(response),
-        );
+        emit(CartSuccess(response));
       },
       failure: (error) {
         emit(CartFailure(error));
@@ -193,7 +201,7 @@ class CartCubit extends Cubit<CartState> {
 
   Future<List<Product>> getProductsByCartItems() async {
     final result = await productRepository.getByIds(
-      baseCubit.store!.id,
+      appCubit.store?.id,
       _products.map((e) => e.product?.id.toString() ?? '').toList(),
       appMode: AppMode.server,
     );

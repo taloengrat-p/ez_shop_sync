@@ -1,25 +1,23 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StoreManagementCubit extends Cubit<StoreManagementState> {
-  final BaseCubit baseCubit;
+  final AppCubit baseCubit;
   final StoreRepository storeRepository;
   final UserRepository userRepository;
   ScreenMode screenMode = ScreenMode.display;
 
   Store? get store => baseCubit.store;
-  StoreManagementCubit({
-    required this.storeRepository,
-    required this.baseCubit,
-    required this.userRepository,
-  }) : super(StoreManagementInitial());
+  StoreManagementCubit({required this.storeRepository, required this.baseCubit, required this.userRepository})
+    : super(StoreManagementInitial());
 
   UserData? owner;
 
@@ -53,7 +51,9 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
     emit(StoreManagementLoading());
 
     final storeBuffer = store;
-    await storeRepository.delete(store!.id, name: storeBuffer?.name);
+    await storeRepository.delete(
+      BaseRepoRequest(storeId: baseCubit.storeId ?? '', userId: baseCubit.userId ?? '', data: store?.id ?? ''),
+    );
     baseCubit.setCurrentUser(baseCubit.user);
     emit(StoreManagementDeleteSuccess(storeBuffer));
   }
@@ -73,10 +73,14 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
   void doSave() async {
     emit(StoreManagementLoading());
     await storeRepository.update(
-      store!.id,
-      store!
-        ..name = nameEditor?.trim() ?? ''
-        ..description = descEditor?.trim(),
+      BaseRepoRequest(
+        storeId: baseCubit.storeId ?? '',
+        userId: baseCubit.userId ?? '',
+        data:
+            store!
+              ..name = nameEditor?.trim() ?? ''
+              ..description = descEditor?.trim(),
+      ),
     );
     screenMode = ScreenMode.display;
     emit(StoreManagementUpdateSuccess());

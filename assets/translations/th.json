@@ -3,7 +3,10 @@
   "createYourStoreName": "สร้างชื่อร้านค้าของคุณ",
   "storeSettings": "ตั้งค่าร้านค้า",
   "menu": "เมนู",
-  "statistic": "สถิติ",
+  "statistic": {
+    "title": "สถิติ",
+    "emptyMessage": "สถิติของคุณว่างเปล่า"
+  },
   "transactions": "ธุรกรรม",
   "products": "สินค้า",
   "productsEmpty": "สินค้าของคุณว่างเปล่า กรุณาสร้างสินค้าขึ้นมาใหม่",
@@ -67,7 +70,8 @@
     "updateSuccess": "อัพเดต {} สำเร็จ",
     "createSuccess": "สร้าง {} สำเร็จ",
     "createSuccessSeeDetail": "กดเพื่อดูรายละเอียด",
-    "createNewPINTitle": "สร้าง PIN ใหม่สำเร็จ"
+    "createNewPINTitle": "สร้าง PIN ใหม่สำเร็จ",
+    "emptyMessage": "การแจ้งเตือนของคุณยังว่างอยู่"
   },
   "createPINTitle": "สร้าง PIN",
   "createPINDesc": "ป้อนรหัสสำหรับการตั้งค่า PIN",
@@ -204,5 +208,8 @@
     "title": "อยู่ในโหมดออฟไลน์",
     "desc": "บางฟีเจอร์จะไม่พร้อมใช้งานจนกว่าคุณจะออนไลน์อีกครั้ง"
   },
-  "productType": "ประเภทสินค้า"
+  "productType": "ประเภทสินค้า",
+  "notifications": {
+    "title": "Notification"
+  }
 }

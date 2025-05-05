@@ -7,8 +7,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
@@ -50,12 +50,12 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   late ProductDetailCubit cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
   @override
   void initState() {
     super.initState();
 
-    baseCubit = GetIt.I<BaseCubit>();
+    baseCubit = GetIt.I<AppCubit>();
     cubit = ProductDetailCubit(
       productRepository: GetIt.I<ProductRepository>(),
       baseCubit: baseCubit,
@@ -354,9 +354,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             return AnimatedPositioned(
               duration: baseCubit.durationAddCart,
-              top: baseState is BaseAddCartSuccess ? 0 : size.height,
-              right: baseState is BaseAddCartSuccess ? 20 : (size.width - 100),
-              child: baseState is BaseAddCartSuccess
+              top: baseState is AppAddCartSuccess ? 0 : size.height,
+              right: baseState is AppAddCartSuccess ? 20 : (size.width - 100),
+              child: baseState is AppAddCartSuccess
                   ? const Icon(
                       CupertinoIcons.bag,
                       color: Colors.black,

@@ -2,27 +2,25 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryManagementCubit extends Cubit<CategoryManagementState> {
   ScreenMode screenMode = ScreenMode.display;
-  BaseCubit baseCubit;
+  AppCubit appCubit;
   StoreRepository storeRepository;
   CategoryRepository categoryRepository;
   Map<String, bool> selected = {};
   bool get selectedEmpty => selected.isEmpty || selected.values.every((e) => e == false);
-  List<Category> get tags => baseCubit.categories;
+  List<Category> get tags => appCubit.categories;
 
-  CategoryManagementCubit({
-    required this.baseCubit,
-    required this.storeRepository,
-    required this.categoryRepository,
-  }) : super(CategoryManagementInitial());
+  CategoryManagementCubit({required this.appCubit, required this.storeRepository, required this.categoryRepository})
+    : super(CategoryManagementInitial());
 
   void toggleDeleteMode() {
     screenMode = screenMode == ScreenMode.delete ? ScreenMode.display : ScreenMode.delete;
@@ -52,11 +50,13 @@ class CategoryManagementCubit extends Cubit<CategoryManagementState> {
     log('remove ${selected.keys}');
 
     final categoryListUpdate =
-        baseCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
-    Store storeUpdated = baseCubit.store!..categories = categoryListUpdate;
+        appCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
+    Store storeUpdated = appCubit.store!..categories = categoryListUpdate;
 
-    await storeRepository.update(baseCubit.store!.id, storeUpdated);
-    baseCubit.loadCategoryByCurrentStore();
+    await storeRepository.update(
+      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: storeUpdated),
+    );
+    appCubit.loadCategoryByCurrentStore();
     toggleDeleteMode();
     emit(CategoryManagementSuccess());
   }

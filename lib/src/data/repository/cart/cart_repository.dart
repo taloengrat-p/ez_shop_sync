@@ -1,32 +1,26 @@
-import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/repository/base_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_server_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:injectable/injectable.dart';
 
-abstract class ICartRepository {
-  Cart? getCartsByUserIdWithCurrentStore({required String storeId, required String userId});
-  Future<Cart> create(Cart request);
-  Future<Cart> update(String id, Cart updated);
-  Future<void> delete(String id);
-  Future<void> deleteAll(List<String> ids);
-}
+import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/i_cart_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/local/cart_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/server/cart_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 
 @Singleton()
 @Injectable()
-class CartRepository extends BaseRepository implements ICartRepository {
+class CartRepository extends IRepository<Cart> implements ICartRepository {
   CartLocalRepository cartLocalRepository;
   CartServerRepository cartServerRepository;
 
-  CartRepository({
-    required this.cartLocalRepository,
-    required this.cartServerRepository,
-  });
+  CartRepository({required this.cartLocalRepository, required this.cartServerRepository}) : super(AppMode.local);
 
   @override
-  Future<Cart> create(Cart request) async {
+  Future<ApiResult<Cart>> create(BaseRepoRequest<Cart> request) async {
     if (appMode == AppMode.local) {
       return await cartLocalRepository.createIfNotExist(request);
     } else {
@@ -35,70 +29,151 @@ class CartRepository extends BaseRepository implements ICartRepository {
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      await cartLocalRepository.delete(id);
+      return await cartLocalRepository.delete(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<void> deleteAll(List<String> ids) async {
+  Future<ApiResult> deleteAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      await cartLocalRepository.deleteAllByIds(ids);
+      return await cartLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Cart? getCartsByUserIdWithCurrentStore({required String storeId, required String userId}) {
+  Future<ApiResult<Cart>> getCartsByUserIdWithCurrentStore({required String storeId, required String userId}) async {
     if (appMode == AppMode.local) {
-      return cartLocalRepository.getCartByStoreAndUserId(storeId: storeId, userId: userId);
+      return await cartLocalRepository.getCartByStoreAndUserId(storeId: storeId, userId: userId);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<Cart> update(String id, Cart updated) async {
+  Future<ApiResult<Cart>> update(BaseRepoRequest<Cart> request) async {
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.update(id, updated);
+      return await cartLocalRepository.update(request);
     } else {
       throw UnimplementedError();
     }
   }
 
-  Future<Cart> deleteItemByIdFromCart(String? id, String cartItemId) async {
+  Future<ApiResult<Cart>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFromCartRequest> request) async {
+    if (request.userId == null) {
+      throw ('deleteItemByIdFromCart appCubit.user == null');
+    }
+
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.deleteItemByIdFromCart(id, cartItemId);
+      return await cartLocalRepository.deleteItemByIdFromCart(request);
     } else {
       throw UnimplementedError();
     }
   }
 
-  Future<Cart?> addCart(String id, Product product) async {
+  Future<ApiResult<Cart>> addCart(BaseRepoRequest<AddCartRequest> request) async {
+    if (request.userId == null) {
+      throw ('addCart appCubit.user == null');
+    }
+
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.addCart(id, product);
+      return await cartLocalRepository.addCart(request);
     } else {
       throw UnimplementedError();
     }
   }
 
-  Future<void> increaseQty(String? cartId, String? productId, num qty) async {
+  Future<ApiResult> increaseQty(BaseRepoRequest<CartIncreaseQtyRequest> request) async {
+    if (request.userId == null) {
+      throw ('increaseQty request.userId');
+    }
+
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.increaseQty(cartId, productId, qty);
+      return await cartLocalRepository.increaseQty(request);
     } else {
       throw UnimplementedError();
     }
   }
 
-  Future<void> decreaseQty(String? cartId, String? productId, num qty) async {
+  Future<ApiResult> decreaseQty(BaseRepoRequest<CartDecreaseQtyRequest> request) async {
+    if (request.userId == null) {
+      throw ('increaseQty request.userId');
+    }
+
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.decreaseQty(cartId, productId, qty);
+      return await cartLocalRepository.decreaseQty(
+        request.data.cartId,
+        request.data.productId,
+        request.data.qty,
+        storeId: request.storeId ?? '',
+        userId: request.storeId ?? '',
+      );
     } else {
       throw UnimplementedError();
     }
   }
+
+  @override
+  Future<ApiResult<List<Cart>>> getAll() async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.getAll();
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  @override
+  Future<ApiResult<List<Cart>>> getAllByIds(List<String> ids) async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.getAllById(ids);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  @override
+  Future<ApiResult<Cart>> getById(BaseRepoRequest<String> request) async {
+    if (appMode == AppMode.local) {
+      return await cartLocalRepository.getById(request.data);
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
+  @override
+  Future<ApiResult> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
+  }
+}
+
+class CartDecreaseQtyRequest {
+  String? cartId;
+  String? productId;
+  num qty;
+  CartDecreaseQtyRequest({this.cartId, this.productId, required this.qty});
+}
+
+class CartIncreaseQtyRequest {
+  String? cartId;
+  String? productId;
+  num qty;
+  CartIncreaseQtyRequest({this.cartId, this.productId, required this.qty});
+}
+
+class AddCartRequest {
+  String id;
+  Product product;
+  AddCartRequest({required this.id, required this.product});
+}
+
+class DeleteItemFromCartRequest {
+  String? id;
+  String cartItemId;
+  DeleteItemFromCartRequest({this.id, required this.cartItemId});
 }

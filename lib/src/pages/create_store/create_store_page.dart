@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
@@ -37,7 +37,7 @@ class _CreateStoreState extends State<CreateStorePage> {
     super.initState();
     _cubit = CreateStoreCubit(
       storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      appCubit: GetIt.I<AppCubit>(),
       userRepository: GetIt.I<UserRepository>(),
     );
 

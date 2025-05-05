@@ -19,8 +19,7 @@ class ProductOrder extends BaseHiveObject {
 
   @HiveField(8)
   final String paymentType;
-  PaymentMethodType get geyPaymentType =>
-      PaymentMethodType.fromString(paymentType);
+  PaymentMethodType get geyPaymentType => PaymentMethodType.fromString(paymentType);
 
   @HiveField(9)
   List<OrderItem> orderItems;
@@ -40,18 +39,15 @@ class ProductOrder extends BaseHiveObject {
   @HiveField(15)
   num? receiveAmount;
 
-  num get numberOfItems =>
-      orderItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
+  num get numberOfItems => orderItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
 
   num get serviceChargeValue => (serviceCharge ?? 0) / 100;
 
   num get totalServiceCharge => (orderItems.totalPrice * serviceChargeValue);
 
-  num get totalPriceIncludeServiceCharge =>
-      orderItems.totalPrice + totalServiceCharge;
+  num get totalPriceIncludeServiceCharge => orderItems.totalPrice + totalServiceCharge;
 
-  String get totalPriceDisplay =>
-      totalPriceIncludeServiceCharge.prefixCurrency();
+  String get totalPriceDisplay => totalPriceIncludeServiceCharge.prefixCurrency();
 
   ProductOrder({
     super.id,
@@ -64,8 +60,7 @@ class ProductOrder extends BaseHiveObject {
     this.receiveAmount,
   });
 
-  factory ProductOrder.fromJson(Map<String, dynamic> json) =>
-      _$ProductOrderFromJson(json);
+  factory ProductOrder.fromJson(Map<String, dynamic> json) => _$ProductOrderFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$ProductOrderToJson(this);

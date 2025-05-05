@@ -1,38 +1,27 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/local/dev_store_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
 
-abstract class IStoreRepository {
-  Future<ApiResult<List<Store>>> getAll({AppMode appMode = AppMode.local});
-  List<Store> getAllByIds(List<String> ids, {AppMode appMode = AppMode.local});
-  Store? getById(String id, {AppMode appMode = AppMode.local});
-  Future<ApiResult<Store>> create(Store request, {AppMode appMode = AppMode.local});
-  Future<Store> update(String id, Store updated, {AppMode appMode = AppMode.local});
-  Future<void> delete(String id, {AppMode appMode = AppMode.local});
-  deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
-}
-
 @Singleton()
 @Injectable()
-class StoreRepository implements IStoreRepository {
-  StoreLocalRepository storeLocalRepository;
-  StoreServerRepository storeServerRepository;
+class StoreRepository extends IRepository<Store> {
+  final StoreLocalRepository storeLocalRepository;
+  final StoreServerRepository storeServerRepository;
 
-  StoreRepository({
-    required this.storeLocalRepository,
-    required this.storeServerRepository,
-  });
+  StoreRepository({required this.storeLocalRepository, required this.storeServerRepository}) : super(AppMode.server);
 
   @override
-  Future<ApiResult<Store>> create(Store request, {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<Store>> create(BaseRepoRequest<Store> request) async {
     if (appMode == AppMode.local) {
-      final storeCreated = await storeLocalRepository.create(request);
       // ToastNotificationService.show(
       //   title: LocaleKeys.notification_createSuccess.tr(
       //     args: [storeCreated.name],
@@ -42,38 +31,33 @@ class StoreRepository implements IStoreRepository {
       //     StoreManagementRouter(GetIt.I<NavigationService>().navigatorKey.currentContext!).navigate();
       //   },
       // );
-
-      return ApiResult(response: storeCreated);
+      return await storeLocalRepository.create(request);
     } else {
       return await storeServerRepository.create(request);
     }
   }
 
   @override
-  Future<void> delete(String id, {AppMode? appMode = AppMode.local, String? name}) async {
+  Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-        title: LocaleKeys.notification_deleteSuccess.tr(
-          args: [name ?? ''],
-        ),
-      );
-      await storeLocalRepository.delete(id);
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: ['Store']));
+      return await storeLocalRepository.delete(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult> deleteAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      await storeLocalRepository.deleteAllByIds(ids);
+      return await storeLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<ApiResult<List<Store>>> getAll({AppMode appMode = AppMode.local}) async {
+  Future<ApiResult<List<Store>>> getAll() async {
     if (appMode == AppMode.local) {
       return Future.value(ApiResult(response: []));
     } else {
@@ -82,30 +66,36 @@ class StoreRepository implements IStoreRepository {
   }
 
   @override
-  Store? getById(String id, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<Store>> getById(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      return storeLocalRepository.getById(id);
+      return await storeLocalRepository.getById(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<Store> update(String id, Store updated, {AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<Store>> update(BaseRepoRequest<Store> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [updated.name]));
-      return storeLocalRepository.update(id, updated);
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: ['Store']));
+      return await storeLocalRepository.update(request);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  List<Store> getAllByIds(List<String> ids, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<List<Store>>> getAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      return storeLocalRepository.getAllById(ids);
+      return await storeLocalRepository.getAllById(ids);
     } else {
       throw UnimplementedError();
     }
+  }
+
+  @override
+  Future<ApiResult> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
@@ -11,11 +12,9 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
-import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/auth/_local/auth_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
@@ -26,7 +25,7 @@ import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_state.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
@@ -34,9 +33,12 @@ import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-class BaseCubit extends Cubit<BaseState> {
+@Singleton(env: [Flavor.DEV])
+@Singleton(env: [Flavor.DEV])
+class AppCubit extends Cubit<AppState> {
   AppTheme? _appTheme;
 
   Size deviceSize = const Size(0, 0);
@@ -87,19 +89,18 @@ class BaseCubit extends Cubit<BaseState> {
   int get cartCount => cart?.cartItems.length ?? 0;
   int get notificationCount => 0;
   int get addProductCount => _addProduct?.addProductItems.length ?? 0;
-  RoleType? get userRoleTypeCurrentStore =>
-      store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
+  RoleType? get userRoleTypeCurrentStore => store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
   String? get userId => user?.uid;
+  String? get storeId => store?.id;
   String get currentUsername {
     if (user?.displayName == null && user?.email == null) {
-      throw ('currentUsername user?.displayName == null && user?.email == null is Null');
+      return 'Unknown';
+      //  throw ('currentUsername user?.displayName == null && user?.email == null is Null');
     }
-    return user?.displayName ??
-        user?.email?.substring(0, user?.email?.indexOf("@")) ??
-        '--';
+    return user?.displayName ?? user?.email?.substring(0, user?.email?.indexOf("@")) ?? '--';
   }
 
-  BaseCubit({
+  AppCubit({
     required this.localStorageService,
     required this.authLocalRepository,
     required this.storeRepository,
@@ -111,30 +112,34 @@ class BaseCubit extends Cubit<BaseState> {
     required this.userRepository,
     required this.addProductRepository,
     required this.notificationRepository,
-  }) : super(BaseInitial()) {
-    // startAuthListen();
+  }) : super(AppInitial()) {
+    init();
+  }
+
+  void init() {
+    log('init()', name: runtimeType.toString());
     startProfileUpdateListen();
   }
 
   Future<void> loadAllDependencies() async {
-    emit(BaseLoading());
+    emit(AppLoading());
     await loadUserData();
     await loadStores();
     await loadNotifications();
-    emit(BaseSuccess());
+    emit(AppSuccess());
   }
 
   Future<void> loadStores() async {
-    final result = await storeRepository.getAll(appMode: AppMode.server);
+    final result = await storeRepository.getAll();
 
     result.when(
       success: (response) {
         _stores = response;
-        emit(BaseGetStoreSuccess(response));
+        emit(AppGetStoreSuccess(response));
         setCurrentStoreById(userData?.storeSelected);
       },
       failure: (error, {errorType}) {
-        emit(BaseGetStoreFailure());
+        emit(AppGetStoreFailure());
       },
     );
   }
@@ -145,10 +150,10 @@ class BaseCubit extends Cubit<BaseState> {
     result.when(
       success: (response) {
         _userData = response;
-        emit(BaseGetUserDataSuccess());
+        emit(AppGetUserDataSuccess());
       },
       failure: (error, {errorType}) {
-        emit(BaseGetUserDataFailure());
+        emit(AppGetUserDataFailure());
       },
     );
   }
@@ -162,25 +167,18 @@ class BaseCubit extends Cubit<BaseState> {
 
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
-      log(
-        'userChanges() isClosed:: $isClosed $user',
-        name: runtimeType.toString(),
-      );
+      log('userChanges() isClosed:: $isClosed $user', name: runtimeType.toString());
       setCurrentUser(user);
     });
   }
 
   loadAppTheme(AppTheme? value) {
     _appTheme = value;
-    ColorKeys.primary =
-        _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
-    ColorKeys.secondary =
-        _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
-    ColorKeys.accent =
-        _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
-    ColorKeys.brightness =
-        _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
-    emit(BaseLoadAppThemeSuccess(appTheme));
+    ColorKeys.primary = _appTheme?.primaryColor.toColor() ?? ColorKeys.defaultPrimary;
+    ColorKeys.secondary = _appTheme?.secondaryColor.toColor() ?? ColorKeys.defaultSecondary;
+    ColorKeys.accent = _appTheme?.accentColor.toColor() ?? ColorKeys.defaultAccent;
+    ColorKeys.brightness = _appTheme?.backgroundColor.toColor() ?? ColorKeys.defaultBrightness;
+    emit(AppLoadAppThemeSuccess(appTheme));
   }
 
   setCurrentStoreById(String? id) {
@@ -199,11 +197,13 @@ class BaseCubit extends Cubit<BaseState> {
       throw ('setCurrentStore store == null');
     }
 
-    await doGetAddProductByCurrentUserAndStore();
+    await loadProductByCurrentStore();
+    // await loadAllDependencies();
+    // await doGetAddProductByCurrentUserAndStore();
     setCurrentAddCartByCurrentStore(store?.id);
     setCurrentCartByCurrentStore();
 
-    emit(BaseSelectStore(_store?.id));
+    emit(AppSelectStore(_store?.id));
     // loadAppTheme(_store?.storeTheme);
     // loadTagsByCurrentStore();
     // loadCategoryByCurrentStore();
@@ -212,7 +212,7 @@ class BaseCubit extends Cubit<BaseState> {
   Future<void> setCurrentUser(User? user) async {
     _user = user;
     loadAllDependencies();
-    emit(BaseUserChange(user));
+    emit(AppUserChange(user));
     // if (_user?.storeId?.isEmpty ?? true) {
     //   return;
     // }
@@ -221,43 +221,53 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   setCurrentCartByCurrentStore() async {
-    final cartLocal = GetIt.I<CartLocalRepository>().getAll();
-    final cartFinded = cartRepository.getCartsByUserIdWithCurrentStore(
-      storeId: store!.id,
-      userId: user!.uid,
+    final resultCart = await GetIt.I<CartRepository>().getAll();
+
+    resultCart.when(
+      success: (response) async {
+        final cartFinded = await cartRepository.getCartsByUserIdWithCurrentStore(storeId: store!.id, userId: user!.uid);
+
+        cartFinded.when(
+          success: (response) {
+            setCurrentCart(response);
+          },
+          failure: (error) async {
+            if (userId == null) {
+              return;
+            }
+
+            final cartCreated = await cartRepository.create(
+              BaseRepoRequest(
+                storeId: store?.id,
+                userId: userId!,
+                data: Cart(id: const Uuid().v1(), storeId: store!.id, userId: user?.uid ?? '--', cartItems: []),
+              ),
+            );
+
+            cartCreated.when(
+              success: (response) {
+                setCurrentCart(null);
+              },
+            );
+          },
+        );
+
+        emit(AppRefresh(DateTime.now()));
+      },
+      failure: (error) {
+        emit(AppRefresh(DateTime.now()));
+      },
     );
-    log('setCurrentCartByCurrentStore : ${cartLocal.length}');
-
-    if (cartFinded != null) {
-      setCurrentCart(cartFinded);
-    } else {
-      final cartCreated = await cartRepository.create(
-        Cart(
-          id: const Uuid().v1(),
-          storeId: store!.id,
-          userId: user?.uid ?? '--',
-          cartItems: [],
-        ),
-      );
-
-      // await userRepository.update(user!.id, user!..carts.add(cartCreated.id));
-      setCurrentCart(cartCreated);
-    }
-
-    emit(BaseRefresh(DateTime.now()));
   }
 
   setCurrentAddCartByCurrentStore(String storeId) async {
     if (_addProducts.map((e) => e.storeId).toList().contains(storeId)) {
-      final addProductFinded =
-          _addProducts
-              .where((addProduct) => addProduct.storeId == storeId)
-              .firstOrNull;
+      final addProductFinded = _addProducts.where((addProduct) => addProduct.storeId == storeId).firstOrNull;
       setCurrentAddProduct(addProductFinded);
     } else {
       final addProductCreated = await addProductRepository.create(
-        CreateAddProductRequest(
-          addProduct: AddProduct(
+        BaseRepoRequest<AddProduct>(
+          data: AddProduct(
             id: const Uuid().v1(),
             storeId: storeId,
             userId: user?.uid ?? '',
@@ -287,21 +297,16 @@ class BaseCubit extends Cubit<BaseState> {
 
   changeMode(AppMode mode) {
     _appMode = mode;
-    emit(BaseChangeAppMode(_appMode));
+    emit(AppChangeAppMode(_appMode));
   }
 
   changeDisplayType() {
     productDisplayType =
-        productDisplayType == ProductDisplayType.grid
-            ? ProductDisplayType.list
-            : ProductDisplayType.grid;
+        productDisplayType == ProductDisplayType.grid ? ProductDisplayType.list : ProductDisplayType.grid;
   }
 
   changeSortType() {
-    productSortType =
-        productSortType == ProductSortType.asc
-            ? ProductSortType.desc
-            : ProductSortType.asc;
+    productSortType = productSortType == ProductSortType.asc ? ProductSortType.desc : ProductSortType.asc;
 
     sortProduct(productSortType);
   }
@@ -310,15 +315,11 @@ class BaseCubit extends Cubit<BaseState> {
     try {
       if (sortType == ProductSortType.asc) {
         products.sort(
-          (a, b) => a.info?.createAt!.millisecondsSinceEpoch.compareTo(
-            b.info?.createAt!.millisecondsSinceEpoch,
-          ),
+          (a, b) => a.info?.createAt!.millisecondsSinceEpoch.compareTo(b.info?.createAt!.millisecondsSinceEpoch),
         );
       } else {
         products.sort(
-          (a, b) => b.info?.createAt!.millisecondsSinceEpoch.compareTo(
-            a.info?.createAt!.millisecondsSinceEpoch,
-          ),
+          (a, b) => b.info?.createAt!.millisecondsSinceEpoch.compareTo(a.info?.createAt!.millisecondsSinceEpoch),
         );
       }
     } catch (e) {
@@ -327,25 +328,26 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   emitInitLocalStorageServiceSuccess() {
-    emit(BaseInitialLocalStorageServiceSuccess());
+    emit(AppInitialLocalStorageServiceSuccess());
   }
 
-  Future<void> doGetProducts() async {
-    emit(BaseLoading());
-    final result = await productRepository.getAllByStoreId(
-      store!.id,
-      appMode: AppMode.server,
-    );
+  Future<void> loadProductByCurrentStore() async {
+    if (storeId == null) {
+      return;
+    }
+
+    emit(AppLoading());
+    final result = await productRepository.getAllByStoreId(storeId!);
 
     result.when(
       success: (response) {
         setCurrentProduct(response ?? []);
         // sortProduct(productSortType);
-        emit(BaseSuccess());
+        emit(AppSuccess());
       },
       failure: (error, {errorType}) {
         setCurrentProduct([]);
-        emit(BaseFailure());
+        emit(AppFailure());
       },
     );
   }
@@ -354,36 +356,44 @@ class BaseCubit extends Cubit<BaseState> {
     _products = value;
   }
 
-  Future<void> doDeleteProduct({
-    required String storeId,
-    required String productId,
-  }) async {
-    emit(BaseLoading());
-    await productRepository.delete(storeId, productId, appMode: AppMode.server);
+  Future<void> doDeleteProduct({required String storeId, required String productId}) async {
+    emit(AppLoading());
+    await productRepository.delete(BaseRepoRequest(storeId: storeId, userId: userId!, data: productId));
     _products.removeWhere((elelment) => elelment.id == productId);
-    emit(BaseRefresh(DateTime.now()));
-  }
-
-  Future<void> initialStoreData() async {
-    await doGetProducts();
+    emit(AppRefresh(DateTime.now()));
   }
 
   void refresh() {
-    emit(BaseRefresh(DateTime.now()));
+    emit(AppRefresh(DateTime.now()));
   }
 
-  void loadTagsByCurrentStore() {
-    emit(BaseLoading());
-    _tags = tagRepository.getAllByIds(store?.tags ?? []);
-
-    emit(BaseLoadTagsByStoreSuccess(store?.tags ?? []));
+  void loadTagsByCurrentStore() async {
+    emit(AppLoading());
+    final result = await tagRepository.getAllByIds(store?.tags ?? []);
+    result.when(
+      success: (response) {
+        _tags = response;
+        emit(AppLoadTagsByStoreSuccess(store?.tags ?? []));
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
   }
 
-  void loadCategoryByCurrentStore() {
-    emit(BaseLoading());
-    _categories = categoryRepository.getAllByIds(store?.categories ?? []);
+  void loadCategoryByCurrentStore() async {
+    emit(AppLoading());
+    final result = await categoryRepository.getAllByIds(store?.categories ?? []);
 
-    emit(BaseLoadCategoriesByStoreSuccess(store?.categories ?? []));
+    result.when(
+      success: (response) {
+        _categories = response;
+        emit(AppLoadCategoriesByStoreSuccess(store?.categories ?? []));
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
   }
 
   void updateCurrentUser(User resultUpdated) {
@@ -392,13 +402,15 @@ class BaseCubit extends Cubit<BaseState> {
 
   void addCart({Offset? offset, required Product? product}) async {
     if (_cart != null && product != null) {
-      emit(BaseLoading());
-      final cartUpdate = await cartRepository.addCart(_cart!.id, product);
+      emit(AppLoading());
+      final cartUpdate = await cartRepository.addCart(
+        BaseRepoRequest(storeId: storeId, userId: userId, data: AddCartRequest(id: _cart!.id, product: product)),
+      );
 
       log('cartUpdate $cartUpdate');
-      emit(BaseAddCartSuccess());
+      emit(AppAddCartSuccess());
       Future.delayed(durationAddCart).then((value) {
-        emit(BaseAddCartAnimationSuccess());
+        emit(AppAddCartAnimationSuccess());
       });
     }
   }
@@ -408,31 +420,43 @@ class BaseCubit extends Cubit<BaseState> {
   }
 
   Future<void> deleteItemFromCart(String cartItemId) async {
-    emit(BaseLoading());
+    emit(AppLoading());
     final resultCartUpdated = await cartRepository.deleteItemByIdFromCart(
-      cart?.id,
-      cartItemId,
+      BaseRepoRequest(
+        storeId: storeId,
+        userId: userId,
+        data: DeleteItemFromCartRequest(cartItemId: cartItemId, id: cart?.id),
+      ),
     );
 
-    setCurrentCart(resultCartUpdated);
+    setCurrentCart(resultCartUpdated.response);
 
-    emit(BaseRemoveCartItem());
+    emit(AppRemoveCartItem());
   }
 
   Future<void> deleteItemFromAddProduct(String addProductItemId) async {
-    emit(BaseLoading());
-    final resultAddCartUpdated = await addProductRepository
-        .deleteItemByIdFromCart(cart?.id, addProductItemId);
+    emit(AppLoading());
+    final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromCart(
+      BaseRepoRequest(
+        storeId: storeId,
+        userId: userId,
+        data: DeleteItemFormCartRequest(id: cart?.id, addProductItemId: addProductItemId),
+      ),
+    );
 
-    setCurrentAddProduct(resultAddCartUpdated);
+    resultAddCartUpdated.when(
+      success: (response) {
+        setCurrentAddProduct(response);
 
-    emit(BaseRemoveCartItem());
+        emit(AppRemoveCartItem());
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
   }
 
-  Future<Product?> addStock({
-    required Product? product,
-    required num amountCost,
-  }) async {
+  Future<Product?> addStock({required Product? product, required num amountCost}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
@@ -441,11 +465,10 @@ class BaseCubit extends Cubit<BaseState> {
       throw ('addStock addProduct is Null');
     }
 
-    emit(BaseLoading());
+    emit(AppLoading());
 
     final addProductUpdate = await addProductRepository.addProduct(
-      addProduct!.id,
-      product,
+      BaseRepoRequest(storeId: storeId, userId: userId, data: AddProductRequest(id: addProduct!.id, product: product)),
     );
 
     // final productUpdated = await productRepository.addProductQuantityToStock(
@@ -466,21 +489,20 @@ class BaseCubit extends Cubit<BaseState> {
     //   failure: (error) {},
     // );
 
-    emit(BaseAddStockSuccess(DateTime.now()));
+    emit(AppAddStockSuccess(DateTime.now()));
 
     return product;
   }
 
   void updateProductQuantity(Product? productUpdated) {
-    final productFinded =
-        _products.where((e) => e.id == productUpdated?.id).firstOrNull;
+    final productFinded = _products.where((e) => e.id == productUpdated?.id).firstOrNull;
 
     if (productFinded == null) {
       throw ('updateProductQuantity() Product is Null');
     }
 
     productFinded.quantity = productUpdated?.quantity;
-    emit(BaseRefresh(DateTime.now()));
+    emit(AppRefresh(DateTime.now()));
   }
 
   Future<void> updateDisplayName(String? displayNameEditor) async {
@@ -493,10 +515,10 @@ class BaseCubit extends Cubit<BaseState> {
     result.when(
       success: (response) {
         setNotifications(response);
-        emit(BaseGetNotificationsSuccess());
+        emit(AppGetNotificationsSuccess());
       },
       failure: (error, {errorType}) {
-        emit(BaseGetNotificationsFailure());
+        emit(AppGetNotificationsFailure());
       },
     );
   }

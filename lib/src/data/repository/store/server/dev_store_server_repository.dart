@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
 
-@Injectable()
-@Singleton()
+@Injectable(env: [Flavor.DEV])
+@Singleton(env: [Flavor.DEV])
 class StoreServerRepository {
   final UserRepository userRepository;
   final FirebaseService firebaseService;
@@ -23,60 +25,48 @@ class StoreServerRepository {
     required this.notificationRepository,
   });
 
-  Future<ApiResult<Store>> create(Store request) async {
+  Future<ApiResult<Store>> create(BaseRepoRequest<Store> request) async {
     final productInfo = BaseHiveData(
       createAt: FieldValue.serverTimestamp(),
       updateAt: FieldValue.serverTimestamp(),
-      createBy: request.ownerId,
-      updateBy: request.ownerId,
+      createBy: request.data.ownerId,
+      updateBy: request.data.ownerId,
     );
 
-    request.info = productInfo;
+    request.data.info = productInfo;
 
-    final storeCreated = await firebaseService.storesCollection.add(
-      request.toJson(),
-    );
+    final storeCreated = await firebaseService.storesCollection.add(request.data.toJson());
 
     final response = await storeCreated.get();
 
     if (response.data() == null) {
-      return ApiResult(
-          error: null, appErrorType: AppErrorType.somethingWentWrong);
+      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
     }
 
-    firebaseService.usersCollection.doc(firebaseService.userUid).set(
-        {
-          'stores': FieldValue.arrayUnion([storeCreated.id]),
-        },
-        SetOptions(
-          merge: true,
-        ));
+    firebaseService.usersCollection.doc(firebaseService.userUid).set({
+      'stores': FieldValue.arrayUnion([storeCreated.id]),
+    }, SetOptions(merge: true));
 
     await userRepository.updateSelectedStore(response.id);
 
-    return ApiResult(response: request..id = response.id);
+    return ApiResult(response: request.data..id = response.id);
   }
 
   Future<ApiResult<List<Store>>> getAll() async {
     try {
-      final userResponse = await firebaseService.usersCollection
-          .doc(firebaseService.userUid)
-          .get();
+      final userResponse = await firebaseService.usersCollection.doc(firebaseService.userUid).get();
       final userData = userResponse.data();
       final List storesOfUser = userData?['stores'];
 
       var snapshots = await Future.wait(
-        storesOfUser
-            .map((id) => firebaseService.storesCollection.doc(id).get())
-            .toList(),
+        storesOfUser.map((id) => firebaseService.storesCollection.doc(id).get()).toList(),
       );
 
-      List<Store> stores = snapshots.map(
-        (snapshot) {
-          var store = Store.fromJson(snapshot.data() ?? {});
-          return store..id = snapshot.id;
-        },
-      ).toList();
+      List<Store> stores =
+          snapshots.map((snapshot) {
+            var store = Store.fromJson(snapshot.data() ?? {});
+            return store..id = snapshot.id;
+          }).toList();
 
       return ApiResult(response: stores);
     } catch (e) {
@@ -94,12 +84,10 @@ class StoreServerRepository {
       var user = await firebaseService.usersCollection.get();
 
       if (user.docs.any((e) => e.get('email') == email)) {
-        var storeResponse =
-            await firebaseService.storesCollection.doc(storeId).get();
+        var storeResponse = await firebaseService.storesCollection.doc(storeId).get();
         final store = Store.fromJson(storeResponse.data() ?? {});
         if (store.members.any((e) => e.email == email)) {
-          return ApiResult(
-              error: {}, appErrorType: AppErrorType.storeAlreadyThisUser);
+          return ApiResult(error: {}, appErrorType: AppErrorType.storeAlreadyThisUser);
         }
 
         notificationRepository.createInvite(
@@ -108,16 +96,11 @@ class StoreServerRepository {
             type: NotificationType.storeInvite,
             title: storeName,
             createAt: FieldValue.serverTimestamp(),
-            payload: {
-              'storeId': storeId,
-              'role': role.name,
-            },
+            payload: {'storeId': storeId, 'role': role.name},
           ),
         );
 
-        return ApiResult(
-          response: {"status": "Success"},
-        );
+        return ApiResult(response: {"status": "Success"});
       } else {
         return ApiResult(error: {}, appErrorType: AppErrorType.userNotFound);
       }
@@ -126,23 +109,17 @@ class StoreServerRepository {
     }
   }
 
-  Future<ApiResult> acceptInvitation(
-      String? notiId, String? storeId, Map<String, dynamic>? payload) async {
+  Future<ApiResult> acceptInvitation(String? notiId, String? storeId, Map<String, dynamic>? payload) async {
     // try {
-    await firebaseService.storesCollection.doc(storeId).set(
-      {
-        'members': FieldValue.arrayUnion(
-          [
-            Member(
-              uid: firebaseService.userUid ?? '',
-              role: payload?['role'],
-              email: firebaseService.userEmail ?? '',
-            ).toJson()
-          ],
-        )
-      },
-      SetOptions(merge: true),
-    );
+    await firebaseService.storesCollection.doc(storeId).set({
+      'members': FieldValue.arrayUnion([
+        Member(
+          uid: firebaseService.userUid ?? '',
+          role: payload?['role'],
+          email: firebaseService.userEmail ?? '',
+        ).toJson(),
+      ]),
+    }, SetOptions(merge: true));
     await firebaseService.usersCollection.doc(firebaseService.userUid).set({
       'stores': FieldValue.arrayUnion([storeId]),
     }, SetOptions(merge: true));
@@ -161,9 +138,7 @@ class StoreServerRepository {
     try {
       return ApiResult(response: {"status": "Success"});
     } catch (e) {
-      return ApiResult(
-        error: e,
-      );
+      return ApiResult(error: e);
     }
   }
 }

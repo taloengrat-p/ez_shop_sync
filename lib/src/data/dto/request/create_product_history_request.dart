@@ -6,13 +6,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'create_product_history_request.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class CreateProductHistoryRequest extends BaseRepoRequest {
+class CreateProductHistoryRequest extends BaseRepoRequest<ProductHistoryEvent> {
   String productId;
   String? productTypeId;
-  ProductHistoryEvent event;
   Map<String, dynamic>? oldData;
   Map<String, dynamic>? newData;
-  BaseHiveData info;
   String? orderId;
   String? addStockId;
 
@@ -21,10 +19,10 @@ class CreateProductHistoryRequest extends BaseRepoRequest {
     this.productTypeId,
     required super.userId,
     required this.productId,
-    required this.event,
+    required super.data,
     this.newData,
     this.oldData,
-    required this.info,
+    required super.info,
     this.addStockId,
     this.orderId,
   });

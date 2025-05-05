@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -31,7 +31,7 @@ class _UserManagementState extends State<UserManagementPage> {
     super.initState();
     _cubit = UserManagementCubit(
       storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((time) {

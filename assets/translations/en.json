@@ -3,7 +3,10 @@
   "createYourStoreName": "Create Your Store Name",
   "storeSettings": "Store Settings",
   "menu": "Menu",
-  "statistic": "Statistic",
+  "statistic": {
+    "title": "Statistic",
+    "emptyMessage": "Your statistic is empty."
+  },
   "transactions": "Transactions",
   "products": "Products",
   "productsEmpty": "Your product is empty please create new product.",
@@ -67,7 +70,8 @@
     "updateSuccess": "Update {} Success",
     "createSuccess": "Create {} Success",
     "createSuccessSeeDetail": "Press for see detail",
-    "createNewPINTitle": "Create new PIN Success"
+    "createNewPINTitle": "Create new PIN Success",
+    "emptyMessage": "Your notification is empty please create new category."
   },
   "createPINTitle": "Create PIN",
   "createPINDesc": "Enter the code for setup PIN",
@@ -203,5 +207,8 @@
     "title": "Offline Mode Enabled",
     "desc": "Limited features are available until you're back online."
   },
-  "productType": "Product type"
+  "productType": "Product type",
+  "notifications": {
+    "title": "Notification"
+  }
 }

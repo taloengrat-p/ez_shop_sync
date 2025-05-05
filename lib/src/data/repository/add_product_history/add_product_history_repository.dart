@@ -1,74 +1,63 @@
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
-import 'package:ez_shop_sync/src/data/dto/request/create_add_stock_request.dart';
-import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_server_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/base_repository.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product_history/server/add_product_history_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
-import 'add_product_history_local_repository.dart';
-
-abstract class IAddProductHistoryRepository {
-  List<AddProduct> getAllByIds(List<String> ids);
-  Future<AddProduct> create(CreateAddProductRequest request);
-  Future<AddProduct> update(String id, AddProduct updated);
-  Future<void> delete(String id);
-  Future<void> deleteAll(List<String> ids);
-}
+import 'local/add_product_history_local_repository.dart';
 
 @Singleton()
 @Injectable()
-class AddProductHistoryRepository extends BaseRepository implements IAddProductHistoryRepository {
+class AddProductHistoryRepository extends IRepository<AddProduct> {
   AddProductHistoryLocalRepository addProductHistoryLocalRepository;
   AddProductHistoryServerRepository addProductHistoryServerRepository;
-
   AddProductHistoryRepository({
     required this.addProductHistoryLocalRepository,
     required this.addProductHistoryServerRepository,
-  });
+  }) : super(AppMode.local);
 
   @override
-  Future<AddProduct> create(CreateAddProductRequest request) async {
+  Future<ApiResult<AddProduct>> create(BaseRepoRequest<AddProduct> request) async {
     if (appMode == AppMode.local) {
-      return await addProductHistoryLocalRepository.create(
-        request.addProduct,
-        userId: request.userId,
-      );
+      return await addProductHistoryLocalRepository.create(request);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      await addProductHistoryLocalRepository.delete(id);
+      return await addProductHistoryLocalRepository.delete(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<void> deleteAll(List<String> ids) async {
+  Future<ApiResult> deleteAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      await addProductHistoryLocalRepository.deleteAllByIds(ids);
+      return await addProductHistoryLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  List<AddProduct> getAllByIds(List<String> addProducts) {
+  Future<ApiResult<List<AddProduct>>> getAllByIds(List<String> addProducts) async {
     if (appMode == AppMode.local) {
-      return addProductHistoryLocalRepository.getAllById(addProducts);
+      return await addProductHistoryLocalRepository.getAllById(addProducts);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<AddProduct> update(String id, AddProduct updated) async {
+  Future<ApiResult<AddProduct>> update(BaseRepoRequest<AddProduct> request) async {
     if (appMode == AppMode.local) {
-      return await addProductHistoryLocalRepository.update(id, updated);
+      return await addProductHistoryLocalRepository.update(request);
     } else {
       throw UnimplementedError();
     }
@@ -84,5 +73,23 @@ class AddProductHistoryRepository extends BaseRepository implements IAddProductH
     } catch (e) {
       return [];
     }
+  }
+
+  @override
+  Future<ApiResult<List<AddProduct>>> getAll() {
+    // TODO: implement getAll
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult<AddProduct>> getById(BaseRepoRequest<String> request) {
+    // TODO: implement getById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
   }
 }

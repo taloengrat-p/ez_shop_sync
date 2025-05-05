@@ -4,7 +4,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_state.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
@@ -40,7 +40,7 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
     super.initState();
     _cubit = CategoryManagementCubit(
       storeRepository: GetIt.I<StoreRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      appCubit: GetIt.I<AppCubit>(),
       categoryRepository: GetIt.I<CategoryRepository>(),
     );
 

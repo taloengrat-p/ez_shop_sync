@@ -3,7 +3,7 @@ import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class MoreCubit extends Cubit<MoreState> {
-  BaseCubit baseCubit;
+  AppCubit baseCubit;
   AuthRepository authRepository;
   final UserRepository userRepository;
   List<Store> get stores => baseCubit.stores;

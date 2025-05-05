@@ -4,7 +4,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
@@ -38,7 +38,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
     super.initState();
     _cubit = CreateCategoryCubit(
       categoryRepository: GetIt.I<CategoryRepository>(),
-      baseCubit: GetIt.I<BaseCubit>(),
+      baseCubit: GetIt.I<AppCubit>(),
       storeRepository: GetIt.I<StoreRepository>(),
     );
 

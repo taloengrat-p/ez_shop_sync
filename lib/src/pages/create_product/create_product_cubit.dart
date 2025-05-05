@@ -6,11 +6,11 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/utils/folder_file_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +19,7 @@ import 'package:uuid/uuid.dart';
 
 class CreateProductCubit extends Cubit<CreateProductState> {
   ProductRepository productRepository;
-  BaseCubit baseCubit;
+  AppCubit appCubit;
   //
   ScreenMode _screenMode = ScreenMode.create;
 
@@ -34,27 +34,19 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   // List<ProductType> productTypeList = [];
 
-  Store? get currentStore => baseCubit.store;
-  User? get currentUser => baseCubit.user;
+  Store? get currentStore => appCubit.store;
+  User? get currentUser => appCubit.user;
 
   List<Tag> get tagsModelSelected =>
-      _productEditor?.tag
-          ?.map(
-            (e) => tags.where((tag) => tag.id == e).first,
-          )
-          .toList() ??
-      [];
+      _productEditor?.tag?.map((e) => tags.where((tag) => tag.id == e).first).toList() ?? [];
 
-  List<Category> get categories => baseCubit.categories;
-  List<Tag> get tags => baseCubit.tags;
+  List<Category> get categories => appCubit.categories;
+  List<Tag> get tags => appCubit.tags;
   ScreenMode get screenMode => _screenMode;
   Product? get productEditor => _productEditor;
   Product? get productOriginal => _productOriginal;
 
-  CreateProductCubit({
-    required this.productRepository,
-    required this.baseCubit,
-  }) : super(CreateProductInitial()) {
+  CreateProductCubit({required this.productRepository, required this.appCubit}) : super(CreateProductInitial()) {
     _productEditor = Product(
       id: '',
       name: '',
@@ -98,8 +90,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       for (var element in _productEditor!.imagesPath!) {
         final fileBytes = await FolderFileUtils.getFileBytes(File(element));
         final imageName = const Uuid().v1().substring(0, 10);
-        final imageSaveModel =
-            (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
+        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
         imageDetailFileName.add(imageSaveModel.fileName);
       }
     }
@@ -115,17 +106,17 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       CreateProductRequest(
         storeId: currentStore!.id,
         userId: currentUser?.uid ?? '',
-        product: _productEditor!
-          ..productTypeList = _productEditor!.productTypeList
-              ?.map((e) => e..id = const Uuid().v4())
-              .toList(),
-        appMode: AppMode.server,
+        data:
+            _productEditor!
+              ..productTypeList = _productEditor!.productTypeList?.map((e) => e..id = const Uuid().v4()).toList(),
       ),
     );
 
-    Future.delayed(Duration.zero, () {
-      emit(CreateProductSuccess(result));
-    });
+    result.when(
+      success: (response) {
+        emit(CreateProductSuccess(response));
+      },
+    );
   }
 
   setQuantity(String? value) {
@@ -169,11 +160,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   }
 
   setTags(List<Tag> tags) {
-    _productEditor?.tag = tags
-        .map(
-          (e) => e.id.toString(),
-        )
-        .toList();
+    _productEditor?.tag = tags.map((e) => e.id.toString()).toList();
   }
 
   void refresh() {
@@ -211,14 +198,17 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
     emit(CreateProductLoading());
     final result = await productRepository.update(
-      _productEditor!.storeId,
-      _productEditor!.id,
-      _productEditor!
-        ..productTypeList = _productEditor!.productTypeList?.map((e) {
-          e.id ??= const Uuid().v4();
-          return e;
-        }).toList(),
-      appMode: AppMode.server,
+      BaseRepoRequest(
+        storeId: appCubit.storeId ?? '',
+        userId: appCubit.userId ?? '',
+        data:
+            _productEditor!
+              ..productTypeList =
+                  _productEditor!.productTypeList?.map((e) {
+                    e.id ??= const Uuid().v4();
+                    return e;
+                  }).toList(),
+      ),
     );
 
     result.when(
@@ -276,21 +266,13 @@ class CreateProductCubit extends Cubit<CreateProductState> {
       num? priceTemp = num.tryParse(tempPriceCategoryValue);
 
       if (priceTemp != null) {
-        _productEditor?.productTypeList?.add(ProductType(
-          image: '',
-          name: tempPriceCategoryName,
-          price: priceTemp,
-        ));
+        _productEditor?.productTypeList?.add(ProductType(image: '', name: tempPriceCategoryName, price: priceTemp));
       }
     }
   }
 
   void addProductType() {
-    _productEditor?.productTypeList?.add(
-      ProductType(
-        image: null,
-      ),
-    );
+    _productEditor?.productTypeList?.add(ProductType(image: null));
     emit(CreateProductRefresh(DateTime.now()));
   }
 

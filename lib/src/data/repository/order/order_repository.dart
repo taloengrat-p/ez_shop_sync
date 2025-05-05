@@ -6,10 +6,12 @@ import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/order_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/order/local/order_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/order/server/order_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
@@ -21,15 +23,14 @@ abstract class IOrderRepository {
   List<ProductOrder> getAll({AppMode appMode = AppMode.local});
   ProductOrder? getById(String id, {AppMode appMode = AppMode.local});
   Future<ApiResult<ProductOrder>> create(CreateOrderRequest request);
-  Future<ProductOrder> update(String id, ProductOrder updated,
-      {AppMode appMode = AppMode.local});
+  Future<ProductOrder> update(String id, ProductOrder updated, {AppMode appMode = AppMode.local});
   Future<void> delete(String id, {AppMode appMode = AppMode.local});
   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
 }
 
 @Singleton()
 @Injectable()
-class OrderRepository implements IOrderRepository {
+class OrderRepository extends IRepository<ProductOrder> {
   OrderLocalRepository orderLocalRepository;
   OrderServerRepository orderServerRepository;
   CartRepository cartRepository;
@@ -40,30 +41,36 @@ class OrderRepository implements IOrderRepository {
     required this.orderServerRepository,
     required this.cartRepository,
     required this.transactionRepository,
-  });
+  }) : super(AppMode.server);
 
   @override
-  Future<ApiResult<ProductOrder>> create(CreateOrderRequest request,
-      {AppMode appMode = AppMode.local}) async {
+  Future<ApiResult<ProductOrder>> create(BaseRepoRequest<ProductOrder> request) async {
     final now = DateTime.now();
     if (appMode == AppMode.local) {
       String fullUuid = const Uuid().v4();
       String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
-      String prefixedUuid =
-          '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
+      String prefixedUuid = '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
 
       final orderCreate = ProductOrder(
-        storeId: request.storeId,
+        storeId: request.storeId ?? '',
         id: prefixedUuid,
         status: OrderStatusType.complete.name,
-        orderItems: request.orderItems,
-        paymentType: request.paymentType.name,
-        userId: request.userId,
+        orderItems: request.data.orderItems,
+        paymentType: request.data.paymentType,
+        userId: request.userId ?? '',
       );
 
       final result = await orderLocalRepository.create(
-        orderCreate,
-        userId: request.userId,
+        BaseRepoRequest(storeId: request.storeId, userId: orderCreate.userId, data: orderCreate),
+      );
+
+      result.when(
+        success: (response) {
+          return ApiResult(response: response);
+        },
+        failure: (error) {
+          return ApiResult(error: error);
+        },
       );
 
       // await transactionRepository.create(
@@ -77,29 +84,27 @@ class OrderRepository implements IOrderRepository {
       //   ),
       // );
       // return ApiResult(response:  );
-
-      return ApiResult();
     } else {
       return await orderServerRepository.createOrder(request);
     }
+
+    return Future.value(ApiResult<ProductOrder>(error: 'create'));
   }
 
   @override
-  delete(String id, {AppMode? appMode = AppMode.local, String? name}) {
+  Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr(args: [name ?? '']));
-      return orderLocalRepository.delete(id);
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: ['Order']));
+      return orderLocalRepository.delete(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  deleteAll(List<String> ids, {AppMode? appMode = AppMode.local}) {
+  deleteAllByIds(List<String> ids, {AppMode? appMode = AppMode.local}) {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(
-          title: LocaleKeys.notification_deleteSuccess.tr());
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr());
       return orderLocalRepository.deleteAllByIds(ids);
     } else {
       throw UnimplementedError();
@@ -107,9 +112,9 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  List<ProductOrder> getAll({AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<List<ProductOrder>>> getAll({AppMode? appMode = AppMode.local}) async {
     if (appMode == AppMode.local) {
-      return orderLocalRepository.getAll();
+      return await orderLocalRepository.getAll();
     } else {
       throw UnimplementedError();
     }
@@ -126,15 +131,14 @@ class OrderRepository implements IOrderRepository {
     try {
       if (appMode == AppMode.local) {
         return Future.value(
-          ApiResult(
-            response: OrderHistoryResponse(
-              orders: orderLocalRepository.getAllRange(start, end),
-            ),
-          ),
+          ApiResult(response: OrderHistoryResponse(orders: orderLocalRepository.getAllRange(start, end))),
         );
       } else {
         return await orderServerRepository.getOrderHistoryList(
-            storeId: storeId, limit: limit, lastDocument: lastDocument);
+          storeId: storeId,
+          limit: limit,
+          lastDocument: lastDocument,
+        );
       }
     } catch (e) {
       return Future.value(ApiResult());
@@ -142,43 +146,83 @@ class OrderRepository implements IOrderRepository {
   }
 
   @override
-  ProductOrder? getById(String id, {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<ProductOrder>> getById(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      return orderLocalRepository.getById(id);
+      return await orderLocalRepository.getById(request.data);
     } else {
       throw UnimplementedError();
     }
   }
 
   @override
-  Future<ProductOrder> update(String id, ProductOrder updated,
-      {AppMode? appMode = AppMode.local}) {
+  Future<ApiResult<ProductOrder>> update(BaseRepoRequest<ProductOrder> request) async {
     if (appMode == AppMode.local) {
-      return orderLocalRepository.update(id, updated);
+      return await orderLocalRepository.update(request);
     } else {
       throw UnimplementedError();
     }
   }
 
-  List<ProductOrder> getAllBetween(
+  Future<ApiResult<List<ProductOrder>>> getAllBetween(
     String storeId, {
     required DateTime start,
     required DateTime end,
     AppMode? appMode = AppMode.local,
-  }) {
+  }) async {
     if (appMode == AppMode.local) {
-      return orderLocalRepository
-          .getAllBetween(start: start, end: end)
-          .where((e) => e.storeId == storeId)
-          .toList();
+      final resultAllBetween = await orderLocalRepository.getAllBetween(start: start, end: end);
+
+      resultAllBetween.when(
+        success: (response) {
+          return ApiResult(response: response.where((e) => e.storeId == storeId).toList());
+        },
+        failure: (error) {
+          return ApiResult(error: error);
+        },
+      );
+    } else {
+      throw UnimplementedError();
+    }
+    return ApiResult(error: 'getAllBetween failure');
+  }
+
+  Future<ApiResult<ProductOrder>> getOrderHistoryDetail(String storeId, String id) async {
+    return await orderServerRepository.getOrderHistory(storeId, id);
+  }
+
+  @override
+  Future<ApiResult<List<ProductOrder>>> getAllByIds(List<String> ids) {
+    if (appMode == AppMode.local) {
+      return orderLocalRepository.getAllById(ids);
     } else {
       throw UnimplementedError();
     }
   }
 
-  Future<ApiResult<ProductOrder>> getOrderHistoryDetail(
-      String storeId, String id) async {
-    return await orderServerRepository.getOrderHistory(storeId, id);
+  @override
+  Future<ApiResult> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
+  }
+
+  Future<ApiResult> createFromCart(BaseRepoRequest<CreateOrderRequest> request) async {
+    if (appMode == AppMode.local) {
+      return create(
+        BaseRepoRequest(
+          storeId: request.storeId,
+          userId: request.userId,
+          data: ProductOrder(
+            storeId: request.storeId ?? '',
+            userId: request.userId ?? '',
+            status: request.data.status.name,
+            orderItems: request.data.orderItems,
+            paymentType: request.data.paymentType.name,
+          ),
+        ),
+      );
+    } else {
+      throw UnimplementedError();
+    }
   }
 }
 
@@ -186,8 +230,5 @@ class OrderHistoryResponse {
   final List<ProductOrder> orders;
   final QueryDocumentSnapshot? lastDocument;
 
-  OrderHistoryResponse({
-    required this.orders,
-    this.lastDocument,
-  });
+  OrderHistoryResponse({required this.orders, this.lastDocument});
 }

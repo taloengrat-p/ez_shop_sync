@@ -4,10 +4,11 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,19 +20,13 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
 
   Product? product;
   List<ProductHistory>? productHistory;
-  BaseCubit baseCubit;
+  AppCubit baseCubit;
 
   String get productDescription => product?.description ?? '';
-  List<Tag> get tags => baseCubit.tags
-      .where((e) => product?.tag?.contains(e.id) ?? false)
-      .toList();
-  Category? get category =>
-      baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
-  ProductDetailCubit({
-    required this.productHistoryRepository,
-    required this.productRepository,
-    required this.baseCubit,
-  }) : super(ProductDetailInitial());
+  List<Tag> get tags => baseCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
+  Category? get category => baseCubit.categories.where((e) => product?.category == e.id).firstOrNull;
+  ProductDetailCubit({required this.productHistoryRepository, required this.productRepository, required this.baseCubit})
+    : super(ProductDetailInitial());
 
   setArgrument(Product value) async {
     log('baseCubit.tags ${baseCubit.tags} : ${product?.tag}');
@@ -60,9 +55,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     emit(ProductDetailLoading());
 
     await productRepository.delete(
-      baseCubit.store!.id,
-      product!.id,
-      appMode: AppMode.server,
+      BaseRepoRequest(storeId: baseCubit.storeId ?? '', userId: baseCubit.userId ?? '', data: product?.id ?? ''),
     );
 
     emit(ProductDetailDelete());
@@ -73,26 +66,32 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   void loadTags() {}
 
   void refresh({Product? product}) async {
-    product = product ??
-        (await productRepository.getById(
-                storeId: product!.storeId, productId: this.product!.id))
-            .response;
-    emit(ProductDetailInitial());
+    if (product == null) {
+      product = product;
+      emit(ProductDetailInitial());
+    } else {
+      final result = await productRepository.getById(
+        BaseRepoRequest(storeId: baseCubit.storeId ?? '', userId: baseCubit.userId ?? '', data: product.id),
+      );
+      result.when(
+        success: (response) {
+          product = response;
+          emit(ProductDetailInitial());
+        },
+        failure: (error) {
+          emit(ProductDetailFailure());
+        },
+      );
+    }
   }
 
   void addCart(Product? cartProduct) {
-    baseCubit.addCart(
-      offset: Offset.zero,
-      product: cartProduct,
-    );
+    baseCubit.addCart(offset: Offset.zero, product: cartProduct);
   }
 
   void addStock(Product? product, num amountCost) async {
     emit(ProductDetailLoading());
-    product = await baseCubit.addStock(
-      product: product,
-      amountCost: amountCost,
-    );
+    product = await baseCubit.addStock(product: product, amountCost: amountCost);
     emit(ProductDetailRefresh(DateTime.now()));
   }
 

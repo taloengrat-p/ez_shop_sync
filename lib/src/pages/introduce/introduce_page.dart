@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
-import 'package:ez_shop_sync/src/pages/base/base_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_cubit.dart';
 import 'package:ez_shop_sync/src/pages/introduce/introduce_state.dart';
 import 'package:ez_shop_sync/src/pages/introduce/widgets/step_widget.dart';
@@ -31,7 +31,7 @@ class IntroduceFlowPage extends StatefulWidget {
 
 class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   late IntroduceCubit cubit;
-  late BaseCubit baseCubit;
+  late AppCubit baseCubit;
   final _introKey = GlobalKey<IntroductionScreenState>();
   final _firstNameFocusNode = FocusNode();
   final _lastNameFocusNode = FocusNode();
@@ -45,7 +45,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
   void initState() {
     super.initState();
 
-    baseCubit = BlocProvider.of<BaseCubit>(context);
+    baseCubit = BlocProvider.of<AppCubit>(context);
     cubit = IntroduceCubit(
       authRepository: GetIt.I<AuthRepository>(),
       baseCubit: baseCubit,
