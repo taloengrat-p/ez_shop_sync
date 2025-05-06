@@ -1,0 +1,21 @@
+android {
+    flavorDimensions += "flavor-type"
+
+    productFlavors {
+        dev {
+            dimension "flavor-type"
+            applicationId "com.taloengratp.ezshopsync.dev"
+            resValue "string", "app_name", "Ez Shop Sync-DEV"
+        }
+        stg {
+            dimension "flavor-type"
+            applicationId "com.taloengratp.ezshopsync.stg"
+            resValue "string", "app_name", "Ez Shop Sync-STG"
+        }
+        prod {
+            dimension "flavor-type"
+            applicationId "com.taloengratp.ezshopsync"
+            resValue "string", "app_name", "Ez Shop Sync"
+        }
+    }
+}
