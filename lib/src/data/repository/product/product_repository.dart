@@ -59,6 +59,7 @@ class ProductRepository extends IRepository<Product> {
     required this.productServerRepository,
     required this.productHistoryRepository,
     required this.transactionRepository,
+    required super.navigationService,
   }) : super(AppMode.server);
 
   @override

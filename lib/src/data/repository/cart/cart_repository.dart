@@ -17,7 +17,11 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   CartLocalRepository cartLocalRepository;
   CartServerRepository cartServerRepository;
 
-  CartRepository({required this.cartLocalRepository, required this.cartServerRepository}) : super(AppMode.local);
+  CartRepository({
+    required this.cartLocalRepository,
+    required this.cartServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.local);
 
   @override
   Future<ApiResult<Cart>> create(BaseRepoRequest<Cart> request) async {

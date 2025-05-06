@@ -13,7 +13,7 @@ import 'package:injectable/injectable.dart';
 class NotificationRepository extends IRepository<Notification> {
   final FirebaseService firebaseService;
 
-  NotificationRepository({required this.firebaseService}) : super(AppMode.server);
+  NotificationRepository({required this.firebaseService, required super.navigationService}) : super(AppMode.server);
 
   Future<ApiResult> createInvite({required String uid, required Notification request}) async {
     try {

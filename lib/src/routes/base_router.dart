@@ -3,20 +3,13 @@ import 'package:flutter/material.dart';
 abstract class BaseRouter {
   String name;
   BuildContext context;
-  BaseRouter(
-    this.context, {
-    required this.name,
-  });
+  BaseRouter(this.context, {required this.name});
 
-  Future<T?> navigate<T extends Object?>({
-    Object? argruments,
-  }) async {
+  Future<T?> navigate<T extends Object?>({Object? argruments}) async {
     return await Navigator.of(context).pushNamed<T>(name, arguments: argruments);
   }
 
-  Future<dynamic> replace({
-    Object? argruments,
-  }) async {
+  Future<dynamic> replace({Object? argruments}) async {
     Navigator.of(context).pushReplacementNamed(name, arguments: argruments);
   }
 

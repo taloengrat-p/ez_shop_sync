@@ -41,6 +41,7 @@ class OrderRepository extends IRepository<ProductOrder> {
     required this.orderServerRepository,
     required this.cartRepository,
     required this.transactionRepository,
+    required super.navigationService,
   }) : super(AppMode.server);
 
   @override

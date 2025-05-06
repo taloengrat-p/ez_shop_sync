@@ -7,7 +7,6 @@ import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/local/tag_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/server/tag_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
 
@@ -27,7 +26,8 @@ class TagRepository extends IRepository<Tag> {
   TagLocalRepository tagLocalRepository;
   TagServerRepository tagServerRepository;
 
-  TagRepository({required this.tagLocalRepository, required this.tagServerRepository}) : super(AppMode.local);
+  TagRepository({required this.tagLocalRepository, required this.tagServerRepository, required super.navigationService})
+    : super(AppMode.local);
 
   @override
   Future<ApiResult<Tag>> create(BaseRepoRequest<Tag> request) async {

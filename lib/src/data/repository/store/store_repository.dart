@@ -8,8 +8,10 @@ import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/local/dev_store_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
+import 'package:toastification/toastification.dart';
 
 @Singleton()
 @Injectable()
@@ -17,24 +19,44 @@ class StoreRepository extends IRepository<Store> {
   final StoreLocalRepository storeLocalRepository;
   final StoreServerRepository storeServerRepository;
 
-  StoreRepository({required this.storeLocalRepository, required this.storeServerRepository}) : super(AppMode.server);
+  StoreRepository({
+    required this.storeLocalRepository,
+    required this.storeServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.server);
 
   @override
   Future<ApiResult<Store>> create(BaseRepoRequest<Store> request) async {
+    final ApiResult<Store> result;
     if (appMode == AppMode.local) {
-      // ToastNotificationService.show(
-      //   title: LocaleKeys.notification_createSuccess.tr(
-      //     args: [storeCreated.name],
-      //   ),
-      //   desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
-      //   onTap: (value) {
-      //     StoreManagementRouter(GetIt.I<NavigationService>().navigatorKey.currentContext!).navigate();
-      //   },
-      // );
-      return await storeLocalRepository.create(request);
+      result = await storeLocalRepository.create(request);
     } else {
-      return await storeServerRepository.create(request);
+      result = await storeServerRepository.create(request);
     }
+
+    result.when(
+      success: (response) {
+        showToast(
+          title: LocaleKeys.notification_createSuccess.tr(args: [response.name]),
+          type: ToastificationType.success,
+          onTap: (context, item) {
+            StoreManagementRouter(context!).navigate();
+          },
+        );
+      },
+      failure: (error) {
+        showToast(
+          title: LocaleKeys.notification_createSuccess.tr(args: [request.data.name]),
+          desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
+          type: ToastificationType.error,
+          onTap: (context, item) {
+            StoreManagementRouter(context!).navigate();
+          },
+        );
+      },
+    );
+
+    return result;
   }
 
   @override

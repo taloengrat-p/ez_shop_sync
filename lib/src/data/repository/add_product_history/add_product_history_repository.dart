@@ -16,6 +16,7 @@ class AddProductHistoryRepository extends IRepository<AddProduct> {
   AddProductHistoryRepository({
     required this.addProductHistoryLocalRepository,
     required this.addProductHistoryServerRepository,
+    required super.navigationService,
   }) : super(AppMode.local);
 
   @override

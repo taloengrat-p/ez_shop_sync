@@ -15,8 +15,11 @@ class AddProductRepository extends IRepository<AddProduct> {
   final AddProductLocalRepository addProductLocalRepository;
   final AddProductServerRepository addProductServerRepository;
 
-  AddProductRepository({required this.addProductLocalRepository, required this.addProductServerRepository})
-    : super(AppMode.local);
+  AddProductRepository({
+    required this.addProductLocalRepository,
+    required this.addProductServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.local);
 
   @override
   Future<ApiResult<AddProduct>> create(BaseRepoRequest<AddProduct> request) async {

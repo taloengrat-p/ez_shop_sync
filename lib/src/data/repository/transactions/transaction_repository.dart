@@ -6,7 +6,6 @@ import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/local/transaction_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/server/transaction_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,8 +21,11 @@ class TransactionRepository extends IRepository<Transaction> {
   TransactionLocalRepository transactionLocalRepository;
   TransactionServerRepository transactionServerRepository;
 
-  TransactionRepository({required this.transactionLocalRepository, required this.transactionServerRepository})
-    : super(AppMode.local);
+  TransactionRepository({
+    required this.transactionLocalRepository,
+    required this.transactionServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.local);
 
   @override
   Future<ApiResult<Transaction>> create(BaseRepoRequest<Transaction> request) async {

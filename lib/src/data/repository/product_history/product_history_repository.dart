@@ -20,8 +20,11 @@ abstract class IProductHistoryRepository {
 class ProductHistoryRepository extends IRepository<ProductHistory> {
   ProductHistoryLocalRepository productHistoryLocalRepository;
   ProductHistoryServerRepository productHistoryServerRepository;
-  ProductHistoryRepository({required this.productHistoryLocalRepository, required this.productHistoryServerRepository})
-    : super(AppMode.local);
+  ProductHistoryRepository({
+    required this.productHistoryLocalRepository,
+    required this.productHistoryServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.local);
 
   @override
   Future<ApiResult<ProductHistory>> create(BaseRepoRequest<ProductHistory> request) async {

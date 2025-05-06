@@ -16,8 +16,11 @@ class CategoryRepository extends IRepository<Category> {
   final CategoryLocalRepository categoryLocalRepository;
   final CategoryServerRepository categoryServerRepository;
 
-  CategoryRepository({required this.categoryLocalRepository, required this.categoryServerRepository})
-    : super(AppMode.local);
+  CategoryRepository({
+    required this.categoryLocalRepository,
+    required this.categoryServerRepository,
+    required super.navigationService,
+  }) : super(AppMode.local);
 
   @override
   Future<ApiResult<Category>> create(BaseRepoRequest<Category> request) async {

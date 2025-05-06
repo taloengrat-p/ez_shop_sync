@@ -189,12 +189,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i415.CreateProductDetailCubit());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
     gh.singleton<_i228.FirebaseService>(() => _i228.FirebaseService());
-    gh.singleton<_i461.LocalStorageService>(
-        () => _i736.LocalStorageDevService());
     gh.singleton<_i635.CategoryRepository>(() => _i635.CategoryRepository(
           categoryLocalRepository: gh<_i992.CategoryLocalRepository>(),
           categoryServerRepository: gh<_i997.CategoryServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
         ));
+    gh.singleton<_i155.NotificationRepository>(
+        () => _i155.NotificationRepository(
+              firebaseService: gh<_i228.FirebaseService>(),
+              navigationService: gh<_i892.NavigationService>(),
+            ));
+    gh.singleton<_i461.LocalStorageService>(
+        () => _i736.LocalStorageDevService());
     gh.factory<_i457.StoreLocalRepository>(
       () => _i457.StoreLocalRepository(),
       registerFor: {_dev},
@@ -227,6 +233,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i233.HiveDBUnittestService(),
       registerFor: {_tests},
     );
+    gh.singleton<_i505.TagRepository>(() => _i505.TagRepository(
+          tagLocalRepository: gh<_i295.TagLocalRepository>(),
+          tagServerRepository: gh<_i338.TagServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
+    gh.singleton<_i118.UserRepository>(() => _i118.UserRepository(
+          firebaseService: gh<_i228.FirebaseService>(),
+          notificationRepository: gh<_i155.NotificationRepository>(),
+        ));
     gh.singleton<_i1048.PinVerifyCubit>(() => _i1048.PinVerifyCubit(
         localStorageService: gh<_i461.LocalStorageService>()));
     gh.singleton<_i306.PinSetupCubit>(() => _i306.PinSetupCubit(
@@ -238,61 +253,19 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
-    gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
-          transactionLocalRepository: gh<_i348.TransactionLocalRepository>(),
-          transactionServerRepository: gh<_i620.TransactionServerRepository>(),
+    gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(
+          addProductLocalRepository: gh<_i260.AddProductLocalRepository>(),
+          addProductServerRepository: gh<_i529.AddProductServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
         ));
     gh.singleton<_i992.ProductServerRepository>(() =>
         _i992.ProductServerRepository(
             firebaseService: gh<_i228.FirebaseService>()));
-    gh.singleton<_i155.NotificationRepository>(() =>
-        _i155.NotificationRepository(
-            firebaseService: gh<_i228.FirebaseService>()));
-    gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(
-          addProductLocalRepository: gh<_i260.AddProductLocalRepository>(),
-          addProductServerRepository: gh<_i529.AddProductServerRepository>(),
-        ));
-    gh.singleton<_i505.TagRepository>(() => _i505.TagRepository(
-          tagLocalRepository: gh<_i295.TagLocalRepository>(),
-          tagServerRepository: gh<_i338.TagServerRepository>(),
-        ));
-    gh.singleton<_i2.ProductHistoryRepository>(
-        () => _i2.ProductHistoryRepository(
-              productHistoryLocalRepository:
-                  gh<_i485.ProductHistoryLocalRepository>(),
-              productHistoryServerRepository:
-                  gh<_i750.ProductHistoryServerRepository>(),
-            ));
-    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
-          productLocalRepository: gh<_i395.ProductLocalRepository>(),
-          productServerRepository: gh<_i992.ProductServerRepository>(),
-          productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
-          transactionRepository: gh<_i370.TransactionRepository>(),
-        ));
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i1034.CartLocalRepository>(),
           cartServerRepository: gh<_i719.CartServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
         ));
-    gh.singleton<_i394.AddProductHistoryRepository>(
-        () => _i394.AddProductHistoryRepository(
-              addProductHistoryLocalRepository:
-                  gh<_i764.AddProductHistoryLocalRepository>(),
-              addProductHistoryServerRepository:
-                  gh<_i710.AddProductHistoryServerRepository>(),
-            ));
-    gh.singleton<_i118.UserRepository>(() => _i118.UserRepository(
-          firebaseService: gh<_i228.FirebaseService>(),
-          notificationRepository: gh<_i155.NotificationRepository>(),
-        ));
-    gh.singleton<_i843.OrderServerRepository>(() => _i843.OrderServerRepository(
-          firebaseService: gh<_i228.FirebaseService>(),
-          productRepository: gh<_i846.ProductRepository>(),
-        ));
-    gh.singleton<_i427.AddProductHistoryCubit>(
-      () => _i427.AddProductHistoryCubit(
-          addProductHistoryRepository: gh<_i394.AddProductHistoryRepository>()),
-      signalsReady: true,
-    );
     gh.factory<_i18.StoreServerRepository>(
       () => _i18.StoreServerRepository(
         userRepository: gh<_i118.UserRepository>(),
@@ -301,19 +274,58 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_dev},
     );
+    gh.singleton<_i2.ProductHistoryRepository>(
+        () => _i2.ProductHistoryRepository(
+              productHistoryLocalRepository:
+                  gh<_i485.ProductHistoryLocalRepository>(),
+              productHistoryServerRepository:
+                  gh<_i750.ProductHistoryServerRepository>(),
+              navigationService: gh<_i892.NavigationService>(),
+            ));
+    gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
+          transactionLocalRepository: gh<_i348.TransactionLocalRepository>(),
+          transactionServerRepository: gh<_i620.TransactionServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
+    gh.singleton<_i394.AddProductHistoryRepository>(
+        () => _i394.AddProductHistoryRepository(
+              addProductHistoryLocalRepository:
+                  gh<_i764.AddProductHistoryLocalRepository>(),
+              addProductHistoryServerRepository:
+                  gh<_i710.AddProductHistoryServerRepository>(),
+              navigationService: gh<_i892.NavigationService>(),
+            ));
+    gh.singleton<_i18.NotificationDetailCubit>(() =>
+        _i18.NotificationDetailCubit(
+            storeServerRepository: gh<_i18.StoreServerRepository>()));
+    gh.singleton<_i427.AddProductHistoryCubit>(
+      () => _i427.AddProductHistoryCubit(
+          addProductHistoryRepository: gh<_i394.AddProductHistoryRepository>()),
+      signalsReady: true,
+    );
+    gh.singleton<_i846.ProductRepository>(() => _i846.ProductRepository(
+          productLocalRepository: gh<_i395.ProductLocalRepository>(),
+          productServerRepository: gh<_i992.ProductServerRepository>(),
+          productHistoryRepository: gh<_i2.ProductHistoryRepository>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
+    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
+          storeLocalRepository: gh<_i457.StoreLocalRepository>(),
+          storeServerRepository: gh<_i18.StoreServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
+    gh.singleton<_i843.OrderServerRepository>(() => _i843.OrderServerRepository(
+          firebaseService: gh<_i228.FirebaseService>(),
+          productRepository: gh<_i846.ProductRepository>(),
+        ));
     gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
           orderLocalRepository: gh<_i49.OrderLocalRepository>(),
           orderServerRepository: gh<_i843.OrderServerRepository>(),
           cartRepository: gh<_i999.CartRepository>(),
           transactionRepository: gh<_i370.TransactionRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
         ));
-    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
-          storeLocalRepository: gh<_i457.StoreLocalRepository>(),
-          storeServerRepository: gh<_i18.StoreServerRepository>(),
-        ));
-    gh.singleton<_i18.NotificationDetailCubit>(() =>
-        _i18.NotificationDetailCubit(
-            storeServerRepository: gh<_i18.StoreServerRepository>()));
     gh.singleton<_i283.AppCubit>(() => _i283.AppCubit(
           localStorageService: gh<_i461.LocalStorageService>(),
           authLocalRepository: gh<_i551.AuthLocalRepository>(),
