@@ -9,4 +9,12 @@ class BaseRepoRequest<T> {
   T data;
 
   BaseRepoRequest({required this.storeId, required this.userId, required this.data, this.info});
+
+  factory BaseRepoRequest.build(BaseRepoRequest request, T data) {
+    return BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: data);
+  }
+
+  // factory CreateOrderRequest.fromJson(Map<String, dynamic> json) => _$CreateOrderRequestFromJson(json);
+
+  // Map<String, dynamic> toJson() => _$CreateOrderRequestToJson(this);
 }

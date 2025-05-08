@@ -10,10 +10,7 @@ import 'package:flutter/material.dart';
 class OrderItemWidget extends StatelessWidget {
   final OrderItem? order;
 
-  const OrderItemWidget({
-    super.key,
-    required this.order,
-  });
+  const OrderItemWidget({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +28,7 @@ class OrderItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ImageWidget(
-                    imageUrl: order?.product?.imagesPath?.firstOrNull,
+                    imageUrl: order?.product?.imageUrl,
                     width: 120,
                     borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                   ),
@@ -41,19 +38,14 @@ class OrderItemWidget extends StatelessWidget {
                       name: order?.product?.name ?? '',
                       desc: order?.product?.description,
                       qty: order?.product?.quantity,
-                      price: order?.product?.priceCurrentSelected
-                              ?.prefixCurrency() ??
-                          '--',
+                      price: order?.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
                       priceCategory: order?.product?.productTypeSelectDisplay,
                     ),
                   ),
                 ],
               ),
             ),
-            if (order?.note != null) ...[
-              const DividerWidget(),
-              Text(order?.note ?? '--'),
-            ]
+            if (order?.note != null) ...[const DividerWidget(), Text(order?.note ?? '--')],
           ],
         ),
       ),

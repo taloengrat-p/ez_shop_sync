@@ -7,6 +7,7 @@ class ContainerScrollableWidget extends StatelessWidget {
   final Widget child;
   final double? paddingAll;
   final double? radius;
+  final EdgeInsets? padding;
   final EdgeInsets? margin;
 
   const ContainerScrollableWidget({
@@ -16,17 +17,17 @@ class ContainerScrollableWidget extends StatelessWidget {
     this.paddingAll,
     this.radius,
     this.margin,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(paddingAll ?? 0),
+      padding: padding ?? EdgeInsets.all(paddingAll ?? 0),
+      margin: margin,
       decoration: BoxDecoration(
         color: backgroundColor?.withOpacity(0.1) ?? ColorKeys.primary.withOpacity(0.1),
-        border: Border.all(
-          color: backgroundColor ?? ColorKeys.primary.withOpacity(0.3),
-        ),
+        border: Border.all(color: backgroundColor ?? ColorKeys.primary.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(radius ?? DimensionsKeys.radius),
       ),
       child: child,

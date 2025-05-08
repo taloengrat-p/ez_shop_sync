@@ -29,10 +29,7 @@
                     "projectId": "ez-shop-98ded",
                     "configurations": {
                         "android": "1:561366791403:android:f3cb9d8b8594d2d733faae",
-                        "ios": "1:561366791403:ios:aaf316d4ee6c959f33faae",
-                        "macos": "1:561366791403:ios:52122a4b4834dbe733faae",
-                        "web": "1:561366791403:web:89345ba17d071df533faae",
-                        "windows": "1:561366791403:web:759dc2740098572833faae"
+                        "ios": "1:561366791403:ios:aaf316d4ee6c959f33faae"
                     }
                 }
             }

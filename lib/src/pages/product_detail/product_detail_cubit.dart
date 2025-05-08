@@ -47,7 +47,8 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     emit(ProductDetailRefresh(DateTime.now()));
   }
 
-  List<String> get imageMerged => product?.imagesPath ?? [];
+  List<String> get imageMerged =>
+      product?.imageUrl != null ? [product!.imageUrl!, ...product?.imagesUrl ?? []] : product?.imagesUrl ?? [];
 
   Future<void> deleteProduct() async {
     if (product?.id == null) {
@@ -55,35 +56,39 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     }
     emit(ProductDetailLoading());
 
-    await productRepository.delete(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product?.id ?? ''),
+    final result = await productRepository.deleteProduct(
+      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product!),
     );
 
-    emit(ProductDetailDelete());
+    result.when(
+      success: (response) {
+        emit(ProductDetailDeleteSuccess());
+      },
+      failure: (error) {
+        emit(ProductDetailDeleteFailure());
+      },
+    );
   }
 
   void loadCategory() {}
 
   void loadTags() {}
 
-  void refresh({Product? product}) async {
-    if (product == null) {
-      product = product;
-      emit(ProductDetailInitial());
-    } else {
-      final result = await productRepository.getById(
-        BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product.id),
-      );
-      result.when(
-        success: (response) {
-          product = response;
-          emit(ProductDetailInitial());
-        },
-        failure: (error) {
-          emit(ProductDetailFailure());
-        },
-      );
-    }
+  Future<void> refresh() async {
+    log('get ${product!.id}');
+    emit(ProductDetailLoading());
+    final result = await productRepository.getById(
+      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product!.id),
+    );
+    result.when(
+      success: (response) {
+        product = response;
+        emit(ProductDetailSuccess());
+      },
+      failure: (error) {
+        emit(ProductDetailFailure());
+      },
+    );
   }
 
   void addCart(Product? cartProduct) {

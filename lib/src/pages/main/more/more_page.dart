@@ -27,6 +27,7 @@ import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
+import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -34,6 +35,7 @@ import 'package:ez_shop_sync/src/widgets/bottom_sheet/bottom_menu_item.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,7 +96,7 @@ class _MorePageState extends State<MorePage> {
           }
         } else if (state is MoreLogoutSuccess) {
           _cubit.appCubit.clearCurrentUserData();
-          LoginRouter(context).replace();
+          LoginRouter(context).pushNamedAndRemoveUntil();
         }
       },
       child: BlocBuilder<MoreCubit, MoreState>(
@@ -135,7 +137,7 @@ class _MorePageState extends State<MorePage> {
               label: LocaleKeys.logout.tr(),
               backgroundColor: Colors.red,
               leading: const Icon(Icons.logout_rounded),
-              onPressed: _cubit.doLogout,
+              onPressed: doLogout,
             ),
             const SizedBox(height: 16),
             Align(
@@ -359,5 +361,16 @@ class _MorePageState extends State<MorePage> {
         ),
       ],
     );
+  }
+
+  doLogout() async {
+    final result = await DialogUtils.showConfirm(
+      context,
+      title: LocaleKeys.confirmLogout_title.tr(),
+      desc: LocaleKeys.confirmLogout_desc.tr(),
+    );
+    if (result == ConfirmDialogResult.ok) {
+      await _cubit.doLogout();
+    }
   }
 }

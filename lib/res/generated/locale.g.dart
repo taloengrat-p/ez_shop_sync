@@ -89,6 +89,7 @@ abstract class  LocaleKeys {
   static const button_back = 'button.back';
   static const button_done = 'button.done';
   static const button_next = 'button.next';
+  static const button_submit = 'button.submit';
   static const button = 'button';
   static const phoneNumber = 'phoneNumber';
   static const email = 'email';
@@ -183,6 +184,7 @@ abstract class  LocaleKeys {
   static const loginPage_username = 'loginPage.username';
   static const loginPage_password = 'loginPage.password';
   static const loginPage_yourEmail = 'loginPage.yourEmail';
+  static const loginPage_yourPassword = 'loginPage.yourPassword';
   static const loginPage_confirmPassword = 'loginPage.confirmPassword';
   static const loginPage_confirmPasswordInvalid = 'loginPage.confirmPasswordInvalid';
   static const loginPage = 'loginPage';
@@ -201,5 +203,28 @@ abstract class  LocaleKeys {
   static const productType = 'productType';
   static const notifications_title = 'notifications.title';
   static const notifications = 'notifications';
+  static const loadingPagination_loadingText = 'loadingPagination.loadingText';
+  static const loadingPagination_canLoadingText = 'loadingPagination.canLoadingText';
+  static const loadingPagination_idleText = 'loadingPagination.idleText';
+  static const loadingPagination_noDataText = 'loadingPagination.noDataText';
+  static const loadingPagination_failedText = 'loadingPagination.failedText';
+  static const loadingPagination = 'loadingPagination';
+  static const refreshPagination_idleText = 'refreshPagination.idleText';
+  static const refreshPagination_failedText = 'refreshPagination.failedText';
+  static const refreshPagination_refreshingText = 'refreshPagination.refreshingText';
+  static const refreshPagination_releaseText = 'refreshPagination.releaseText';
+  static const refreshPagination_completeText = 'refreshPagination.completeText';
+  static const refreshPagination_canTwoLevelText = 'refreshPagination.canTwoLevelText';
+  static const refreshPagination = 'refreshPagination';
+  static const confirmLogout_title = 'confirmLogout.title';
+  static const confirmLogout_desc = 'confirmLogout.desc';
+  static const confirmLogout = 'confirmLogout';
+  static const dialogUnableCreateProduct_title = 'dialogUnableCreateProduct.title';
+  static const dialogUnableCreateProduct_desc = 'dialogUnableCreateProduct.desc';
+  static const dialogUnableCreateProduct = 'dialogUnableCreateProduct';
+  static const imagePicker_camera = 'imagePicker.camera';
+  static const imagePicker_gallary = 'imagePicker.gallary';
+  static const imagePicker = 'imagePicker';
+  static const productStatisticEmpty = 'productStatisticEmpty';
 
 }

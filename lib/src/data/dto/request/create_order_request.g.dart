@@ -10,11 +10,14 @@ CreateOrderRequest _$CreateOrderRequestFromJson(Map<String, dynamic> json) =>
     CreateOrderRequest(
       paymentType: $enumDecode(_$PaymentMethodTypeEnumMap, json['paymentType']),
       status: $enumDecode(_$OrderStatusTypeEnumMap, json['status']),
-      changeAmount: json['changeAmount'] as num?,
       receiveAmount: json['receiveAmount'] as num?,
+      changeAmount: json['changeAmount'] as num?,
       orderItems: (json['orderItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
+      info: json['info'] == null
+          ? null
+          : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CreateOrderRequestToJson(CreateOrderRequest instance) =>
@@ -24,6 +27,7 @@ Map<String, dynamic> _$CreateOrderRequestToJson(CreateOrderRequest instance) =>
       'receiveAmount': instance.receiveAmount,
       'changeAmount': instance.changeAmount,
       'orderItems': instance.orderItems.map((e) => e.toJson()).toList(),
+      'info': instance.info?.toJson(),
     };
 
 const _$PaymentMethodTypeEnumMap = {

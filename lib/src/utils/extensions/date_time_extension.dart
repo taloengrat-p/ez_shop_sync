@@ -5,18 +5,18 @@ import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/utils/extensions/int_extenstion.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 extension DateTimeNullableExtension on DateTime? {
-  String toDisplayDependLocale(
-    BuildContext context, {
-    String? format,
-  }) {
+  String toDisplayDependLocale(BuildContext context, {String? format}) {
     if (this == null) {
       return ApplicationConstance.emptyData;
     }
 
-    String formattedDate =
-        DateFormat(format ?? DateFormatConstance.D_MMM_YYYY_HH_mm, context.locale.languageCode).format(this!);
+    String formattedDate = DateFormat(
+      format ?? DateFormatConstance.D_MMM_YYYY_HH_mm,
+      context.locale.languageCode,
+    ).format(this!);
 
     return formattedDate;
   }
@@ -112,10 +112,7 @@ extension DateTimeExtension on DateTime {
       weekEnd = lastDayOfMonth;
     }
 
-    return {
-      "start": weekStart,
-      "end": weekEnd,
-    };
+    return {"start": weekStart, "end": weekEnd};
   }
 
   DateTime getFirstDaysOfWeeks() {
@@ -197,6 +194,16 @@ extension DateTimeExtension on DateTime {
 
   List<DateTime> getAllMonthsInYear() {
     return List<DateTime>.generate(12, (i) => DateTime(year, i + 1, 1));
+  }
+
+  String toTransactionFormatId() {
+    final now = DateTime.now();
+    String fullUuid = const Uuid().v4();
+    String shortUuid = fullUuid.replaceAll('-', '').substring(0, 6);
+    final formatted = DateFormat('yyyyMMddHHmmss').format(now);
+    String transactionId = '$formatted$shortUuid';
+
+    return transactionId;
   }
 }
 

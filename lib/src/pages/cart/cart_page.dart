@@ -111,7 +111,7 @@ class _CartState extends State<CartPage> {
           OrderCompleteRouter(context).replace(
             argruments: OrderCompleteArgrument(
               title: LocaleKeys.orderCompleteTitle.tr(),
-              orderItems: state.ordered,
+              orderItem: state.ordered,
               transactionMethodType: TransactionMethodType.order,
               from: Routes.ROUTE_CART,
             ),
@@ -125,8 +125,9 @@ class _CartState extends State<CartPage> {
         }
       },
       child: BlocBuilder<CartCubit, CartState>(
+        bloc: _cubit,
         builder: (context, state) {
-          log('cart state : $state');
+          log('state : $state', name: runtimeType.toString());
           return BaseScaffolds(
             isInitialLoading: state is CartInitial,
             enableAppModeDisplay: true,
@@ -246,23 +247,28 @@ class _CartState extends State<CartPage> {
                         .quantity ??
                     0) <
                 (cartItem.product?.quantity ?? 0);
-            return CartItemWidget(
-              hasError: hasError,
-              errorMessageType: hasError ? CartErrorType.insufficient : null,
-              cartItem: cartItem,
-              onIncreaseQty: () {
-                _cubit.increaseProductQtyByIndex(index);
-              },
-              onDecreaseQty: () {
-                _cubit.decreaseProductQtyByIndex(index);
-              },
-              onDelete: () async {
-                final result = await DialogUtils.showConfirmDelete(context);
+            return Column(
+              children: [
+                Text(cartItem.id),
+                CartItemWidget(
+                  hasError: hasError,
+                  errorMessageType: hasError ? CartErrorType.insufficient : null,
+                  cartItem: cartItem,
+                  onIncreaseQty: () {
+                    _cubit.increaseProductQtyByIndex(index);
+                  },
+                  onDecreaseQty: () {
+                    _cubit.decreaseProductQtyByIndex(index);
+                  },
+                  onDelete: () async {
+                    final result = await DialogUtils.showConfirmDelete(context);
 
-                if (result == ConfirmDialogResult.ok) {
-                  _cubit.deleteItemFromCart(cartItem.id);
-                }
-              },
+                    if (result == ConfirmDialogResult.ok) {
+                      _cubit.deleteItemFromCart(cartItem.id);
+                    }
+                  },
+                ),
+              ],
             );
           },
           separatorBuilder: (BuildContext context, int index) {
@@ -370,7 +376,7 @@ class _CartState extends State<CartPage> {
                       autofocus: true,
                       textAlign: TextAlign.end,
                       autoCorrect: true,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      // keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       controller: _receiveAmountController,
                       onChanged: (value) {
                         _cubit.setReceiveAmount(value);

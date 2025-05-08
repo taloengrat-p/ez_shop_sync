@@ -19,6 +19,7 @@ class StoreServerRepository {
   final UserRepository userRepository;
   final FirebaseService firebaseService;
   final NotificationRepository notificationRepository;
+
   StoreServerRepository({
     required this.userRepository,
     required this.firebaseService,

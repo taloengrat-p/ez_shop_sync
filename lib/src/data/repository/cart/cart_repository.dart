@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:injectable/injectable.dart';
 
 import 'package:ez_shop_sync/src/data/api_result.dart';
@@ -53,7 +55,11 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   @override
   Future<ApiResult<Cart>> getCartsByUserIdWithCurrentStore({required String storeId, required String userId}) async {
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.getCartByStoreAndUserId(storeId: storeId, userId: userId);
+      final result = await cartLocalRepository.getCartByStoreAndUserId(storeId: storeId, userId: userId);
+
+      log('getCartsByUserIdWithCurrentStore() local : result ${result.response}');
+
+      return result;
     } else {
       throw UnimplementedError();
     }

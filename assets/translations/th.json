@@ -88,7 +88,8 @@
     "okay": "ตกลง",
     "back": "กลับ",
     "done": "เสร็จสิ้น",
-    "next": "ถัดไป"
+    "next": "ถัดไป",
+    "submit": "ยืนยัน"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "อีเมล",
@@ -190,6 +191,7 @@
     "username": "ชื่อผู้ใช้",
     "password": "รหัสผ่าน",
     "yourEmail": "อีเมล์ของคุณ",
+    "yourPassword": "รหัสผ่านของคุณ",
     "confirmPassword": "ยืนยันรหัสผ่าน",
     "confirmPasswordInvalid": "ยืนยันรหัสผ่านไม่ถูกต้อง"
   },
@@ -211,5 +213,33 @@
   "productType": "ประเภทสินค้า",
   "notifications": {
     "title": "Notification"
-  }
+  },
+  "loadingPagination": {
+    "loadingText": "กำลังโหลดข้อมูล…",
+    "canLoadingText": "ปล่อยเพื่อรีโหลดข้อมูล",
+    "idleText": "ลากขึ้นเพื่อโหลดเพิ่มเติม",
+    "noDataText": "ไม่มีข้อมูลเพิ่มเติม",
+    "failedText": "โหลดล้มเหลว"
+  },
+  "refreshPagination": {
+    "idleText": "ลากลงเพื่อเพื่อรีเฟรช",
+    "failedText": "รีเฟรชล้มเหลว",
+    "refreshingText": "กำลังรีเฟรช…",
+    "releaseText": "ปล่อยเพื่อรีเฟรช",
+    "completeText": "รีเฟรชเสร็จสิ้น",
+    "canTwoLevelText": "ปล่อยเพื่อเข้าสู่ชั้นที่สอง"
+  },
+  "confirmLogout": {
+    "title": "ยืนยันการออกจากระบบ",
+    "desc": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ? คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อใช้งานบัญชีของคุณ"
+  },
+  "dialogUnableCreateProduct": {
+    "title": "ไม่สามารถสร้างสินค้าได้",
+    "desc": "กรุณาตรวจสอบการเลือกร้านค้าก่อนสร้างสินค้า\nไปที่หน้าเมนู"
+  },
+  "imagePicker": {
+    "camera": "กล้องถ่ายรูป",
+    "gallary": "เลือกจากคลังภาพ"
+  },
+  "productStatisticEmpty": "ผลิตภัณฑ์ของคุณไม่มีสถิติ"
 }

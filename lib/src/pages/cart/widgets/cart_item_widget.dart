@@ -30,11 +30,10 @@ class CartItemWidget extends StatelessWidget {
   });
 
   String get getErrorMessageLabel => switch (errorMessageType) {
-        CartErrorType.insufficient =>
-          LocaleKeys.error_productPriceNotEnough.tr(),
-        CartErrorType.undefined => 'undefined',
-        null => throw UnimplementedError(),
-      };
+    CartErrorType.insufficient => LocaleKeys.error_productPriceNotEnough.tr(),
+    CartErrorType.undefined => 'undefined',
+    null => throw UnimplementedError(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +56,9 @@ class CartItemWidget extends StatelessWidget {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
                 icon: CupertinoIcons.delete,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
               ),
-              const SizedBox(
-                width: 0.5,
-              ),
+              const SizedBox(width: 0.5),
             ],
           ),
           child: SizedBox(
@@ -78,19 +72,16 @@ class CartItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ImageWidget(
-                        imageUrl: cartItem.product?.imagesPath?.firstOrNull,
+                        imageUrl: cartItem.product?.imageUrl,
                         width: 120,
-                        borderRadius:
-                            BorderRadius.circular(DimensionsKeys.radius),
+                        borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                       ),
                       Expanded(
                         child: ProductInfoListItem(
                           padding: const EdgeInsets.all(8),
                           name: cartItem.product?.name ?? '',
                           desc: cartItem.product?.description ?? '',
-                          price: cartItem.product?.priceCurrentSelected
-                                  ?.prefixCurrency() ??
-                              '--',
+                          price: cartItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
                           priceCategory: cartItem.product?.productTypeSelectDisplay,
                         ),
                       ),
@@ -100,21 +91,13 @@ class CartItemWidget extends StatelessWidget {
                         children: [
                           IconButton(
                             onPressed: onIncreaseQty,
-                            icon: Icon(
-                              Icons.add_circle_outline_rounded,
-                              color: ColorKeys.primary,
-                              size: 28,
-                            ),
+                            icon: Icon(Icons.add_circle_outline_rounded, color: ColorKeys.primary, size: 28),
                           ),
                           Text(cartItem.product!.quantity.toString()),
                           IconButton(
                             onPressed: onDecreaseQty,
-                            icon: Icon(
-                              Icons.remove_circle_outline_rounded,
-                              color: ColorKeys.primary,
-                              size: 28,
-                            ),
-                          )
+                            icon: Icon(Icons.remove_circle_outline_rounded, color: ColorKeys.primary, size: 28),
+                          ),
                         ],
                       ),
                     ],
@@ -122,28 +105,18 @@ class CartItemWidget extends StatelessWidget {
                 ),
                 if (errorMessageType != null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.error_rounded,
-                          size: 14,
-                          color: Colors.red,
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const Icon(Icons.error_rounded, size: 14, color: Colors.red),
+                        const SizedBox(width: 4),
                         Text(
                           getErrorMessageLabel,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.red),
-                        )
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red),
+                        ),
                       ],
                     ),
-                  )
+                  ),
               ],
             ),
           ),

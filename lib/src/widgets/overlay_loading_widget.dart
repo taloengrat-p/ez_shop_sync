@@ -12,10 +12,9 @@ class OverlayLoadingWidget extends StatelessWidget {
           height: double.infinity,
           width: double.infinity,
           color: Colors.black.withOpacity(0.6),
-          child: Center(
-            child: Lottie.asset('assets/loading.json'),
-          ),
+          child: Center(child: Lottie.asset('assets/loading.json')),
         ),
+        Center(child: Image.asset('assets/images/logo.png', height: 100)),
       ],
     );
   }

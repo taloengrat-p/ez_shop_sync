@@ -19,6 +19,7 @@ import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_wi
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_list_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
+import 'package:ez_shop_sync/src/widgets/app_pagination_loading_widget.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
@@ -46,9 +47,9 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   final _cubit = GetIt.I<ProductCubit>();
 
   final _searchTextController = TextEditingController();
-  final _refreshListViewController = RefreshController(initialRefresh: false);
-  final _refreshGridViewController = RefreshController(initialRefresh: false);
-  final _refreshEmptyViewController = RefreshController(initialRefresh: false);
+  final _refreshListViewController = RefreshController();
+  final _refreshGridViewController = RefreshController();
+  final _refreshEmptyViewController = RefreshController();
   @override
   void initState() {
     super.initState();
@@ -66,13 +67,220 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     super.dispose();
   }
 
+  Widget buildBody() {
+    return BodyWidget(
+      actions: [
+        IconButton(
+          onPressed: () {
+            _cubit.changeSortType();
+          },
+          icon: Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
+        ),
+        IconButton(
+          onPressed: () {
+            _cubit.changeDisplayType();
+          },
+          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
+        ),
+      ],
+      children: [buildContent()],
+    );
+  }
+
+  Widget buildGridViewProduct() {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        double itemHeight = 365;
+        var size = MediaQuery.of(context).size;
+        final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
+        final double itemWidth = size.width / crossAxisCount;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: AppPaginationLoadingWidget(
+            controller: _refreshGridViewController,
+            enablePullDown: true,
+            enablePullUp: true,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: GridView.count(
+              padding: const EdgeInsets.all(8),
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: (itemWidth / itemHeight),
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children:
+                  _cubit.products
+                      .map(
+                        (e) => GestureDetector(
+                          onTap: () => onClickGoToDetailPage(e),
+                          child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildListProduct() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: AppPaginationLoadingWidget(
+        controller: _refreshListViewController,
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: _cubit.products.length,
+          itemBuilder: (context, index) {
+            final product = _cubit.products.elementAt(index);
+
+            return GestureDetector(
+              onTap: () => onClickGoToDetailPage(product),
+              child: ProductListItemWidget(product: product, iProductItem: this),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: 8);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildContent() {
+    var size = MediaQuery.of(context).size;
+
+    if (_cubit.products.isNotEmpty) {
+      return BlocBuilder<AppCubit, AppState>(
+        bloc: _cubit.appCubit,
+        builder: (context, baseState) {
+          return Expanded(
+            child: ContainerScrollableWidget(
+              radius: DimensionsKeys.radius + 4,
+              child: (_cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct()),
+            ),
+          );
+        },
+      );
+    } else {
+      return Expanded(
+        child: SmartRefresher(
+          controller: _refreshEmptyViewController,
+          onRefresh: _onRefresh,
+          child: Center(
+            child: EmptyDataWidget(
+              height: size.height * 0.45,
+              width: 200,
+              message: LocaleKeys.productsEmpty.tr(),
+              icon: CupertinoIcons.bag,
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  onAddStock(Product product) async {
+    final result = await DialogUtils.showAddStockDialog(context, product);
+
+    if (result is BottomSheetAddStockSuccess) {
+      log('onAddStock $result');
+      _cubit.addProductToStock(
+        product.copyWith(priceSelected: result.priceCategorySelected, quantity: result.qty),
+        result.amountCost,
+      );
+    }
+  }
+
+  @override
+  onAddCart(Product product) async {
+    final result = await DialogUtils.showAddCartDialog(context, product);
+
+    if (result is BottomSheetAddCartSuccess) {
+      _cubit.addCart(product.copyWith(quantity: result.qty, priceSelected: result.priceCategorySelected));
+    }
+  }
+
+  @override
+  onDelete(Product product) async {
+    final result = await DialogUtils.showConfirmDelete(context);
+
+    if (result == ConfirmDialogResult.ok) {
+      await _cubit.deleteProduct(_cubit.appCubit.store!.id, product);
+    }
+  }
+
+  @override
+  onEdit(String productId) async {
+    final result = await CreateProductRouter(context).navigate(
+      argruments: ProductEditArgrument(
+        product: _cubit.products.firstWhere((e) => e.id == productId),
+        screenMode: ScreenMode.edit,
+      ),
+    );
+  }
+
+  @override
+  onClickGoToDetailPage(Product product) async {
+    final result = await ProductDetailRouter(context).navigate(argruments: product);
+
+    if (result is BaseArgrument && result.refresh) {
+      _cubit.init();
+    }
+  }
+
+  void _onRefresh() async {
+    if (_cubit.products.isEmpty) {
+      _refreshEmptyViewController.requestLoading();
+    } else if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.requestRefresh();
+    } else {
+      _refreshListViewController.requestRefresh();
+    }
+    await _cubit.init(isRefresh: true);
+
+    if (_cubit.products.isEmpty) {
+      _refreshEmptyViewController.refreshCompleted();
+    } else if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.refreshCompleted();
+    } else {
+      _refreshListViewController.refreshCompleted();
+    }
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.requestLoading();
+    } else {
+      _refreshListViewController.requestLoading();
+    }
+    await Future.delayed(const Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    _cubit.testAddProduct();
+
+    if (_cubit.displayType == ProductDisplayType.grid) {
+      _refreshGridViewController.loadComplete();
+    } else {
+      _refreshListViewController.loadComplete();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductCubit, ProductState>(
       bloc: _cubit,
       builder: (context, state) {
+        log('state : $state', name: runtimeType.toString());
         return BaseScaffolds(
           isInitialLoading: state is ProductInitial,
+          isLoading: state is ProductLoading,
           enableAppModeDisplay: false,
           backgroundColor: Colors.white,
           appBar:
@@ -118,6 +326,13 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                     ActionAppbarButtonWidget(
                       child: const Icon(CupertinoIcons.add),
                       onPressed: () async {
+                        if (_cubit.appCubit.store == null) {
+                          return await DialogUtils.showAlertDialog(
+                            context,
+                            title: LocaleKeys.dialogUnableCreateProduct_title.tr(),
+                            desc: LocaleKeys.dialogUnableCreateProduct_desc.tr(),
+                          );
+                        }
                         final result = await CreateProductRouter(context).navigate();
                         if (result is BaseArgrument && result.refresh) {
                           _cubit.init();
@@ -132,172 +347,5 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
         );
       },
     );
-  }
-
-  Widget buildBody() {
-    return BodyWidget(
-      actions: [
-        IconButton(
-          onPressed: () {
-            _cubit.changeSortType();
-          },
-          icon: Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
-        ),
-        IconButton(
-          onPressed: () {
-            _cubit.changeDisplayType();
-          },
-          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
-        ),
-      ],
-      children: [buildContent()],
-    );
-  }
-
-  Widget buildGridViewProduct() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        double itemHeight = 365;
-        var size = MediaQuery.of(context).size;
-        final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
-        final double itemWidth = size.width / crossAxisCount;
-        return SmartRefresher(
-          controller: _refreshGridViewController,
-          enablePullDown: true,
-          onRefresh: _onRefresh,
-          child: GridView.count(
-            crossAxisCount: crossAxisCount,
-            childAspectRatio: (itemWidth / itemHeight),
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            children:
-                _cubit.products
-                    .map(
-                      (e) => GestureDetector(
-                        onTap: () => onClickGoToDetailPage(e),
-                        child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
-                      ),
-                    )
-                    .toList(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildListProduct() {
-    return SmartRefresher(
-      controller: _refreshListViewController,
-      onRefresh: _onRefresh,
-      child: ListView.separated(
-        itemCount: _cubit.products.length,
-        itemBuilder: (context, index) {
-          final product = _cubit.products.elementAt(index);
-
-          return GestureDetector(
-            onTap: () => onClickGoToDetailPage(product),
-            child: ProductListItemWidget(product: product, iProductItem: this),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(height: DimensionsKeys.gap);
-        },
-      ),
-    );
-  }
-
-  Widget buildContent() {
-    var size = MediaQuery.of(context).size;
-
-    if (_cubit.products.isNotEmpty) {
-      return BlocBuilder<AppCubit, AppState>(
-        bloc: _cubit.appCubit,
-        builder: (context, baseState) {
-          return Expanded(
-            child: ContainerScrollableWidget(
-              radius: DimensionsKeys.radius + 4,
-              paddingAll: 8,
-              child: (_cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct()),
-            ),
-          );
-        },
-      );
-    } else {
-      return Expanded(
-        child: SmartRefresher(
-          controller: _refreshEmptyViewController,
-          onRefresh: _onRefresh,
-          child: Center(
-            child: EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.productsEmpty.tr()),
-          ),
-        ),
-      );
-    }
-  }
-
-  @override
-  onAddStock(Product product) async {
-    final result = await DialogUtils.showAddStockDialog(context, product);
-
-    if (result is BottomSheetAddStockSuccess) {
-      log('onAddStock $result');
-      _cubit.addProductToStock(
-        product.copyWith(priceSelected: result.priceCategorySelected, quantity: result.qty),
-        result.amountCost,
-      );
-    }
-  }
-
-  @override
-  onAddCart(Product product) async {
-    final result = await DialogUtils.showAddCartDialog(context, product);
-
-    if (result is BottomSheetAddCartSuccess) {
-      _cubit.addCart(product.copyWith(quantity: result.qty, priceSelected: result.priceCategorySelected));
-    }
-  }
-
-  @override
-  onDelete(String productId) async {
-    final result = await DialogUtils.showConfirmDelete(context);
-
-    if (result == ConfirmDialogResult.ok) {
-      _cubit.deleteProduct(_cubit.appCubit.store!.id, productId);
-    }
-  }
-
-  @override
-  onEdit(String productId) async {
-    final result = await CreateProductRouter(
-      context,
-    ).navigate(argruments: ProductEditArgrument(_cubit.products.firstWhere((e) => e.id == productId)));
-  }
-
-  @override
-  onClickGoToDetailPage(Product product) async {
-    final result = await ProductDetailRouter(context).navigate(argruments: product);
-
-    if (result is BaseArgrument && result.refresh) {
-      _cubit.init();
-    }
-  }
-
-  void _onRefresh() async {
-    if (_cubit.products.isEmpty) {
-      _refreshEmptyViewController.requestLoading();
-    } else if (_cubit.displayType == ProductDisplayType.grid) {
-      _refreshGridViewController.requestLoading();
-    } else {
-      _refreshListViewController.requestLoading();
-    }
-    await _cubit.init();
-
-    if (_cubit.products.isEmpty) {
-      _refreshEmptyViewController.refreshCompleted();
-    } else if (_cubit.displayType == ProductDisplayType.grid) {
-      _refreshGridViewController.refreshCompleted();
-    } else {
-      _refreshListViewController.refreshCompleted();
-    }
   }
 }

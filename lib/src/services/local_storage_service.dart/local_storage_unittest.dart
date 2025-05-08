@@ -1,6 +1,4 @@
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
-import 'package:injectable/injectable.dart';
 
 // @Singleton(as: LocalStorageService, env: [Flavor.TESTS])
 class LocalStorageUnittest extends LocalStorageService {

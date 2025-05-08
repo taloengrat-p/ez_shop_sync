@@ -1,6 +1,6 @@
 import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ez_shop_sync/src/widgets/app_pagination_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -32,27 +32,9 @@ class _EmptyDataWidgetState extends State<EmptyDataWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SmartRefresher(
+    return AppPaginationLoadingWidget(
       enablePullDown: true,
       enablePullUp: true,
-      header: const ClassicHeader(),
-      footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus? mode) {
-          Widget body;
-          if (mode == LoadStatus.idle) {
-            body = Text("pull up load");
-          } else if (mode == LoadStatus.loading) {
-            body = const CupertinoActivityIndicator();
-          } else if (mode == LoadStatus.failed) {
-            body = Text("Load Failed!Click retry!");
-          } else if (mode == LoadStatus.canLoading) {
-            body = Text("release to load more");
-          } else {
-            body = Text("No more Data");
-          }
-          return Container(height: 55.0, child: Center(child: body));
-        },
-      ),
       controller: _refreshController,
       onRefresh: _onRefresh,
       onLoading: _onLoading,
@@ -63,10 +45,15 @@ class _EmptyDataWidgetState extends State<EmptyDataWidget> {
           widget.icon != null
               ? Icon(widget.icon, size: 120, color: Colors.grey)
               : Image.asset(Drawables.emptyData, height: widget.height, width: widget.width),
+          const SizedBox(height: 24),
           if (widget.message.isNotNull)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(widget.message!, textAlign: TextAlign.center),
+              child: Text(
+                widget.message!,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey),
+              ),
             ),
         ],
       ),

@@ -16,3 +16,12 @@ init-native-splash-screen:
 
 init-launcher-icons:
 	flutter pub run flutter_launcher_icons
+
+active-flutterfire:
+	dart pub global activate flutterfire_cli
+
+init-flavorizr:
+	flutter pub run flutter_flavorizr
+	$(MAKE) init-launcher-icons
+	$(MAKE) init-native-splash-screen
+	

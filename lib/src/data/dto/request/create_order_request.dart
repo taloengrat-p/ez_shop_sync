@@ -1,9 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'create_order_request.g.dart';
@@ -15,12 +14,15 @@ class CreateOrderRequest {
   final num? receiveAmount;
   final num? changeAmount;
   final List<OrderItem> orderItems;
+  BaseHiveData? info;
+
   CreateOrderRequest({
     required this.paymentType,
     required this.status,
-    this.changeAmount,
     this.receiveAmount,
+    this.changeAmount,
     required this.orderItems,
+    this.info,
   });
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) => _$CreateOrderRequestFromJson(json);

@@ -21,7 +21,7 @@ class OrderHistoryDetailCubit extends Cubit<OrderHistoryDetailState> {
 
     if (_argruments?.productOrder == null && _argruments?.orderId != null) {
       emit(OrderHistoryDetailInitialLoading());
-      final result = await orderRepository.getOrderHistoryDetail(appCubit.store!.id, _argruments!.orderId!);
+      final result = await orderRepository.getOrderHistoryDetail(appCubit.request(_argruments!.orderId!));
 
       result.when(
         success: (response) {

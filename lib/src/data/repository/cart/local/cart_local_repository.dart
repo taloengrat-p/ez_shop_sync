@@ -26,7 +26,7 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
 
     final result = await getById(request.data.id!);
 
-    result.when(
+    return result.when(
       success: (response) async {
         return await update(
           BaseRepoRequest(
@@ -40,8 +40,6 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
         return ApiResult(error: 'Cart get By id ${request.data.id} is Null');
       },
     );
-
-    return ApiResult(error: 'Cart get By id ${request.data.id} is Null');
   }
 
   Future<ApiResult<Cart>> addCart(BaseRepoRequest<AddCartRequest> request) async {
@@ -163,18 +161,20 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
   }
 
   Future<ApiResult<Cart>> getCartByStoreAndUserId({required String storeId, required String userId}) async {
+    log('getCartByStoreAndUserId() : request $storeId, $userId');
     final allResult = await getAll();
 
-    allResult.when(
-      success: (response) {
-        return Future.value(
-          ApiResult(response: response.where((e) => e.storeId == storeId && e.userId == userId).firstOrNull),
-        );
+    log('getCartByStoreAndUserId() : allCart ${allResult.response?.map((e) => {e.id, e.userId})}');
+    return allResult.when(
+      success: (response) async {
+        final result = response.where((e) => e.storeId == storeId && e.userId == userId).firstOrNull;
+        log('getCartByStoreAndUserId() : result $result');
+
+        return ApiResult(response: result);
       },
-      failure: (error) {
-        return Future.value(ApiResult(error: 'getCartByStoreAndUserId : $error'));
+      failure: (error) async {
+        return ApiResult(error: 'getCartByStoreAndUserId : $error');
       },
     );
-    return Future.value(ApiResult(error: 'getCartByStoreAndUserId failure'));
   }
 }

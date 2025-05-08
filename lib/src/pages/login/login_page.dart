@@ -50,8 +50,7 @@ class _LoginState extends State<LoginPage> {
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
-            imageDecoration: const DecorationImage(fit: BoxFit.cover, image: AssetImage('assets/images/cover.jpg')),
-            backgroundColor: Colors.transparent,
+            // imageDecoration: const DecorationImage(fit: BoxFit.cover, image: AssetImage('assets/images/cover.jpg')),
             appBar:
                 AppbarWidget(
                   context,
@@ -80,7 +79,7 @@ class _LoginState extends State<LoginPage> {
                 ).build(),
             body: Column(
               children: [
-                Center(child: Image.asset('assets/images/shopping-bag-white.png', height: 100)),
+                Center(child: Image.asset('assets/images/logo.png', height: 100)),
                 const SizedBox(height: 32),
                 Expanded(
                   child: Container(
@@ -118,6 +117,7 @@ class _LoginState extends State<LoginPage> {
                 ),
                 TextFormFieldUiWidget(
                   label: LocaleKeys.loginPage_password.tr(),
+                  hintText: LocaleKeys.loginPage_yourPassword.tr(),
                   labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
                   obscureText: !_cubit.isVisiblePassword,
                   errorText: state is LoginFailure ? state.errorType?.label : null,

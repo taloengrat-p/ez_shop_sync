@@ -88,7 +88,8 @@
     "okay": "Okay",
     "back": "Back",
     "done": "Done",
-    "next": "Next"
+    "next": "Next",
+    "submit": "Submit"
   },
   "phoneNumber": "Phone number",
   "email": "Email",
@@ -189,6 +190,7 @@
     "username": "Username",
     "password": "Password",
     "yourEmail": "Your email",
+    "yourPassword": "Your password",
     "confirmPassword": "Confirm password",
     "confirmPasswordInvalid": "Confirm password invalid"
   },
@@ -210,5 +212,33 @@
   "productType": "Product type",
   "notifications": {
     "title": "Notification"
-  }
+  },
+  "loadingPagination": {
+    "loadingText": "Loading…",
+    "canLoadingText": "Release to load more",
+    "idleText": "Pull up Load more",
+    "noDataText": "No more data",
+    "failedText": "Load Failed"
+  },
+  "refreshPagination": {
+    "idleText": "Pull up Load more",
+    "failedText": "Load Failed",
+    "refreshingText": "Refreshing…",
+    "releaseText": "Release to refresh",
+    "completeText": "Refresh completed",
+    "canTwoLevelText": "Release to enter secondfloor"
+  },
+  "confirmLogout": {
+    "title": "Confirm Logout",
+    "desc": "Are you sure you want to log out? You will need to log in again to access your account."
+  },
+  "dialogUnableCreateProduct": {
+    "title": "Unable to create product",
+    "desc": "Please select a store before creating a product.\nGo to menu"
+  },
+  "imagePicker": {
+    "camera": "Take Photo",
+    "gallary": "Choose from Gallary"
+  },
+  "productStatisticEmpty": "Your product is empty of statistic."
 }

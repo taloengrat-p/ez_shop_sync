@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
@@ -12,16 +11,13 @@ class ProductListItemWidget extends StatelessWidget {
   final Product product;
   final IProductPage iProductItem;
 
-  const ProductListItemWidget({
-    super.key,
-    required this.product,
-    required this.iProductItem,
-  });
+  const ProductListItemWidget({super.key, required this.product, required this.iProductItem});
 
   @override
   Widget build(BuildContext context) {
     return AppContainerWidget(
-      radius: DimensionsKeys.radius + 2,
+      padding: EdgeInsets.zero,
+      borderWidth: 0,
       backgroundColor: Colors.white,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -32,7 +28,7 @@ class ProductListItemWidget extends StatelessWidget {
             children: [
               SlidableAction(
                 onPressed: (context) {
-                  iProductItem.onDelete(product.id);
+                  iProductItem.onDelete(product);
                 },
                 padding: EdgeInsets.zero,
                 backgroundColor: Colors.red,
@@ -40,9 +36,7 @@ class ProductListItemWidget extends StatelessWidget {
                 icon: CupertinoIcons.delete,
                 // label: LocaleKeys.delete.tr(),
               ),
-              const SizedBox(
-                width: 0.5,
-              ),
+              const SizedBox(width: 0.5),
               SlidableAction(
                 padding: EdgeInsets.zero,
                 backgroundColor: Colors.amber,
@@ -53,9 +47,7 @@ class ProductListItemWidget extends StatelessWidget {
                   iProductItem.onAddStock(product);
                 },
               ),
-              const SizedBox(
-                width: 0.5,
-              ),
+              const SizedBox(width: 0.5),
               SlidableAction(
                 padding: EdgeInsets.zero,
                 backgroundColor: Colors.grey,
@@ -66,9 +58,7 @@ class ProductListItemWidget extends StatelessWidget {
                 },
                 // label: LocaleKeys.edit.tr(),
               ),
-              const SizedBox(
-                width: 0.5,
-              ),
+              const SizedBox(width: 0.5),
               SlidableAction(
                 onPressed: (context) {
                   iProductItem.onAddCart(product);
@@ -77,38 +67,46 @@ class ProductListItemWidget extends StatelessWidget {
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 icon: CupertinoIcons.cart_badge_plus,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
                 // label: LocaleKeys.edit.tr(),
               ),
             ],
           ),
-          child: SizedBox(
-            height: 120,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ImageWidget(
-                  imageUrl: product.imagesPath?.firstOrNull,
-                  width: 120,
-                  height: 120,
-                  borderRadius: BorderRadius.circular(DimensionsKeys.radius),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: ProductInfoListItem(
-                    padding: const EdgeInsets.all(8.0),
-                    name: product.name,
-                    desc: product.description,
-                    qty: product.quantity,
-                    price: product.priceStringDisplay,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: SizedBox(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Hero(
+                    tag: product.imageUrl ?? '',
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(14),
+                        bottomLeft: Radius.circular(14),
+                      ),
+                      child: ImageWidget(
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
+                        imageUrl: product.imageUrl,
+                        height: 120,
+                        width: 120,
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ProductInfoListItem(
+                      padding: const EdgeInsets.all(8.0),
+                      name: product.name,
+                      desc: product.description,
+                      qty: product.quantity,
+                      price: product.priceStringDisplay,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

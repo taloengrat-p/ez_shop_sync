@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
@@ -12,8 +14,11 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/i_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/local/product_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/server/product_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
@@ -24,35 +29,18 @@ import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-
-// abstract class IProductRepository {
-//   List<Product> getAll({AppMode appMode = AppMode.local});
-//   Future<ApiResult<Product>> getById({
-//     required String storeId,
-//     required String productId,
-//     AppMode appMode = AppMode.local,
-//   });
-//   Future<Product?> create(CreateProductRequest request);
-//   Future<ApiResult<Product>> update(
-//     String storeId,
-//     String productId,
-//     Product updated, {
-//     AppMode appMode = AppMode.local,
-//   });
-//   Future<void> delete(String storeId, String id, {AppMode appMode = AppMode.local});
-//   Future<void> deleteAll(List<String> ids, {AppMode appMode = AppMode.local});
-//   Future<ApiResult<List<Product>?>> getAllByStoreId(String id, {AppMode appMode = AppMode.local});
-// }
+import 'package:toastification/toastification.dart';
 
 @Singleton()
 @Injectable()
-class ProductRepository extends IRepository<Product> {
+class ProductRepository extends IRepository<Product> implements IProductRepository {
   String name = 'Product';
 
   ProductLocalRepository productLocalRepository;
   ProductServerRepository productServerRepository;
   ProductHistoryRepository productHistoryRepository;
   TransactionRepository transactionRepository;
+  ImageRepository imageRepository;
 
   ProductRepository({
     required this.productLocalRepository,
@@ -60,6 +48,7 @@ class ProductRepository extends IRepository<Product> {
     required this.productHistoryRepository,
     required this.transactionRepository,
     required super.navigationService,
+    required this.imageRepository,
   }) : super(AppMode.server);
 
   @override
@@ -97,7 +86,7 @@ class ProductRepository extends IRepository<Product> {
 
       return resultCreate;
     } else {
-      return await productServerRepository.create(request.data);
+      return await productServerRepository.create(request);
     }
   }
 
@@ -107,8 +96,10 @@ class ProductRepository extends IRepository<Product> {
       ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
       return productLocalRepository.delete(request.data);
     } else {
+      final result = await productServerRepository.delete(request);
+
       ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
-      return await productServerRepository.delete(request);
+      return result;
     }
   }
 
@@ -155,13 +146,11 @@ class ProductRepository extends IRepository<Product> {
   @override
   Future<ApiResult<Product>> update(BaseRepoRequest<Product> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: ['Product']));
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [request.data.name]));
       return await productLocalRepository.update(request);
     } else {
       final response = await productServerRepository.update(request);
-
-      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: ['Product']));
-
+      ToastNotificationService.show(title: LocaleKeys.notification_updateSuccess.tr(args: [request.data.name]));
       return response;
     }
   }
@@ -292,5 +281,48 @@ class ProductRepository extends IRepository<Product> {
   Future<ApiResult> deleteAll() {
     // TODO: implement deleteAll
     throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult<Product>> updateProduct(BaseRepoRequest<UpdateProductImageRequest> request) async {
+    final ApiResult<Product> result;
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      result = await productServerRepository.updateProduct(request);
+      showToast(
+        title: LocaleKeys.notification_updateSuccess.tr(args: [request.data.product?.name ?? 'Product']),
+        type: ToastificationType.success,
+      );
+    }
+
+    return result;
+  }
+
+  @override
+  Future<ApiResult> deleteProduct(BaseRepoRequest<Product> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      final result = await productServerRepository.deleteProduct(request);
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      log('Delete product ${request.data.id} success', name: runtimeType.toString());
+      return result;
+    }
+  }
+
+  @override
+  Future<ApiResult<Product>> createProduct(BaseRepoRequest<CreateProductRequest> request) async {
+    final ApiResult<Product> result;
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      result = await productServerRepository.createProduct(request);
+    }
+    showToast(
+      title: LocaleKeys.notification_createSuccess.tr(args: [request.data.product.name]),
+      type: ToastificationType.success,
+    );
+    return result;
   }
 }

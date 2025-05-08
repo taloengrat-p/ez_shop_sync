@@ -93,10 +93,7 @@ class CartIncrease extends CartState {
   final String productId;
   final num qty;
 
-  const CartIncrease({
-    required this.productId,
-    required this.qty,
-  });
+  const CartIncrease({required this.productId, required this.qty});
 
   @override
   String toString() => 'CartIncrease $productId, qty: $qty';
@@ -109,10 +106,7 @@ class CartDecrease extends CartState {
   final String productId;
   final num qty;
 
-  const CartDecrease({
-    required this.productId,
-    required this.qty,
-  });
+  const CartDecrease({required this.productId, required this.qty});
 
   @override
   String toString() => 'CartDecrease $productId, qty: $qty';
@@ -127,7 +121,19 @@ class CartRemoveItemSuccess extends CartState {
   const CartRemoveItemSuccess(this.id);
 
   @override
-  String toString() => 'CartScreenModeChange id: $id';
+  String toString() => 'CartRemoveItemSuccess id: $id';
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class CartRemoveItemFailure extends CartState {
+  final String id;
+
+  const CartRemoveItemFailure(this.id);
+
+  @override
+  String toString() => 'CartRemoveItemFailure id: $id';
 
   @override
   List<Object?> get props => [id];

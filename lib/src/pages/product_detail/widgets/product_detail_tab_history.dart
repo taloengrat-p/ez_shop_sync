@@ -10,49 +10,49 @@ import 'package:ez_shop_sync/src/pages/product_detail/widgets/product_history_it
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class ProductDetailTabHistory extends StatefulWidget {
-  const ProductDetailTabHistory({super.key});
+  final IconData? emptyIcon;
+  const ProductDetailTabHistory({super.key, this.emptyIcon});
 
   @override
-  State<ProductDetailTabHistory> createState() =>
-      _ProductDetailTabHistoryState();
+  State<ProductDetailTabHistory> createState() => _ProductDetailTabHistoryState();
 }
 
 class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
-  late ProductDetailCubit productDetailCubit;
+  final productDetailCubit = GetIt.I<ProductDetailCubit>();
   @override
   void initState() {
     super.initState();
-    productDetailCubit = BlocProvider.of<ProductDetailCubit>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProductDetailCubit, ProductDetailState>(
+      bloc: productDetailCubit,
       listener: (context, state) {},
       builder: (context, state) {
         return (productDetailCubit.productHistory?.isEmpty ?? true)
             ? EmptyDataWidget(
-                width: 200,
-                message: LocaleKeys.productHistory_productHistoryEmpty.tr(),
-              )
+              width: 200,
+              message: LocaleKeys.productHistory_productHistoryEmpty.tr(),
+              icon: widget.emptyIcon,
+            )
             : ListView.separated(
-                padding: const EdgeInsets.only(top: 8),
-                itemCount: productDetailCubit.productHistory?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final history = productDetailCubit.productHistory?[index];
-                  return InkWell(
-                    onTap: () => doHandleProductHistoryItemClick(history),
-                    child: ProductHistoryItemWidget(history: history),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: Colors.grey,
-                  );
-                },
-              );
+              padding: const EdgeInsets.only(top: 8),
+              itemCount: productDetailCubit.productHistory?.length ?? 0,
+              itemBuilder: (context, index) {
+                final history = productDetailCubit.productHistory?[index];
+                return InkWell(
+                  onTap: () => doHandleProductHistoryItemClick(history),
+                  child: ProductHistoryItemWidget(history: history),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(color: Colors.grey);
+              },
+            );
       },
     );
   }
@@ -60,9 +60,7 @@ class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
   doHandleProductHistoryItemClick(ProductHistory? history) {
     if (history?.eventType == ProductHistoryEvent.order) {
       if (history?.orderId != null) {
-        OrderHistoryDetailRouter(context).navigate(
-          argruments: OrderHistoryDetailArgruments(orderId: history!.orderId),
-        );
+        OrderHistoryDetailRouter(context).navigate(argruments: OrderHistoryDetailArgruments(orderId: history!.orderId));
       }
     }
   }

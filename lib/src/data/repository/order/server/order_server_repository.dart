@@ -1,19 +1,21 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/order/server/order_history_reponse.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
 
 @Singleton()
 @Injectable()
@@ -23,32 +25,41 @@ class OrderServerRepository {
 
   OrderServerRepository({required this.firebaseService, required this.productRepository});
 
-  Future<ApiResult<ProductOrder>> createOrder(BaseRepoRequest<ProductOrder> request) async {
+  Future<ApiResult<ProductOrder>> createOrder(BaseRepoRequest<CreateOrderRequest> request) async {
     try {
       final now = DateTime.now();
-      String fullUuid = const Uuid().v4();
-      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 6);
-      String orderId = '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
+      final orderId = now.toTransactionFormatId();
 
       final createAt = FieldValue.serverTimestamp();
+
       final info = BaseHiveData(
         createAt: createAt,
         updateAt: createAt,
         createBy: request.userId,
         updateBy: request.userId,
       );
-      request.data.info = info;
 
-      final refOrderCreated = firebaseService.storesCollection
-          .doc(request.storeId)
-          .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-          .doc(orderId);
+      final payload = ProductOrder(
+        id: orderId,
+        storeId: request.storeId!,
+        userId: request.userId!,
+        status: request.data.status.name,
+        orderItems: request.data.orderItems,
+        paymentType: request.data.paymentType.name,
+        info: info,
+      );
+      final refOrderCreated =
+          firebaseService.storesCollection
+              .doc(request.storeId)
+              .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
+              .doc();
 
-      await refOrderCreated.set(request.data.toJson());
+      await refOrderCreated.set(payload.toJson());
 
       final orderCreated = await refOrderCreated.get();
 
       final infoResponse = BaseHiveData.fromJson(orderCreated.data()?['info']);
+
       for (var orderItem in request.data.orderItems) {
         await productRepository.reduceQuantity(
           storeId: request.storeId ?? '',
@@ -74,9 +85,9 @@ class OrderServerRepository {
         response: ProductOrder(
           id: orderId,
           storeId: request.storeId ?? '',
-          status: request.data.status,
+          status: request.data.status.name,
           orderItems: request.data.orderItems,
-          paymentType: request.data.paymentType,
+          paymentType: request.data.paymentType.name,
           userId: request.userId ?? '',
           receiveAmount: request.data.receiveAmount,
           info: infoResponse,
@@ -87,47 +98,46 @@ class OrderServerRepository {
     }
   }
 
-  Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList({
-    required String storeId,
-    required int limit,
-    QueryDocumentSnapshot? lastDocument,
-  }) async {
+  Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList(BaseRepoRequest<OrderGetAllRangeRequest> request) async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot;
 
-      if (lastDocument != null) {
+      log('request ${request.storeId} ${request.userId}');
+      log('request ${request.data}');
+      if (request.data.lastDocument != null) {
         snapshot =
             await firebaseService.storesCollection
-                .doc(storeId)
+                .doc(request.storeId)
                 .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
                 .orderBy('info.createAt', descending: true)
-                .limit(limit)
-                .startAfterDocument(lastDocument)
+                .limit(request.data.limit)
+                .startAfterDocument(request.data.lastDocument!)
                 .get();
       } else {
         snapshot =
             await firebaseService.storesCollection
-                .doc(storeId)
+                .doc(request.storeId)
                 .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
                 .orderBy('info.createAt', descending: true)
-                .limit(limit)
+                .limit(request.data.limit)
                 .get();
       }
 
-      final response = snapshot.docs.map((e) => ProductOrder.fromJson(e.data())..id = e.id).toList();
+      log('snapshot getRange : ${snapshot.docs.map((e) => ProductOrder.fromJson(e.data())).toList()}');
+      final response = snapshot.docs.map((e) => ProductOrder.fromJson(e.data())).toList();
       return ApiResult(response: OrderHistoryResponse(orders: response, lastDocument: snapshot.docs.last));
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
   }
 
-  Future<ApiResult<ProductOrder>> getOrderHistory(String storeId, String id) async {
+  Future<ApiResult<ProductOrder>> getOrderHistory(BaseRepoRequest<String> request) async {
     try {
       final result =
           await firebaseService.storesCollection
-              .doc(storeId)
+              .doc(request.storeId)
               .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-              .doc(id)
+              .doc(request.data)
               .get();
 
       final resultData = result.data() ?? {};

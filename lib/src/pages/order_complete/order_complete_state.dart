@@ -13,26 +13,26 @@ abstract class OrderCompleteState extends Equatable {
 
 class OrderCompleteArgrument extends OrderCompleteState {
   final String title;
-  final ProductOrder? orderItems;
+  final ProductOrder? orderItem;
   final AddProduct? addProductItems;
   final TransactionMethodType? transactionMethodType;
   final String from;
 
   const OrderCompleteArgrument({
     required this.title,
-    this.orderItems,
+    this.orderItem,
     this.transactionMethodType,
     this.addProductItems,
     required this.from,
   });
   @override
   String toString() =>
-      'OrderCompleteRefresh $title $orderItems $transactionMethodType';
+      'OrderCompleteRefresh $title $orderItem $transactionMethodType';
 
   @override
   List<Object?> get props => [
         title,
-        orderItems,
+        orderItem,
         transactionMethodType,
         from,
       ];

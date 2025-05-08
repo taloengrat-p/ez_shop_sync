@@ -1,6 +1,10 @@
-import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'dart:io';
 
-class CreateProductRequest extends BaseRepoRequest<Product> {
-  CreateProductRequest({required super.storeId, required super.userId, required super.data});
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+
+class CreateProductRequest {
+  final Product product;
+  final File? image;
+
+  CreateProductRequest({required this.product, required this.image});
 }

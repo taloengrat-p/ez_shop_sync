@@ -135,6 +135,16 @@ class AppAddCartSuccess extends AppState {
   String toString() => 'AppAddCartSuccess';
 }
 
+class AppDeleteProductSuccess extends AppState {
+  @override
+  String toString() => 'AppDeleteProductSuccess';
+}
+
+class AppDeleteProductFailure extends AppState {
+  @override
+  String toString() => 'AppDeleteProductFailure';
+}
+
 class AppAddCartAnimationSuccess extends AppState {
   @override
   String toString() => 'AppAddCartAnimationSuccess';
@@ -179,4 +189,9 @@ class AppAddStockSuccess extends AppState {
 
   @override
   List<Object?> get props => [dateTime.toIso8601String()];
+}
+
+class AppCartUpdate extends AppState {
+  @override
+  String toString() => 'AppCartUpdate';
 }

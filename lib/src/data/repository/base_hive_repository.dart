@@ -19,7 +19,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     box = Hive.box<T>(boxName);
   }
 
-  Future<ApiResult<T>> create(BaseRepoRequest<T> request) async {
+  Future<ApiResult<T>> create(BaseRepoRequest<T> request, {String? tag}) async {
     try {
       final id = request.data.id ?? const Uuid().v4();
       await box.put(
@@ -30,8 +30,11 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
           ..info?.updateBy = request.userId,
       );
       request.data.id = id;
+
+      log('$tag create() success');
       return Future.value(ApiResult(response: request.data));
     } catch (e) {
+      log('$tag create() failure : $e');
       return Future.value(ApiResult(error: e));
     }
   }
@@ -43,8 +46,8 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
       success: (response) async {
         return await create(request);
       },
-      failure: (error) {
-        return ApiResult(error: error);
+      failure: (error) async {
+        return await create(request);
       },
     );
 
@@ -67,7 +70,11 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
         (a, b) =>
             b.info?.createAt?.millisecondsSinceEpoch.compareTo(a.info?.createAt?.millisecondsSinceEpoch ?? -1) ?? -1,
       );
-      return Future.value(ApiResult(response: result));
+      if (result.isEmpty) {
+        return Future.value(ApiResult(error: 'getAll is empty'));
+      } else {
+        return Future.value(ApiResult(response: result));
+      }
     } catch (e) {
       return Future.value(ApiResult(error: e));
     }

@@ -15,13 +15,13 @@ class OrderCompleteCubit extends Cubit<OrderCompleteState> {
 
   DateTime? get createDate =>
       argruments?.transactionMethodType == TransactionMethodType.order
-          ? (argruments?.orderItems?.info?.createAt as Timestamp).toDate()
+          ? (argruments?.orderItem?.info?.createAt as Timestamp).toDate()
           : argruments?.transactionMethodType == TransactionMethodType.addProduct
           ? (argruments?.addProductItems?.info?.createAt as Timestamp).toDate()
           : null;
 
   String get transactionId => switch (argruments?.transactionMethodType) {
-    TransactionMethodType.order => argruments?.orderItems?.id,
+    TransactionMethodType.order => argruments?.orderItem?.id,
     TransactionMethodType.addProduct => argruments?.addProductItems?.id,
     TransactionMethodType.undefined => 'undefined',
     null => '',

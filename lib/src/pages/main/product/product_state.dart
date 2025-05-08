@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class ProductState extends Equatable {
@@ -35,9 +37,30 @@ class ProductLoading extends ProductState {
   String toString() => 'ProductLoading';
 }
 
+class ProductDeleteSuccess extends ProductState {
+  final String id;
+  const ProductDeleteSuccess({required this.id});
+
+  @override
+  String toString() => 'ProductLoading $id';
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class ProductDeleteFailure extends ProductState {
+  @override
+  String toString() => 'ProductDeleteFailure';
+}
+
 class ProductAddStockSuccess extends ProductState {
   @override
   String toString() => 'ProductAddStockSuccess';
+}
+
+class ProductLoadmoreSuccess extends ProductState {
+  @override
+  String toString() => 'ProductLoadmoreSuccess';
 }
 
 class ProductSuccess extends ProductState {
@@ -48,9 +71,7 @@ class ProductSuccess extends ProductState {
 class ProductChangeScreenMode extends ProductState {
   final ScreenMode mode;
 
-  const ProductChangeScreenMode(
-    this.mode,
-  );
+  const ProductChangeScreenMode(this.mode);
   @override
   String toString() => 'ProductChangeScreenMode $mode';
 

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
@@ -16,28 +15,25 @@ class ProductGridItemWidget extends StatelessWidget {
   final Product product;
   final IProductPage? iProductItem;
 
-  const ProductGridItemWidget({
-    super.key,
-    required this.product,
-    this.iProductItem,
-  });
+  const ProductGridItemWidget({super.key, required this.product, this.iProductItem});
 
   @override
   Widget build(BuildContext context) {
     return AppContainerWidget(
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
       backgroundColor: Colors.white,
-      radius: 20,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ImageWidget(
-            imageUrl: product.imagesPath?.firstOrNull,
-            margin: const EdgeInsets.all(4),
-            padding: const EdgeInsets.all(4),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(DimensionsKeys.radius),
-              topRight: Radius.circular(DimensionsKeys.radius),
+          Hero(
+            tag: product.imageUrl ?? '',
+            child: ImageWidget(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
+              imageUrl: product.imageUrl,
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
             ),
           ),
           Flexible(
@@ -54,18 +50,12 @@ class ProductGridItemWidget extends StatelessWidget {
                         Text(
                           product.name,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
                           product.priceStringDisplay,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(color: Colors.orange),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
                         ),
                         Visibility(
                           maintainAnimation: true,
@@ -78,85 +68,66 @@ class ProductGridItemWidget extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
+                        const SizedBox(height: 8),
                         if (product.allQuantity != null)
                           Text(
                             overflow: TextOverflow.ellipsis,
                             LocaleKeys.qty.tr(
-                              args: [
-                                product.allQuantity?.toString() ?? '',
-                                LocaleKeys.units_piece.tr(),
-                              ],
+                              args: [product.allQuantity?.toString() ?? '', LocaleKeys.units_piece.tr()],
                             ),
-                          )
+                          ),
                       ],
                     ),
                   ),
                   PopupMenuButton(
                     color: Colors.white,
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      PopupMenuItem(
-                        onTap: () {
-                          iProductItem?.onAddCart(product);
-                        },
-                        child: OpacityWidget(
-                          child: RowBetweenWidget(
-                            title: Text(LocaleKeys.addCart.tr()),
-                            value: const Icon(
-                              CupertinoIcons.cart_badge_plus,
-                              color: Colors.orange,
+                    itemBuilder:
+                        (BuildContext context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem(
+                            onTap: () {
+                              iProductItem?.onAddCart(product);
+                            },
+                            child: OpacityWidget(
+                              child: RowBetweenWidget(
+                                title: Text(LocaleKeys.addCart.tr()),
+                                value: const Icon(CupertinoIcons.cart_badge_plus, color: Colors.orange),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        child: OpacityWidget(
-                          child: RowBetweenWidget(
-                            title: Text(LocaleKeys.addStock.tr()),
-                            value: const Icon(
-                              CupertinoIcons.bag_badge_plus,
-                              color: Colors.amber,
+                          PopupMenuItem(
+                            child: OpacityWidget(
+                              child: RowBetweenWidget(
+                                title: Text(LocaleKeys.addStock.tr()),
+                                value: const Icon(CupertinoIcons.bag_badge_plus, color: Colors.amber),
+                              ),
+                            ),
+                            onTap: () {
+                              iProductItem?.onAddStock(product);
+                            },
+                          ),
+                          PopupMenuItem(
+                            onTap: () {
+                              iProductItem?.onEdit(product.id);
+                            },
+                            child: OpacityWidget(
+                              child: RowBetweenWidget(
+                                title: Text(LocaleKeys.edit.tr()),
+                                value: const Icon(CupertinoIcons.pencil),
+                              ),
                             ),
                           ),
-                        ),
-                        onTap: () {
-                          iProductItem?.onAddStock(product);
-                        },
-                      ),
-                      PopupMenuItem(
-                        onTap: () {
-                          iProductItem?.onEdit(product.id);
-                        },
-                        child: OpacityWidget(
-                          child: RowBetweenWidget(
-                            title: Text(LocaleKeys.edit.tr()),
-                            value: const Icon(CupertinoIcons.pencil),
+                          PopupMenuItem<String>(
+                            child: RowBetweenWidget(
+                              title: Text(LocaleKeys.delete.tr()),
+                              value: const Icon(CupertinoIcons.delete, color: Colors.red),
+                            ),
+                            onTap: () {
+                              log('delete ${product.id}');
+                              iProductItem?.onDelete(product);
+                            },
                           ),
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        child: RowBetweenWidget(
-                          title: Text(
-                            LocaleKeys.delete.tr(),
-                          ),
-                          value: const Icon(
-                            CupertinoIcons.delete,
-                            color: Colors.red,
-                          ),
-                        ),
-                        onTap: () {
-                          log('delete ${product.id}');
-                          iProductItem?.onDelete(product.id);
-                        },
-                      ),
-                    ],
-                    child: const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Icon(Icons.more_vert_rounded),
-                    ),
+                        ],
+                    child: const Padding(padding: EdgeInsets.only(bottom: 8.0), child: Icon(Icons.more_vert_rounded)),
                   ),
                 ],
               ),

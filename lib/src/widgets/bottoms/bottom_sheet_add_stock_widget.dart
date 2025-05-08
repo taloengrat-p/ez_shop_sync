@@ -15,11 +15,7 @@ class BottomSheetAddStockSuccess {
   final num qty;
   final num amountCost;
   final String? priceCategorySelected;
-  BottomSheetAddStockSuccess({
-    required this.priceCategorySelected,
-    required this.qty,
-    required this.amountCost,
-  });
+  BottomSheetAddStockSuccess({required this.priceCategorySelected, required this.qty, required this.amountCost});
 
   @override
   String toString() =>
@@ -29,15 +25,10 @@ class BottomSheetAddStockSuccess {
 class BottomSheetAddStockWidget extends StatefulWidget {
   final Product product;
   final Function()? onSubmit;
-  const BottomSheetAddStockWidget({
-    super.key,
-    required this.product,
-    this.onSubmit,
-  });
+  const BottomSheetAddStockWidget({super.key, required this.product, this.onSubmit});
 
   @override
-  _BottomSheetAddStockWidgetState createState() =>
-      _BottomSheetAddStockWidgetState();
+  _BottomSheetAddStockWidgetState createState() => _BottomSheetAddStockWidgetState();
 }
 
 class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
@@ -74,23 +65,12 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
               children: [
                 Row(
                   children: [
-                    ImageWidget(
-                      imageUrl: _productEditor.imagesPath?.firstOrNull,
-                      width: 80,
-                      height: 80,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    ProductInfoListItem(
-                      name: _productEditor.name,
-                      desc: _productEditor.description,
-                    ),
+                    ImageWidget(imageUrl: _productEditor.imagesUrl?.firstOrNull, width: 80, height: 80),
+                    const SizedBox(width: 8),
+                    ProductInfoListItem(name: _productEditor.name, desc: _productEditor.description),
                   ],
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 PriceGroupSelectWidget(
                   items: widget.product.productTypeList?.toList() ?? [],
                   itemSelected: priceCategorySelected,
@@ -104,43 +84,31 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                     });
                   },
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 TextFormFieldUiWidget(
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
                   autofocus: true,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
-                    Future.delayed(
-                      Duration.zero,
-                      () {
-                        setState(() {
-                          _qtyTextController.text =
-                              value?.trim() == '0' ? '' : value?.trim() ?? '';
-                        });
-                      },
-                    );
+                    Future.delayed(Duration.zero, () {
+                      setState(() {
+                        _qtyTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                      });
+                    });
                   },
                 ),
                 TextFormFieldUiWidget(
                   controller: _costAmountTextController,
                   label: LocaleKeys.amountCost.tr(),
                   autofocus: true,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
-                    Future.delayed(
-                      Duration.zero,
-                      () {
-                        setState(() {
-                          _costAmountTextController.text =
-                              value?.trim() == '0' ? '' : value?.trim() ?? '';
-                        });
-                      },
-                    );
+                    Future.delayed(Duration.zero, () {
+                      setState(() {
+                        _costAmountTextController.text = value?.trim() == '0' ? '' : value?.trim() ?? '';
+                      });
+                    });
                   },
                 ),
               ],
@@ -151,25 +119,24 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
             label: LocaleKeys.addStock.tr(),
             leading: const Icon(CupertinoIcons.bag_badge_plus),
             backgroundColor: Colors.amber,
-            onPressed: _qtyTextController.text.isEmpty ||
-                    int.tryParse(_qtyTextController.text) == null ||
-                    (priceCategorySelected == null ||
-                        (priceCategorySelected?.isEmpty ?? false)) ||
-                    _costAmountTextController.text.isEmpty ||
-                    int.tryParse(_costAmountTextController.text) == null
-                ? null
-                : () {
-                    final amountCost =
-                        num.tryParse(_costAmountTextController.text);
+            onPressed:
+                _qtyTextController.text.isEmpty ||
+                        int.tryParse(_qtyTextController.text) == null ||
+                        (priceCategorySelected == null || (priceCategorySelected?.isEmpty ?? false)) ||
+                        _costAmountTextController.text.isEmpty ||
+                        int.tryParse(_costAmountTextController.text) == null
+                    ? null
+                    : () {
+                      final amountCost = num.tryParse(_costAmountTextController.text);
 
-                    Navigator.of(context).pop(
-                      BottomSheetAddStockSuccess(
-                        priceCategorySelected: priceCategorySelected,
-                        qty: int.parse(_qtyTextController.text),
-                        amountCost: amountCost ?? 0,
-                      ),
-                    );
-                  },
+                      Navigator.of(context).pop(
+                        BottomSheetAddStockSuccess(
+                          priceCategorySelected: priceCategorySelected,
+                          qty: int.parse(_qtyTextController.text),
+                          amountCost: amountCost ?? 0,
+                        ),
+                      );
+                    },
           ),
         ],
       ),

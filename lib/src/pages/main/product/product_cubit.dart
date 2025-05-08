@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
@@ -46,13 +45,27 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductRefresh(DateTime.now()));
   }
 
-  Future<void> deleteProduct(String storeId, String id) async {
-    await appCubit.doDeleteProduct(storeId: storeId, productId: id);
+  Future<void> deleteProduct(String storeId, Product product) async {
+    emit(ProductLoading());
+    final result = await productRepository.deleteProduct(appCubit.request(product));
+
+    result.when(
+      success: (response) {
+        appCubit.doDeleteProduct(storeId: storeId, product: product);
+        emit(ProductDeleteSuccess(id: product.id));
+      },
+      failure: (error) {
+        emit(ProductDeleteFailure());
+      },
+    );
+
     emit(ProductRefresh(DateTime.now()));
   }
 
-  Future<void> init() async {
-    emit(ProductInitial());
+  Future<void> init({bool isRefresh = false}) async {
+    if (!isRefresh) {
+      emit(ProductInitial());
+    }
     await appCubit.loadProductByCurrentStore();
     emit(ProductRefresh(DateTime.now()));
   }
@@ -87,5 +100,10 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductLoading());
     await appCubit.addStock(product: product, amountCost: amountCost);
     emit(ProductAddStockSuccess());
+  }
+
+  void testAddProduct() {
+    appCubit.testAddProduct();
+    emit(ProductLoadmoreSuccess());
   }
 }

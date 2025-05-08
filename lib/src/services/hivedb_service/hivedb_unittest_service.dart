@@ -6,8 +6,8 @@ import 'package:ez_shop_sync/src/services/hivedb_service/hivedb_service.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton(as: HiveDBService, env: [Flavor.TESTS])
-@Injectable(as: HiveDBService, env: [Flavor.TESTS])
+@Singleton(as: HiveDBService, env: [Flavor.STG])
+@Injectable(as: HiveDBService, env: [Flavor.STG])
 class HiveDBUnittestService extends HiveDBService {
   @override
   init() {

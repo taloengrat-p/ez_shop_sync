@@ -9,47 +9,65 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
+import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/image/server/image_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/i_product_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
+import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 @Singleton()
 @Injectable()
-class ProductServerRepository {
+class ProductServerRepository implements IProductRepository {
   final FirebaseService firebaseService;
-  ProductServerRepository({required this.firebaseService});
+  final ImageRepository imageRepository;
+  ProductServerRepository({required this.firebaseService, required this.imageRepository});
 
-  Future<ApiResult<Product>> create(Product request) async {
+  Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
     final productInfo = BaseHiveData(
       createAt: FieldValue.serverTimestamp(),
       updateAt: FieldValue.serverTimestamp(),
-      createBy: request.ownerId,
-      updateBy: request.ownerId,
+      createBy: request.data.ownerId,
+      updateBy: request.data.ownerId,
     );
-    request.info = productInfo;
+    request.data.info ??= productInfo;
 
-    final productCreated = await firebaseService.storesCollection
+    final createRef = await firebaseService.storesCollection
         .doc(request.storeId)
         .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
-        .add(request.toJson());
-
-    final response = await productCreated.get();
+        .add(request.data.toJson());
 
     await updateHistory(
       CreateProductHistoryRequest(
         storeId: request.storeId,
-        userId: request.ownerId,
-        productId: response.id,
+        userId: request.data.ownerId,
+        productId: createRef.id,
         data: ProductHistoryEvent.create,
         info: productInfo,
       ),
     );
 
-    if (response.data() == null) {
-      return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
-    }
+    final updateProductId = await update(BaseRepoRequest.build(request, request.data..id = createRef.id));
 
-    return ApiResult(response: request..id = response.id);
+    return ApiResult(response: updateProductId.response);
+  }
+
+  @override
+  Future<ApiResult<Product>> createProduct(BaseRepoRequest<CreateProductRequest> request) async {
+    if (request.data.image != null) {
+      String fileName = '${const Uuid().v4()}_${basename(request.data.image!.path)}';
+
+      final imageUrlResult = await imageRepository.uploadImageToStore(
+        BaseRepoRequest.build(request, UploadImageRequest(file: request.data.image!, fileName: fileName)),
+      );
+
+      return await create(BaseRepoRequest.build(request, request.data.product..imageUrl = imageUrlResult));
+    } else {
+      return await create(BaseRepoRequest.build(request, request.data.product));
+    }
   }
 
   Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
@@ -60,8 +78,9 @@ class ProductServerRepository {
               .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
               .get();
 
-      final response = products.docs.map((e) => Product.fromJson(e.data())..id = e.id).toList();
+      final response = products.docs.map((e) => Product.fromJson(e.data())).toList();
 
+      log('getAllByStoreId : ${response.map((e) => e.id)}');
       if (products.docs.isEmpty) {
         return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
       }
@@ -82,17 +101,20 @@ class ProductServerRepository {
 
       return ApiResult(response: 'Delete ${request.data} success');
     } catch (e) {
+      log(' delete $e');
       return ApiResult(error: e);
     }
   }
 
   Future<ApiResult<Product>> update(BaseRepoRequest<Product> request) async {
     try {
-      await firebaseService.storesCollection
+      log('update product id ${request.data.id}');
+      final docRef = firebaseService.storesCollection
           .doc(request.storeId)
           .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
-          .doc(request.data.id)
-          .set(request.data.toJson());
+          .doc(request.data.id);
+
+      await docRef.update({...request.data.toJson(), 'updateAt': FieldValue.serverTimestamp()});
 
       return ApiResult(response: request.data);
     } catch (e) {
@@ -133,6 +155,7 @@ class ProductServerRepository {
       log('productResponse $productResponse');
       return ApiResult(response: productResponse.map((e) => Product.fromJson(e)).toList());
     } catch (e) {
+      log('productResponse failure $e');
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
   }
@@ -213,5 +236,31 @@ class ProductServerRepository {
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
+  }
+
+  @override
+  Future<ApiResult<Product>> updateProduct(BaseRepoRequest<UpdateProductImageRequest> request) async {
+    try {
+      if (request.data.updatedImage != null && request.data.product?.imageUrl != null) {
+        final ref = firebaseService.storage.refFromURL(request.data.imageRefUrl);
+
+        final newUrl = await ref.getDownloadURL();
+        await ref.putFile(request.data.updatedImage!);
+
+        return await update(BaseRepoRequest.build(request, request.data.product!..imageUrl = newUrl));
+      } else {
+        return await update(BaseRepoRequest.build(request, request.data.product!));
+      }
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  @override
+  Future<ApiResult> deleteProduct(BaseRepoRequest<Product> request) async {
+    await delete(BaseRepoRequest.build(request, request.data.id));
+    await imageRepository.deleteImageFromStore(BaseRepoRequest.build(request, request.data.imageUrl!));
+
+    return ApiResult(response: 'deleteProduct ${request.data.id} success');
   }
 }

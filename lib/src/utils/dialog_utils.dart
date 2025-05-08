@@ -82,12 +82,9 @@ class DialogUtils {
       context: context,
       builder: (context) {
         return AlertDialog(
-          actionsPadding: const EdgeInsets.only(bottom: 8, left: 12, right: 12),
+          actionsPadding: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(DimensionsKeys.radius)),
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
-          ),
+          title: Text(title, textAlign: TextAlign.center),
           content: Text(desc ?? ''),
           actions: [
             ButtonWidget(

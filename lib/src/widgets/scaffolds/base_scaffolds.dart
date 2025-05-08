@@ -33,7 +33,7 @@ class BaseScaffolds extends StatefulWidget {
   final IconData? emptyIcon;
   final Function()? onRefresh;
   final Function()? onLoading;
-
+  final bool? isAppBarOverlay;
   const BaseScaffolds({
     this.emptyIcon,
     this.isEmpty = false,
@@ -53,6 +53,7 @@ class BaseScaffolds extends StatefulWidget {
     this.imageDecoration,
     this.onLoading,
     this.onRefresh,
+    this.isAppBarOverlay = false,
   });
 
   @override
@@ -129,6 +130,7 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
               top: false,
               bottom: true,
               child: Scaffold(
+                extendBodyBehindAppBar: widget.isAppBarOverlay ?? false,
                 backgroundColor: Colors.transparent,
                 drawerScrimColor: Colors.white,
                 appBar: widget.appBar,
@@ -179,7 +181,14 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                                     height: double.infinity,
                                     width: double.infinity,
                                     color: Colors.white,
-                                    child: Center(child: Lottie.asset('assets/loading.json')),
+                                    child: Center(
+                                      child: Stack(
+                                        children: [
+                                          Center(child: Lottie.asset('assets/loading.json')),
+                                          Center(child: Image.asset('assets/images/logo.png', height: 100)),
+                                        ],
+                                      ),
+                                    ),
                                   )
                                   : widget.isEmpty
                                   ? EmptyDataWidget(

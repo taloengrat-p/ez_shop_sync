@@ -1,7 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
-import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_router.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_cubit.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_state.dart';

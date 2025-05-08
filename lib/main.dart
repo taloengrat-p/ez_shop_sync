@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/flavors.dart';
@@ -6,7 +7,7 @@ import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart' as et;
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
@@ -23,8 +24,10 @@ import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -55,7 +58,15 @@ FutureOr<void> main() async {
 }
 
 Future<void> setupConfiguration() async {
-  configureDependencies(F.appFlavor!.name);
+  log('env ${F.appFlavor.name}');
+
+  await dotenv.load(fileName: kReleaseMode ? "assets/envs/.env" : "assets/envs/.env.${F.appFlavor.name}");
+
+  final appEnv = dotenv.get("ENV");
+
+  log('appEnv $appEnv');
+
+  configureDependencies(F.appFlavor.name);
 }
 
 Future<void> initialHiveDB() async {
@@ -70,7 +81,7 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(ProductConfigAdapter());
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(AppThemeAdapter());
-  Hive.registerAdapter(CategoryAdapter());
+  Hive.registerAdapter(et.CategoryAdapter());
   Hive.registerAdapter(ProductOrderAdapter());
   Hive.registerAdapter(CartAdapter());
   Hive.registerAdapter(OrderItemAdapter());
@@ -84,7 +95,7 @@ Future<void> initialHiveDB() async {
   await Hive.openBox<Store>(HiveBoxConstance.store);
   await Hive.openBox<UserData>(HiveBoxConstance.user);
   await Hive.openBox<Tag>(HiveBoxConstance.tag);
-  await Hive.openBox<Category>(HiveBoxConstance.category);
+  await Hive.openBox<et.Category>(HiveBoxConstance.category);
   await Hive.openBox<Cart>(HiveBoxConstance.cart);
   await Hive.openBox<ProductOrder>(HiveBoxConstance.order);
   await Hive.openBox<Transaction>(HiveBoxConstance.transaction);

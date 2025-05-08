@@ -116,13 +116,19 @@ class _OrderCompleteState extends State<OrderCompletePage> {
             ),
             onTap: () {
               if (_cubit.argruments?.transactionMethodType == TransactionMethodType.order) {
-                OrderHistoryDetailRouter(
-                  context,
-                ).replace(argruments: OrderHistoryDetailArgruments(productOrder: _cubit.argruments?.orderItems));
+                OrderHistoryDetailRouter(context).navigateFromOrderComplete(
+                  argruments: OrderHistoryDetailArgruments(
+                    productOrder: _cubit.argruments?.orderItem,
+                    orderId: _cubit.argruments?.orderItem?.id,
+                  ),
+                );
               } else if (_cubit.argruments?.transactionMethodType == TransactionMethodType.addProduct) {
-                OrderHistoryDetailRouter(
-                  context,
-                ).replace(argruments: OrderHistoryDetailArgruments(productOrder: _cubit.argruments?.orderItems));
+                OrderHistoryDetailRouter(context).replace(
+                  argruments: OrderHistoryDetailArgruments(
+                    productOrder: _cubit.argruments?.orderItem,
+                    orderId: _cubit.argruments?.addProductItems?.id,
+                  ),
+                );
               }
             },
           ),

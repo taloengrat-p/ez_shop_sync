@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
@@ -136,13 +137,31 @@ class CartCubit extends Cubit<CartState> {
     _cart = appCubit.cart;
     _products = appCubit.cart?.cartItems.map((e) => e).toList() ?? [];
     paymentMethod = PaymentMethodType.cash;
-    productInStock = await getProductsByCartItems();
+    final result = await getProductsByCartItems();
+
+    result.when(
+      success: (response) {
+        productInStock = response;
+        emit(CartGetProductsSuccess());
+      },
+      failure: (error) {
+        emit(CartGetProductsFailure());
+      },
+    );
   }
 
   void deleteItemFromCart(String id) async {
-    await appCubit.deleteItemFromCart(id);
-    _products.removeWhere((e) => e.id == id);
-    emit(CartRemoveItemSuccess(id));
+    final result = await appCubit.deleteItemFromCart(id);
+
+    result.when(
+      success: (response) {
+        _products.removeWhere((e) => e.id == id);
+        emit(CartRemoveItemSuccess(id));
+      },
+      failure: (error) {
+        emit(CartRemoveItemFailure(id));
+      },
+    );
   }
 
   void changePaymentMethod(PaymentMethodType? val) {
@@ -157,7 +176,9 @@ class CartCubit extends Cubit<CartState> {
 
     emit(CartLoading());
 
-    productInStock = await getProductsByCartItems();
+    final result = await getProductsByCartItems();
+
+    productInStock = result.response ?? [];
 
     if (hasAnyError) {
       emit(CartProductInsufficient());
@@ -178,7 +199,7 @@ class CartCubit extends Cubit<CartState> {
       ),
     );
 
-    orderCreated.when(
+    await orderCreated.when(
       success: (response) async {
         if (_cart != null) {
           // await productRepository.orderCompletedUpdate(_cart);
@@ -198,23 +219,14 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
-  Future<List<Product>> getProductsByCartItems() async {
+  Future<ApiResult<List<Product>>> getProductsByCartItems() async {
     final result = await productRepository.getByIds(
       appCubit.store?.id,
       _products.map((e) => e.product?.id.toString() ?? '').toList(),
       appMode: AppMode.server,
     );
 
-    result.when(
-      success: (response) {
-        emit(CartGetProductsSuccess());
-      },
-      failure: (error) {
-        emit(CartGetProductsFailure());
-      },
-    );
-
-    return result.response ?? [];
+    return result;
   }
 
   void setReceiveAmount(String? value) {

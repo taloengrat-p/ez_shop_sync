@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/pages/order_history/order_history_state.dart';
 import 'package:ez_shop_sync/src/pages/order_history/widgets/order_history_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
+import 'package:ez_shop_sync/src/widgets/app_pagination_loading_widget.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
@@ -37,12 +38,6 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
     super.dispose();
   }
 
-  // void _onScroll(ScrollController controller) {
-  //   if (controller.position.pixels == controller.position.maxScrollExtent) {
-  //     _cubit.loadMoreItems();
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -62,6 +57,7 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
                         height: size.height * 0.45,
                         width: 200,
                         message: LocaleKeys.orderHistoryEmpty.tr(),
+                        onRefresh: onRefresh,
                       ),
                     )
                     : _buildPage(context, state),
@@ -75,17 +71,12 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
     return Column(
       children: [
         Expanded(
-          child: SmartRefresher(
+          child: AppPaginationLoadingWidget(
             controller: _refreshListViewController,
             enablePullDown: true,
             enablePullUp: true,
-            footer: const ClassicFooter(loadStyle: LoadStyle.ShowWhenLoading),
-            onRefresh: () {
-              onRefresh();
-            },
-            onLoading: () {
-              onLoadMore();
-            },
+            onRefresh: onRefresh,
+            onLoading: onLoadMore,
             child: ListView.separated(
               shrinkWrap: true,
               physics: const ScrollPhysics(),

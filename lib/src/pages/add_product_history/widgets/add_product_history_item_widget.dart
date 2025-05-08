@@ -14,10 +14,7 @@ import 'package:flutter/material.dart';
 class AddProductHistoryItemWidget extends StatelessWidget {
   final AddProduct addProduct;
 
-  const AddProductHistoryItemWidget({
-    super.key,
-    required this.addProduct,
-  });
+  const AddProductHistoryItemWidget({super.key, required this.addProduct});
 
   OrderItem get firstOrderItem => addProduct.addProductItems.first;
 
@@ -35,27 +32,22 @@ class AddProductHistoryItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
               child: Column(
                 children: [
-                  TextTitleBoldValueWidget(
-                    title: LocaleKeys.orderId.tr(),
-                    value: addProduct.id,
-                  ),
+                  TextTitleBoldValueWidget(title: LocaleKeys.orderId.tr(), value: addProduct.id),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
                     value: addProduct.info?.createAt.toDisplayDependLocale(context),
-                  )
+                  ),
                 ],
               ),
             ),
-            Divider(
-              color: Colors.grey.shade300,
-            ),
+            Divider(color: Colors.grey.shade300),
             SizedBox(
               height: 150,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ImageWidget(
-                    imageUrl: firstOrderItem.product?.imagesPath?.firstOrNull,
+                    imageUrl: firstOrderItem.product?.imagesUrl?.firstOrNull,
                     width: 120,
                     borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                   ),
@@ -100,9 +92,7 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     LocaleKeys.orderNumberOfItem.tr(args: [addProduct.numberOfItems.toString()]),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   ProductOrderTotalAmountWidget(totalPrice: addProduct.amountCost),
                 ],

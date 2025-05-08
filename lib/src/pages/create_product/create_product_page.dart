@@ -57,6 +57,11 @@ class CreateProductPageState extends State<CreateProductPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<CreateProductCubit, CreateProductState>(
       bloc: _cubit,
@@ -70,6 +75,7 @@ class CreateProductPageState extends State<CreateProductPage> {
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            isLoading: state is CreateProductLoading,
             backgroundColor: Colors.white,
             appBar: AppbarWidget(context, title: LocaleKeys.createProduct.tr(), actions: []).build(),
             body: SingleChildScrollView(
@@ -81,11 +87,12 @@ class CreateProductPageState extends State<CreateProductPage> {
                     children: [
                       const SizedBox(height: 16),
                       ImagePickerWidget(
-                        height: 150,
+                        height: MediaQuery.of(context).size.height * 0.3,
                         width: 150,
-                        path: _cubit.productImage,
+                        path: _cubit.productImageFile?.path,
+                        imageUrl: _cubit.productEditor?.imageUrl,
                         onImagePicked: (file) {
-                          _cubit.setProductImage(file?.path);
+                          _cubit.setProductImage(file);
                         },
                       ),
                       const SizedBox(height: 32),
@@ -293,7 +300,8 @@ class CreateProductPageState extends State<CreateProductPage> {
             ),
             bottomNavigationBar: ButtonWidget(
               margin: const EdgeInsets.all(16),
-              label: _cubit.screenMode == ScreenMode.create ? LocaleKeys.button_next.tr() : LocaleKeys.button_save.tr(),
+              label:
+                  _cubit.screenMode == ScreenMode.create ? LocaleKeys.button_submit.tr() : LocaleKeys.button_save.tr(),
               onPressed: () {
                 if (_cubit.screenMode == ScreenMode.create) {
                   _cubit.submitCreate();

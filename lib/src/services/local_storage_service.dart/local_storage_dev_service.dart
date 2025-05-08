@@ -1,4 +1,3 @@
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/shared_pref_keys.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';

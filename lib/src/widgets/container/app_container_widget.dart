@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 class AppContainerWidget extends StatelessWidget {
   final EdgeInsets? margin;
   final EdgeInsets? padding;
-  final Widget child;
+  final Widget? child;
   final Color? backgroundColor;
   final BoxDecoration? decoration;
   final double? width;
   final double? height;
   final double? radius;
+  final double? borderWidth;
   const AppContainerWidget({
     super.key,
-    required this.child,
+    this.child,
     this.margin,
     this.padding,
     this.backgroundColor,
@@ -21,6 +22,7 @@ class AppContainerWidget extends StatelessWidget {
     this.height,
     this.decoration,
     this.radius,
+    this.borderWidth,
   });
 
   @override
@@ -30,14 +32,12 @@ class AppContainerWidget extends StatelessWidget {
       margin: margin,
       height: height,
       width: width,
-      decoration: decoration ??
+      decoration:
+          decoration ??
           BoxDecoration(
             color: backgroundColor ?? Colors.white,
-            border: Border.all(
-                color: ColorKeys.primary.withOpacity(0.3), width: 0.5),
-            borderRadius: BorderRadius.circular(
-              radius ?? DimensionsKeys.radius,
-            ),
+            border: Border.all(color: ColorKeys.primary.withOpacity(0.3), width: borderWidth ?? 0.5),
+            borderRadius: BorderRadius.circular(radius ?? DimensionsKeys.radius),
           ),
       child: child,
     );

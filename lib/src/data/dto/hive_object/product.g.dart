@@ -23,7 +23,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       description: fields[8] as String?,
       category: fields[9] as String?,
       brand: fields[10] as String?,
-      imagesPath: (fields[11] as List?)?.cast<String>(),
+      imageUrl: fields[23] as String?,
+      imagesUrl: (fields[11] as List?)?.cast<String>(),
       imageThumbnail: fields[12] as String?,
       attributes: fields[13] == null
           ? {}
@@ -43,7 +44,7 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(7)
       ..write(obj.name)
       ..writeByte(8)
@@ -52,8 +53,10 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.category)
       ..writeByte(10)
       ..write(obj.brand)
+      ..writeByte(23)
+      ..write(obj.imageUrl)
       ..writeByte(11)
-      ..write(obj.imagesPath)
+      ..write(obj.imagesUrl)
       ..writeByte(12)
       ..write(obj.imageThumbnail)
       ..writeByte(13)
@@ -158,7 +161,8 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       description: json['description'] as String?,
       category: json['category'] as String?,
       brand: json['brand'] as String?,
-      imagesPath: (json['imagesPath'] as List<dynamic>?)
+      imageUrl: json['imageUrl'] as String?,
+      imagesUrl: (json['imagesUrl'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
       imageThumbnail: json['imageThumbnail'] as String?,
@@ -183,7 +187,8 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'description': instance.description,
       'category': instance.category,
       'brand': instance.brand,
-      'imagesPath': instance.imagesPath,
+      'imageUrl': instance.imageUrl,
+      'imagesUrl': instance.imagesUrl,
       'imageThumbnail': instance.imageThumbnail,
       'attributes': instance.attributes,
       'tag': instance.tag,

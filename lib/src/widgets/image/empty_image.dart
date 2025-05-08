@@ -6,6 +6,6 @@ class EmptyImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(Drawables.emptyImage);
+    return Container(margin: const EdgeInsets.all(16), child: Image.asset(Drawables.emptyImage));
   }
 }

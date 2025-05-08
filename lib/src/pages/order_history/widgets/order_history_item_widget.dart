@@ -16,10 +16,7 @@ import 'package:flutter/material.dart';
 class OrderHistoryItemWidget extends StatelessWidget {
   final ProductOrder order;
 
-  const OrderHistoryItemWidget({
-    super.key,
-    required this.order,
-  });
+  const OrderHistoryItemWidget({super.key, required this.order});
 
   OrderItem get firstOrderItem => order.orderItems.first;
 
@@ -37,42 +34,35 @@ class OrderHistoryItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
               child: Column(
                 children: [
-                  TextTitleBoldValueWidget(
-                    title: LocaleKeys.orderId.tr(),
-                    value: order.id,
-                  ),
+                  TextTitleBoldValueWidget(title: LocaleKeys.orderId.tr(), value: order.id),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: (order.info?.createAt as Timestamp)
-                        .toDate()
-                        .toDisplayDependLocale(context),
-                  )
+                    value: (order.info?.createAt as Timestamp).toDate().toDisplayDependLocale(context),
+                  ),
                 ],
               ),
             ),
-            Divider(
-              color: Colors.grey.shade300,
-            ),
+            Divider(color: Colors.grey.shade300, height: 16),
             SizedBox(
               height: 150,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(width: 8),
                   ImageWidget(
-                    imageUrl: firstOrderItem.product?.imagesPath?.firstOrNull,
                     width: 120,
-                    borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    imageUrl: firstOrderItem.product?.imageUrl,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   Expanded(
                     child: ProductInfoListItem(
                       padding: const EdgeInsets.all(8),
                       name: firstOrderItem.product?.name ?? '',
                       desc: firstOrderItem.product?.description,
-                      price: firstOrderItem.product?.priceCurrentSelected
-                              ?.prefixCurrency() ??
-                          '--',
-                      priceCategory:
-                          firstOrderItem.product?.productTypeSelectDisplay,
+                      price: firstOrderItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
+                      priceCategory: firstOrderItem.product?.productTypeSelectDisplay,
                     ),
                   ),
                   // Column(
@@ -106,11 +96,8 @@ class OrderHistoryItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    LocaleKeys.orderNumberOfItem
-                        .tr(args: [order.numberOfItems.toString()]),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    LocaleKeys.orderNumberOfItem.tr(args: [order.numberOfItems.toString()]),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   ProductOrderTotalAmountWidget(
                     totalPrice: order.totalPriceIncludeServiceCharge,
