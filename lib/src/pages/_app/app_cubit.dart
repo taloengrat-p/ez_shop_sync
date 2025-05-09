@@ -30,6 +30,7 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
+import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
@@ -178,6 +179,7 @@ class AppCubit extends Cubit<AppState> {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       log('userChanges() isClosed:: $isClosed $user', name: runtimeType.toString());
       setCurrentUser(user);
+      GetIt.I<FirebaseService>().updateUserFcmToken(userId!);
     });
   }
 

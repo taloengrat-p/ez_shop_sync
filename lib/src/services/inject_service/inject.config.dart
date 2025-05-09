@@ -88,8 +88,10 @@ import '../../data/repository/tag/server/tag_server_repository.dart' as _i338;
 import '../../data/repository/tag/tag_repository.dart' as _i505;
 import '../../data/repository/transactions/local/transaction_local_repository.dart'
     as _i348;
-import '../../data/repository/transactions/server/transaction_server_repository.dart'
-    as _i620;
+import '../../data/repository/transactions/server/i_transaction_server_repository.dart'
+    as _i663;
+import '../../data/repository/transactions/server/impl/firestore_transaction_server_repository.dart'
+    as _i418;
 import '../../data/repository/transactions/transaction_repository.dart'
     as _i370;
 import '../../data/repository/user/user_repository.dart' as _i118;
@@ -186,8 +188,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i701.AuthServerRepository>(
         () => _i701.AuthServerRepository());
     gh.singleton<_i551.AuthLocalRepository>(() => _i551.AuthLocalRepository());
-    gh.singleton<_i620.TransactionServerRepository>(
-        () => _i620.TransactionServerRepository());
     gh.singleton<_i348.TransactionLocalRepository>(
         () => _i348.TransactionLocalRepository());
     gh.singleton<_i338.TagServerRepository>(() => _i338.TagServerRepository());
@@ -335,11 +335,15 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.singleton<_i678.ImageRepository>(() => _i678.ImageRepository(
         imageServerRepository: gh<_i830.IImageServerRepository>()));
-    gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
-          transactionLocalRepository: gh<_i348.TransactionLocalRepository>(),
-          transactionServerRepository: gh<_i620.TransactionServerRepository>(),
-          navigationService: gh<_i892.NavigationService>(),
-        ));
+    gh.factory<_i663.ITransactionServerRepository>(
+      () => _i418.FirestoreTransactionServerRepository(
+          firebaseService: gh<_i228.FirebaseService>()),
+      registerFor: {
+        _dev,
+        _tests,
+        _prod,
+      },
+    );
     gh.singleton<_i394.AddProductHistoryRepository>(
         () => _i394.AddProductHistoryRepository(
               addProductHistoryLocalRepository:
@@ -348,6 +352,11 @@ extension GetItInjectableX on _i174.GetIt {
                   gh<_i710.AddProductHistoryServerRepository>(),
               navigationService: gh<_i892.NavigationService>(),
             ));
+    gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
+          transactionLocalRepository: gh<_i348.TransactionLocalRepository>(),
+          transactionServerRepository: gh<_i663.ITransactionServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
     gh.factory<_i18.NotificationDetailCubit>(() => _i18.NotificationDetailCubit(
         storeServerRepository: gh<_i18.StoreServerRepository>()));
     gh.factory<_i592.IProductServerRepository>(
@@ -380,6 +389,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i844.FirestoreOrderServerRepository(
         firebaseService: gh<_i228.FirebaseService>(),
         productRepository: gh<_i846.ProductRepository>(),
+        transactionRepository: gh<_i370.TransactionRepository>(),
       ),
       registerFor: {
         _dev,

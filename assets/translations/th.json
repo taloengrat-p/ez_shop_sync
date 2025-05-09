@@ -241,5 +241,6 @@
     "camera": "กล้องถ่ายรูป",
     "gallary": "เลือกจากคลังภาพ"
   },
-  "productStatisticEmpty": "ผลิตภัณฑ์ของคุณไม่มีสถิติ"
+  "productStatisticEmpty": "ผลิตภัณฑ์ของคุณไม่มีสถิติ",
+  "dataEmptyMessage": "ข้อมูลของคุณว่างเปล่า"
 }

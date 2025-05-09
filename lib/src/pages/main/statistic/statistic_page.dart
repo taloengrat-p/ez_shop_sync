@@ -46,8 +46,6 @@ class _StatisticState extends State<StatisticPage> {
           );
   @override
   void initState() {
-    log('[_StatisticState] init');
-
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((time) {
@@ -72,6 +70,14 @@ class _StatisticState extends State<StatisticPage> {
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            isEmpty: _cubit.transaction.isEmpty,
+            emptyIcon: CupertinoIcons.chart_bar_square,
+            emptyMessage: LocaleKeys.statistic_emptyMessage.tr(),
+            onRefresh: () async {
+              await _cubit.initialize(refresh: true);
+            },
+            isInitialLoading: state is StatisticInitial,
+            isLoading: state is StatisticLoading,
             enableAppModeDisplay: false,
             backgroundColor: Colors.white,
             appBar:
@@ -81,13 +87,7 @@ class _StatisticState extends State<StatisticPage> {
                   title: '${LocaleKeys.statistic_title.tr()} ( ${_cubit.periodType.label} )',
                   actions: [],
                 ).build(),
-            body:
-                _cubit.transaction.isEmpty
-                    ? EmptyDataWidget(
-                      icon: CupertinoIcons.chart_bar_square,
-                      message: LocaleKeys.statistic_emptyMessage.tr(),
-                    )
-                    : _buildPage(context, state),
+            body: _buildPage(context, state),
           );
         },
       ),

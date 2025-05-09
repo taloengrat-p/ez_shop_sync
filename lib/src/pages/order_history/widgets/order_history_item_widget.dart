@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
@@ -37,7 +36,7 @@ class OrderHistoryItemWidget extends StatelessWidget {
                   TextTitleBoldValueWidget(title: LocaleKeys.orderId.tr(), value: order.id),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: (order.info?.createAt as Timestamp).toDate().toDisplayDependLocale(context),
+                    value: (order.info?.createAt as Timestamp).displayToDateTimeDependLocale(context),
                   ),
                 ],
               ),

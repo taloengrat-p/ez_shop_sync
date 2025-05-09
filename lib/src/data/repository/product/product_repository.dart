@@ -194,20 +194,20 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
             ),
           );
 
-          productHistory.when(
-            success: (response) async {
-              await transactionRepository.createTransaction(
-                CreateTransactionRequest(
-                  storeId: request.storeId ?? '',
-                  userId: request.userId ?? '',
-                  method: TransactionMethodType.addProduct,
-                  totalPrice: request.amountCost,
-                  transactionType: TransactionType.expenses,
-                  valueId: response.id,
-                ),
-              );
-            },
-          );
+          // productHistory.when(
+          //   success: (response) async {
+          //     await transactionRepository.createTransaction(
+          //       CreateTransactionRequest(
+          //         storeId: request.storeId ?? '',
+          //         userId: request.userId ?? '',
+          //         method: TransactionMethodType.addProduct,
+          //         totalPrice: request.amountCost,
+          //         transactionType: TransactionType.expenses,
+          //         valueId: response.id,
+          //       ),
+          //     );
+          //   },
+          // );
 
           return productUpdated;
         },

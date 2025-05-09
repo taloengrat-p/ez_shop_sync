@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/src/widgets/image/empty_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ImageCarouselPreviewWidget extends StatefulWidget {
   final List<String> imagesUrl;
@@ -36,13 +37,13 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
                 },
                 itemCount: widget.imagesUrl.length,
                 loadingBuilder:
-                    (context, event) => Center(
-                      child: SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                        child: CircularProgressIndicator(
-                          value: event == null ? 0 : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
-                        ),
+                    (context, event) => SizedBox(
+                      width: double.infinity,
+                      height: widget.height,
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade200,
+                        child: Container(width: double.infinity, height: widget.height, color: Colors.red),
                       ),
                     ),
                 backgroundDecoration: const BoxDecoration(color: Colors.white),
@@ -73,7 +74,15 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
           //       }).toList(),
           // ),
           if (widget.imagesUrl.isEmpty)
-            Container(height: widget.height, alignment: Alignment.center, child: const EmptyImage()),
+            SizedBox(
+              width: double.infinity,
+              height: widget.height,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade200,
+                child: Container(width: double.infinity, height: widget.height, color: Colors.red),
+              ),
+            ),
           if (widget.imagesUrl.isNotEmpty)
             Align(
               alignment: Alignment.bottomRight,

@@ -12,13 +12,7 @@ class BarChartWidget extends StatefulWidget {
   final PeriodType periodType;
   final Map<DateTime, List<ProductOrder>> days;
   final Color activeColor;
-  BarChartWidget({
-    super.key,
-    this.header,
-    required this.periodType,
-    required this.days,
-    required this.activeColor,
-  });
+  BarChartWidget({super.key, this.header, required this.periodType, required this.days, required this.activeColor});
 
   // List<Color> get availableColors => const <Color>[
   //       Colors.green,
@@ -69,9 +63,11 @@ class BarChartWidgetState extends State<BarChartWidget> {
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       refreshState();
       Future.delayed(const Duration(seconds: 1), () {
-        setState(() {
-          isPlaying = false;
-        });
+        if (mounted) {
+          setState(() {
+            isPlaying = false;
+          });
+        }
       });
     });
   }
@@ -98,9 +94,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -132,9 +126,10 @@ class BarChartWidgetState extends State<BarChartWidget> {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: widget.maxValue.toDouble(),
-            color: (widget.periodType == PeriodType.month ? dateTime.isWeekActived() : dateTime.isDayActived())
-                ? widget.barBackgroundColor
-                : widget.barBackgroundInactive,
+            color:
+                (widget.periodType == PeriodType.month ? dateTime.isWeekActived() : dateTime.isDayActived())
+                    ? widget.barBackgroundColor
+                    : widget.barBackgroundInactive,
           ),
         ),
       ],
@@ -171,15 +166,12 @@ class BarChartWidgetState extends State<BarChartWidget> {
           tooltipMargin: -10,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             String weekDay;
-            weekDay =
-                widget.days.keys.elementAt(rodIndex).toDisplayDependLocale(context, format: DateFormatConstance.EEEE);
+            weekDay = widget.days.keys
+                .elementAt(rodIndex)
+                .toDisplayDependLocale(context, format: DateFormatConstance.EEEE);
             return BarTooltipItem(
               '$weekDay\n',
-              const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
               children: <TextSpan>[
                 TextSpan(
                   text: (rod.toY).toString(),
@@ -205,28 +197,14 @@ class BarChartWidgetState extends State<BarChartWidget> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: getTitles,
-            reservedSize: 38,
-          ),
+          sideTitles: SideTitles(showTitles: true, getTitlesWidget: getTitles, reservedSize: 38),
         ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false,
-          ),
-        ),
+        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       ),
-      borderData: FlBorderData(
-        show: false,
-      ),
+      borderData: FlBorderData(show: false),
       barGroups: showingGroups(),
       gridData: const FlGridData(show: false),
     );
@@ -242,8 +220,9 @@ class BarChartWidgetState extends State<BarChartWidget> {
     switch (widget.periodType) {
       case PeriodType.week:
         return Text(
-            widget.days.keys.elementAt(value.toInt()).toDisplayDependLocale(context, format: DateFormatConstance.E),
-            style: style);
+          widget.days.keys.elementAt(value.toInt()).toDisplayDependLocale(context, format: DateFormatConstance.E),
+          style: style,
+        );
 
       case PeriodType.month:
         final element = widget.days.keys.elementAt(value.toInt());
@@ -253,10 +232,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
       case PeriodType.year:
         final element = widget.days.keys.elementAt(value.toInt());
 
-        return Text(
-          element.toDisplayDependLocale(context, format: DateFormatConstance.MMM),
-          style: style,
-        );
+        return Text(element.toDisplayDependLocale(context, format: DateFormatConstance.MMM), style: style);
       default:
         text = Text('', style: style);
         break;
@@ -356,10 +332,10 @@ class BarChartWidgetState extends State<BarChartWidget> {
   // }
 
   Future<dynamic> refreshState() async {
-    setState(() {});
-    await Future<dynamic>.delayed(
-      animDuration + const Duration(milliseconds: 50),
-    );
+    if (mounted) {
+      setState(() {});
+    }
+    await Future<dynamic>.delayed(animDuration + const Duration(milliseconds: 50));
     if (isPlaying) {
       await refreshState();
     }

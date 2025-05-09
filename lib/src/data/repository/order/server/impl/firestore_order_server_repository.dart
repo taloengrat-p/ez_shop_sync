@@ -2,34 +2,47 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/flavors.dart';
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/dto/response/order_history_reponse.dart';
 import 'package:ez_shop_sync/src/data/repository/order/server/order_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:ez_shop_sync/src/utils/extensions/list_order_item_extension.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: IOrderServerRepository, env: [Flavor.DEV, Flavor.STG, Flavor.PROD])
 class FirestoreOrderServerRepository implements IOrderServerRepository {
   final FirebaseService firebaseService;
   final ProductRepository productRepository;
+  final TransactionRepository transactionRepository;
 
-  FirestoreOrderServerRepository({required this.firebaseService, required this.productRepository});
+  FirestoreOrderServerRepository({
+    required this.firebaseService,
+    required this.productRepository,
+    required this.transactionRepository,
+  });
 
+  @override
   Future<ApiResult<ProductOrder>> createOrder(BaseRepoRequest<CreateOrderRequest> request) async {
     try {
       final now = DateTime.now();
-      final orderId = now.toTransactionFormatId();
+
+      final orderId = now.toTransactionFormatId(prefix: ApplicationConstance.orderPrefix);
 
       final createAt = FieldValue.serverTimestamp();
 
@@ -48,6 +61,9 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
         orderItems: request.data.orderItems,
         paymentType: request.data.paymentType.name,
         info: info,
+        receiveAmount: request.data.receiveAmount,
+        changeAmount: request.data.changeAmount,
+        serviceCharge: request.data.serviceCharge,
       );
       final refOrderCreated = firebaseService.storesCollection
           .doc(request.storeId)
@@ -81,6 +97,18 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
         );
       }
 
+      await transactionRepository.createTransaction(
+        BaseRepoRequest.build(
+          request,
+          CreateTransactionRequest(
+            method: TransactionMethodType.order,
+            totalPrice: request.data.cart.cartItems.totalPrice,
+            transactionType: TransactionType.income,
+            valueId: orderId,
+          ),
+        ),
+      );
+
       return ApiResult(
         response: ProductOrder(
           id: orderId,
@@ -98,6 +126,7 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList(BaseRepoRequest<OrderGetAllRangeRequest> request) async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot;
@@ -131,6 +160,7 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<ProductOrder>> getOrderHistory(BaseRepoRequest<String> request) async {
     try {
       final result =
@@ -143,6 +173,26 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
       final resultData = result.data() ?? {};
       final productOrder = ProductOrder.fromJson(resultData)..id = result.id;
       return ApiResult(response: productOrder);
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<ProductOrder>>> getByDatetime(BaseRepoRequest<OrderGetByDateRangeRequest> request) async {
+    try {
+      final snapshot =
+          await firebaseService.storesCollection
+              .doc(request.storeId)
+              .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
+              .where('info.createAt', isGreaterThanOrEqualTo: Timestamp.fromDate(request.data.start))
+              .where('info.createAt', isLessThanOrEqualTo: Timestamp.fromDate(request.data.end))
+              .get();
+
+      log('snapshot getRange : ${snapshot.docs.map((e) => ProductOrder.fromJson(e.data())).toList()}');
+      final response = snapshot.docs.map((e) => ProductOrder.fromJson(e.data())).toList();
+
+      return ApiResult(response: response);
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }

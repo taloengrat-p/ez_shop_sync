@@ -240,5 +240,6 @@
     "camera": "Take Photo",
     "gallary": "Choose from Gallary"
   },
-  "productStatisticEmpty": "Your product is empty of statistic."
+  "productStatisticEmpty": "Your product is empty of statistic.",
+  "dataEmptyMessage": "Your data is empty."
 }

@@ -18,6 +18,8 @@ CreateOrderRequest _$CreateOrderRequestFromJson(Map<String, dynamic> json) =>
       info: json['info'] == null
           ? null
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
+      serviceCharge: json['serviceCharge'] as num?,
+      cart: Cart.fromJson(json['cart'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CreateOrderRequestToJson(CreateOrderRequest instance) =>
@@ -28,6 +30,8 @@ Map<String, dynamic> _$CreateOrderRequestToJson(CreateOrderRequest instance) =>
       'changeAmount': instance.changeAmount,
       'orderItems': instance.orderItems.map((e) => e.toJson()).toList(),
       'info': instance.info?.toJson(),
+      'cart': instance.cart.toJson(),
+      'serviceCharge': instance.serviceCharge,
     };
 
 const _$PaymentMethodTypeEnumMap = {

@@ -12,7 +12,7 @@ abstract class StatisticState extends Equatable {
 class StatisticRefresh extends StatisticState {
   final dynamic value;
 
-  const StatisticRefresh(this.value);
+  const StatisticRefresh({this.value});
   @override
   String toString() => 'StatisticRefresh';
 

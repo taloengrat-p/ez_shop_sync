@@ -1,31 +1,26 @@
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/local/transaction_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/transactions/server/transaction_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/server/i_transaction_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
-
-// abstract class ITransactionRepository {
-//   Future<Transaction> create(CreateTransactionRequest request);
-//   Future<void> delete(String id, {AppMode appMode = AppMode.local});
-//   Future<void> deleteAll(BaseRepoRequest request);
-// }
 
 @Singleton()
 @Injectable()
 class TransactionRepository extends IRepository<Transaction> {
   TransactionLocalRepository transactionLocalRepository;
-  TransactionServerRepository transactionServerRepository;
+  ITransactionServerRepository transactionServerRepository;
 
   TransactionRepository({
     required this.transactionLocalRepository,
     required this.transactionServerRepository,
     required super.navigationService,
-  }) : super(AppMode.local);
+  }) : super(AppMode.server);
 
   @override
   Future<ApiResult<Transaction>> create(BaseRepoRequest<Transaction> request) async {
@@ -36,24 +31,25 @@ class TransactionRepository extends IRepository<Transaction> {
     }
   }
 
-  Future<ApiResult<Transaction>> createTransaction(CreateTransactionRequest request) async {
+  Future<ApiResult<Transaction>> createTransaction(BaseRepoRequest<CreateTransactionRequest> request) async {
     if (appMode == AppMode.local) {
+      final now = DateTime.now();
       return await transactionLocalRepository.create(
         BaseRepoRequest(
           storeId: request.storeId,
           userId: request.userId,
           data: Transaction(
-            id: const Uuid().v1(),
-            transactionType: request.transactionType.name,
-            method: request.method.name,
-            valueId: request.valueId,
-            totalPrice: request.totalPrice,
-            storeId: request.storeId,
+            id: now.toTransactionFormatId(prefix: ApplicationConstance.transactionPrefix),
+            transactionType: request.data.transactionType.name,
+            method: request.data.method.name,
+            valueId: request.data.valueId,
+            totalPrice: request.data.totalPrice,
+            storeId: request.storeId ?? '',
           ),
         ),
       );
     } else {
-      throw UnimplementedError();
+      return await transactionServerRepository.create(request);
     }
   }
 
@@ -79,7 +75,7 @@ class TransactionRepository extends IRepository<Transaction> {
     if (appMode == AppMode.local) {
       final result = await transactionLocalRepository.getAll();
 
-      result.when(
+      return result.when(
         success: (response) {
           return ApiResult(response: response.where((e) => e.storeId == storeId).toList());
         },
@@ -90,8 +86,6 @@ class TransactionRepository extends IRepository<Transaction> {
     } else {
       throw UnimplementedError();
     }
-
-    return ApiResult(error: 'getAllByStoreId failure');
   }
 
   @override
@@ -122,5 +116,18 @@ class TransactionRepository extends IRepository<Transaction> {
   Future<ApiResult> deleteAll() {
     // TODO: implement deleteAll
     throw UnimplementedError();
+  }
+
+  Future<ApiResult<List<Transaction>>> getByDateRange(BaseRepoRequest<DateRangeRequest> request) async {
+    if (appMode == AppMode.local) {
+      final result = transactionLocalRepository.getAllRange(
+        request.data.start.millisecondsSinceEpoch,
+        request.data.end.millisecondsSinceEpoch,
+      );
+
+      return ApiResult(response: result.where((e) => e.storeId == request.storeId).toList());
+    } else {
+      return await transactionServerRepository.getByDateRange(request);
+    }
   }
 }

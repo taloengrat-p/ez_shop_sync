@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
@@ -196,12 +197,12 @@ extension DateTimeExtension on DateTime {
     return List<DateTime>.generate(12, (i) => DateTime(year, i + 1, 1));
   }
 
-  String toTransactionFormatId() {
+  String toTransactionFormatId({String? prefix}) {
     final now = DateTime.now();
     String fullUuid = const Uuid().v4();
-    String shortUuid = fullUuid.replaceAll('-', '').substring(0, 6);
-    final formatted = DateFormat('yyyyMMddHHmmss').format(now);
-    String transactionId = '$formatted-$shortUuid';
+    String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
+    final formatted = DateFormat('yyyyMMddHHmm').format(now);
+    String transactionId = '${prefix != null ? '$prefix-' : ''}$formatted-$shortUuid';
 
     return transactionId;
   }
@@ -220,5 +221,11 @@ extension ListDateTimeExtension on List<DateTime> {
 
   List<DateTime> whereDayActived() {
     return where((day) => day.isDayActived()).toList();
+  }
+}
+
+extension DateTimeInfoDynamic on Timestamp {
+  String displayToDateTimeDependLocale(BuildContext context) {
+    return toDate().toDisplayDependLocale(context);
   }
 }

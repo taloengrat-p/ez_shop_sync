@@ -1,8 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:injectable/injectable.dart';
+
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
-import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
@@ -18,8 +19,6 @@ import 'package:ez_shop_sync/src/data/repository/transactions/transaction_reposi
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
 
 @Singleton()
 @Injectable()
@@ -42,13 +41,9 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   Future<ApiResult<ProductOrder>> create(BaseRepoRequest<ProductOrder> request) async {
     final now = DateTime.now();
     if (appMode == AppMode.local) {
-      String fullUuid = const Uuid().v4();
-      String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
-      String prefixedUuid = '${now.format(DateFormatConstance.YYYYMMDD_HHMMMSS).toUpperCase()}$shortUuid';
-
       final orderCreate = ProductOrder(
         storeId: request.storeId ?? '',
-        id: prefixedUuid,
+        id: now.toTransactionFormatId(),
         status: OrderStatusType.complete.name,
         orderItems: request.data.orderItems,
         paymentType: request.data.paymentType,
@@ -147,27 +142,16 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
     }
   }
 
-  Future<ApiResult<List<ProductOrder>>> getAllBetween(
-    String storeId, {
-    required DateTime start,
-    required DateTime end,
-    AppMode? appMode = AppMode.local,
-  }) async {
+  Future<ApiResult<List<ProductOrder>>> getAllBetween(BaseRepoRequest<OrderGetByDateRangeRequest> request) async {
     if (appMode == AppMode.local) {
-      final resultAllBetween = await orderLocalRepository.getAllBetween(start: start, end: end);
-
-      resultAllBetween.when(
-        success: (response) {
-          return ApiResult(response: response.where((e) => e.storeId == storeId).toList());
-        },
-        failure: (error) {
-          return ApiResult(error: error);
-        },
+      final resultAllBetween = orderLocalRepository.getAllRange(
+        request.data.start.millisecondsSinceEpoch,
+        request.data.end.millisecondsSinceEpoch,
       );
+      return Future.value(ApiResult(response: resultAllBetween));
     } else {
-      throw UnimplementedError();
+      return await orderServerRepository.getByDatetime(request);
     }
-    return ApiResult(error: 'getAllBetween failure');
   }
 
   Future<ApiResult<ProductOrder>> getOrderHistoryDetail(BaseRepoRequest<String> request) async {
@@ -193,6 +177,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
     throw UnimplementedError();
   }
 
+  @override
   Future<ApiResult> createFromCart(BaseRepoRequest<CreateOrderRequest> request) async {
     if (appMode == AppMode.local) {
       return await create(
@@ -225,4 +210,10 @@ class OrderGetAllRangeRequest {
   String toString() {
     return 'OrderGetAllRangeRequest(start: $start, end: $end, limit: $limit, lastDocument: $lastDocument)';
   }
+}
+
+class OrderGetByDateRangeRequest {
+  final DateTime start;
+  final DateTime end;
+  OrderGetByDateRangeRequest({required this.start, required this.end});
 }

@@ -11,4 +11,6 @@ abstract class IOrderServerRepository {
   Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList(BaseRepoRequest<OrderGetAllRangeRequest> request);
 
   Future<ApiResult<ProductOrder>> getOrderHistory(BaseRepoRequest<String> request);
+
+  Future<ApiResult<List<ProductOrder>>> getByDatetime(BaseRepoRequest<OrderGetByDateRangeRequest> request);
 }

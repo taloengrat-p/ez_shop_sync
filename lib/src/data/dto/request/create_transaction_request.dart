@@ -6,15 +6,11 @@ class CreateTransactionRequest {
   final TransactionMethodType method;
   final String valueId;
   final num totalPrice;
-  final String storeId;
-  final String userId;
 
   CreateTransactionRequest({
     required this.method,
     required this.totalPrice,
     required this.transactionType,
     required this.valueId,
-    required this.storeId,
-    required this.userId,
   });
 }

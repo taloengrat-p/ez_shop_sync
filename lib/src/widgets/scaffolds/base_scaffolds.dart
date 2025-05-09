@@ -34,6 +34,8 @@ class BaseScaffolds extends StatefulWidget {
   final Function()? onRefresh;
   final Function()? onLoading;
   final bool? isAppBarOverlay;
+  final String? emptyMessage;
+
   const BaseScaffolds({
     this.emptyIcon,
     this.isEmpty = false,
@@ -54,6 +56,7 @@ class BaseScaffolds extends StatefulWidget {
     this.onLoading,
     this.onRefresh,
     this.isAppBarOverlay = false,
+    this.emptyMessage,
   });
 
   @override
@@ -194,7 +197,7 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                                   ? EmptyDataWidget(
                                     onRefresh: widget.onRefresh,
                                     onLoading: widget.onLoading,
-                                    message: LocaleKeys.notification_emptyMessage.tr(),
+                                    message: widget.emptyMessage ?? LocaleKeys.dataEmptyMessage.tr(),
                                     icon: widget.emptyIcon,
                                   )
                                   : widget.body ?? Container(),

@@ -99,7 +99,7 @@ class _TransactionsChartDetailsState extends State<TransactionsChartDetailsPage>
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
                                 ),
                                 Text(
-                                  _cubit.totalSales.toString().formatCurrency(),
+                                  _cubit.totalSales.toStringAsFixed(2).formatCurrency(),
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -114,7 +114,7 @@ class _TransactionsChartDetailsState extends State<TransactionsChartDetailsPage>
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
                                 ),
                                 Text(
-                                  _cubit.averageIncome.prefixCurrency(),
+                                  _cubit.averageIncome.toStringAsFixed(2).prefixCurrency(),
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],

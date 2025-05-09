@@ -3,12 +3,12 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/server/i_transaction_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/period_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -55,15 +55,13 @@ class StatisticCubit extends Cubit<StatisticState> {
     required this.transactionRepository,
   }) : super(StatisticInitial());
 
-  String get averageIncome =>
-      (totalSales /
-              (periodType == PeriodType.week
-                  ? dateTime.whereDayActived().length
-                  : periodType == PeriodType.month
-                  ? DateTime.now().getWeekMonth()
-                  : DateTime.now().getMonthYear()))
-          .ceilToDecimalPlaces(2)
-          .toString();
+  String get averageIncome => (totalSales /
+          (periodType == PeriodType.week
+              ? dateTime.whereDayActived().length
+              : periodType == PeriodType.month
+              ? DateTime.now().getWeekMonth()
+              : DateTime.now().getMonthYear()))
+      .toStringAsFixed(2);
 
   Map<DateTime, List<ProductOrder>> get dateTimeWithValue =>
       periodType == PeriodType.month ? groupDatesBy4Weeks(ordered) : groupItemsByDate(ordered);
@@ -84,10 +82,18 @@ class StatisticCubit extends Cubit<StatisticState> {
 
       DateTime date =
           periodType == PeriodType.week
-              ? DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.day)
+              ? DateTime(
+                item.info!.createAtDateTime.year,
+                item.info!.createAtDateTime.month,
+                item.info!.createAtDateTime.day,
+              )
               : periodType == PeriodType.month
-              ? DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.day)
-              : DateTime(item.info?.createAt!.year, item.info?.createAt!.month);
+              ? DateTime(
+                item.info!.createAtDateTime.year,
+                item.info!.createAtDateTime.month,
+                item.info!.createAtDateTime.day,
+              )
+              : DateTime(item.info!.createAtDateTime.year, item.info!.createAtDateTime.month);
 
       if (groupedItems.containsKey(date)) {
         groupedItems[date]!.add(item);
@@ -106,19 +112,23 @@ class StatisticCubit extends Cubit<StatisticState> {
 
     for (var item in items) {
       if (groupedItems.containsKey(
-        DateTime(item.info?.createAt!.year, item.info?.createAt!.month, item.info?.createAt!.getWeekMonth()),
+        DateTime(
+          item.info!.createAtDateTime.year,
+          item.info!.createAtDateTime.month,
+          item.info!.createAtDateTime.getWeekMonth(),
+        ),
       )) {
         groupedItems[DateTime(
-              item.info?.createAt!.year,
-              item.info?.createAt!.month,
-              item.info?.createAt!.getWeekMonth(),
+              item.info!.createAtDateTime.year,
+              item.info!.createAtDateTime.month,
+              item.info!.createAtDateTime.getWeekMonth(),
             )]!
             .add(item);
       } else {
         groupedItems[DateTime(
-          item.info?.createAt!.year,
-          item.info?.createAt!.month,
-          item.info?.createAt!.getWeekMonth(),
+          item.info!.createAtDateTime.year,
+          item.info!.createAtDateTime.month,
+          item.info!.createAtDateTime.getWeekMonth(),
         )] = [item];
       }
     }
@@ -126,32 +136,41 @@ class StatisticCubit extends Cubit<StatisticState> {
     return groupedItems;
   }
 
-  initialize() async {
+  initialize({bool refresh = false}) async {
+    if (refresh) {
+      emit(const StatisticRefresh());
+    } else {
+      emit(StatisticInitial());
+    }
+    final startPayload =
+        periodType == PeriodType.week
+            ? DateTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, 0, 0, 0, 0)
+            : periodType == PeriodType.month
+            ? DateTime(dateTimeSelected.year, dateTimeSelected.month)
+            : DateTime(dateTimeSelected.year);
+
+    final endPayload =
+        periodType == PeriodType.week
+            ? DateTime(dateTime.first.year, dateTime.last.month, dateTime.last.day + 1, 0, 0, 0, 0)
+            : periodType == PeriodType.month
+            ? DateTime(dateTimeSelected.year, dateTimeSelected.month).getLastDayByMonth()
+            : DateTime(dateTimeSelected.year + 1);
+
     final result = await orderRepository.getAllBetween(
-      appCubit.store?.id ?? '',
-      start:
-          periodType == PeriodType.week
-              ? DateTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, 0, 0, 0, 0)
-              : periodType == PeriodType.month
-              ? DateTime(dateTimeSelected.year, dateTimeSelected.month)
-              : DateTime(dateTimeSelected.year),
-      end:
-          periodType == PeriodType.week
-              ? DateTime(dateTime.first.year, dateTime.last.month, dateTime.last.day + 1, 0, 0, 0, 0)
-              : periodType == PeriodType.month
-              ? DateTime(dateTimeSelected.year, dateTimeSelected.month).getLastDayByMonth()
-              : DateTime(dateTimeSelected.year + 1),
+      appCubit.request(OrderGetByDateRangeRequest(start: startPayload, end: endPayload)),
     );
 
     result.when(
       success: (response) async {
         _ordered = response;
-        final transactionResult = await transactionRepository.getAllByStoreId(appCubit.store?.id ?? '');
+        final transactionResult = await transactionRepository.getByDateRange(
+          appCubit.request(DateRangeRequest(start: startPayload, end: endPayload)),
+        );
 
         transactionResult.when(
           success: (response) {
             _transaction = response;
-            emit(StatisticInitial());
+            emit(StatisticSuccess());
           },
           failure: (error) {
             emit(const StatisticFailure());

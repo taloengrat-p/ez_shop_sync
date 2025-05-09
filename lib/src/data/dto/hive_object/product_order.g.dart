@@ -25,9 +25,9 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       orderItems: (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
       receiveAmount: fields[15] as num?,
-    )
-      ..serviceCharge = fields[10] == null ? 0 : fields[10] as num?
-      ..changeAmount = fields[14] as num?;
+      changeAmount: fields[14] as num?,
+      serviceCharge: fields[10] == null ? 0 : fields[10] as num?,
+    );
   }
 
   @override
@@ -84,9 +84,9 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
           .toList(),
       paymentType: json['paymentType'] as String,
       receiveAmount: json['receiveAmount'] as num?,
-    )
-      ..serviceCharge = json['serviceCharge'] as num?
-      ..changeAmount = json['changeAmount'] as num?;
+      changeAmount: json['changeAmount'] as num?,
+      serviceCharge: json['serviceCharge'] as num?,
+    );
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
     <String, dynamic>{

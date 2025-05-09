@@ -27,6 +27,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   final ImageRepository imageRepository;
   FirestoreProductServerRepository({required this.firebaseService, required this.imageRepository});
 
+  @override
   Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
     final productInfo = BaseHiveData(
       createAt: FieldValue.serverTimestamp(),
@@ -71,6 +72,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
     try {
       final products =
@@ -92,6 +94,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     try {
       await firebaseService.storesCollection
@@ -107,6 +110,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<Product>> update(BaseRepoRequest<Product> request) async {
     try {
       log('update product id ${request.data.id}');
@@ -123,6 +127,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<Product>> getProduct({required String storeId, required String productId}) async {
     try {
       final result =
@@ -138,6 +143,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<List<Product>>> getAllByIds({required String storeId, required List<String> productIds}) async {
     try {
       final result =
@@ -161,6 +167,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<void> updateHistory(CreateProductHistoryRequest request) async {
     request.info?.updateAt = FieldValue.serverTimestamp();
 
@@ -172,6 +179,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
         .add(request.toJson());
   }
 
+  @override
   Future<void> reduceQuantity({
     required String storeId,
     required productId,
@@ -215,6 +223,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     }
   }
 
+  @override
   Future<ApiResult<List<ProductHistory>>> getProductHistory({
     required productId,
     required String storeId,

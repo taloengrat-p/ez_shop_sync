@@ -19,6 +19,7 @@ import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
@@ -28,7 +29,7 @@ class CartCubit extends Cubit<CartState> {
   final ProductRepository productRepository;
   final AppCubit appCubit;
 
-  final num _serviceCharge = 0;
+  final num _serviceCharge = 7;
   TimerUtils timerUtils = TimerUtils();
   List<OrderItem> _products = [];
   Cart? _cart;
@@ -187,16 +188,20 @@ class CartCubit extends Cubit<CartState> {
       return;
     }
 
+    throwIf(_cart == null, 'can not create order : cart is null');
+
     final orderCreated = await orderRepository.createFromCart(
       BaseRepoRequest(
         storeId: appCubit.store?.id ?? '',
         userId: appCubit.user?.uid ?? '',
         data: CreateOrderRequest(
+          cart: _cart!,
           orderItems: _cart?.cartItems ?? [],
           status: paymentMethod == PaymentMethodType.cash ? OrderStatusType.complete : OrderStatusType.waitPayment,
           paymentType: paymentMethod ?? PaymentMethodType.undefined,
           receiveAmount: receiveAmount,
           changeAmount: changeAmountDisplay,
+          serviceCharge: serviceCharge,
         ),
       ),
     );

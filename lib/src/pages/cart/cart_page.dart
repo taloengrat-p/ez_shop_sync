@@ -347,7 +347,7 @@ class _CartState extends State<CartPage> {
             ),
             RowBetweenWidget(
               title: Text(LocaleKeys.serviceCharge.tr(args: [_cubit.serviceCharge.toString()])),
-              value: Text(_cubit.totalServiceCharge.toString().prefixCurrency()),
+              value: Text(_cubit.totalServiceCharge.toStringAsFixed(0).prefixCurrency()),
             ),
             Divider(color: Colors.grey.shade200),
             RowBetweenWidget(

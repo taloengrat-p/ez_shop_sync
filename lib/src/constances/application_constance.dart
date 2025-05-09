@@ -11,4 +11,7 @@ class ApplicationConstance {
   static const String currencyTHB = '฿';
 
   static const String emptyData = '--';
+
+  static const String transactionPrefix = 'TXN';
+  static const String orderPrefix = 'ORD';
 }

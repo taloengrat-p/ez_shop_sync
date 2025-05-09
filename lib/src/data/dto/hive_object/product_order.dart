@@ -58,6 +58,8 @@ class ProductOrder extends BaseHiveObject {
     required this.orderItems,
     required this.paymentType,
     this.receiveAmount,
+    this.changeAmount,
+    this.serviceCharge,
   });
 
   factory ProductOrder.fromJson(Map<String, dynamic> json) => _$ProductOrderFromJson(json);

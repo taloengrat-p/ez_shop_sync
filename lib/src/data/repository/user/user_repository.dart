@@ -11,10 +11,7 @@ class UserRepository {
   final FirebaseService firebaseService;
   final NotificationRepository notificationRepository;
 
-  UserRepository({
-    required this.firebaseService,
-    required this.notificationRepository,
-  });
+  UserRepository({required this.firebaseService, required this.notificationRepository});
 
   Future<bool> onCheckUserAlreadyUseApp() async {
     if (firebaseService.user == null) {

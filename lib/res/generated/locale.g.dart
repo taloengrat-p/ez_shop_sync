@@ -226,5 +226,6 @@ abstract class  LocaleKeys {
   static const imagePicker_gallary = 'imagePicker.gallary';
   static const imagePicker = 'imagePicker';
   static const productStatisticEmpty = 'productStatisticEmpty';
+  static const dataEmptyMessage = 'dataEmptyMessage';
 
 }
