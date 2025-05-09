@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
@@ -10,21 +11,21 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/image/server/image_server_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/i_product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/server/i_product_server_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton()
-@Injectable()
-class ProductServerRepository implements IProductRepository {
+@Injectable(as: IProductServerRepository, env: [Flavor.DEV, Flavor.STG, Flavor.PROD])
+class FirestoreProductServerRepository implements IProductServerRepository {
   final FirebaseService firebaseService;
   final ImageRepository imageRepository;
-  ProductServerRepository({required this.firebaseService, required this.imageRepository});
+  FirestoreProductServerRepository({required this.firebaseService, required this.imageRepository});
 
   Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
     final productInfo = BaseHiveData(

@@ -7,10 +7,13 @@ import 'package:flutter/widgets.dart';
 import 'package:toastification/toastification.dart';
 
 abstract class IRepository<T> {
+  String? _tag;
   AppMode appMode;
   NavigationService navigationService;
 
-  IRepository(this.appMode, {required this.navigationService});
+  String get tag => _tag ?? runtimeType.toString();
+
+  IRepository(this.appMode, {required this.navigationService, String? tag});
   Future<ApiResult<List<T>>> getAll();
   Future<ApiResult<List<T>>> getAllByIds(List<String> ids);
   Future<ApiResult<T>> getById(BaseRepoRequest<String> id);

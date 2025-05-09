@@ -16,11 +16,12 @@ import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/i_product_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/local/product_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/product/server/product_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/local/i_product_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/product/server/i_product_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
@@ -34,10 +35,8 @@ import 'package:toastification/toastification.dart';
 @Singleton()
 @Injectable()
 class ProductRepository extends IRepository<Product> implements IProductRepository {
-  String name = 'Product';
-
-  ProductLocalRepository productLocalRepository;
-  ProductServerRepository productServerRepository;
+  IProductLocalRepository productLocalRepository;
+  IProductServerRepository productServerRepository;
   ProductHistoryRepository productHistoryRepository;
   TransactionRepository transactionRepository;
   ImageRepository imageRepository;
@@ -49,7 +48,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     required this.transactionRepository,
     required super.navigationService,
     required this.imageRepository,
-  }) : super(AppMode.server);
+  }) : super(AppMode.server, tag: 'Product');
 
   @override
   Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
@@ -93,12 +92,12 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
   @override
   Future<ApiResult> delete(BaseRepoRequest<String> request) async {
     if (appMode == AppMode.local) {
-      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [tag]));
       return productLocalRepository.delete(request.data);
     } else {
       final result = await productServerRepository.delete(request);
 
-      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [tag]));
       return result;
     }
   }
@@ -305,7 +304,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
       throw UnimplementedError();
     } else {
       final result = await productServerRepository.deleteProduct(request);
-      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [name]));
+      ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr(args: [tag]));
       log('Delete product ${request.data.id} success', name: runtimeType.toString());
       return result;
     }
