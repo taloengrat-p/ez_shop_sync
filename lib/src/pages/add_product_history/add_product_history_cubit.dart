@@ -4,7 +4,7 @@ import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_s
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton(signalsReady: true)
+@Injectable()
 class AddProductHistoryCubit extends Cubit<AddProductHistoryState> {
   final AddProductHistoryRepository addProductHistoryRepository;
 

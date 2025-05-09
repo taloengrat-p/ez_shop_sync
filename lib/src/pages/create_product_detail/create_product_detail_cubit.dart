@@ -6,7 +6,7 @@ import 'package:ez_shop_sync/src/pages/create_product_detail/models/product_cate
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class CreateProductDetailCubit extends Cubit<CreateProductDetailState> {
   CreateProductDetailCubit() : super(CreateProductDetailInitial());
 

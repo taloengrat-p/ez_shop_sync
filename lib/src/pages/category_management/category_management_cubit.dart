@@ -11,7 +11,7 @@ import 'package:ez_shop_sync/src/pages/category_management/category_management_s
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class CategoryManagementCubit extends Cubit<CategoryManagementState> {
   final AppCubit appCubit;
   final StoreRepository storeRepository;

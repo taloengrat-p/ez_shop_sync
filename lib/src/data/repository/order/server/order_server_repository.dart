@@ -48,11 +48,10 @@ class OrderServerRepository {
         paymentType: request.data.paymentType.name,
         info: info,
       );
-      final refOrderCreated =
-          firebaseService.storesCollection
-              .doc(request.storeId)
-              .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
-              .doc();
+      final refOrderCreated = firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
+          .doc(orderId);
 
       await refOrderCreated.set(payload.toJson());
 

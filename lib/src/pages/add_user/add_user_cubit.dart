@@ -6,7 +6,7 @@ import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton(signalsReady: true)
+@Injectable()
 class AddUserCubit extends Cubit<AddUserState> {
   final StoreServerRepository storeRepository;
   final AppCubit appCubit;

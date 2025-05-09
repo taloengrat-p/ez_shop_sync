@@ -2,7 +2,7 @@ import 'package:ez_shop_sync/src/pages/product_settings/product_settings_state.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class ProductSettingsCubit extends Cubit<ProductSettingsState> {
   ProductSettingsCubit() : super(ProductSettingsInitial());
 }

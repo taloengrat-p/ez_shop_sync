@@ -11,12 +11,17 @@ import 'package:ez_shop_sync/src/widgets/opacity_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProductGridItemWidget extends StatelessWidget {
+class ProductGridItemWidget extends StatefulWidget {
   final Product product;
   final IProductPage? iProductItem;
 
   const ProductGridItemWidget({super.key, required this.product, this.iProductItem});
 
+  @override
+  State<ProductGridItemWidget> createState() => _ProductGridItemWidgetState();
+}
+
+class _ProductGridItemWidgetState extends State<ProductGridItemWidget> {
   @override
   Widget build(BuildContext context) {
     return AppContainerWidget(
@@ -28,11 +33,11 @@ class ProductGridItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Hero(
-            tag: product.imageUrl ?? '',
+            tag: widget.product.id ?? '',
             child: ImageWidget(
               margin: const EdgeInsets.all(0),
               padding: const EdgeInsets.all(0),
-              imageUrl: product.imageUrl,
+              imageUrl: widget.product.imageUrl,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
             ),
           ),
@@ -48,12 +53,12 @@ class ProductGridItemWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
+                          widget.product.name,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          product.priceStringDisplay,
+                          widget.product.priceStringDisplay,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.orange),
                         ),
@@ -61,19 +66,19 @@ class ProductGridItemWidget extends StatelessWidget {
                           maintainAnimation: true,
                           maintainSize: true,
                           maintainState: true,
-                          visible: product.description != null,
+                          visible: widget.product.description != null,
                           child: Text(
-                            product.description ?? '',
+                            widget.product.description ?? '',
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        if (product.allQuantity != null)
+                        if (widget.product.allQuantity != null)
                           Text(
                             overflow: TextOverflow.ellipsis,
                             LocaleKeys.qty.tr(
-                              args: [product.allQuantity?.toString() ?? '', LocaleKeys.units_piece.tr()],
+                              args: [widget.product.allQuantity?.toString() ?? '', LocaleKeys.units_piece.tr()],
                             ),
                           ),
                       ],
@@ -85,7 +90,7 @@ class ProductGridItemWidget extends StatelessWidget {
                         (BuildContext context) => <PopupMenuEntry<String>>[
                           PopupMenuItem(
                             onTap: () {
-                              iProductItem?.onAddCart(product);
+                              widget.iProductItem?.onAddCart(widget.product);
                             },
                             child: OpacityWidget(
                               child: RowBetweenWidget(
@@ -102,12 +107,12 @@ class ProductGridItemWidget extends StatelessWidget {
                               ),
                             ),
                             onTap: () {
-                              iProductItem?.onAddStock(product);
+                              widget.iProductItem?.onAddStock(widget.product);
                             },
                           ),
                           PopupMenuItem(
                             onTap: () {
-                              iProductItem?.onEdit(product.id);
+                              widget.iProductItem?.onEdit(widget.product.id);
                             },
                             child: OpacityWidget(
                               child: RowBetweenWidget(
@@ -122,8 +127,8 @@ class ProductGridItemWidget extends StatelessWidget {
                               value: const Icon(CupertinoIcons.delete, color: Colors.red),
                             ),
                             onTap: () {
-                              log('delete ${product.id}');
-                              iProductItem?.onDelete(product);
+                              log('delete ${widget.product.id}');
+                              widget.iProductItem?.onDelete(widget.product);
                             },
                           ),
                         ],

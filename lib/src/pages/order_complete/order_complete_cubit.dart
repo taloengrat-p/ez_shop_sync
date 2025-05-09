@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class OrderCompleteCubit extends Cubit<OrderCompleteState> {
   final AppCubit appCubit;
 

@@ -2,7 +2,7 @@ import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class TransactionStatementDetailCubit extends Cubit<TransactionStatementDetailState> {
   TransactionStatementDetailArgrument? argruments;
   TransactionStatementDetailCubit() : super(TransactionStatementDetailInitial());

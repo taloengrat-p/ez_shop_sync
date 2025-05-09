@@ -247,28 +247,23 @@ class _CartState extends State<CartPage> {
                         .quantity ??
                     0) <
                 (cartItem.product?.quantity ?? 0);
-            return Column(
-              children: [
-                Text(cartItem.id),
-                CartItemWidget(
-                  hasError: hasError,
-                  errorMessageType: hasError ? CartErrorType.insufficient : null,
-                  cartItem: cartItem,
-                  onIncreaseQty: () {
-                    _cubit.increaseProductQtyByIndex(index);
-                  },
-                  onDecreaseQty: () {
-                    _cubit.decreaseProductQtyByIndex(index);
-                  },
-                  onDelete: () async {
-                    final result = await DialogUtils.showConfirmDelete(context);
+            return CartItemWidget(
+              hasError: hasError,
+              errorMessageType: hasError ? CartErrorType.insufficient : null,
+              cartItem: cartItem,
+              onIncreaseQty: () {
+                _cubit.increaseProductQtyByIndex(index);
+              },
+              onDecreaseQty: () {
+                _cubit.decreaseProductQtyByIndex(index);
+              },
+              onDelete: () async {
+                final result = await DialogUtils.showConfirmDelete(context);
 
-                    if (result == ConfirmDialogResult.ok) {
-                      _cubit.deleteItemFromCart(cartItem.id);
-                    }
-                  },
-                ),
-              ],
+                if (result == ConfirmDialogResult.ok) {
+                  _cubit.deleteItemFromCart(cartItem.id);
+                }
+              },
             );
           },
           separatorBuilder: (BuildContext context, int index) {

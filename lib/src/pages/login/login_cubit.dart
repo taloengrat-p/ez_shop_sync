@@ -9,7 +9,7 @@ import 'package:ez_shop_sync/src/pages/login/login_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository authRepository;
   final AppCubit appCubit;

@@ -5,6 +5,7 @@ import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
+import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-@Singleton()
+@Injectable()
 class MoreCubit extends Cubit<MoreState> {
   AppCubit appCubit;
   AuthRepository authRepository;
@@ -40,6 +41,7 @@ class MoreCubit extends Cubit<MoreState> {
   Future<void> doLogout() async {
     await authRepository.logout();
     await appCubit.setCurrentUser(null);
+    getIt.unregister();
     emit(MoreLogoutSuccess());
   }
 

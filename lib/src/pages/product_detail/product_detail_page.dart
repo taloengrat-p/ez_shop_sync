@@ -42,7 +42,10 @@ import 'package:get_it/get_it.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key});
+  final String? heroTag;
+  final Product? product;
+
+  const ProductDetailPage({super.key, this.heroTag, this.product});
 
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
@@ -58,15 +61,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       final argruments = ModalRoute.of(context)?.settings.arguments;
 
-      if (argruments is Product) {
-        _cubit.setArgrument(argruments);
+      if (widget.product != null) {
+        setState(() {
+          _cubit.setArgrument(widget.product!);
+        });
+      } else if (argruments is Product) {
+        _cubit.setArgrument(widget.product!);
       }
     });
   }
 
   List<Widget> _buildTitle() {
     return [
-      ImageCarouselPreviewWidget(imagesUrl: _cubit.imageMerged, height: MediaQuery.of(context).size.height * 0.45),
+      _buildImageGallary(),
       const SizedBox(height: DimensionsKeys.m),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -337,5 +344,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         },
       ),
     );
+  }
+
+  Widget _buildImageGallary() {
+    if (widget.heroTag != null) {
+      return Hero(
+        tag: widget.heroTag!,
+        child: ImageCarouselPreviewWidget(
+          imagesUrl: _cubit.imageMerged,
+          height: MediaQuery.of(context).size.height * 0.45,
+        ),
+      );
+    } else {
+      return ImageCarouselPreviewWidget(
+        imagesUrl: _cubit.imageMerged,
+        height: MediaQuery.of(context).size.height * 0.45,
+      );
+    }
   }
 }

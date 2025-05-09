@@ -13,7 +13,6 @@ import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
 @Injectable()
 class AddProductCubit extends Cubit<AddProductState> {
   final ProductRepository productRepository;

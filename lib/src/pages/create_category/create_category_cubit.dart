@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton()
+@Injectable()
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   final AppCubit appCubit;
   final CategoryRepository categoryRepository;

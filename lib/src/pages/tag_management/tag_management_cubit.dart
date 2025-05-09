@@ -10,7 +10,7 @@ import 'package:ez_shop_sync/src/pages/tag_management/tag_management_state.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class TagManagementCubit extends Cubit<TagManagementState> {
   ScreenMode screenMode = ScreenMode.display;
   AppCubit appCubit;

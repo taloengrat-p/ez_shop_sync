@@ -8,7 +8,7 @@ import 'package:ez_shop_sync/src/pages/order_history/order_history_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class OrderHistoryCubit extends Cubit<OrderHistoryState> {
   final int itemLength = 10;
 
@@ -21,13 +21,15 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
   OrderHistoryCubit({required this.orderRepository, required this.appCubit}) : super(OrderHistoryInitial());
 
   Future<void> initialze() async {
-    emit(OrderHistoryLoading());
-    await loadMoreItems();
+    emit(OrderHistoryInitialLoading());
+    await loadMoreItems(disabledState: true);
     emit(OrderHistorySuccess());
   }
 
-  Future<void> loadMoreItems({bool refresh = false}) async {
-    emit(OrderHistoryLoadMore());
+  Future<void> loadMoreItems({bool refresh = false, bool disabledState = false}) async {
+    if (!disabledState) {
+      emit(OrderHistoryLoadMore());
+    }
     final start = orderItems.length;
     final end = orderItems.length + itemLength;
 
@@ -45,8 +47,10 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
 
         lastDocument = response.lastDocument;
         orderItems.addAll(response.orders);
-        log('orderItems ${orderItems.length}');
-        emit(OrderHistoryLoadMoreSuccess(start, end));
+        log('orderItems ::: ${orderItems.length}');
+        if (!disabledState) {
+          emit(OrderHistoryLoadMoreSuccess(start, end));
+        }
       },
       failure: (error) {
         emit(const OrderHistoryFailure());

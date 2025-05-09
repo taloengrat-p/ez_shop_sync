@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -17,6 +18,7 @@ import 'package:ez_shop_sync/src/pages/main/product/product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_list_item_widget.dart';
+import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/app_pagination_loading_widget.dart';
@@ -103,6 +105,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
             onRefresh: _onRefresh,
             onLoading: _onLoading,
             child: GridView.count(
+              cacheExtent: MediaQuery.of(context).size.height,
               padding: const EdgeInsets.all(8),
               crossAxisCount: crossAxisCount,
               childAspectRatio: (itemWidth / itemHeight),
@@ -134,6 +137,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
         onRefresh: _onRefresh,
         onLoading: _onLoading,
         child: ListView.separated(
+          cacheExtent: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.all(8),
           itemCount: _cubit.products.length,
           itemBuilder: (context, index) {
@@ -228,7 +232,16 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   @override
   onClickGoToDetailPage(Product product) async {
-    final result = await ProductDetailRouter(context).navigate(argruments: product);
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => ProductDetailPage(
+              product: product,
+              heroTag: product.id, // unique tag
+            ),
+      ),
+    );
 
     if (result is BaseArgrument && result.refresh) {
       _cubit.init();

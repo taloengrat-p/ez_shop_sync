@@ -19,7 +19,7 @@ import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton(signalsReady: true)
+@Injectable()
 class CartCubit extends Cubit<CartState> {
   final CartRepository cartRepository;
   final OrderRepository orderRepository;

@@ -10,7 +10,7 @@ import 'package:ez_shop_sync/src/utils/extensions/object_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class StoreManagementCubit extends Cubit<StoreManagementState> {
   final AppCubit appCubit;
   final StoreRepository storeRepository;

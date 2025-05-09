@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton(signalsReady: true)
+@Injectable()
 class ProductCubit extends Cubit<ProductState> {
   final AppCubit appCubit;
   final ProductRepository productRepository;

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   late Color primary;
   late Color secondary;

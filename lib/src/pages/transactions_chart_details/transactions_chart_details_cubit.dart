@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_c
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class TransactionsChartDetailsCubit extends Cubit<TransactionsChartDetailsState> {
   final AppCubit appCubit;
 

@@ -72,9 +72,11 @@ class CartItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ImageWidget(
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
                         imageUrl: cartItem.product?.imageUrl,
                         width: 120,
-                        borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
                       ),
                       Expanded(
                         child: ProductInfoListItem(

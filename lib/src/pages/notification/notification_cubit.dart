@@ -4,7 +4,7 @@ import 'package:ez_shop_sync/src/pages/notification/notification_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class NotificationCubit extends Cubit<NotificationState> {
   final AppCubit appCubit;
 

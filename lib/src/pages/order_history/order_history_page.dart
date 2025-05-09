@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_cubit.dart';
@@ -43,11 +45,14 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
     final size = MediaQuery.of(context).size;
     return BlocListener<OrderHistoryCubit, OrderHistoryState>(
       bloc: _cubit,
-      listener: (context, state) {},
+      listener: (context, state) {
+        log('state : $state', name: runtimeType.toString());
+      },
       child: BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            isInitialLoading: state is OrderHistoryInitialLoading,
             isLoading: state is OrderHistoryLoading,
             appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.orderHistory.tr(), actions: []).build(),
             body:

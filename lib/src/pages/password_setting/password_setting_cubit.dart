@@ -2,7 +2,7 @@ import 'package:ez_shop_sync/src/pages/password_setting/password_setting_state.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class PasswordSettingCubit extends Cubit<PasswordSettingState> {
   PasswordSettingCubit() : super(PasswordSettingInitial());
 }

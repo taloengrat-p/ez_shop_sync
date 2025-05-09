@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 class MenuGroupWidget extends StatelessWidget {
   final String title;
   final List<MenuItemModel> items;
-  const MenuGroupWidget({
-    super.key,
-    required this.items,
-    required this.title,
-  });
+  const MenuGroupWidget({super.key, required this.items, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +16,9 @@ class MenuGroupWidget extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
+          child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         ),
-        const SizedBox(
-          height: 8,
-        ),
+        const SizedBox(height: 8),
         ContainerScrollableWidget(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,15 +32,12 @@ class MenuGroupWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           MenuItemWidget(model: v),
-                          if (i != items.length - 1)
-                            Divider(
-                              color: ColorKeys.primary.withOpacity(0.3),
-                            ),
+                          if (i != items.length - 1) Divider(color: ColorKeys.primary.withOpacity(0.3)),
                         ],
                       ),
                     ),
                   )
-                  .values
+                  .values,
             ],
           ),
         ),

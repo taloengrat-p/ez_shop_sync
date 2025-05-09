@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class OrderHistoryDetailCubit extends Cubit<OrderHistoryDetailState> {
   final OrderRepository orderRepository;
   final AppCubit appCubit;
@@ -17,22 +17,27 @@ class OrderHistoryDetailCubit extends Cubit<OrderHistoryDetailState> {
 
   void initialize(OrderHistoryDetailArgruments argruments) async {
     _argruments = argruments;
-    orderHistory = _argruments?.productOrder;
 
-    if (_argruments?.productOrder == null && _argruments?.orderId != null) {
+    if (argruments.productOrder != null) {
       emit(OrderHistoryDetailInitialLoading());
-      final result = await orderRepository.getOrderHistoryDetail(appCubit.request(_argruments!.orderId!));
+      orderHistory = _argruments?.productOrder;
+      emit(OrderHistoryDetailInitial());
+    } else {
+      if (_argruments?.productOrder == null && _argruments?.orderId != null) {
+        emit(OrderHistoryDetailInitialLoading());
+        final result = await orderRepository.getOrderHistoryDetail(appCubit.request(_argruments!.orderId!));
 
-      result.when(
-        success: (response) {
-          orderHistory = response;
+        result.when(
+          success: (response) {
+            orderHistory = response;
 
-          emit(OrderHistoryDetailInitial());
-        },
-        failure: (error) {
-          emit(const OrderHistoryDetailFailure());
-        },
-      );
+            emit(OrderHistoryDetailInitial());
+          },
+          failure: (error) {
+            emit(const OrderHistoryDetailFailure());
+          },
+        );
+      }
     }
   }
 }

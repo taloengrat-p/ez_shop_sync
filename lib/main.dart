@@ -35,7 +35,11 @@ import 'package:path_provider/path_provider.dart';
 import 'app.dart';
 import 'firebase_options.dart';
 
+// final CacheManager cacheManager = DefaultCacheManager();
+
 FutureOr<void> main() async {
+  // CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

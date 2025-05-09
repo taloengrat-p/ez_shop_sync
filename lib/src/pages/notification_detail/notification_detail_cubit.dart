@@ -3,7 +3,7 @@ import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_s
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class NotificationDetailCubit extends Cubit<NotificationDetailState> {
   final StoreServerRepository storeServerRepository;
 

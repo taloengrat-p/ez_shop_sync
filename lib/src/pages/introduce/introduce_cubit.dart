@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_stora
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class IntroduceCubit extends Cubit<IntroduceState> {
   int currentStep = 0;
   String storeName = '';

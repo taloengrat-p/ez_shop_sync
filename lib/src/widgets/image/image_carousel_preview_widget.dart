@@ -31,7 +31,7 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
                   return PhotoViewGalleryPageOptions(
                     imageProvider: CachedNetworkImageProvider(widget.imagesUrl[index]),
                     initialScale: PhotoViewComputedScale.contained * 0.8,
-                    heroAttributes: PhotoViewHeroAttributes(tag: widget.imagesUrl[index]),
+                    // heroAttributes: PhotoViewHeroAttributes(tag: widget.imagesUrl[index]),
                   );
                 },
                 itemCount: widget.imagesUrl.length,

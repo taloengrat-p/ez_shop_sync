@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/utils/crypto_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class PinVerifyCubit extends Cubit<PinVerifyState> {
   LocalStorageService localStorageService;
 

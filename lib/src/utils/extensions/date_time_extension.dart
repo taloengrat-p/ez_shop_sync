@@ -201,7 +201,7 @@ extension DateTimeExtension on DateTime {
     String fullUuid = const Uuid().v4();
     String shortUuid = fullUuid.replaceAll('-', '').substring(0, 6);
     final formatted = DateFormat('yyyyMMddHHmmss').format(now);
-    String transactionId = '$formatted$shortUuid';
+    String transactionId = '$formatted-$shortUuid';
 
     return transactionId;
   }

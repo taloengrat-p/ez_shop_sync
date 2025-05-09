@@ -12,7 +12,7 @@ import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class StatisticCubit extends Cubit<StatisticState> {
   final AppCubit appCubit;
   final CategoryRepository categoryRepository;

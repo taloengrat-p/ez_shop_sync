@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@LazySingleton()
 class MainCubit extends Cubit<MainState> {
   int currentPage = 0;
   final AppCubit appCubit;

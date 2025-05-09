@@ -14,7 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class ProductDetailCubit extends Cubit<ProductDetailState> {
   final ProductRepository productRepository;
   final ProductHistoryRepository productHistoryRepository;
@@ -22,18 +22,16 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
 
   Product? product;
   List<ProductHistory>? productHistory;
-
   String get productDescription => product?.description ?? '';
   List<Tag> get tags => appCubit.tags.where((e) => product?.tag?.contains(e.id) ?? false).toList();
   Category? get category => appCubit.categories.where((e) => product?.category == e.id).firstOrNull;
   ProductDetailCubit({required this.productHistoryRepository, required this.productRepository, required this.appCubit})
     : super(ProductDetailInitial());
 
-  setArgrument(Product value) async {
+  setArgrument(Product value, {String? heroTag}) async {
     log('baseCubit.tags ${appCubit.tags} : ${product?.tag}');
 
     product = value;
-
     if (product?.category?.isNotNull ?? false) {
       loadCategory();
     }

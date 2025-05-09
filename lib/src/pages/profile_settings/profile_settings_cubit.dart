@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@Singleton()
+@Injectable()
 class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   final AppCubit appCubit;
   final UserRepository userRepository;
