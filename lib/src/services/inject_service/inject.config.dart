@@ -31,8 +31,13 @@ import '../../data/repository/auth/auth_server_repository.dart' as _i57;
 import '../../data/repository/auth/local/auth_local_repository.dart' as _i551;
 import '../../data/repository/auth/server/auth_server_repository.dart' as _i701;
 import '../../data/repository/cart/cart_repository.dart' as _i999;
-import '../../data/repository/cart/local/cart_local_repository.dart' as _i1034;
-import '../../data/repository/cart/server/cart_server_repository.dart' as _i719;
+import '../../data/repository/cart/local/i_cart_local_repository.dart' as _i544;
+import '../../data/repository/cart/local/impl/hivedb_cart_local_repository.dart'
+    as _i723;
+import '../../data/repository/cart/server/i_cart_server_repository.dart'
+    as _i167;
+import '../../data/repository/cart/server/impl/firestore_cart_server_repository.dart'
+    as _i1000;
 import '../../data/repository/category/category_repository.dart' as _i635;
 import '../../data/repository/category/local/category_local_repository.dart'
     as _i992;
@@ -178,10 +183,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i620.TransactionServerRepository());
     gh.singleton<_i348.TransactionLocalRepository>(
         () => _i348.TransactionLocalRepository());
-    gh.singleton<_i719.CartServerRepository>(
-        () => _i719.CartServerRepository());
-    gh.singleton<_i1034.CartLocalRepository>(
-        () => _i1034.CartLocalRepository());
     gh.singleton<_i338.TagServerRepository>(() => _i338.TagServerRepository());
     gh.singleton<_i295.TagLocalRepository>(() => _i295.TagLocalRepository());
     gh.singleton<_i892.NavigationService>(() => _i892.NavigationService());
@@ -251,10 +252,26 @@ extension GetItInjectableX on _i174.GetIt {
           firebaseService: gh<_i228.FirebaseService>(),
           notificationRepository: gh<_i155.NotificationRepository>(),
         ));
+    gh.singleton<_i544.ICartLocalRepository>(
+      () => _i723.HivedbCartLocalRepository(),
+      registerFor: {
+        _dev,
+        _tests,
+        _prod,
+      },
+    );
     gh.factory<_i1048.PinVerifyCubit>(() => _i1048.PinVerifyCubit(
         localStorageService: gh<_i461.LocalStorageService>()));
     gh.factory<_i306.PinSetupCubit>(() => _i306.PinSetupCubit(
         localStorageService: gh<_i461.LocalStorageService>()));
+    gh.singleton<_i167.ICartServerRepository>(
+      () => _i1000.FirestoreCartServerRepository(),
+      registerFor: {
+        _dev,
+        _tests,
+        _prod,
+      },
+    );
     gh.singleton<_i535.HiveDBService>(
       () => _i1036.HiveDBDevService(),
       registerFor: {
@@ -265,8 +282,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i580.ImageServerRepository>(() => _i580.ImageServerRepository(
         firebaseService: gh<_i228.FirebaseService>()));
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
-          cartLocalRepository: gh<_i1034.CartLocalRepository>(),
-          cartServerRepository: gh<_i719.CartServerRepository>(),
+          cartLocalRepository: gh<_i544.ICartLocalRepository>(),
+          cartServerRepository: gh<_i167.ICartServerRepository>(),
           navigationService: gh<_i892.NavigationService>(),
         ));
     gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(

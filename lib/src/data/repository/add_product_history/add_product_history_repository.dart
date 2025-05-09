@@ -49,7 +49,7 @@ class AddProductHistoryRepository extends IRepository<AddProduct> {
   @override
   Future<ApiResult<List<AddProduct>>> getAllByIds(List<String> addProducts) async {
     if (appMode == AppMode.local) {
-      return await addProductHistoryLocalRepository.getAllById(addProducts);
+      return await addProductHistoryLocalRepository.getAllByIds(addProducts);
     } else {
       throw UnimplementedError();
     }

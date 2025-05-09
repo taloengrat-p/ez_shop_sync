@@ -61,7 +61,7 @@ class CategoryRepository extends IRepository<Category> {
   @override
   Future<ApiResult<List<Category>>> getAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      return categoryLocalRepository.getAllById(ids);
+      return categoryLocalRepository.getAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

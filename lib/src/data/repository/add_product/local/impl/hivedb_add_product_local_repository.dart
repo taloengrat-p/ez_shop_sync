@@ -22,7 +22,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
 
   @override
   Future<ApiResult<List<AddProduct>>> getByUserIdWithCurrentStore(List<String> addProductsId) async {
-    return getAllById(addProductsId);
+    return getAllByIds(addProductsId);
   }
 
   @override

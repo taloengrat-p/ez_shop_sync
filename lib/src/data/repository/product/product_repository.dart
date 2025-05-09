@@ -128,7 +128,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     AppMode? appMode = AppMode.local,
   }) async {
     if (appMode == AppMode.local) {
-      return await productLocalRepository.getAllById(ids);
+      return await productLocalRepository.getAllByIds(ids);
     } else {
       return await productServerRepository.getAllByIds(storeId: storeId ?? '', productIds: ids);
     }

@@ -7,6 +7,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.da
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';

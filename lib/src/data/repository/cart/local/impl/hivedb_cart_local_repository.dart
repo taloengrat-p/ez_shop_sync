@@ -1,24 +1,30 @@
 import 'dart:developer';
 
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/delete_item_from_cart_request.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/cart/local/i_cart_local_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton()
+@Singleton(as: ICartLocalRepository, env: [Flavor.DEV, Flavor.STG, Flavor.PROD])
 @Injectable()
-class CartLocalRepository extends BaseHiveRepository<String, Cart> {
-  CartLocalRepository() : super(boxName: HiveBoxConstance.cart);
+class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> implements ICartLocalRepository {
+  HivedbCartLocalRepository() : super(boxName: HiveBoxConstance.cart);
 
+  @override
   Future<ApiResult<List<Cart>>> getByUserIdWithCurrentStore(List<String> cartsId) {
-    return getAllById(cartsId);
+    return getAllByIds(cartsId);
   }
 
+  @override
   Future<ApiResult<Cart>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFromCartRequest> request) async {
     if (request.data.id == null) {
       throw ('id is Null');
@@ -42,6 +48,7 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
     );
   }
 
+  @override
   Future<ApiResult<Cart>> addCart(BaseRepoRequest<AddCartRequest> request) async {
     log('addCart id ${request.data.id}');
     final cartResult = await getById(request.data.id);
@@ -94,6 +101,7 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
     return Future.value(ApiResult(error: 'Cart by ${request.data.id} is Null'));
   }
 
+  @override
   Future<ApiResult> increaseQty(BaseRepoRequest<CartIncreaseQtyRequest> request) async {
     log('[performRepo] increaseQty : ');
     if (request.data.cartId == null) {
@@ -125,6 +133,7 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
     return Future.value(ApiResult(error: 'increaseQty() cart is Null'));
   }
 
+  @override
   Future<ApiResult> decreaseQty(
     String? cartId,
     String? productId,
@@ -160,6 +169,7 @@ class CartLocalRepository extends BaseHiveRepository<String, Cart> {
     return Future.value(ApiResult(error: 'increaseQty() cart is Null'));
   }
 
+  @override
   Future<ApiResult<Cart>> getCartByStoreAndUserId({required String storeId, required String userId}) async {
     log('getCartByStoreAndUserId() : request $storeId, $userId');
     final allResult = await getAll();

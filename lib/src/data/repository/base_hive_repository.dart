@@ -131,7 +131,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     }
   }
 
-  Future<ApiResult<List<T>>> getAllById(List<I> ids) async {
+  Future<ApiResult<List<T>>> getAllByIds(List<I> ids) async {
     final result = await getAll();
 
     return Future.value(ApiResult(response: result.response?.where((e) => ids.contains(e.id)).toList()));

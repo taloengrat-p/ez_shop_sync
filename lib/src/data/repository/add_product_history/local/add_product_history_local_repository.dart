@@ -17,7 +17,7 @@ class AddProductHistoryLocalRepository extends BaseHiveRepository<String, AddPro
   AddProductHistoryLocalRepository() : super(boxName: HiveBoxConstance.addProductHistory);
 
   Future<ApiResult<List<AddProduct>>> getByUserIdWithCurrentStore(List<String> addProductsId) async {
-    return getAllById(addProductsId);
+    return getAllByIds(addProductsId);
   }
 
   Future<ApiResult<AddProduct>> deleteItemByIdFromCart(

@@ -181,7 +181,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   @override
   Future<ApiResult<List<ProductOrder>>> getAllByIds(List<String> ids) {
     if (appMode == AppMode.local) {
-      return orderLocalRepository.getAllById(ids);
+      return orderLocalRepository.getAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

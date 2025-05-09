@@ -109,7 +109,7 @@ class StoreRepository extends IRepository<Store> {
   @override
   Future<ApiResult<List<Store>>> getAllByIds(List<String> ids) async {
     if (appMode == AppMode.local) {
-      return await storeLocalRepository.getAllById(ids);
+      return await storeLocalRepository.getAllByIds(ids);
     } else {
       throw UnimplementedError();
     }

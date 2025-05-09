@@ -84,7 +84,7 @@ class TagRepository extends IRepository<Tag> {
   @override
   Future<ApiResult<List<Tag>>> getAllByIds(List<String> ids) {
     if (appMode == AppMode.local) {
-      return tagLocalRepository.getAllById(ids);
+      return tagLocalRepository.getAllByIds(ids);
     } else {
       throw UnimplementedError();
     }
