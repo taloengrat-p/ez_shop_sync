@@ -1,26 +1,33 @@
 import 'dart:developer';
 
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_decrease_qty_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_increase_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/delete_item_form_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
-import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/add_product/local/i_add_product_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@Singleton()
-@Injectable()
-class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
-  AddProductLocalRepository() : super(boxName: HiveBoxConstance.addProduct);
+@Singleton(as: IAddProductLocalRepository, env: [Flavor.DEV, Flavor.PROD, Flavor.STG])
+class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduct>
+    implements IAddProductLocalRepository {
+  HiveAddProductLocalRepository() : super(boxName: HiveBoxConstance.addProduct);
 
+  @override
   Future<ApiResult<List<AddProduct>>> getByUserIdWithCurrentStore(List<String> addProductsId) async {
     return getAllById(addProductsId);
   }
 
+  @override
   Future<ApiResult<AddProduct>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFormCartRequest> request) async {
-    final result = await getById(request.data.id);
+    final result = await super.getById(request.data.id);
 
     result.when(
       success: (response) async {
@@ -40,8 +47,9 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
     return result;
   }
 
+  @override
   Future<ApiResult<AddProduct>> addProduct(BaseRepoRequest<AddProductRequest> request) async {
-    final addProductResult = await getById(request.data.id);
+    final addProductResult = await super.getById(request.data.id);
 
     addProductResult.when(
       success: (response) async {
@@ -92,77 +100,78 @@ class AddProductLocalRepository extends BaseHiveRepository<String, AddProduct> {
     return ApiResult(error: 'Cart by ${request.data.id} is Null');
   }
 
-  Future<ApiResult> increaseQty(
-    String? addProductId,
-    String? productId,
-    num qty, {
-    required String storeId,
-    required String userId,
-  }) async {
+  @override
+  Future<ApiResult> increaseQty(BaseRepoRequest<AddProductIncreaseRequest> request) async {
     log('[performRepo] increaseQty : ');
-    if (addProductId == null) {
+    if (request.data.productId == null) {
       throw ('increaseQty() addProductId is Null');
     }
-    final addProductResult = await getById(addProductId);
 
-    addProductResult.when(
+    final addProductResult = await super.getById(request.data.productId!);
+
+    return addProductResult.when(
       success: (response) async {
         final addProductItem =
             response.addProductItems
                 .map(
                   (e) =>
-                      e.id == productId
+                      e.id == request.data.productId
                           ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
                           : e,
                 )
                 .toList();
 
-        await update(
-          BaseRepoRequest(storeId: storeId, userId: userId, data: response..addProductItems = addProductItem),
-        );
+        return await update(BaseRepoRequest.build(request, response..addProductItems = addProductItem));
       },
       failure: (error) {
         return Future.value(ApiResult(error: 'increaseQty() addProduct is Null'));
       },
     );
-
-    return Future.value(ApiResult(error: 'increaseQty() addProduct is Null'));
   }
 
-  Future<ApiResult> decreaseQty(
-    String? addProductId,
-    String? productId,
-    num qty, {
-    required String storeId,
-    required String userId,
-  }) async {
+  @override
+  Future<ApiResult> decreaseQty(BaseRepoRequest<AddProductDecreaseQtyRequest> request) async {
     log('[performRepo] decreaseQty : ');
-    if (addProductId == null) {
+    if (request.data.productId == null) {
       throw ('increaseQty() addProductId is Null');
     }
-    final addProductResult = await getById(addProductId);
+    final addProductResult = await super.getById(request.data.productId!);
 
-    addProductResult.when(
+    return addProductResult.when(
       success: (response) async {
         final addProductItem =
             response.addProductItems
                 .map(
                   (e) =>
-                      e.id == productId
+                      e.id == request.data.productId
                           ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
                           : e,
                 )
                 .toList();
 
         await update(
-          BaseRepoRequest(storeId: storeId, userId: userId, data: response..addProductItems = addProductItem),
+          BaseRepoRequest(
+            storeId: request.storeId,
+            userId: request.userId,
+            data: response..addProductItems = addProductItem,
+          ),
         );
       },
       failure: (error) {
         return Future.value(ApiResult(error: 'increaseQty() addProduct is Null'));
       },
     );
+  }
 
-    return Future.value(ApiResult(error: 'increaseQty() addProduct is Null'));
+  @override
+  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(List<String> carts) {
+    // TODO: implement getAddProductByUserIdWithCurrentStore
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult<List<AddProduct>>> getAllByIds(List<String> ids) {
+    // TODO: implement getAllByIds
+    throw UnimplementedError();
   }
 }

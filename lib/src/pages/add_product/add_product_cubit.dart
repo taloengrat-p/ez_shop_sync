@@ -1,6 +1,7 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_repository.dart';

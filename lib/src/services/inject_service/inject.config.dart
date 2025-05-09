@@ -12,10 +12,14 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../data/repository/add_product/add_product_repository.dart' as _i13;
-import '../../data/repository/add_product/local/add_product_local_repository.dart'
-    as _i260;
-import '../../data/repository/add_product/server/add_product_server_repository.dart'
-    as _i529;
+import '../../data/repository/add_product/local/i_add_product_local_repository.dart'
+    as _i902;
+import '../../data/repository/add_product/local/impl/hivedb_add_product_local_repository.dart'
+    as _i370;
+import '../../data/repository/add_product/server/i_add_product_server_repository.dart'
+    as _i141;
+import '../../data/repository/add_product/server/impl/firestore_add_product_server_repository.dart'
+    as _i735;
 import '../../data/repository/add_product_history/add_product_history_repository.dart'
     as _i394;
 import '../../data/repository/add_product_history/local/add_product_history_local_repository.dart'
@@ -130,8 +134,8 @@ import '../local_storage_service.dart/local_storage_service.dart' as _i461;
 import '../navigation_service.dart' as _i892;
 
 const String _dev = 'dev';
-const String _tests = 'tests';
 const String _prod = 'prod';
+const String _tests = 'tests';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -160,10 +164,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i750.ProductHistoryServerRepository());
     gh.singleton<_i485.ProductHistoryLocalRepository>(
         () => _i485.ProductHistoryLocalRepository());
-    gh.singleton<_i529.AddProductServerRepository>(
-        () => _i529.AddProductServerRepository());
-    gh.singleton<_i260.AddProductLocalRepository>(
-        () => _i260.AddProductLocalRepository());
     gh.singleton<_i997.CategoryServerRepository>(
         () => _i997.CategoryServerRepository());
     gh.singleton<_i992.CategoryLocalRepository>(
@@ -198,6 +198,14 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.singleton<_i461.LocalStorageService>(
         () => _i736.LocalStorageDevService());
+    gh.singleton<_i141.IAddProductServerRepository>(
+      () => _i735.FirestoreAddProductServerRepository(),
+      registerFor: {
+        _dev,
+        _prod,
+        _tests,
+      },
+    );
     gh.factory<_i457.StoreLocalRepository>(
       () => _i457.StoreLocalRepository(),
       registerFor: {_dev},
@@ -231,6 +239,14 @@ extension GetItInjectableX on _i174.GetIt {
           tagServerRepository: gh<_i338.TagServerRepository>(),
           navigationService: gh<_i892.NavigationService>(),
         ));
+    gh.singleton<_i902.IAddProductLocalRepository>(
+      () => _i370.HiveAddProductLocalRepository(),
+      registerFor: {
+        _dev,
+        _prod,
+        _tests,
+      },
+    );
     gh.singleton<_i118.UserRepository>(() => _i118.UserRepository(
           firebaseService: gh<_i228.FirebaseService>(),
           notificationRepository: gh<_i155.NotificationRepository>(),
@@ -246,16 +262,16 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
-    gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(
-          addProductLocalRepository: gh<_i260.AddProductLocalRepository>(),
-          addProductServerRepository: gh<_i529.AddProductServerRepository>(),
-          navigationService: gh<_i892.NavigationService>(),
-        ));
     gh.singleton<_i580.ImageServerRepository>(() => _i580.ImageServerRepository(
         firebaseService: gh<_i228.FirebaseService>()));
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i1034.CartLocalRepository>(),
           cartServerRepository: gh<_i719.CartServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
+    gh.singleton<_i13.AddProductRepository>(() => _i13.AddProductRepository(
+          addProductLocalRepository: gh<_i902.IAddProductLocalRepository>(),
+          addProductServerRepository: gh<_i141.IAddProductServerRepository>(),
           navigationService: gh<_i892.NavigationService>(),
         ));
     gh.factory<_i18.StoreServerRepository>(

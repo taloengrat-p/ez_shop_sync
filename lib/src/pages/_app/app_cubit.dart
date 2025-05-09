@@ -12,6 +12,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/delete_item_form_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/local/auth_local_repository.dart';
