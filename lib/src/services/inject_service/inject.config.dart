@@ -44,9 +44,10 @@ import '../../data/repository/category/local/category_local_repository.dart'
 import '../../data/repository/category/server/category_server_repository.dart'
     as _i997;
 import '../../data/repository/image/image_repository.dart' as _i678;
-import '../../data/repository/image/local/image_local_repository.dart' as _i848;
-import '../../data/repository/image/server/image_server_repository.dart'
-    as _i580;
+import '../../data/repository/image/server/i_image_server_repository.dart'
+    as _i830;
+import '../../data/repository/image/server/impl/firebase_storage_image_server_repository.dart'
+    as _i656;
 import '../../data/repository/notifications/local/notification_local_repository.dart'
     as _i676;
 import '../../data/repository/notifications/notification_repository.dart'
@@ -229,10 +230,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i764.AddProductHistoryLocalRepository(),
       registerFor: {_dev},
     );
-    gh.singleton<_i848.ImageLocalRepository>(
-      () => _i848.ImageLocalRepository(),
-      registerFor: {_dev},
-    );
     gh.singleton<_i561.DevNotificationServerRepository>(
       () => _i561.DevNotificationServerRepository(),
       registerFor: {_dev},
@@ -289,8 +286,6 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
-    gh.singleton<_i580.ImageServerRepository>(() => _i580.ImageServerRepository(
-        firebaseService: gh<_i228.FirebaseService>()));
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i544.ICartLocalRepository>(),
           cartServerRepository: gh<_i167.ICartServerRepository>(),
@@ -309,6 +304,15 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_dev},
     );
+    gh.factory<_i830.IImageServerRepository>(
+      () => _i656.FirebaseStorageImageServerRepository(
+          firebaseService: gh<_i228.FirebaseService>()),
+      registerFor: {
+        _dev,
+        _tests,
+        _prod,
+      },
+    );
     gh.singleton<_i2.ProductHistoryRepository>(
         () => _i2.ProductHistoryRepository(
               productHistoryLocalRepository:
@@ -317,6 +321,8 @@ extension GetItInjectableX on _i174.GetIt {
                   gh<_i750.ProductHistoryServerRepository>(),
               navigationService: gh<_i892.NavigationService>(),
             ));
+    gh.singleton<_i678.ImageRepository>(() => _i678.ImageRepository(
+        imageServerRepository: gh<_i830.IImageServerRepository>()));
     gh.singleton<_i370.TransactionRepository>(() => _i370.TransactionRepository(
           transactionLocalRepository: gh<_i348.TransactionLocalRepository>(),
           transactionServerRepository: gh<_i620.TransactionServerRepository>(),
@@ -330,10 +336,6 @@ extension GetItInjectableX on _i174.GetIt {
                   gh<_i710.AddProductHistoryServerRepository>(),
               navigationService: gh<_i892.NavigationService>(),
             ));
-    gh.singleton<_i678.ImageRepository>(() => _i678.ImageRepository(
-          imageLocalRepository: gh<_i848.ImageLocalRepository>(),
-          imageServerRepository: gh<_i580.ImageServerRepository>(),
-        ));
     gh.factory<_i18.NotificationDetailCubit>(() => _i18.NotificationDetailCubit(
         storeServerRepository: gh<_i18.StoreServerRepository>()));
     gh.factory<_i592.IProductServerRepository>(

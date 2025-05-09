@@ -2,19 +2,18 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/image_request/upload_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/image/i_image_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/image/local/image_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/image/server/image_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/image/server/i_image_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton()
 class ImageRepository extends IImageRepository {
-  final ImageLocalRepository imageLocalRepository;
-  final ImageServerRepository imageServerRepository;
+  final IImageServerRepository imageServerRepository;
   AppMode appMode = AppMode.server;
 
-  ImageRepository({required this.imageLocalRepository, required this.imageServerRepository});
+  ImageRepository({required this.imageServerRepository});
 
   @override
   Future<String> uploadImageToStore(BaseRepoRequest<UploadImageRequest> request) {
