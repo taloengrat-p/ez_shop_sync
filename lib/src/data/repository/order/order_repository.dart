@@ -1,9 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
-
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/constances/date_format_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
@@ -11,22 +8,25 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.en
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/order_history_reponse.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/i_order_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/local/order_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/order/server/order_history_reponse.dart';
+import 'package:ez_shop_sync/src/data/repository/order/local/i_order_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/server/order_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 
 @Singleton()
 @Injectable()
 class OrderRepository extends IRepository<ProductOrder> implements IOrderRepository {
-  OrderLocalRepository orderLocalRepository;
-  OrderServerRepository orderServerRepository;
+  IOrderLocalRepository orderLocalRepository;
+  IOrderServerRepository orderServerRepository;
+
   CartRepository cartRepository;
   TransactionRepository transactionRepository;
 
@@ -97,7 +97,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   }
 
   @override
-  deleteAllByIds(List<String> ids, {AppMode? appMode = AppMode.local}) {
+  deleteAllByIds(List<String> ids) {
     if (appMode == AppMode.local) {
       ToastNotificationService.show(title: LocaleKeys.notification_deleteSuccess.tr());
       return orderLocalRepository.deleteAllByIds(ids);
@@ -107,7 +107,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   }
 
   @override
-  Future<ApiResult<List<ProductOrder>>> getAll({AppMode? appMode = AppMode.local}) async {
+  Future<ApiResult<List<ProductOrder>>> getAll() async {
     if (appMode == AppMode.local) {
       return await orderLocalRepository.getAll();
     } else {
