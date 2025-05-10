@@ -21,17 +21,20 @@ class OrderItemAdapter extends TypeAdapter<OrderItem> {
       info: fields[2] as BaseHiveData?,
       product: fields[7] as Product?,
       note: fields[8] as String?,
+      cost: fields[9] as num?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderItem obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(7)
       ..write(obj.product)
       ..writeByte(8)
       ..write(obj.note)
+      ..writeByte(9)
+      ..write(obj.cost)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -62,6 +65,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
           ? null
           : Product.fromJson(json['product'] as Map<String, dynamic>),
       note: json['note'] as String?,
+      cost: json['cost'] as num?,
     );
 
 Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
@@ -69,4 +73,5 @@ Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
       'info': instance.info?.toJson(),
       'product': instance.product?.toJson(),
       'note': instance.note,
+      'cost': instance.cost,
     };

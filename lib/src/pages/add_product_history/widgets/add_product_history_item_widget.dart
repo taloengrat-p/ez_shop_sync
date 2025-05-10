@@ -3,6 +3,7 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
@@ -35,7 +36,11 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                   TextTitleBoldValueWidget(title: LocaleKeys.orderId.tr(), value: addProduct.id),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: addProduct.info?.createAt.toDisplayDependLocale(context),
+                    value: addProduct.info?.createAtDateTime.toDisplayDependLocale(context) ?? '--',
+                  ),
+                  TextTitleBoldValueWidget(
+                    title: LocaleKeys.paymentMethod.tr(),
+                    value: addProduct.paymentType?.display ?? '--',
                   ),
                 ],
               ),
@@ -46,10 +51,13 @@ class AddProductHistoryItemWidget extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(width: 8),
                   ImageWidget(
-                    imageUrl: firstOrderItem.product?.imagesUrl?.firstOrNull,
                     width: 120,
-                    borderRadius: BorderRadius.circular(DimensionsKeys.radius),
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    imageUrl: firstOrderItem.product?.imageThumbnail,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   Expanded(
                     child: ProductInfoListItem(
@@ -57,7 +65,7 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                       name: firstOrderItem.product?.name ?? '',
                       desc: firstOrderItem.product?.description,
                       price: firstOrderItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
-                      priceCategory: firstOrderItem.product?.priceSelected,
+                      priceCategory: firstOrderItem.product?.productTypeSelectDisplay,
                     ),
                   ),
                   // Column(

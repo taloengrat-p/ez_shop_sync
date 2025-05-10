@@ -9,4 +9,5 @@ class FirebaseFirestoreConstance {
   static final String COLLECTION_NOTIFICATIONS = 'notifications';
   static final String COLLECTION_ORDER_HISTORY = 'history';
   static final String COLLECTION_TRANSACTIONS = 'transactions';
+  static final String COLLECTION_ADD_PRODUCT_HISTORY = 'add_product_history';
 }

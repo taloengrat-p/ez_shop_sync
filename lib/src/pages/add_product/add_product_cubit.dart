@@ -2,11 +2,12 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_decrease_qty_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_increase_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -21,11 +22,31 @@ class AddProductCubit extends Cubit<AddProductState> {
   final AddProductRepository addProductRepository;
   final AppCubit appCubit;
 
-  List<OrderItem> _products = [];
   AddProduct? _addProduct;
-  List<OrderItem> get products => _products;
+
+  List<OrderItem> get addProductOrderItems => _addProduct?.addProductItems ?? [];
   TimerUtils timerUtils = TimerUtils();
   List<Product> productInStock = [];
+
+  bool get hasAnyError => addProductOrderItems.any((item) {
+    if (productInStock.isEmpty) {
+      return true;
+    }
+
+    try {
+      final productStockItem = productInStock
+          .firstWhere((e) => e.id == item.product?.id)
+          .productTypeList
+          ?.firstWhere((e) => e.id == item.product?.priceSelected);
+      final stockQty = (productStockItem?.quantity ?? 0);
+      final addStockQty = (item.product?.quantity ?? 0);
+
+      final hasError = (stockQty < addStockQty);
+      return hasError;
+    } catch (e) {
+      return true;
+    }
+  });
 
   AddProductCubit({
     required this.productRepository,
@@ -34,31 +55,33 @@ class AddProductCubit extends Cubit<AddProductState> {
     required this.addProductRepository,
   }) : super(AddProductInitial());
 
-  num? totalPrice;
+  num? get totalPrice => _addProduct?.addProductItems.fold(0.0, (sum, item) => (sum ?? 0) + ((item.cost ?? 0)));
+
   String get totalPriceDisplay => totalPrice?.prefixCurrency() ?? '--';
 
-  String get totalItems => products.fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0)).toString();
+  String get totalItems =>
+      _addProduct?.addProductItems.fold<num>(0, (sum, item) => sum + (item.product?.quantity ?? 0)).toString() ?? '--';
 
   bool get disabledSubmit => totalPrice == null;
 
   void increaseProductQtyByIndex(int index) {
-    final item = _products[index];
-    if (item.product?.quantity == null) {
+    final item = _addProduct?.addProductItems.elementAtOrNull(index);
+    if (item?.product?.quantity == null) {
       throw ('item.quantity is null');
     }
 
-    item.product?.quantity = (_products[index].product?.quantity ?? 0) + 1;
-    emit(AddProductIncrease(productId: item.id, qty: item.product!.quantity!));
+    item?.product?.quantity = (_addProduct?.addProductItems.elementAtOrNull(index)?.product?.quantity ?? 0) + 1;
+    emit(AddProductIncrease(productId: item?.id, qty: (item?.product?.quantity ?? 0)));
 
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
-      addProductRepository.decreaseQty(
+      addProductRepository.increaseQty(
         BaseRepoRequest(
           storeId: appCubit.storeId ?? '',
           userId: appCubit.userId,
-          data: AddProductDecreaseQtyRequest(
-            cartId: appCubit.cart?.id,
-            productId: item.product?.id,
-            qty: item.product?.quantity ?? 0,
+          data: AddProductIncreaseRequest(
+            addProductId: _addProduct?.id,
+            orderItemId: item?.product?.id,
+            qty: item?.product?.quantity ?? 0,
           ),
         ),
       );
@@ -66,17 +89,18 @@ class AddProductCubit extends Cubit<AddProductState> {
   }
 
   void decreaseProductQtyByIndex(int index) {
-    final item = _products[index];
-    if (item.product?.quantity == null) {
+    final item = _addProduct?.addProductItems.elementAtOrNull(index);
+    if (item?.product?.quantity == null) {
       throw ('item.quantity is null');
     }
 
-    if (item.product?.quantity == 1) {
+    if (item?.product?.quantity == 1) {
       return;
     }
 
-    item.product?.quantity = _products[index].product!.quantity! - 1;
-    emit(AddProductDecrease(productId: item.id, qty: item.product!.quantity!));
+    item?.product?.quantity = (_addProduct?.addProductItems.elementAtOrNull(index)?.product?.quantity ?? 1) - 1;
+
+    emit(AddProductDecrease(productId: item?.id, qty: (item?.product?.quantity ?? 0)));
 
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
       addProductRepository.decreaseQty(
@@ -84,9 +108,9 @@ class AddProductCubit extends Cubit<AddProductState> {
           storeId: appCubit.storeId ?? '',
           userId: appCubit.userId,
           data: AddProductDecreaseQtyRequest(
-            cartId: appCubit.cart?.id ?? '',
-            productId: item.product?.id,
-            qty: item.product?.quantity ?? 0,
+            addProductId: _addProduct?.id,
+            orderItemId: item?.id,
+            qty: item?.product?.quantity ?? 0,
           ),
         ),
       );
@@ -94,16 +118,26 @@ class AddProductCubit extends Cubit<AddProductState> {
   }
 
   void initial() async {
-    _addProduct = appCubit.addProduct;
-    _products = appCubit.addProduct?.addProductItems.map((e) => e).toList() ?? [];
-    productInStock = await getProductsByCartItems();
     emit(AddProductInitial());
+
+    _addProduct = appCubit.addProduct;
+
+    productInStock = await getProductsByCartItems();
+    emit(AddProductInitialSuccess());
   }
 
   void deleteItemFromCart(String id) async {
-    await appCubit.deleteItemFromCart(id);
-    _products.removeWhere((e) => e.id == id);
-    emit(AddProductRemoveItemSuccess(id));
+    final result = await appCubit.deleteItemFromAddProduct(id);
+
+    result.when(
+      success: (response) {
+        _addProduct?.addProductItems.removeWhere((e) => e.id == id);
+        emit(AddProductRemoveItemSuccess(id));
+      },
+      failure: (error) {
+        emit(AddProductRemoveItemFailure(id));
+      },
+    );
   }
 
   void submit() async {
@@ -113,26 +147,55 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     emit(AddProductLoading());
 
+    final result = await getProductsByCartItems();
+
+    productInStock = result;
+
+    if (hasAnyError) {
+      emit(AddProductProductInsufficient());
+      return;
+    }
+
     final addProductCompleted = await addProductHistoryRepository.create(
-      BaseRepoRequest(storeId: appCubit.storeId!, userId: appCubit.userId!, data: _addProduct!.copyWith()),
+      BaseRepoRequest(
+        storeId: appCubit.storeId!,
+        userId: appCubit.userId!,
+        data: _addProduct!.copyWith(amountCost: totalPrice),
+      ),
     );
 
-    emit(AddProductSuccess(addProductCompleted.response));
+    addProductCompleted.when(
+      success: (response) async {
+        if (_addProduct != null) {
+          // await productRepository.orderCompletedUpdate(_cart);
+          await addProductRepository.update(
+            BaseRepoRequest(
+              storeId: appCubit.store?.id ?? '',
+              userId: appCubit.user?.uid ?? '',
+              data: _addProduct!..addProductItems = [],
+            ),
+          );
+        }
+        emit(AddProductSuccess(addProductCompleted.response));
+      },
+      failure: (error) {
+        emit(const AddProductFailure());
+      },
+    );
   }
 
   Future<List<Product>> getProductsByCartItems() async {
     final productStockFromCartItem = await productRepository.getByIds(
       appCubit.store!.id,
-      _products.map((e) => e.product?.id.toString() ?? '').toList(),
-      appMode: AppMode.server,
+      _addProduct?.addProductItems.map((e) => e.product?.id.toString() ?? '').toList() ?? [],
     );
 
     return productStockFromCartItem.response ?? [];
   }
 
   void setTotalPrice(String? value) {
-    totalPrice = num.tryParse(value ?? '0') ?? 0;
-    _addProduct?.amountCost = totalPrice ?? 0;
-    emit(AddProductUpdateTotalPrice(totalPrice));
+    // totalPrice = num.tryParse(value ?? '0') ?? 0;
+    // _addProduct?.amountCost = totalPrice ?? 0;
+    // emit(AddProductUpdateTotalPrice(totalPrice));
   }
 }

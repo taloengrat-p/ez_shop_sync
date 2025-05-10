@@ -1,7 +1,8 @@
-import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 
-class AddProductRequest {
+class AddProductStockRequest {
   String id;
-  Product product;
-  AddProductRequest({required this.id, required this.product});
+  OrderItem orderItem;
+
+  AddProductStockRequest({required this.id, required this.orderItem});
 }

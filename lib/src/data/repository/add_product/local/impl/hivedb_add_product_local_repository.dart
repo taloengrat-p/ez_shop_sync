@@ -48,15 +48,13 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
   }
 
   @override
-  Future<ApiResult<AddProduct>> addProduct(BaseRepoRequest<AddProductRequest> request) async {
+  Future<ApiResult<AddProduct>> addProductStock(BaseRepoRequest<AddProductStockRequest> request) async {
     final addProductResult = await super.getById(request.data.id);
 
     addProductResult.when(
       success: (response) async {
         final productExistInCart = response.addProductItems.any(
-          (item) =>
-              item.product?.id == request.data.product.id &&
-              item.product?.priceSelected == request.data.product.priceSelected,
+          (item) => item.product?.id == request.data.orderItem.product?.id && item.cost == request.data.orderItem.cost,
         );
 
         if (productExistInCart) {
@@ -70,12 +68,14 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
                         response.addProductItems
                             .map(
                               (OrderItem item) =>
-                                  item.product?.id == request.data.product.id
+                                  item.product?.id == request.data.orderItem.product?.id
                                       ? item.copyWith(
                                         product: item.product?.copyWith(
                                           quantity:
-                                              (item.product?.quantity ?? 0) + (request.data.product.quantity ?? 0),
+                                              (item.product?.quantity ?? 0) +
+                                              (request.data.orderItem.product?.quantity ?? 0),
                                         ),
+                                        cost: (item.cost ?? 0) + (request.data.orderItem.cost ?? 0),
                                       )
                                       : item,
                             )
@@ -87,7 +87,15 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
             BaseRepoRequest(
               storeId: request.storeId,
               userId: request.userId,
-              data: response..addProductItems.add(OrderItem(id: const Uuid().v1(), product: request.data.product)),
+              data:
+                  response
+                    ..addProductItems.add(
+                      OrderItem(
+                        id: const Uuid().v1(),
+                        product: request.data.orderItem.product,
+                        cost: request.data.orderItem.cost,
+                      ),
+                    ),
             ),
           );
         }
@@ -103,11 +111,11 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
   @override
   Future<ApiResult> increaseQty(BaseRepoRequest<AddProductIncreaseRequest> request) async {
     log('[performRepo] increaseQty : ');
-    if (request.data.productId == null) {
+    if (request.data.addProductId == null) {
       throw ('increaseQty() addProductId is Null');
     }
 
-    final addProductResult = await super.getById(request.data.productId!);
+    final addProductResult = await super.getById(request.data.addProductId!);
 
     return addProductResult.when(
       success: (response) async {
@@ -115,7 +123,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
             response.addProductItems
                 .map(
                   (e) =>
-                      e.id == request.data.productId
+                      e.id == request.data.orderItemId
                           ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
                           : e,
                 )
@@ -132,10 +140,10 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
   @override
   Future<ApiResult> decreaseQty(BaseRepoRequest<AddProductDecreaseQtyRequest> request) async {
     log('[performRepo] decreaseQty : ');
-    if (request.data.productId == null) {
+    if (request.data.addProductId == null) {
       throw ('increaseQty() addProductId is Null');
     }
-    final addProductResult = await super.getById(request.data.productId!);
+    final addProductResult = await super.getById(request.data.addProductId!);
 
     return addProductResult.when(
       success: (response) async {
@@ -143,7 +151,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
             response.addProductItems
                 .map(
                   (e) =>
-                      e.id == request.data.productId
+                      e.id == request.data.orderItemId
                           ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
                           : e,
                 )
@@ -164,7 +172,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
   }
 
   @override
-  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(List<String> carts) {
+  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(BaseRepoRequest carts) {
     // TODO: implement getAddProductByUserIdWithCurrentStore
     throw UnimplementedError();
   }

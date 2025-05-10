@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 abstract class TransactionState extends Equatable {
@@ -10,6 +11,11 @@ abstract class TransactionState extends Equatable {
 class TransactionInitial extends TransactionState {
   @override
   String toString() => 'TransactionInitial';
+}
+
+class TransactionInitialLoading extends TransactionState {
+  @override
+  String toString() => 'TransactionInitialLoading';
 }
 
 class TransactionLoading extends TransactionState {
@@ -32,4 +38,25 @@ class TransactionFailure extends TransactionState {
 class TransactionDeleteSuccess extends TransactionState {
   @override
   String toString() => 'TransactionDeleteSuccess';
+}
+
+class TransactionLoadmore extends TransactionState {
+  @override
+  String toString() => 'TransactionLoadmore';
+}
+
+class OrderHistoryLoadMoreSuccess extends TransactionState {
+  final int start;
+  final int end;
+  const OrderHistoryLoadMoreSuccess({required this.start, required this.end});
+  @override
+  String toString() => 'OrderHistoryLoadMoreSuccess';
+
+  @override
+  List<Object> get props => [start, end];
+}
+
+class OrderHistoryLoadMoreFailure extends TransactionState {
+  @override
+  String toString() => 'OrderHistoryLoadMoreFailure';
 }

@@ -6,8 +6,10 @@ import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
@@ -18,6 +20,7 @@ import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/delete_item_from_cart_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/local/auth_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
@@ -43,21 +46,24 @@ import 'package:uuid/uuid.dart';
 
 @Singleton()
 class AppCubit extends Cubit<AppState> {
+  // repositories
+  final LocalStorageService localStorageService;
+  final AuthLocalRepository authLocalRepository;
+  final StoreRepository storeRepository;
+  final ProductRepository productRepository;
+  final TagRepository tagRepository;
+  final CategoryRepository categoryRepository;
+  final CartRepository cartRepository;
+  final UserRepository userRepository;
+  final AddProductRepository addProductRepository;
+  final NotificationRepository notificationRepository;
+  final AuthRepository authRepository;
+  //
+
   AppTheme? _appTheme;
 
   Size deviceSize = const Size(0, 0);
-  // repositories
-  LocalStorageService localStorageService;
-  AuthLocalRepository authLocalRepository;
-  StoreRepository storeRepository;
-  ProductRepository productRepository;
-  TagRepository tagRepository;
-  CategoryRepository categoryRepository;
-  CartRepository cartRepository;
-  UserRepository userRepository;
-  AddProductRepository addProductRepository;
-  NotificationRepository notificationRepository;
-  //
+
   final durationAddCart = const Duration(milliseconds: 700);
   NavigationService navigationService;
   AppMode _appMode = AppMode.local;
@@ -116,6 +122,7 @@ class AppCubit extends Cubit<AppState> {
     required this.userRepository,
     required this.addProductRepository,
     required this.notificationRepository,
+    required this.authRepository,
   }) : super(AppInitial()) {
     init();
   }
@@ -168,13 +175,6 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  // startAuthListen() {
-  //   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-  //     log('authStateChanges() isClosed:: ${isClosed} $user', name: runtimeType.toString());
-  //     setCurrentUser(user);
-  //   });
-  // }
-
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       log('userChanges() isClosed:: $isClosed $user', name: runtimeType.toString());
@@ -211,7 +211,7 @@ class AppCubit extends Cubit<AppState> {
     await loadProductByCurrentStore();
     // await loadAllDependencies();
     // await doGetAddProductByCurrentUserAndStore();
-    setCurrentAddProductByCurrentStore(store?.id);
+    setCurrentAddProductByCurrentStore();
     setCurrentCartByCurrentStore();
 
     emit(AppSelectStore(_store?.id));
@@ -232,7 +232,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   setCurrentCartByCurrentStore() async {
-    final resultCart = await GetIt.I<CartRepository>().getAll();
+    final resultCart = await cartRepository.getAll();
 
     log('setCurrentCartByCurrentStore() : $storeId, $userId : result ${resultCart.response?.map((e) => e.id)}');
 
@@ -297,29 +297,36 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  setCurrentAddProductByCurrentStore(String storeId) async {
-    log('setCurrentAddCartByCurrentStore() storeId $storeId');
-    log('setCurrentAddCartByCurrentStore() _addProducts $_addProducts');
-    if (_addProducts.map((e) => e.storeId).toList().contains(storeId)) {
-      final addProductFinded = _addProducts.where((addProduct) => addProduct.storeId == storeId).firstOrNull;
+  setCurrentAddProductByCurrentStore() async {
+    final resultAddProduct = await addProductRepository.getAll();
+
+    if (resultAddProduct.response?.map((e) => e.storeId).toList().contains(storeId) ?? false) {
+      final addProductFinded =
+          resultAddProduct.response
+              ?.where((addProduct) => addProduct.storeId == storeId && addProduct.userId == userId)
+              .firstOrNull;
       setCurrentAddProduct(addProductFinded);
     } else {
       final addProductCreated = await addProductRepository.create(
         BaseRepoRequest<AddProduct>(
           data: AddProduct(
             id: const Uuid().v1(),
-            storeId: storeId,
+            storeId: storeId ?? '',
             userId: user?.uid ?? '',
             addProductItems: [],
             amountCost: 0,
+            paymentType: PaymentMethodType.cash,
           ),
           storeId: storeId,
           userId: user?.uid ?? '',
         ),
       );
 
-      // await userRepository.update(user?.uid, user?..addProducts.add(addProductCreated.id));
-      // setCurrentAddProduct(addProductCreated);
+      addProductCreated.when(
+        success: (response) async {
+          setCurrentAddProduct(response);
+        },
+      );
     }
 
     // log('current Cart $cart');
@@ -332,6 +339,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   setCurrentAddProduct(AddProduct? value) {
+    log('setCurrentAddProduct : $value');
     _addProduct = value;
   }
 
@@ -355,11 +363,15 @@ class AppCubit extends Cubit<AppState> {
     try {
       if (sortType == ProductSortType.asc) {
         products.sort(
-          (a, b) => a.info?.createAt!.millisecondsSinceEpoch.compareTo(b.info?.createAt!.millisecondsSinceEpoch),
+          (a, b) => a.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
+            b.info!.createAtDateTime.millisecondsSinceEpoch,
+          ),
         );
       } else {
         products.sort(
-          (a, b) => b.info?.createAt!.millisecondsSinceEpoch.compareTo(a.info?.createAt!.millisecondsSinceEpoch),
+          (a, b) => b.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
+            a.info!.createAtDateTime.millisecondsSinceEpoch,
+          ),
         );
       }
     } catch (e) {
@@ -475,13 +487,13 @@ class AppCubit extends Cubit<AppState> {
     return resultCartUpdated;
   }
 
-  Future<void> deleteItemFromAddProduct(String addProductItemId) async {
+  Future<ApiResult> deleteItemFromAddProduct(String addProductItemId) async {
     emit(AppLoading());
-    final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromCart(
+    final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromAddProduct(
       BaseRepoRequest(
         storeId: storeId,
         userId: userId,
-        data: DeleteItemFormCartRequest(id: cart?.id, addProductItemId: addProductItemId),
+        data: DeleteItemFormCartRequest(id: addProduct?.id, addProductItemId: addProductItemId),
       ),
     );
 
@@ -495,6 +507,8 @@ class AppCubit extends Cubit<AppState> {
         emit(AppFailure());
       },
     );
+
+    return resultAddCartUpdated;
   }
 
   Future<Product?> addStock({required Product? product, required num amountCost}) async {
@@ -503,13 +517,23 @@ class AppCubit extends Cubit<AppState> {
     }
 
     if (addProduct == null) {
-      throw ('addStock addProduct is Null');
+      return null;
     }
 
     emit(AppLoading());
 
-    final addProductUpdate = await addProductRepository.addProduct(
-      BaseRepoRequest(storeId: storeId, userId: userId, data: AddProductRequest(id: addProduct!.id, product: product)),
+    final addProductUpdate = await addProductRepository.addProductStock(
+      BaseRepoRequest(
+        storeId: storeId,
+        userId: userId,
+        data: AddProductStockRequest(id: addProduct!.id, orderItem: OrderItem(product: product, cost: amountCost)),
+      ),
+    );
+
+    addProductUpdate.when(
+      success: (response) {
+        emit(AppAddStockSuccess(DateTime.now()));
+      },
     );
 
     // final productUpdated = await productRepository.addProductQuantityToStock(
@@ -529,8 +553,6 @@ class AppCubit extends Cubit<AppState> {
     //   },
     //   failure: (error) {},
     // );
-
-    emit(AppAddStockSuccess(DateTime.now()));
 
     return product;
   }
@@ -570,9 +592,8 @@ class AppCubit extends Cubit<AppState> {
 
   void clearCurrentUserData() {}
 
-  void testAddProduct() {
-    emit(AppLoading());
-    // _products.add(Product(name: 'arm', storeId: storeId!, status: ProductStatus.active, ownerId: userId!));
-    emit(AppSuccess());
+  Future<void> logout() async {
+    await authRepository.logout();
+    await setCurrentUser(null);
   }
 }

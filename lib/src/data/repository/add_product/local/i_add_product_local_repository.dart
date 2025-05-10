@@ -11,7 +11,7 @@ abstract class IAddProductLocalRepository {
 
   Future<ApiResult<AddProduct>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFormCartRequest> request);
 
-  Future<ApiResult<AddProduct>> addProduct(BaseRepoRequest<AddProductRequest> request);
+  Future<ApiResult<AddProduct>> addProductStock(BaseRepoRequest<AddProductStockRequest> request);
 
   Future<ApiResult> increaseQty(BaseRepoRequest<AddProductIncreaseRequest> request);
 
@@ -23,7 +23,7 @@ abstract class IAddProductLocalRepository {
 
   Future<ApiResult> deleteAllByIds(List<String> ids);
 
-  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(List<String> carts);
+  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(BaseRepoRequest addProduct);
 
   Future<ApiResult<AddProduct>> update(BaseRepoRequest<AddProduct> request);
 

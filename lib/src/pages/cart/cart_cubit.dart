@@ -13,7 +13,6 @@ import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -60,7 +59,7 @@ class CartCubit extends Cubit<CartState> {
     // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
 
     if (productInStock.isEmpty) {
-      return false;
+      return true;
     }
 
     try {
@@ -72,7 +71,7 @@ class CartCubit extends Cubit<CartState> {
       final hasError = (productStockItem?.quantity ?? 0) < (item.product?.quantity ?? 0);
       return hasError;
     } catch (e) {
-      return false;
+      return true;
     }
   });
   PaymentMethodType? paymentMethod = PaymentMethodType.undefined;
@@ -153,8 +152,10 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
-  void deleteItemFromCart(String id) async {
-    final result = await appCubit.deleteItemFromCart(id);
+  void deleteItemFromCart(String? id) async {
+    throwIf(id == null, 'deleteItemFromCart id == null');
+
+    final result = await appCubit.deleteItemFromCart(id!);
 
     result.when(
       success: (response) {
@@ -218,6 +219,7 @@ class CartCubit extends Cubit<CartState> {
             ),
           );
         }
+
         emit(CartSuccess(response));
       },
       failure: (error) {
@@ -230,7 +232,6 @@ class CartCubit extends Cubit<CartState> {
     final result = await productRepository.getByIds(
       appCubit.store?.id,
       _products.map((e) => e.product?.id.toString() ?? '').toList(),
-      appMode: AppMode.server,
     );
 
     return result;

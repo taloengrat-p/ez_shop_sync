@@ -122,7 +122,9 @@
     "unableCheckout": "Unable to complete the transaction",
     "productPriceNotYet": "Your product has not been priced yet.",
     "productPriceNotEnough": "Your inventory is insufficient.",
-    "receiveAmountInvalid": "Receive amount invalid."
+    "productInvalid": "Product is invalid or not available.",
+    "receiveAmountInvalid": "Receive amount invalid.",
+    "pleaseCheckShoppingCart": "Please check the shopping cart."
   },
   "introducePage": {
     "createOwnerInfomation": "Create Owner Infomation",
@@ -241,5 +243,15 @@
     "gallary": "Choose from Gallary"
   },
   "productStatisticEmpty": "Your product is empty of statistic.",
-  "dataEmptyMessage": "Your data is empty."
+  "dataEmptyMessage": "Your data is empty.",
+  "addProductEmpty": "Your add products is empty. please add from inventory.",
+  "addProductHistory": {
+    "title": "Add Product History"
+  },
+  "addProductHistoryDetail": {
+    "title": "Add Product History Detail"
+  },
+  "notificationSetting": {
+    "title": "Notifications"
+  }
 }

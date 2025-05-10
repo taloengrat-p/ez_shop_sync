@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -110,7 +111,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
     }
   }
 
-  Future<ApiResult<OrderHistoryResponse>> getAllRange(BaseRepoRequest<OrderGetAllRangeRequest> request) async {
+  Future<ApiResult<OrderHistoryResponse>> getAllRange(BaseRepoRequest<PaginationIndexRequest> request) async {
     if (appMode == AppMode.local) {
       return Future.value(
         ApiResult(
@@ -178,7 +179,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   }
 
   @override
-  Future<ApiResult> createFromCart(BaseRepoRequest<CreateOrderRequest> request) async {
+  Future<ApiResult<ProductOrder>> createFromCart(BaseRepoRequest<CreateOrderRequest> request) async {
     if (appMode == AppMode.local) {
       return await create(
         BaseRepoRequest(
@@ -196,19 +197,6 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
     } else {
       return await orderServerRepository.createOrder(request);
     }
-  }
-}
-
-class OrderGetAllRangeRequest {
-  int start;
-  int end;
-  int limit;
-  QueryDocumentSnapshot? lastDocument;
-  OrderGetAllRangeRequest({required this.start, required this.end, required this.limit, this.lastDocument});
-
-  @override
-  String toString() {
-    return 'OrderGetAllRangeRequest(start: $start, end: $end, limit: $limit, lastDocument: $lastDocument)';
   }
 }
 

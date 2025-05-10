@@ -31,10 +31,11 @@ abstract class IRepository<T> {
     Function(BuildContext? context, ToastificationItem item)? onTap,
   }) {
     ToastNotificationService.show(
-      title: title ?? 'Success',
+      title: title ?? (type == ToastificationType.success ? 'Success' : 'Failure'),
       desc: desc,
       type: type,
       style: style,
+
       onTap: (toastItem) => onTap?.call(navigationService.navigatorKey.currentState?.context, toastItem),
     );
   }

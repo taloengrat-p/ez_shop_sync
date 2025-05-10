@@ -1,26 +1,28 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
-import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
+import 'package:ez_shop_sync/src/pages/add_product/widget/add_product_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
 import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
-import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -72,6 +74,7 @@ class _AddProductState extends State<AddProductPage> {
     return BlocListener<AddProductCubit, AddProductState>(
       bloc: _cubit,
       listener: (context, state) {
+        log('state : $state', name: runtimeType.toString());
         if (state is AddProductRemoveItemSuccess) {
           // checkCanScroll();
         } else if (state is AddProductSuccess) {
@@ -83,27 +86,28 @@ class _AddProductState extends State<AddProductPage> {
               from: Routes.ROUTE_ADDPRODUCT,
             ),
           );
+        } else if (state is AddProductProductInsufficient) {
+          DialogUtils.showAlertDialog(
+            context,
+            title: LocaleKeys.error_unableCheckout.tr(),
+            desc: LocaleKeys.error_pleaseCheckShoppingCart.tr(),
+          );
         }
       },
       child: BlocBuilder<AddProductCubit, AddProductState>(
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            isEmpty: _cubit.addProductOrderItems.isEmpty,
+            emptyIcon: CupertinoIcons.bag_badge_plus,
+            emptyMessage: LocaleKeys.addProductEmpty.tr(),
             enableAppModeDisplay: true,
+            isInitialLoading: state is AddProductInitial,
             isLoading: state is AddProductLoading,
             appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.addStock.tr(), actions: []).build(),
-            body:
-                _cubit.products.isEmpty
-                    ? Center(
-                      child: EmptyDataWidget(
-                        height: size.height * 0.45,
-                        width: 200,
-                        message: LocaleKeys.cartEmpty.tr(),
-                      ),
-                    )
-                    : _buildPage(context, state),
+            body: _buildPage(context, state),
             bottomNavigationBar:
-                _cubit.products.isEmpty
+                _cubit.addProductOrderItems.isEmpty
                     ? ButtonWidget(
                       margin: const EdgeInsets.all(16),
                       label: LocaleKeys.gotoProductsPage.tr(),
@@ -156,7 +160,7 @@ class _AddProductState extends State<AddProductPage> {
       children: [
         buildProductItems(),
         AnimatedOpacity(
-          opacity: _isBottomScroll || _canScroll == false || _cubit.products.length <= 2 ? 0 : 1,
+          opacity: _isBottomScroll || _canScroll == false || _cubit.addProductOrderItems.length <= 2 ? 0 : 1,
           duration: const Duration(milliseconds: 300),
           child: Align(
             alignment: Alignment.bottomCenter,
@@ -194,12 +198,33 @@ class _AddProductState extends State<AddProductPage> {
           physics: const ScrollPhysics(),
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          itemCount: _cubit.products.length,
+          itemCount: _cubit.addProductOrderItems.length,
           itemBuilder: (context, index) {
-            final cartItem = _cubit.products.elementAt(index);
+            bool hasInsufficientError = false;
+            bool hasInvalid = false;
 
-            return CartItemWidget(
-              cartItem: cartItem,
+            final orderItem = _cubit.addProductOrderItems.elementAtOrNull(index);
+            try {
+              final productStockItem = _cubit.productInStock.firstWhere((e) => e.id == orderItem?.product?.id);
+
+              hasInsufficientError =
+                  (productStockItem.productTypeList
+                          ?.firstWhere((e) => e.id == orderItem?.product?.priceSelected)
+                          .quantity ??
+                      0) <
+                  (orderItem?.product?.quantity ?? 0);
+            } catch (e) {
+              hasInvalid = true;
+            }
+
+            return AddProductItemWidget(
+              errorMessageType:
+                  hasInvalid
+                      ? CartErrorType.invalid
+                      : hasInsufficientError
+                      ? CartErrorType.insufficient
+                      : null,
+              orderItem: orderItem,
               onIncreaseQty: () {
                 _cubit.increaseProductQtyByIndex(index);
               },
@@ -210,7 +235,7 @@ class _AddProductState extends State<AddProductPage> {
                 final result = await DialogUtils.showConfirmDelete(context);
 
                 if (result == ConfirmDialogResult.ok) {
-                  _cubit.deleteItemFromCart(cartItem.id);
+                  _cubit.deleteItemFromCart(orderItem?.id);
                 }
               },
             );
@@ -243,7 +268,7 @@ class _AddProductState extends State<AddProductPage> {
           mainAxisSize: MainAxisSize.min,
           gap: 4,
           children: [
-            RowBetweenWidget(title: Text(LocaleKeys.items.tr()), value: Text(_cubit.totalItems.prefixCurrency())),
+            RowBetweenWidget(title: Text(LocaleKeys.items.tr()), value: Text(_cubit.totalItems)),
             Divider(color: Colors.grey.shade200),
             RowBetweenWidget(
               title: Text(LocaleKeys.totalAmount.tr()),

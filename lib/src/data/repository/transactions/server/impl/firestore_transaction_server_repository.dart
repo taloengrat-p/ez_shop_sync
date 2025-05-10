@@ -3,21 +3,22 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:cloud_firestore/cloud_firestore.dart' show QuerySnapshot;
+import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
-import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
-import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:injectable/injectable.dart';
-
-import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/server/i_transaction_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
+import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:injectable/injectable.dart';
 
 @Injectable(as: ITransactionServerRepository, env: [Flavor.DEV, Flavor.STG, Flavor.PROD])
 class FirestoreTransactionServerRepository implements ITransactionServerRepository {
@@ -76,6 +77,42 @@ class FirestoreTransactionServerRepository implements ITransactionServerReposito
       final response = snapshot.docs.map((e) => Transaction.fromJson(e.data())).toList();
 
       return ApiResult(response: response);
+    } catch (e) {
+      return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  @override
+  Future<ApiResult<TransactionStatementResponse>> getItemsByLimit(
+    BaseRepoRequest<PaginationIndexRequest> request,
+  ) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot;
+
+      if (request.data.lastDocument != null) {
+        snapshot =
+            await firebaseService.storesCollection
+                .doc(request.storeId)
+                .collection(FirebaseFirestoreConstance.COLLECTION_TRANSACTIONS)
+                .orderBy('info.createAt', descending: true)
+                .limit(request.data.limit)
+                .startAfterDocument(request.data.lastDocument!)
+                .get();
+      } else {
+        snapshot =
+            await firebaseService.storesCollection
+                .doc(request.storeId)
+                .collection(FirebaseFirestoreConstance.COLLECTION_TRANSACTIONS)
+                .orderBy('info.createAt', descending: true)
+                .limit(request.data.limit)
+                .get();
+      }
+
+      log('snapshot getRange : ${snapshot.docs.map((e) => Transaction.fromJson(e.data())).toList()}');
+      final response = snapshot.docs.map((e) => Transaction.fromJson(e.data())).toList();
+      return ApiResult(
+        response: TransactionStatementResponse(transactions: response, lastDocument: snapshot.docs.last),
+      );
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }

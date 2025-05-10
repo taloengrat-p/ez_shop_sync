@@ -101,9 +101,4 @@ class ProductCubit extends Cubit<ProductState> {
     await appCubit.addStock(product: product, amountCost: amountCost);
     emit(ProductAddStockSuccess());
   }
-
-  void testAddProduct() {
-    appCubit.testAddProduct();
-    emit(ProductLoadmoreSuccess());
-  }
 }

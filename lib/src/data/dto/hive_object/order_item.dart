@@ -18,21 +18,13 @@ class OrderItem extends BaseHiveObject {
   @HiveField(8)
   String? note;
 
-  OrderItem({
-    super.id,
-    BaseHiveData? super.info,
-    required this.product,
-    this.note,
-  });
+  @HiveField(9)
+  num? cost;
 
-  OrderItem copyWith({
-    String? id,
-    Product? product,
-  }) {
-    return OrderItem(
-      id: id ?? super.id,
-      product: product ?? this.product,
-    );
+  OrderItem({super.id, BaseHiveData? super.info, required this.product, this.note, this.cost});
+
+  OrderItem copyWith({String? id, Product? product, num? cost}) {
+    return OrderItem(id: id ?? super.id, product: product ?? this.product, cost: cost ?? this.cost);
   }
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);

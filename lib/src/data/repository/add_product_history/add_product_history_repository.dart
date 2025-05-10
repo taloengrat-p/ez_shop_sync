@@ -1,8 +1,11 @@
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/add_product_history_response.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product_history/server/add_product_history_server_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/transactions/server/i_transaction_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,19 +15,19 @@ import 'local/add_product_history_local_repository.dart';
 @Injectable()
 class AddProductHistoryRepository extends IRepository<AddProduct> {
   AddProductHistoryLocalRepository addProductHistoryLocalRepository;
-  AddProductHistoryServerRepository addProductHistoryServerRepository;
+  IAddProductHistoryServerRepository addProductHistoryServerRepository;
   AddProductHistoryRepository({
     required this.addProductHistoryLocalRepository,
     required this.addProductHistoryServerRepository,
     required super.navigationService,
-  }) : super(AppMode.local);
+  }) : super(AppMode.server);
 
   @override
   Future<ApiResult<AddProduct>> create(BaseRepoRequest<AddProduct> request) async {
     if (appMode == AppMode.local) {
       return await addProductHistoryLocalRepository.create(request);
     } else {
-      throw UnimplementedError();
+      return await addProductHistoryServerRepository.createAddProductHistory(request);
     }
   }
 
@@ -64,15 +67,18 @@ class AddProductHistoryRepository extends IRepository<AddProduct> {
     }
   }
 
-  List<AddProduct> getAllRange(int start, int end, {AppMode? appMode = AppMode.local}) {
-    try {
-      if (appMode == AppMode.local) {
-        return addProductHistoryLocalRepository.getAllRange(start, end);
-      } else {
-        throw UnimplementedError();
-      }
-    } catch (e) {
-      return [];
+  Future<ApiResult<List<AddProduct>>> getAllRange(BaseRepoRequest<DateRangeRequest> request) async {
+    if (appMode == AppMode.local) {
+      return Future.value(
+        ApiResult(
+          response: addProductHistoryLocalRepository.getAllRange(
+            request.data.start.millisecondsSinceEpoch,
+            request.data.start.millisecondsSinceEpoch,
+          ),
+        ),
+      );
+    } else {
+      throw UnimplementedError();
     }
   }
 
@@ -92,5 +98,21 @@ class AddProductHistoryRepository extends IRepository<AddProduct> {
   Future<ApiResult> deleteAll() {
     // TODO: implement deleteAll
     throw UnimplementedError();
+  }
+
+  Future<ApiResult<AddProductHistoryResponse>> getItemsByLimit(BaseRepoRequest<PaginationIndexRequest> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await addProductHistoryServerRepository.getItemsByLimit(request);
+    }
+  }
+
+  Future<ApiResult<AddProduct>> getDetailById(BaseRepoRequest<String> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await addProductHistoryServerRepository.getDetailById(request);
+    }
   }
 }

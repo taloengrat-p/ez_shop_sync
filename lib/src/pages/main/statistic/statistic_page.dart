@@ -95,158 +95,174 @@ class _StatisticState extends State<StatisticPage> {
   }
 
   Widget _buildPage(BuildContext context, StatisticState state) {
-    return SingleChildScrollView(
-      child: ColumnGapWidget(
-        gap: 12,
-        children: [
-          _buildPeriodDateTime(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
+    return Column(
+      children: [
+        _buildPeriodDateTime(),
+        const SizedBox(height: 16),
+        Expanded(
+          child: SingleChildScrollView(
+            child: ColumnGapWidget(
+              gap: 12,
               children: [
-                Expanded(
-                  child: _buildTitleStatisticInfo(
-                    LocaleKeys.totalSales.tr(),
-                    _cubit.totalSales.toString().formatCurrency(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildTitleStatisticInfo(
-                    LocaleKeys.netProfit.tr(),
-                    _cubit.netProfit.prefixCurrency(),
-                    valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: _cubit.netProfit > 0 ? Colors.green : Colors.white,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ContainerShadowWidget(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            color: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      LocaleKeys.transactionHistory.tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        TransactionStatementDetailRouter(
-                          context,
-                        ).navigate(argruments: TransactionStatementDetailArgrument(_cubit.transaction));
-                      },
-                      child: Text(
-                        LocaleKeys.seeAll.tr(),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                if (_cubit.transaction.isEmpty)
-                  EmptyDataWidget(message: LocaleKeys.transactionEmpty.tr(), width: double.infinity, height: 120),
-                if (_cubit.transaction.isNotEmpty)
-                  ListView.separated(
-                    padding: const EdgeInsets.only(top: 8),
-                    itemCount: _cubit.transactionPerview.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final transaction = _cubit.transactionPerview[index];
-                      return TransactionHistoryWidget(transaction: transaction);
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider(color: Colors.grey);
-                    },
-                  ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-          ContainerShadowWidget(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            color: Colors.white,
-            child: BarChartWidget(
-              activeColor: Colors.green,
-              periodType: _cubit.periodType,
-              days: _cubit.dateTimeWithValue,
-              header: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
                     children: [
-                      Text(_cubit.periodType.getLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith()),
-                      TextButton(
-                        onPressed: () {
-                          TransactionsChartDetailsRouter(context).navigate(
-                            argruments: TransactionsChartDetailsArgrument(
-                              periodType: _cubit.periodType,
-                              days: _cubit.dateTimeWithValue,
-                              periodTitle: periodTitle,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          LocaleKeys.seeDetail.tr(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                      Expanded(
+                        child: _buildTitleStatisticInfo(
+                          LocaleKeys.totalSales.tr(),
+                          _cubit.totalSales.toString().formatCurrency(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildTitleStatisticInfo(
+                          LocaleKeys.netProfit.tr(),
+                          _cubit.netProfit.toString().formatCurrency(),
+                          valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: _cubit.netProfit > 0 ? Colors.green : Colors.white,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Row(
+                ),
+                ContainerShadowWidget(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              LocaleKeys.totalIncome.tr(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            LocaleKeys.transactionHistory.tr(),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              TransactionStatementDetailRouter(
+                                context,
+                              ).navigate(argruments: TransactionStatementDetailArgrument(_cubit.transaction));
+                            },
+                            child: Text(
+                              LocaleKeys.seeAll.tr(),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
                             ),
-                            Text(
-                              _cubit.totalSales.toString().formatCurrency(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              LocaleKeys.averageIncome.tr(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
-                            ),
-                            Text(
-                              _cubit.averageIncome.prefixCurrency(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                      const SizedBox(height: 16),
+                      if (_cubit.transaction.isEmpty)
+                        EmptyDataWidget(message: LocaleKeys.transactionEmpty.tr(), width: double.infinity, height: 120),
+                      if (_cubit.transaction.isNotEmpty)
+                        ListView.separated(
+                          padding: const EdgeInsets.only(top: 8),
+                          itemCount: _cubit.transactionPerview.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final transaction = _cubit.transactionPerview[index];
+                            return TransactionHistoryWidget(transaction: transaction);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider(color: Colors.grey);
+                          },
                         ),
-                      ),
+                      const SizedBox(height: 24),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                ],
-              ),
+                ),
+                ContainerShadowWidget(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  color: Colors.white,
+                  child: BarChartWidget(
+                    activeColor: Colors.green,
+                    periodType: _cubit.periodType,
+                    days: _cubit.dateTimeWithValue,
+                    header: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _cubit.periodType.getLabel,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                TransactionsChartDetailsRouter(context).navigate(
+                                  argruments: TransactionsChartDetailsArgrument(
+                                    periodType: _cubit.periodType,
+                                    days: _cubit.dateTimeWithValue,
+                                    periodTitle: periodTitle,
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                LocaleKeys.seeDetail.tr(),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    LocaleKeys.totalIncome.tr(),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                                  ),
+                                  Text(
+                                    _cubit.totalSales.toString().formatCurrency(),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    LocaleKeys.averageIncome.tr(),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+                                  ),
+                                  Text(
+                                    _cubit.averageIncome.prefixCurrency(),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: double.infinity, height: DimensionsKeys.heightBts),
+              ],
             ),
           ),
-          const SizedBox(width: double.infinity, height: DimensionsKeys.heightBts),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

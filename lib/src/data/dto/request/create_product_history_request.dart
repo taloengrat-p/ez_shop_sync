@@ -11,7 +11,7 @@ class CreateProductHistoryRequest extends BaseRepoRequest<ProductHistoryEvent> {
   String? productTypeId;
   Map<String, dynamic>? oldData;
   Map<String, dynamic>? newData;
-  String? orderId;
+  String? refId;
   String? addStockId;
 
   CreateProductHistoryRequest({
@@ -24,7 +24,7 @@ class CreateProductHistoryRequest extends BaseRepoRequest<ProductHistoryEvent> {
     this.oldData,
     required super.info,
     this.addStockId,
-    this.orderId,
+    this.refId,
   });
 
   factory CreateProductHistoryRequest.fromJson(Map<String, dynamic> json) =>

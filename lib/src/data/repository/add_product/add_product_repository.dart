@@ -51,9 +51,9 @@ class AddProductRepository extends IRepository<AddProduct> {
     }
   }
 
-  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(List<String> carts) async {
+  Future<ApiResult<List<AddProduct>>> getAddProductByUserIdWithCurrentStore(BaseRepoRequest addProduct) async {
     if (appMode == AppMode.local) {
-      return await addProductLocalRepository.getAddProductByUserIdWithCurrentStore(carts);
+      return await addProductLocalRepository.getAddProductByUserIdWithCurrentStore(addProduct);
     } else {
       throw UnimplementedError();
     }
@@ -68,7 +68,7 @@ class AddProductRepository extends IRepository<AddProduct> {
     }
   }
 
-  Future<ApiResult<AddProduct>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFormCartRequest> request) async {
+  Future<ApiResult<AddProduct>> deleteItemByIdFromAddProduct(BaseRepoRequest<DeleteItemFormCartRequest> request) async {
     if (appMode == AppMode.local) {
       return await addProductLocalRepository.deleteItemByIdFromCart(request);
     } else {
@@ -76,9 +76,9 @@ class AddProductRepository extends IRepository<AddProduct> {
     }
   }
 
-  Future<ApiResult<AddProduct>> addProduct(BaseRepoRequest<AddProductRequest> request) async {
+  Future<ApiResult<AddProduct>> addProductStock(BaseRepoRequest<AddProductStockRequest> request) async {
     if (appMode == AppMode.local) {
-      return await addProductLocalRepository.addProduct(request);
+      return await addProductLocalRepository.addProductStock(request);
     } else {
       throw UnimplementedError();
     }

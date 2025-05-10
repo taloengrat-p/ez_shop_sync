@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:561366791403:android:759b3e2ad73ad70233faae",
+        "android_client_info": {
+          "package_name": "com.example.ez_shop_sync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOwiX-ix-gm7cIQKRcgyv7167CQWpV6LU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:561366791403:android:f3cb9d8b8594d2d733faae",
         "android_client_info": {
           "package_name": "com.taloengratp.ezshopsync.dev"

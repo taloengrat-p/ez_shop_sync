@@ -37,7 +37,7 @@ class _ProductGridItemWidgetState extends State<ProductGridItemWidget> {
             child: ImageWidget(
               margin: const EdgeInsets.all(0),
               padding: const EdgeInsets.all(0),
-              imageUrl: widget.product.imageUrl,
+              imageUrl: widget.product.imageThumbnail,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
             ),
           ),

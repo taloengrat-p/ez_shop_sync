@@ -1,6 +1,6 @@
 class AddProductDecreaseQtyRequest {
-  String? cartId;
-  String? productId;
+  String? addProductId;
+  String? orderItemId;
   num qty;
-  AddProductDecreaseQtyRequest({this.cartId, this.productId, required this.qty});
+  AddProductDecreaseQtyRequest({this.addProductId, this.orderItemId, required this.qty});
 }

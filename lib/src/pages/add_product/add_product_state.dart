@@ -34,6 +34,11 @@ class AddProductInitial extends AddProductState {
   String toString() => 'AddProductInitial';
 }
 
+class AddProductInitialSuccess extends AddProductState {
+  @override
+  String toString() => 'AddProductInitialSuccess';
+}
+
 class AddProductLoading extends AddProductState {
   @override
   String toString() => 'AddProductLoading';
@@ -90,10 +95,7 @@ class AddProductIncrease extends AddProductState {
   final String productId;
   final num qty;
 
-  const AddProductIncrease({
-    required this.productId,
-    required this.qty,
-  });
+  const AddProductIncrease({required this.productId, required this.qty});
 
   @override
   String toString() => 'AddProductIncrease $productId, qty: $qty';
@@ -106,10 +108,7 @@ class AddProductDecrease extends AddProductState {
   final String productId;
   final num qty;
 
-  const AddProductDecrease({
-    required this.productId,
-    required this.qty,
-  });
+  const AddProductDecrease({required this.productId, required this.qty});
 
   @override
   String toString() => 'AddProductDecrease $productId, qty: $qty';
@@ -124,7 +123,19 @@ class AddProductRemoveItemSuccess extends AddProductState {
   const AddProductRemoveItemSuccess(this.id);
 
   @override
-  String toString() => 'AddProductScreenModeChange id: $id';
+  String toString() => 'AddProductRemoveItemSuccess id: $id';
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class AddProductRemoveItemFailure extends AddProductState {
+  final String id;
+
+  const AddProductRemoveItemFailure(this.id);
+
+  @override
+  String toString() => 'AddProductRemoveItemFailure id: $id';
 
   @override
   List<Object?> get props => [id];

@@ -6,8 +6,6 @@ import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
@@ -15,7 +13,6 @@ import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_reque
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
@@ -121,11 +118,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     }
   }
 
-  Future<ApiResult<List<Product>>> getByIds(
-    String? storeId,
-    List<String> ids, {
-    AppMode? appMode = AppMode.local,
-  }) async {
+  Future<ApiResult<List<Product>>> getByIds(String? storeId, List<String> ids) async {
     if (appMode == AppMode.local) {
       return await productLocalRepository.getAllByIds(ids);
     } else {

@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_state.dart';
@@ -13,6 +14,7 @@ import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_page.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_page.dart';
 import 'package:ez_shop_sync/src/pages/main/statistic/statistic_page.dart';
+import 'package:ez_shop_sync/src/pages/main/transaction/transaction_page.dart';
 import 'package:ez_shop_sync/src/pages/notification/notification_router.dart';
 import 'package:ez_shop_sync/src/pages/notification/notification_state.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
@@ -74,22 +76,26 @@ class _MainPageState extends State<MainPage> {
                   color: Colors.transparent,
                   titleWidget: Row(children: [Expanded(child: ProfileWidget(name: _cubit.username ?? ''))]),
                   actions: [
-                    ContainerCircleWidget(
-                      onPressed: null,
-                      child:
-                          _cubit.appCubit.addProductCount != 0
-                              ? Badge.count(
-                                count: _cubit.appCubit.addProductCount,
-                                child: const Icon(CupertinoIcons.bag_badge_plus),
-                              )
-                              : const Icon(CupertinoIcons.bag_badge_plus),
-                      //  () {
-                      //   AddProductRouter(context).navigate();
-                      // },
+                    BlocBuilder(
+                      bloc: _cubit.appCubit,
+                      builder: (context, state) {
+                        return ContainerCircleWidget(
+                          onPressed: () {
+                            AddProductRouter(context).navigate();
+                          },
+                          child:
+                              _cubit.appCubit.addProductCount != 0
+                                  ? Badge.count(
+                                    count: _cubit.appCubit.addProductCount,
+                                    child: const Icon(CupertinoIcons.bag_badge_plus),
+                                  )
+                                  : const Icon(CupertinoIcons.bag_badge_plus),
+                        );
+                      },
                     ),
                     const SizedBox(width: 8),
                     BlocBuilder(
-                      bloc: GetIt.I<AppCubit>(),
+                      bloc: _cubit.appCubit,
                       builder: (context, state) {
                         return ContainerCircleWidget(
                           child:
@@ -138,7 +144,7 @@ class _MainPageState extends State<MainPage> {
                     _navigationController.value = value;
                     _cubit.setCurrentPageView(value);
                   },
-                  children: const [HomePage(), ProductPage(), StatisticPage(), MorePage()],
+                  children: const [HomePage(), TransactionPage(), ProductPage(), StatisticPage(), MorePage()],
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -152,21 +158,20 @@ class _MainPageState extends State<MainPage> {
                         labelStyle: TextStyle(color: ColorKeys.primary),
                       ),
                       TabItem(
+                        CupertinoIcons.money_dollar_circle,
+                        LocaleKeys.transactions.tr(),
+                        ColorKeys.white,
+                        circleStrokeColor: ColorKeys.primary,
+                        labelStyle: TextStyle(color: ColorKeys.text),
+                      ),
+                      TabItem(
                         CupertinoIcons.bag,
                         LocaleKeys.products.tr(),
                         ColorKeys.white,
                         circleStrokeColor: ColorKeys.primary,
                         labelStyle: TextStyle(color: ColorKeys.primary),
                       ),
-                      // TabItem(
-                      //   CupertinoIcons.money_dollar_circle,
-                      //   LocaleKeys.transactions.tr(),
-                      //   ColorKeys.white,
-                      //   circleStrokeColor: ColorKeys.primary,
-                      //   labelStyle: TextStyle(
-                      //     color: ColorKeys.text,
-                      //   ),
-                      // ),
+
                       TabItem(
                         CupertinoIcons.chart_bar_square,
                         LocaleKeys.statistic_title.tr(),

@@ -19,6 +19,13 @@ class AddProductHistoryRefresh extends AddProductHistoryState {
   List<Object?> get props => [value];
 }
 
+class AddProductHistoryInitialLoading extends AddProductHistoryState {
+  const AddProductHistoryInitialLoading();
+
+  @override
+  String toString() => 'AddProductHistoryInitialLoading';
+}
+
 class AddProductHistoryScreenModeChange extends AddProductHistoryState {
   final ScreenMode mode;
 

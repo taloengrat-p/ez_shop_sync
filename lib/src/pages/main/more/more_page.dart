@@ -326,6 +326,18 @@ class _MorePageState extends State<MorePage> {
           ),
         ),
         MenuItemModel(
+          title: LocaleKeys.notificationSetting_title.tr(),
+          value: 1,
+          onPressed: () async {
+            final result = await ThemeSettingRouter(context).navigate();
+
+            if (result is ThemeSettingSuccess) {
+              _cubit.refresh();
+            }
+          },
+        ),
+        MenuItemModel(
+          disabled: true,
           title: LocaleKeys.theme.tr(),
           value: 1,
           onPressed: () async {
@@ -352,7 +364,6 @@ class _MorePageState extends State<MorePage> {
           },
         ),
         MenuItemModel(
-          disabled: true,
           title: LocaleKeys.addStockHistory.tr(),
           value: 2,
           onPressed: () {

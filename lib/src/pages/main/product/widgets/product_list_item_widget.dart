@@ -79,7 +79,7 @@ class ProductListItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Hero(
-                    tag: product.imageUrl ?? '',
+                    tag: product.id ?? '',
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(14),
@@ -88,7 +88,7 @@ class ProductListItemWidget extends StatelessWidget {
                       child: ImageWidget(
                         margin: EdgeInsets.zero,
                         padding: EdgeInsets.zero,
-                        imageUrl: product.imageUrl,
+                        imageUrl: product.imageThumbnail,
                         height: 120,
                         width: 120,
                         borderRadius: BorderRadius.circular(0),

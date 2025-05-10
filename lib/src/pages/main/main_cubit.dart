@@ -7,7 +7,7 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class MainCubit extends Cubit<MainState> {
-  int currentPage = 0;
+  int currentPage = 2;
   final AppCubit appCubit;
   final UserRepository userRepository;
   MainCubit({required this.appCubit, required this.userRepository}) : super(MainInitial());

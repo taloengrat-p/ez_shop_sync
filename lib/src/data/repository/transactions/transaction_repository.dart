@@ -1,14 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart' show QueryDocumentSnapshot;
+import 'package:injectable/injectable.dart';
+
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/local/transaction_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/server/i_transaction_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:injectable/injectable.dart';
 
 @Singleton()
 @Injectable()
@@ -130,4 +134,20 @@ class TransactionRepository extends IRepository<Transaction> {
       return await transactionServerRepository.getByDateRange(request);
     }
   }
+
+  Future<ApiResult<TransactionStatementResponse>> getItemByLimit(
+    BaseRepoRequest<PaginationIndexRequest> request,
+  ) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await transactionServerRepository.getItemsByLimit(request);
+    }
+  }
+}
+
+class TransactionStatementResponse {
+  final List<Transaction> transactions;
+  final QueryDocumentSnapshot? lastDocument;
+  TransactionStatementResponse({required this.transactions, this.lastDocument});
 }

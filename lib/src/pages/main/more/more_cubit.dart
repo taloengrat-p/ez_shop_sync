@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
@@ -39,9 +40,7 @@ class MoreCubit extends Cubit<MoreState> {
   Store? get currentStore => appCubit.store;
 
   Future<void> doLogout() async {
-    await authRepository.logout();
-    await appCubit.setCurrentUser(null);
-    getIt.unregister();
+    await appCubit.logout();
     emit(MoreLogoutSuccess());
   }
 

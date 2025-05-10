@@ -20,7 +20,7 @@ CreateProductHistoryRequest _$CreateProductHistoryRequestFromJson(
           ? null
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
       addStockId: json['addStockId'] as String?,
-      orderId: json['orderId'] as String?,
+      refId: json['refId'] as String?,
     );
 
 Map<String, dynamic> _$CreateProductHistoryRequestToJson(
@@ -34,7 +34,7 @@ Map<String, dynamic> _$CreateProductHistoryRequestToJson(
       'productTypeId': instance.productTypeId,
       'oldData': instance.oldData,
       'newData': instance.newData,
-      'orderId': instance.orderId,
+      'refId': instance.refId,
       'addStockId': instance.addStockId,
     };
 

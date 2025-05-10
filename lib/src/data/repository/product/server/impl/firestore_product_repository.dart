@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/flavors.dart';
+import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
@@ -17,6 +18,9 @@ import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/server/i_product_server_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
+import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
@@ -29,6 +33,9 @@ class FirestoreProductServerRepository implements IProductServerRepository {
 
   @override
   Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
+    final now = DateTime.now();
+
+    final productId = now.toTransactionFormatId(prefix: ApplicationConstance.productPrefix);
     final productInfo = BaseHiveData(
       createAt: FieldValue.serverTimestamp(),
       updateAt: FieldValue.serverTimestamp(),
@@ -37,24 +44,24 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     );
     request.data.info ??= productInfo;
 
-    final createRef = await firebaseService.storesCollection
+    final payload = request.data..id = productId;
+    await firebaseService.storesCollection
         .doc(request.storeId)
         .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
-        .add(request.data.toJson());
+        .doc(productId)
+        .set(payload.toJson());
 
     await updateHistory(
       CreateProductHistoryRequest(
         storeId: request.storeId,
         userId: request.data.ownerId,
-        productId: createRef.id,
+        productId: productId,
         data: ProductHistoryEvent.create,
         info: productInfo,
       ),
     );
 
-    final updateProductId = await update(BaseRepoRequest.build(request, request.data..id = createRef.id));
-
-    return ApiResult(response: updateProductId.response);
+    return ApiResult(response: request.data);
   }
 
   @override
@@ -66,7 +73,23 @@ class FirestoreProductServerRepository implements IProductServerRepository {
         BaseRepoRequest.build(request, UploadImageRequest(file: request.data.image!, fileName: fileName)),
       );
 
-      return await create(BaseRepoRequest.build(request, request.data.product..imageUrl = imageUrlResult));
+      final imageThumbnail = await ImagePickerUtils.compressImageForThumbnail(request.data.image);
+
+      throwIf(imageThumbnail == null, 'createProduct() imageThumbnail == null');
+
+      String thumbnailfileName = 'thumbnail-${const Uuid().v4()}_${basename(imageThumbnail!.path)}';
+      final imageThumbnailResult = await imageRepository.uploadImageToStore(
+        BaseRepoRequest.build(request, UploadImageRequest(file: imageThumbnail, fileName: thumbnailfileName)),
+      );
+
+      return await create(
+        BaseRepoRequest.build(
+          request,
+          request.data.product
+            ..imageUrl = imageUrlResult
+            ..imageThumbnail = imageThumbnailResult,
+        ),
+      );
     } else {
       return await create(BaseRepoRequest.build(request, request.data.product));
     }
@@ -79,6 +102,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
           await firebaseService.storesCollection
               .doc(id)
               .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+              .orderBy('info.createAt', descending: true)
               .get();
 
       final response = products.docs.map((e) => Product.fromJson(e.data())).toList();
@@ -169,14 +193,17 @@ class FirestoreProductServerRepository implements IProductServerRepository {
 
   @override
   Future<void> updateHistory(CreateProductHistoryRequest request) async {
-    request.info?.updateAt = FieldValue.serverTimestamp();
+    request.info?.createAt = FieldValue.serverTimestamp();
+
+    final docId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.orderHistory);
 
     await firebaseService.storesCollection
         .doc(request.storeId)
         .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
         .doc(request.productId)
         .collection(FirebaseFirestoreConstance.COLLECTION_ORDER_HISTORY)
-        .add(request.toJson());
+        .doc(docId)
+        .set(request.toJson());
   }
 
   @override
@@ -269,7 +296,10 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   @override
   Future<ApiResult> deleteProduct(BaseRepoRequest<Product> request) async {
     await delete(BaseRepoRequest.build(request, request.data.id));
-    await imageRepository.deleteImageFromStore(BaseRepoRequest.build(request, request.data.imageUrl!));
+
+    if (request.data.imageUrl != null) {
+      await imageRepository.deleteImageFromStore(BaseRepoRequest.build(request, request.data.imageUrl!));
+    }
 
     return ApiResult(response: 'deleteProduct ${request.data.id} success');
   }

@@ -276,7 +276,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     }
     await Future.delayed(const Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    _cubit.testAddProduct();
+    // _cubit.testAddProduct();
 
     if (_cubit.displayType == ProductDisplayType.grid) {
       _refreshGridViewController.loadComplete();

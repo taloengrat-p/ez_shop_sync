@@ -56,10 +56,6 @@ class _LoginState extends State<LoginPage> {
                   context,
                   centerTitle: false,
                   color: Colors.transparent,
-                  title:
-                      _cubit.screenMode == ScreenMode.login
-                          ? LocaleKeys.loginPage_login.tr()
-                          : LocaleKeys.loginPage_register.tr(),
                   titleStyle: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
@@ -101,6 +97,12 @@ class _LoginState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Text(
+            _cubit.screenMode == ScreenMode.login
+                ? LocaleKeys.loginPage_login.tr()
+                : LocaleKeys.loginPage_register.tr(),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           Form(
             child: ColumnGapWidget(

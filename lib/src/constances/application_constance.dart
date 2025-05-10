@@ -13,5 +13,8 @@ class ApplicationConstance {
   static const String emptyData = '--';
 
   static const String transactionPrefix = 'TXN';
+  static const String productImportPrefix = 'PIM';
+  static const String productPrefix = 'PRD';
   static const String orderPrefix = 'ORD';
+  static const String orderHistory = 'HTR';
 }

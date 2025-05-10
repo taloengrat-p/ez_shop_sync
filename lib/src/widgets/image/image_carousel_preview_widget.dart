@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/src/widgets/image/empty_image.dart';
+import 'package:ez_shop_sync/src/widgets/image/image_error_widet.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -25,31 +25,32 @@ class _ImageCarouselPreviewWidgetState extends State<ImageCarouselPreviewWidget>
       child: Stack(
         children: [
           if (widget.imagesUrl.isNotEmpty)
-            Container(
-              child: PhotoViewGallery.builder(
-                scrollPhysics: const BouncingScrollPhysics(),
-                builder: (BuildContext context, int index) {
-                  return PhotoViewGalleryPageOptions(
-                    imageProvider: CachedNetworkImageProvider(widget.imagesUrl[index]),
-                    initialScale: PhotoViewComputedScale.contained * 0.8,
-                    // heroAttributes: PhotoViewHeroAttributes(tag: widget.imagesUrl[index]),
-                  );
-                },
-                itemCount: widget.imagesUrl.length,
-                loadingBuilder:
-                    (context, event) => SizedBox(
-                      width: double.infinity,
-                      height: widget.height,
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade200,
-                        child: Container(width: double.infinity, height: widget.height, color: Colors.red),
-                      ),
+            PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              builder: (BuildContext context, int index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: CachedNetworkImageProvider(widget.imagesUrl[index]),
+                  initialScale: PhotoViewComputedScale.contained * 0.8,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const ImageErrorWidet();
+                  },
+                );
+              },
+              itemCount: widget.imagesUrl.length,
+              loadingBuilder:
+                  (context, event) => SizedBox(
+                    width: double.infinity,
+                    height: widget.height,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade200,
+                      child: Container(width: double.infinity, height: widget.height, color: Colors.red),
                     ),
-                backgroundDecoration: const BoxDecoration(color: Colors.white),
-                pageController: _pageController,
-                // onPageChanged: onPageChanged,
-              ),
+                  ),
+
+              backgroundDecoration: const BoxDecoration(color: Colors.white),
+              pageController: _pageController,
+              // onPageChanged: onPageChanged,
             ),
           // CarouselSlider(
           //   options: CarouselOptions(

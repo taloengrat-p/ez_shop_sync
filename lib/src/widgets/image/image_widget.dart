@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
-import 'package:ez_shop_sync/res/drawables.dart';
 import 'package:ez_shop_sync/src/widgets/container/app_container_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image/empty_image.dart';
+import 'package:ez_shop_sync/src/widgets/image/image_error_widet.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -38,8 +37,6 @@ class ImageWidget extends StatefulWidget {
 
 class _ImageWidgetState extends State<ImageWidget> {
   File? _imageFile;
-  BoxDecoration containerDecoration(Color color) =>
-      BoxDecoration(borderRadius: widget.borderRadius ?? BorderRadius.circular(DimensionsKeys.radius), color: color);
 
   @override
   void initState() {
@@ -103,7 +100,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                 ? Image.file(
                   _imageFile!,
                   errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                    return buildErrorImage();
+                    return const ImageErrorWidet();
                   },
                 )
                 : widget.imageUrl != null
@@ -122,23 +119,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                       ),
                     );
                   },
-                  errorWidget: (context, url, error) => buildErrorImage(),
+                  errorWidget: (context, url, error) => const ImageErrorWidet(),
                 )
                 : const EmptyImage(),
       ),
-    );
-  }
-
-  Widget buildErrorImage() {
-    return Stack(
-      children: [
-        Center(child: Image.asset(Drawables.emptyImage)),
-        Container(
-          alignment: Alignment.center,
-          decoration: containerDecoration(Colors.grey.withOpacity(0.4)),
-          child: Icon(Icons.error_outline_rounded, color: Colors.red.shade400, size: 120),
-        ),
-      ],
     );
   }
 }

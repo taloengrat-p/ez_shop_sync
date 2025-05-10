@@ -36,8 +36,9 @@ class OrderHistoryItemWidget extends StatelessWidget {
                   TextTitleBoldValueWidget(title: LocaleKeys.orderId.tr(), value: order.id),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.orderDateTime.tr(),
-                    value: (order.info?.createAt as Timestamp).displayToDateTimeDependLocale(context),
+                    value: order.info?.createAtDateTime.toDisplayDependLocale(context) ?? '--',
                   ),
+                  TextTitleBoldValueWidget(title: LocaleKeys.paymentMethod.tr(), value: order.geyPaymentType.display),
                 ],
               ),
             ),
@@ -52,7 +53,7 @@ class OrderHistoryItemWidget extends StatelessWidget {
                     width: 120,
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.zero,
-                    imageUrl: firstOrderItem.product?.imageUrl,
+                    imageUrl: firstOrderItem.product?.imageThumbnail,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   Expanded(

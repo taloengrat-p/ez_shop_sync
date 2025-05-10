@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDOwiX-ix-gm7cIQKRcgyv7167CQWpV6LU',
-    appId: '1:561366791403:android:f3cb9d8b8594d2d733faae',
+    appId: '1:561366791403:android:759b3e2ad73ad70233faae',
     messagingSenderId: '561366791403',
     projectId: 'ez-shop-98ded',
     storageBucket: 'ez-shop-98ded.firebasestorage.app',

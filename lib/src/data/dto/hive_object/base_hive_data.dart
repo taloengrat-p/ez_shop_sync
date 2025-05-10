@@ -28,7 +28,10 @@ class BaseHiveData extends BaseObject {
 
   BaseHiveData({required this.createAt, this.createBy, required this.updateAt, this.updateBy, this.syncDatetime});
 
-  DateTime get createAtDateTime => (createAt as Timestamp).toDate();
+  DateTime get createAtDateTime {
+    return (createAt as Timestamp).toDate();
+  }
+
   DateTime get updateAtDateTime => (updateAt as Timestamp).toDate();
   DateTime get syncDatetimeDateTime => (syncDatetime as Timestamp).toDate();
 

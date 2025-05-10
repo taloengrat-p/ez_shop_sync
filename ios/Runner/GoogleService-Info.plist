@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-	<dict>
-		<key>API_KEY</key>
-		<string>AIzaSyAj2w2WLC53niArN45uuYGptUF5j-tOk1c</string>
-		<key>GCM_SENDER_ID</key>
-		<string>561366791403</string>
-		<key>PLIST_VERSION</key>
-		<string>1</string>
-		<key>BUNDLE_ID</key>
-		<string>com.taloengratp.ezshopsync.dev</string>
-		<key>PROJECT_ID</key>
-		<string>ez-shop-98ded</string>
-		<key>STORAGE_BUCKET</key>
-		<string>ez-shop-98ded.firebasestorage.app</string>
-		<key>IS_ADS_ENABLED</key>
-		<false></false>
-		<key>IS_ANALYTICS_ENABLED</key>
-		<false></false>
-		<key>IS_APPINVITE_ENABLED</key>
-		<true></true>
-		<key>IS_GCM_ENABLED</key>
-		<true></true>
-		<key>IS_SIGNIN_ENABLED</key>
-		<true></true>
-		<key>GOOGLE_APP_ID</key>
-		<string>1:561366791403:ios:72d56c7c6afe2cd833faae</string>
-	</dict>
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAj2w2WLC53niArN45uuYGptUF5j-tOk1c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>561366791403</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.taloengratp.ezshopsync.tests</string>
+	<key>PROJECT_ID</key>
+	<string>ez-shop-98ded</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ez-shop-98ded.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:561366791403:ios:aaf316d4ee6c959f33faae</string>
+</dict>
 </plist>

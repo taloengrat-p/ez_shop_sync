@@ -11,17 +11,12 @@ class ToastNotificationService {
   }) {
     toastification.show(
       title: Text(title),
-      description: desc != null
-          ? Text(
-              desc,
-              style: const TextStyle(color: Colors.black54),
-            )
-          : null,
+      description: desc != null ? Text(desc, style: const TextStyle(color: Colors.black54)) : null,
       style: style ?? ToastificationStyle.flatColored,
       showProgressBar: false,
       type: type ?? ToastificationType.success,
       autoCloseDuration: const Duration(seconds: 4),
-      dragToClose: false,
+      dragToClose: true,
       pauseOnHover: true,
       closeOnClick: true,
       callbacks: ToastificationCallbacks(onTap: onTap),

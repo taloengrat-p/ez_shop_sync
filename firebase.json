@@ -4,7 +4,7 @@
             "android": {
                 "default": {
                     "projectId": "ez-shop-98ded",
-                    "appId": "1:561366791403:android:f3cb9d8b8594d2d733faae",
+                    "appId": "1:561366791403:android:759b3e2ad73ad70233faae",
                     "fileOutput": "android/app/google-services.json"
                 }
             },
@@ -28,7 +28,7 @@
                 "lib/firebase_options.dart": {
                     "projectId": "ez-shop-98ded",
                     "configurations": {
-                        "android": "1:561366791403:android:f3cb9d8b8594d2d733faae",
+                        "android": "1:561366791403:android:759b3e2ad73ad70233faae",
                         "ios": "1:561366791403:ios:aaf316d4ee6c959f33faae"
                     }
                 }

@@ -122,7 +122,9 @@
     "unableCheckout": "ไม่สามารถทำรายการได้",
     "productPriceNotYet": "สินค้าของคุณยังไม่ได้กำหนดราคา",
     "productPriceNotEnough": "สินค้าในคลังของคุณไม่เพียงพอ",
-    "receiveAmountInvalid": "จำนวนเงินที่ได้รับไม่ถูกต้อง"
+    "productInvalid": "สินค้าไม่ถูกต้อง หรือไม่มีจำหน่าย",
+    "receiveAmountInvalid": "จำนวนเงินที่ได้รับไม่ถูกต้อง",
+    "pleaseCheckShoppingCart": "กรุณาตรวจสอบตะกร้าสินค้า"
   },
   "introducePage": {
     "createOwnerInfomation": "สร้างข้อมูลเจ้าของร้าน",
@@ -242,5 +244,15 @@
     "gallary": "เลือกจากคลังภาพ"
   },
   "productStatisticEmpty": "ผลิตภัณฑ์ของคุณไม่มีสถิติ",
-  "dataEmptyMessage": "ข้อมูลของคุณว่างเปล่า"
+  "dataEmptyMessage": "ข้อมูลของคุณว่างเปล่า",
+  "addProductEmpty": "สินค้าที่คุณเพิ่มว่างเปล่า กรุณาเพิ่มจากรายการสินค้า",
+  "addProductHistory": {
+    "title": "ประวัติการเพิ่มสินค้า"
+  },
+  "addProductHistoryDetail": {
+    "title": "รายละเอียดการเพิ่มสินค้า"
+  },
+  "notificationSetting": {
+    "title": "การแจ้งเตือน"
+  }
 }

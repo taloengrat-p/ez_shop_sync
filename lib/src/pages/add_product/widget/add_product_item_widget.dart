@@ -11,15 +11,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class CartItemWidget extends StatelessWidget {
-  final OrderItem? cartItem;
+class AddProductItemWidget extends StatelessWidget {
+  final OrderItem? orderItem;
   final Function()? onIncreaseQty;
   final Function()? onDecreaseQty;
   final Function()? onDelete;
+  // final bool hasError;
   final CartErrorType? errorMessageType;
-  const CartItemWidget({
+  const AddProductItemWidget({
     super.key,
-    required this.cartItem,
+    required this.orderItem,
+    // this.hasError = false,
     this.onDecreaseQty,
     this.onIncreaseQty,
     this.onDelete,
@@ -73,17 +75,20 @@ class CartItemWidget extends StatelessWidget {
                       ImageWidget(
                         padding: EdgeInsets.zero,
                         margin: EdgeInsets.zero,
-                        imageUrl: cartItem?.product?.imageThumbnail,
+                        imageUrl: orderItem?.product?.imageThumbnail,
                         width: 120,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                        ),
                       ),
                       Expanded(
                         child: ProductInfoListItem(
                           padding: const EdgeInsets.all(8),
-                          name: cartItem?.product?.name ?? '',
-                          desc: cartItem?.product?.description ?? '',
-                          price: cartItem?.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
-                          priceCategory: cartItem?.product?.productTypeSelectDisplay,
+                          name: orderItem?.product?.name ?? '',
+                          desc: orderItem?.product?.description ?? '',
+                          price: orderItem?.cost?.prefixCurrency() ?? '--',
+                          priceCategory: orderItem?.product?.productTypeSelectDisplay ?? '--',
                         ),
                       ),
                       Column(
@@ -94,7 +99,7 @@ class CartItemWidget extends StatelessWidget {
                             onPressed: onIncreaseQty,
                             icon: Icon(Icons.add_circle_outline_rounded, color: ColorKeys.primary, size: 28),
                           ),
-                          Text(cartItem?.product?.quantity.toString() ?? '--'),
+                          Text(orderItem?.product?.quantity.toString() ?? '--'),
                           IconButton(
                             onPressed: onDecreaseQty,
                             icon: Icon(Icons.remove_circle_outline_rounded, color: ColorKeys.primary, size: 28),

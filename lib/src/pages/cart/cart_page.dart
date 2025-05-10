@@ -120,7 +120,7 @@ class _CartState extends State<CartPage> {
           DialogUtils.showAlertDialog(
             context,
             title: LocaleKeys.error_unableCheckout.tr(),
-            desc: LocaleKeys.error_productPriceNotEnough.tr(),
+            desc: LocaleKeys.error_pleaseCheckShoppingCart.tr(),
           );
         }
       },
@@ -237,19 +237,30 @@ class _CartState extends State<CartPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           itemCount: _cubit.products.length,
           itemBuilder: (context, index) {
-            final cartItem = _cubit.products.elementAt(index);
+            final cartItem = _cubit.products.elementAtOrNull(index);
 
-            final productStockItem = _cubit.productInStock.firstWhere((e) => e.id == cartItem.product?.id);
+            bool hasInsufficient = false;
+            bool isProductInvalid = false;
+            try {
+              final productStockItem = _cubit.productInStock.firstWhere((e) => e.id == cartItem?.product?.id);
 
-            final hasError =
-                (productStockItem.productTypeList
-                        ?.firstWhere((e) => e.id == cartItem.product?.priceSelected)
-                        .quantity ??
-                    0) <
-                (cartItem.product?.quantity ?? 0);
+              hasInsufficient =
+                  (productStockItem.productTypeList
+                          ?.firstWhere((e) => e.id == cartItem?.product?.priceSelected)
+                          .quantity ??
+                      0) <
+                  (cartItem?.product?.quantity ?? 0);
+            } catch (e) {
+              isProductInvalid = true;
+            }
+
             return CartItemWidget(
-              hasError: hasError,
-              errorMessageType: hasError ? CartErrorType.insufficient : null,
+              errorMessageType:
+                  isProductInvalid
+                      ? CartErrorType.invalid
+                      : hasInsufficient
+                      ? CartErrorType.insufficient
+                      : null,
               cartItem: cartItem,
               onIncreaseQty: () {
                 _cubit.increaseProductQtyByIndex(index);
@@ -261,7 +272,7 @@ class _CartState extends State<CartPage> {
                 final result = await DialogUtils.showConfirmDelete(context);
 
                 if (result == ConfirmDialogResult.ok) {
-                  _cubit.deleteItemFromCart(cartItem.id);
+                  _cubit.deleteItemFromCart(cartItem?.id);
                 }
               },
             );

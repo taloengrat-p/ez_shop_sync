@@ -120,7 +120,9 @@ abstract class  LocaleKeys {
   static const error_unableCheckout = 'error.unableCheckout';
   static const error_productPriceNotYet = 'error.productPriceNotYet';
   static const error_productPriceNotEnough = 'error.productPriceNotEnough';
+  static const error_productInvalid = 'error.productInvalid';
   static const error_receiveAmountInvalid = 'error.receiveAmountInvalid';
+  static const error_pleaseCheckShoppingCart = 'error.pleaseCheckShoppingCart';
   static const error = 'error';
   static const introducePage_createOwnerInfomation = 'introducePage.createOwnerInfomation';
   static const introducePage_firstName = 'introducePage.firstName';
@@ -227,5 +229,12 @@ abstract class  LocaleKeys {
   static const imagePicker = 'imagePicker';
   static const productStatisticEmpty = 'productStatisticEmpty';
   static const dataEmptyMessage = 'dataEmptyMessage';
+  static const addProductEmpty = 'addProductEmpty';
+  static const addProductHistory_title = 'addProductHistory.title';
+  static const addProductHistory = 'addProductHistory';
+  static const addProductHistoryDetail_title = 'addProductHistoryDetail.title';
+  static const addProductHistoryDetail = 'addProductHistoryDetail';
+  static const notificationSetting_title = 'notificationSetting.title';
+  static const notificationSetting = 'notificationSetting';
 
 }

@@ -7,12 +7,8 @@ class ProductOrderTotalAmountWidget extends StatelessWidget {
   final num? totalPrice;
   final num? changeAmount;
   final num? receiveAmount;
-  const ProductOrderTotalAmountWidget({
-    super.key,
-    required this.totalPrice,
-    this.changeAmount,
-    this.receiveAmount,
-  });
+
+  const ProductOrderTotalAmountWidget({super.key, required this.totalPrice, this.changeAmount, this.receiveAmount});
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +20,11 @@ class ProductOrderTotalAmountWidget extends StatelessWidget {
           children: [
             Text(
               '${LocaleKeys.totalAmount.tr()} : ',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               totalPrice?.prefixCurrency() ?? '--',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.green),
             ),
           ],
         ),
@@ -42,15 +33,11 @@ class ProductOrderTotalAmountWidget extends StatelessWidget {
           children: [
             Text(
               '${LocaleKeys.receiveAmount.tr()} : ',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               (receiveAmount ?? 0).prefixCurrency(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -59,19 +46,14 @@ class ProductOrderTotalAmountWidget extends StatelessWidget {
           children: [
             Text(
               '${LocaleKeys.changeAmount.tr()} : ',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               (changeAmount ?? 0).prefixCurrency(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.red),
             ),
           ],
-        )
+        ),
       ],
     );
   }

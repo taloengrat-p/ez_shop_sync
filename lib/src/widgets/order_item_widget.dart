@@ -28,7 +28,7 @@ class OrderItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ImageWidget(
-                    imageUrl: order?.product?.imageUrl,
+                    imageUrl: order?.product?.imageThumbnail,
                     width: 120,
                     borderRadius: BorderRadius.circular(DimensionsKeys.radius),
                   ),

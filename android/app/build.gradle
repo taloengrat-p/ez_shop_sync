@@ -42,6 +42,12 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    buildscript {
+        dependencies {
+            classpath 'com.android.tools.build:gradle:7.3.1' // <- Update this line
+        }
+    }
 }
 
 flutter {

@@ -24,13 +24,16 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
       addProductItems:
           fields[9] == null ? [] : (fields[9] as List).cast<OrderItem>(),
       amountCost: fields[10] == null ? 0 : fields[10] as num,
+      paymentType: fields[11] == null
+          ? PaymentMethodType.cash
+          : fields[11] as PaymentMethodType?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AddProduct obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(7)
       ..write(obj.userId)
       ..writeByte(8)
@@ -39,6 +42,8 @@ class AddProductAdapter extends TypeAdapter<AddProduct> {
       ..write(obj.addProductItems)
       ..writeByte(10)
       ..write(obj.amountCost)
+      ..writeByte(11)
+      ..write(obj.paymentType)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -71,6 +76,8 @@ AddProduct _$AddProductFromJson(Map<String, dynamic> json) => AddProduct(
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       amountCost: json['amountCost'] as num,
+      paymentType:
+          $enumDecodeNullable(_$PaymentMethodTypeEnumMap, json['paymentType']),
     );
 
 Map<String, dynamic> _$AddProductToJson(AddProduct instance) =>
@@ -82,4 +89,11 @@ Map<String, dynamic> _$AddProductToJson(AddProduct instance) =>
       'addProductItems':
           instance.addProductItems.map((e) => e.toJson()).toList(),
       'amountCost': instance.amountCost,
+      'paymentType': _$PaymentMethodTypeEnumMap[instance.paymentType],
     };
+
+const _$PaymentMethodTypeEnumMap = {
+  PaymentMethodType.cash: 'cash',
+  PaymentMethodType.qrcode: 'qrcode',
+  PaymentMethodType.undefined: 'undefined',
+};

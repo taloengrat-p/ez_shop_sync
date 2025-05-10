@@ -14,6 +14,7 @@ import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_transaction_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/repository/order/order_repository.dart';
 import 'package:ez_shop_sync/src/data/dto/response/order_history_reponse.dart';
 import 'package:ez_shop_sync/src/data/repository/order/server/order_server_repository.dart';
@@ -44,11 +45,9 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
 
       final orderId = now.toTransactionFormatId(prefix: ApplicationConstance.orderPrefix);
 
-      final createAt = FieldValue.serverTimestamp();
-
       final info = BaseHiveData(
-        createAt: createAt,
-        updateAt: createAt,
+        createAt: FieldValue.serverTimestamp(),
+        updateAt: FieldValue.serverTimestamp(),
         createBy: request.userId,
         updateBy: request.userId,
       );
@@ -65,6 +64,7 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
         changeAmount: request.data.changeAmount,
         serviceCharge: request.data.serviceCharge,
       );
+
       final refOrderCreated = firebaseService.storesCollection
           .doc(request.storeId)
           .collection(FirebaseFirestoreConstance.COLLECTION_ORDERS)
@@ -73,8 +73,6 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
       await refOrderCreated.set(payload.toJson());
 
       final orderCreated = await refOrderCreated.get();
-
-      final infoResponse = BaseHiveData.fromJson(orderCreated.data()?['info']);
 
       for (var orderItem in request.data.orderItems) {
         await productRepository.reduceQuantity(
@@ -91,8 +89,8 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
             productId: orderItem.product!.id,
             productTypeId: orderItem.product?.priceSelected,
             data: ProductHistoryEvent.order,
-            orderId: orderId,
-            info: infoResponse,
+            refId: orderId,
+            info: info,
           ),
         );
       }
@@ -109,25 +107,17 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
         ),
       );
 
-      return ApiResult(
-        response: ProductOrder(
-          id: orderId,
-          storeId: request.storeId ?? '',
-          status: request.data.status.name,
-          orderItems: request.data.orderItems,
-          paymentType: request.data.paymentType.name,
-          userId: request.userId ?? '',
-          receiveAmount: request.data.receiveAmount,
-          info: infoResponse,
-        ),
-      );
+      final productOrder = ProductOrder.fromJson(orderCreated.data()!);
+
+      log('infoResponse.createAtDateTime 1 ${productOrder.info?.createAt}');
+      return ApiResult(response: productOrder);
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
     }
   }
 
   @override
-  Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList(BaseRepoRequest<OrderGetAllRangeRequest> request) async {
+  Future<ApiResult<OrderHistoryResponse>> getOrderHistoryList(BaseRepoRequest<PaginationIndexRequest> request) async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot;
 
