@@ -60,7 +60,7 @@
   "backgroundColor": "สีพื้นหลัง",
   "borderColor": "สีขอบเส้น",
   "createCategory": "สร้างหมวดหมู่",
-  "categoryEmpty": "หมวดหมู่ของคุณว่างเปล่า โปรดสร้างหมวดหมู่ใหม่",
+  "categoryEmpty": "หมวดหมู่ของคุณว่างเปล่า กรุณาสร้างหมวดหมู่ใหม่",
   "icon": "ไอคอน",
   "search": "ค้นหา",
   "noItemsFound": "ไม่พบรายการ",
@@ -275,5 +275,7 @@
     "deleteBranchSuccess": "ลบสาขา {} สำเร็จ.",
     "branchEmpty": "สาขาของคุณว่างเปล่า"
   },
-  "yourStores": "ร้านค้าทั้งหมดของคุณ"
+  "yourStores": "ร้านค้าทั้งหมดของคุณ",
+  "displayName": "ชื่อที่แสดง",
+  "unitTypeManagement": "การจัดการหน่วยสินค้า"
 }

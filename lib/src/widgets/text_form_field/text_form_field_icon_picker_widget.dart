@@ -6,11 +6,7 @@ import 'package:flutter/material.dart';
 class TextFormFieldIconPickerWidget extends StatefulWidget {
   final String label;
   final Function(IconData?)? onSelected;
-  const TextFormFieldIconPickerWidget({
-    super.key,
-    required this.label,
-    this.onSelected,
-  });
+  const TextFormFieldIconPickerWidget({super.key, required this.label, this.onSelected});
 
   @override
   _TextFormFieldIconPickerWidgetState createState() => _TextFormFieldIconPickerWidgetState();
@@ -32,10 +28,7 @@ class _TextFormFieldIconPickerWidgetState extends State<TextFormFieldIconPickerW
             onTap: () async {
               // IconData? icon = await FlutterIconPicker.showIconPicker(
               //   context,
-              //   iconPackModes: [
-              //     IconPack.material,
-              //     IconPack.fontAwesomeIcons,
-              //   ],
+              //   iconPackModes: [IconPack.material, IconPack.fontAwesomeIcons],
               // );
 
               // if (icon != null) {

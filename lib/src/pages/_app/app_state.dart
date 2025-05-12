@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
@@ -191,6 +192,17 @@ class AppAddStockSuccess extends AppState {
 
   @override
   List<Object?> get props => [dateTime.toIso8601String()];
+}
+
+class AppAddStockFailure extends AppState {
+  final ApiError error;
+  const AppAddStockFailure(this.error);
+
+  @override
+  String toString() => 'AppAddStockFailure $error';
+
+  @override
+  List<Object?> get props => [error];
 }
 
 class AppCartUpdate extends AppState {

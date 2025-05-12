@@ -90,8 +90,16 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
 
   void addStock(Product? product, num amountCost) async {
     emit(ProductDetailLoading());
-    product = await appCubit.addStock(product: product, amountCost: amountCost);
-    emit(ProductDetailRefresh(DateTime.now()));
+    final addProductResult = await appCubit.addStock(product: product, amountCost: amountCost);
+
+    addProductResult.when(
+      success: (response) {
+        emit(ProductDetailRefresh(DateTime.now()));
+      },
+      failure: (error) {
+        emit(ProductDetailFailure());
+      },
+    );
   }
 
   Future<void> loadProducthistory() async {

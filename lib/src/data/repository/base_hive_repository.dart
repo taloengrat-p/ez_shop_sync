@@ -42,16 +42,16 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   Future<ApiResult<T>> createIfNotExist(BaseRepoRequest<T> request) async {
     final resultExist = await getById(request.data.id);
 
-    await resultExist.when(
+    return await resultExist.when(
       success: (response) async {
-        return await create(request);
+        return ApiResult(response: response);
       },
       failure: (error) async {
-        return await create(request);
+        final resultCreateNew = await create(request);
+
+        return resultCreateNew;
       },
     );
-
-    return resultExist;
   }
 
   Future<ApiResult<T>> getById(I id) {

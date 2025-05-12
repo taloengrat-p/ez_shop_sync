@@ -274,5 +274,7 @@
     "deleteBranchSuccess": "Delete branch {} successfully.",
     "branchEmpty": "Your branch is empty."
   },
-  "yourStores": "Your all Stores"
+  "yourStores": "Your all Stores",
+  "displayName": "Display name",
+  "unitTypeManagement": "Unit Type Management"
 }

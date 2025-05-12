@@ -24,6 +24,7 @@ class BranchDetailManagementCubit extends Cubit<BranchDetailManagementState> {
             e.isSelect = true;
             return e;
           } else {
+            e.isSelect = false;
             return e;
           }
         }).toList() ??

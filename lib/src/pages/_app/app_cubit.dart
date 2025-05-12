@@ -176,7 +176,11 @@ class AppCubit extends Cubit<AppState> {
           },
         );
         emit(AppGetStoreSuccess(storesResponse));
-        setCurrentStoreById(userData?.storeSelected, branchId: userData?.branchSelected);
+        setCurrentStoreById(
+          userData?.storeSelected,
+          branchId: userData?.branchSelected,
+          origin: runtimeType.toString(),
+        );
       },
       failure: (error, {errorType}) {
         _store?.branches?.clear();
@@ -216,7 +220,8 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoadAppThemeSuccess(appTheme));
   }
 
-  Future<void> setCurrentStoreById(String? id, {String? branchId}) async {
+  Future<void> setCurrentStoreById(String? id, {String? branchId, String? origin}) async {
+    log('setCurrentStoreById($origin)');
     final store = _stores.where((e) => e.id == id).firstOrNull;
     await setCurrentStore(store);
 
@@ -238,7 +243,7 @@ class AppCubit extends Cubit<AppState> {
     await doGetBranchByCurrentStore();
     // await loadAllDependencies();
     // await doGetAddProductByCurrentUserAndStore();
-    setCurrentAddProductByCurrentStore();
+    await setCurrentAddProductByCurrentStore();
     setCurrentCartByCurrentStore();
 
     emit(AppSelectStore(_store?.id));
@@ -248,9 +253,14 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Future<void> setCurrentUser(User? user) async {
+    log('setCurrentUser ');
     _user = user;
-    loadAllDependencies();
-    emit(AppUserChange(user));
+    if (_user != null) {
+      await loadAllDependencies();
+      emit(AppUserChange(user));
+    } else {
+      emit(AppUserChange(user));
+    }
     // if (_user?.storeId?.isEmpty ?? true) {
     //   return;
     // }
@@ -316,15 +326,20 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  setCurrentAddProductByCurrentStore() async {
+  Future<void> setCurrentAddProductByCurrentStore() async {
     final resultAddProduct = await addProductRepository.getAll();
 
-    if (resultAddProduct.response?.map((e) => e.storeId).toList().contains(storeId) ?? false) {
+    final allAddProduct = resultAddProduct.response?.map((e) => e.storeId).toList();
+
+    final alreadyExistAddProduct = allAddProduct?.contains(storeId) ?? false;
+
+    log('setCurrentAddProductByCurrentStore alreadyExistAddProduct : $alreadyExistAddProduct');
+    if (alreadyExistAddProduct) {
       final addProductFinded =
           resultAddProduct.response
               ?.where((addProduct) => addProduct.storeId == storeId && addProduct.userId == userId)
               .firstOrNull;
-      setCurrentAddProduct(addProductFinded);
+      setCurrentAddProduct(addProductFinded, origin: 'alreadyExistAddProduct');
     } else {
       final addProductCreated = await addProductRepository.create(
         request(
@@ -334,14 +349,17 @@ class AppCubit extends Cubit<AppState> {
             userId: user?.uid ?? '',
             addProductItems: [],
             amountCost: 0,
-            paymentType: PaymentMethodType.cash,
+            paymentType: PaymentMethodType.cash.name,
           ),
         ),
       );
 
       addProductCreated.when(
         success: (response) async {
-          setCurrentAddProduct(response);
+          setCurrentAddProduct(response, origin: 'create new');
+        },
+        failure: (error) {
+          setCurrentAddProduct(null, origin: 'is null and failure');
         },
       );
     }
@@ -355,8 +373,8 @@ class AppCubit extends Cubit<AppState> {
     emit(AppCartUpdate());
   }
 
-  setCurrentAddProduct(AddProduct? value) {
-    log('setCurrentAddProduct : $value');
+  setCurrentAddProduct(AddProduct? value, {String? origin}) {
+    log('setCurrentAddProduct($origin) : $value');
     _addProduct = value;
   }
 
@@ -400,9 +418,9 @@ class AppCubit extends Cubit<AppState> {
     emit(AppInitialLocalStorageServiceSuccess());
   }
 
-  Future<void> loadProductByCurrentStore() async {
+  Future<ApiResult<List<Product>?>> loadProductByCurrentStore() async {
     if (storeId == null) {
-      return;
+      return ApiResult(error: storeId == null);
     }
 
     emit(AppLoading());
@@ -420,6 +438,8 @@ class AppCubit extends Cubit<AppState> {
         emit(AppFailure());
       },
     );
+
+    return result;
   }
 
   void setCurrentProduct(List<Product> value) {
@@ -453,7 +473,7 @@ class AppCubit extends Cubit<AppState> {
 
   void loadCategoryByCurrentStore() async {
     emit(AppLoading());
-    final result = await categoryRepository.getAllByIds(store?.categories ?? []);
+    final result = await categoryRepository.getCategoryByStoreId(request(null));
 
     result.when(
       success: (response) {
@@ -482,10 +502,6 @@ class AppCubit extends Cubit<AppState> {
         emit(AppAddCartAnimationSuccess());
       });
     }
-  }
-
-  Future<void> doGetAddProductByCurrentUserAndStore() async {
-    // _addProducts = addProductRepository.getAddProductByUserIdWithCurrentStore(user!.addProducts);
   }
 
   Future<ApiResult> deleteItemFromCart(String cartItemId) async {
@@ -522,13 +538,13 @@ class AppCubit extends Cubit<AppState> {
     return resultAddCartUpdated;
   }
 
-  Future<Product?> addStock({required Product? product, required num amountCost}) async {
+  Future<ApiResult<AddProduct>> addStock({required Product? product, required num amountCost}) async {
     if (product == null) {
       throw ('addStock product is Null');
     }
 
     if (addProduct == null) {
-      return null;
+      throw ('addProduct == null');
     }
 
     emit(AppLoading());
@@ -541,27 +557,11 @@ class AppCubit extends Cubit<AppState> {
       success: (response) {
         emit(AppAddStockSuccess(DateTime.now()));
       },
+      failure: (error) {
+        emit(AppAddStockFailure(error));
+      },
     );
-
-    // final productUpdated = await productRepository.addProductQuantityToStock(
-    //   AddProductQtyToStockrequest(
-    //     productId: product.id,
-    //     storeId: store!.id,
-    //     userId: user!.uid,
-    //     product: product,
-    //     amountCost: amountCost,
-    //   ),
-    //   appMode: AppMode.server,
-    // );
-
-    // productUpdated.when(
-    //   success: (response) {
-    //     updateProductQuantity(response);
-    //   },
-    //   failure: (error) {},
-    // );
-
-    return product;
+    return addProductUpdate;
   }
 
   void updateProductQuantity(Product? productUpdated) {

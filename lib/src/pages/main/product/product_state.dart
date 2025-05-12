@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class ProductState extends Equatable {
@@ -56,6 +57,13 @@ class ProductDeleteFailure extends ProductState {
 class ProductAddStockSuccess extends ProductState {
   @override
   String toString() => 'ProductAddStockSuccess';
+}
+
+class ProductAddStockFailure extends ProductState {
+  final ApiError apiError;
+  const ProductAddStockFailure({required this.apiError});
+  @override
+  String toString() => 'ProductAddStockFailure $apiError';
 }
 
 class ProductLoadmoreSuccess extends ProductState {

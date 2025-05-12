@@ -33,7 +33,7 @@ class CategoryManagementCubit extends Cubit<CategoryManagementState> {
     emit(CategoryManagementRefresh(DateTime.now()));
   }
 
-  void refresh() {
+  Future<void> refresh() async {
     emit(CategoryManagementRefresh(DateTime.now()));
   }
 

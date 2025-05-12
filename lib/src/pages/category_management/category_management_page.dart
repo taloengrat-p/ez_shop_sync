@@ -39,6 +39,10 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
     });
   }
 
+  _onRefresh() async {
+    await _cubit.refresh();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -53,6 +57,10 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            isEmpty: _cubit.tags.isEmpty,
+            emptyIcon: Icons.category_rounded,
+            emptyMessage: LocaleKeys.categoryEmpty.tr(),
+            onRefresh: _onRefresh,
             appBar:
                 AppbarWidget(
                   context,
@@ -88,39 +96,36 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
   }
 
   Widget _buildPage(BuildContext context, CategoryManagementState state) {
-    final size = MediaQuery.of(context).size;
-    return _cubit.tags.isEmpty
-        ? Center(child: EmptyDataWidget(height: size.height * 0.45, width: 200, message: LocaleKeys.categoryEmpty.tr()))
-        : SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Wrap(
-                children:
-                    _cubit.tags
-                        .map(
-                          (e) => ContainerSelectWidget(
-                            isSelect: _cubit.selected[e.id] ?? false,
-                            margin: const EdgeInsets.only(top: 12, left: 12),
-                            onChange: () {
-                              _cubit.setSelect(e.id);
-                            },
-                            child: CategoryWidget(icon: IconPickerUtils.getIcon(e.iconData), model: e),
-                          ),
-                        )
-                        .toList(),
-              ),
-              Container(height: DimensionsKeys.heightBts),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Wrap(
+            children:
+                _cubit.tags
+                    .map(
+                      (e) => ContainerSelectWidget(
+                        isSelect: _cubit.selected[e.id] ?? false,
+                        margin: const EdgeInsets.only(top: 12, left: 12),
+                        onChange: () {
+                          _cubit.setSelect(e.id);
+                        },
+                        child: CategoryWidget(icon: IconPickerUtils.getIcon(e.iconData), model: e),
+                      ),
+                    )
+                    .toList(),
           ),
-        );
+          Container(height: DimensionsKeys.heightBts),
+        ],
+      ),
+    );
   }
 
   Widget _buildButtom(BuildContext context, CategoryManagementState state) {
     return ButtonWidget(
       disabled: _cubit.screenMode == ScreenMode.delete && _cubit.selectedEmpty ? true : false,
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(16),
       backgroundColor: _cubit.screenMode == ScreenMode.delete ? Colors.red : null,
       label:
           _cubit.screenMode == ScreenMode.delete

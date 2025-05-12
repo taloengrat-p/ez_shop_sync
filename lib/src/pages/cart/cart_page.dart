@@ -129,20 +129,14 @@ class _CartState extends State<CartPage> {
         builder: (context, state) {
           log('state : $state', name: runtimeType.toString());
           return BaseScaffolds(
+            isEmpty: _cubit.products.isEmpty,
             isInitialLoading: state is CartInitial,
+            emptyMessage: LocaleKeys.cartEmpty.tr(),
             enableAppModeDisplay: true,
+            emptyIcon: CupertinoIcons.cart,
             isLoading: state is CartLoading,
             appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.cart.tr(), actions: []).build(),
-            body:
-                _cubit.products.isEmpty
-                    ? Center(
-                      child: EmptyDataWidget(
-                        height: size.height * 0.45,
-                        width: 200,
-                        message: LocaleKeys.cartEmpty.tr(),
-                      ),
-                    )
-                    : _buildPage(context, state),
+            body: _buildPage(context, state),
             bottomNavigationBar:
                 _cubit.products.isEmpty
                     ? ButtonWidget(

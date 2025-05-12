@@ -75,7 +75,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
 
   Widget _buildPage(BuildContext context, CreateCategoryState state) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -83,7 +83,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
             children: [
               ContainerPreviewWidget(
                 child: CategoryWidget(
-                  icon: _cubit.iconData,
+                  // icon: _cubit.iconData,
                   model: Category(
                     id: 'id',
                     name: _cubit.name.isEmpty ? '         ' : _cubit.name,
@@ -93,7 +93,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextFormFieldIconPickerWidget(label: LocaleKeys.icon.tr(), onSelected: _cubit.setIcon),
+              // TextFormFieldIconPickerWidget(label: LocaleKeys.icon.tr(), onSelected: _cubit.setIcon),
               AppTextFormFieldUiWidget(
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,

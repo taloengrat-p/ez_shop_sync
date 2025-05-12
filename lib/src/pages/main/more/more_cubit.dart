@@ -90,7 +90,7 @@ class MoreCubit extends Cubit<MoreState> {
         data: null,
       ),
     );
-    appCubit.setCurrentStoreById(param.storeId, branchId: param.branchId);
+    appCubit.setCurrentStoreById(param.storeId, branchId: param.branchId, origin: runtimeType.toString());
 
     result.when(
       success: (success) {

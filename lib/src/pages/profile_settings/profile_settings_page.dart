@@ -136,7 +136,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                 AppTextFormFieldUiWidget(
                   key: const ValueKey('display-name'),
                   readOnly: _cubit.screenMode == ScreenMode.display,
-                  label: 'Display name',
+                  label: LocaleKeys.displayName.tr(),
                   textValue:
                       _cubit.screenMode == ScreenMode.display ? _cubit.displayNameOriginal : _cubit.displayNameEditor,
                   onChanged: _cubit.doSetName,

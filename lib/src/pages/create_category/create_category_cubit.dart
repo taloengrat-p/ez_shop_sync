@@ -21,7 +21,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   String name = '';
   Color backgroundColor = Colors.white;
   Color borderColor = Colors.white;
-  IconData? iconData;
+  // IconData? iconData;
 
   Store? get currentStore => appCubit.store;
 
@@ -41,11 +41,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   void doSubmit() async {
     emit(CreateCategoryLoading());
 
-    final tagId = const Uuid().v1();
-    final tagCreated = await categoryRepository.create(
+    final categoryCreated = await categoryRepository.create(
       appCubit.request(
         Category(
-          id: tagId,
           name: name,
           parentId: null,
           // iconData: iconData != null ? serializeIcon(iconData!) : null,
@@ -55,7 +53,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       ),
     );
 
-    tagCreated.when(
+    categoryCreated.when(
       success: (tagResponse) async {
         final storeUpdated = await storeRepository.update(
           appCubit.request(currentStore!..categories?.add(tagResponse.id)),
@@ -77,7 +75,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(CreateCategoryRefresh(DateTime.now()));
   }
 
-  setIcon(IconData? value) {
-    iconData = value;
-  }
+  // setIcon(IconData? value) {
+  //   iconData = value;
+  // }
 }

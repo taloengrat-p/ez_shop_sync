@@ -1,6 +1,8 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
+import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_router.dart';
+import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_state.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -20,6 +22,10 @@ class TransactionHistoryWidget extends StatelessWidget {
           OrderHistoryDetailRouter(
             context,
           ).navigate(argruments: OrderHistoryDetailArgruments(orderId: transaction.valueId));
+        } else if (transaction.getMethodType == TransactionMethodType.addProduct) {
+          AddProductHistoryDetailRouter(
+            context,
+          ).navigate(argruments: AddProductHistoryDetailArgruments(addProductId: transaction.valueId));
         }
       },
       child: HistoryWidget(

@@ -33,6 +33,8 @@ import 'package:ez_shop_sync/src/pages/tag_management/tag_management_page.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_page.dart';
 import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_statement_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_page.dart';
+import 'package:ez_shop_sync/src/pages/unit_type_management/unit_type_management_cubit.dart';
+import 'package:ez_shop_sync/src/pages/unit_type_management/unit_type_management_page.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_page.dart';
 import 'package:ez_shop_sync/src/pages/verify_phone_number/verify_phone_number_page.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +75,7 @@ class Routes {
   static const String ROUTE_BRANCHMANAGEMENT = '/ROUTE_BRANCHMANAGEMENT';
   static const String ROUTE_ADDBRANCH = '/ROUTE_ADDBRANCH';
   static const String ROUTE_BRANCHDETAILMANAGEMENT = '/ROUTE_BRANCHDETAILMANAGEMENT';
+  static const String ROUTE_UNITTYPEMANAGEMENT = '/ROUTE_UNITTYPEMANAGEMENT';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -110,5 +113,6 @@ class Routes {
     ROUTE_BRANCHMANAGEMENT: (context) => const BranchManagementPage(),
     ROUTE_ADDBRANCH: (context) => const AddBranchPage(),
     ROUTE_BRANCHDETAILMANAGEMENT: (context) => const BranchDetailManagementPage(),
+    ROUTE_UNITTYPEMANAGEMENT: (context) => const UnitTypeManagementPage(),
   };
 }

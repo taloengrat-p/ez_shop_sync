@@ -255,5 +255,7 @@ abstract class  LocaleKeys {
   static const branchDetailManagementPage_branchEmpty = 'branchDetailManagementPage.branchEmpty';
   static const branchDetailManagementPage = 'branchDetailManagementPage';
   static const yourStores = 'yourStores';
+  static const displayName = 'displayName';
+  static const unitTypeManagement = 'unitTypeManagement';
 
 }

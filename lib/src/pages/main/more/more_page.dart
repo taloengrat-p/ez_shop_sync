@@ -27,6 +27,7 @@ import 'package:ez_shop_sync/src/pages/store_management/store_management_router.
 import 'package:ez_shop_sync/src/pages/tag_management/tag_management_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
+import 'package:ez_shop_sync/src/pages/unit_type_management/unit_type_management_router.dart';
 import 'package:ez_shop_sync/src/pages/user_management/user_management_router.dart';
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
@@ -38,6 +39,7 @@ import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -277,20 +279,29 @@ class _MorePageState extends State<MorePage> {
             UserManagementRouter(context).navigate();
           },
         ),
-        MenuItemModel(
-          title: LocaleKeys.tagManagement.tr(),
-          value: 3,
-          disabled: true,
-          onPressed: () {
-            TagManagementRouter(context).navigate();
-          },
-        ),
+        if (false)
+          MenuItemModel(
+            title: LocaleKeys.tagManagement.tr(),
+            value: 3,
+            disabled: true,
+            onPressed: () {
+              TagManagementRouter(context).navigate();
+            },
+          ),
         MenuItemModel(
           title: LocaleKeys.categoryManagement.tr(),
           value: 3,
-          disabled: true,
+          // disabled: true,
           onPressed: () {
             CategoryManagementRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
+          title: LocaleKeys.unitTypeManagement.tr(),
+          value: 3,
+          // disabled: true,
+          onPressed: () {
+            UnitTypeManagementRouter(context).navigate();
           },
         ),
       ],
@@ -354,18 +365,19 @@ class _MorePageState extends State<MorePage> {
             }
           },
         ),
-        MenuItemModel(
-          disabled: true,
-          title: LocaleKeys.theme.tr(),
-          value: 1,
-          onPressed: () async {
-            final result = await ThemeSettingRouter(context).navigate();
+        if (false)
+          MenuItemModel(
+            disabled: true,
+            title: LocaleKeys.theme.tr(),
+            value: 1,
+            onPressed: () async {
+              final result = await ThemeSettingRouter(context).navigate();
 
-            if (result is ThemeSettingSuccess) {
-              _cubit.refresh();
-            }
-          },
-        ),
+              if (result is ThemeSettingSuccess) {
+                _cubit.refresh();
+              }
+            },
+          ),
       ],
     );
   }

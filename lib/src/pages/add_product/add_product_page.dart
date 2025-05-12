@@ -68,93 +68,6 @@ class _AddProductState extends State<AddProductPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return BlocListener<AddProductCubit, AddProductState>(
-      bloc: _cubit,
-      listener: (context, state) {
-        log('state : $state', name: runtimeType.toString());
-        if (state is AddProductRemoveItemSuccess) {
-          // checkCanScroll();
-        } else if (state is AddProductSuccess) {
-          OrderCompleteRouter(context).replace(
-            argruments: OrderCompleteArgrument(
-              title: LocaleKeys.addProductCompleteTitle.tr(),
-              addProductItems: state.addProduct,
-              transactionMethodType: TransactionMethodType.addProduct,
-              from: Routes.ROUTE_ADDPRODUCT,
-            ),
-          );
-        } else if (state is AddProductProductInsufficient) {
-          DialogUtils.showAlertDialog(
-            context,
-            title: LocaleKeys.error_unableCheckout.tr(),
-            desc: LocaleKeys.error_pleaseCheckShoppingCart.tr(),
-          );
-        }
-      },
-      child: BlocBuilder<AddProductCubit, AddProductState>(
-        bloc: _cubit,
-        builder: (context, state) {
-          return BaseScaffolds(
-            isEmpty: _cubit.addProductOrderItems.isEmpty,
-            emptyIcon: CupertinoIcons.bag_badge_plus,
-            emptyMessage: LocaleKeys.addProductEmpty.tr(),
-            enableAppModeDisplay: true,
-            isInitialLoading: state is AddProductInitial,
-            isLoading: state is AddProductLoading,
-            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.addStock.tr(), actions: []).build(),
-            body: _buildPage(context, state),
-            bottomNavigationBar:
-                _cubit.addProductOrderItems.isEmpty
-                    ? ButtonWidget(
-                      margin: const EdgeInsets.all(16),
-                      label: LocaleKeys.gotoProductsPage.tr(),
-                      onPressed: () {
-                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
-                      },
-                    )
-                    : buildPriceLayout(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(LocaleKeys.totalAmount.tr()),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: AppTextFormFieldUiWidget(
-                                  textAlign: TextAlign.right,
-                                  autofocus: true,
-                                  textValue: _cubit.totalPrice?.toString() ?? '0',
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  onChanged: (value) {
-                                    _cubit.setTotalPrice(value);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          ButtonWidget(
-                            disabled: _cubit.disabledSubmit,
-                            label: LocaleKeys.proceedToAddProduct.tr(),
-                            leading: const Icon(Icons.add_circle_outline_rounded),
-                            onPressed: () {
-                              _cubit.submit();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildPage(BuildContext context, AddProductState state) {
     return Stack(
       children: [
@@ -280,6 +193,92 @@ class _AddProductState extends State<AddProductPage> {
           ],
         ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AddProductCubit, AddProductState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        log('state : $state', name: runtimeType.toString());
+        if (state is AddProductRemoveItemSuccess) {
+          // checkCanScroll();
+        } else if (state is AddProductSuccess) {
+          OrderCompleteRouter(context).replace(
+            argruments: OrderCompleteArgrument(
+              title: LocaleKeys.addProductCompleteTitle.tr(),
+              addProductItems: state.addProduct,
+              transactionMethodType: TransactionMethodType.addProduct,
+              from: Routes.ROUTE_ADDPRODUCT,
+            ),
+          );
+        } else if (state is AddProductProductInsufficient) {
+          DialogUtils.showAlertDialog(
+            context,
+            title: LocaleKeys.error_unableCheckout.tr(),
+            desc: LocaleKeys.error_pleaseCheckShoppingCart.tr(),
+          );
+        }
+      },
+      child: BlocBuilder<AddProductCubit, AddProductState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return BaseScaffolds(
+            isEmpty: _cubit.addProductOrderItems.isEmpty,
+            emptyIcon: CupertinoIcons.bag_badge_plus,
+            emptyMessage: LocaleKeys.addProductEmpty.tr(),
+            enableAppModeDisplay: true,
+            isInitialLoading: state is AddProductInitial,
+            isLoading: state is AddProductLoading,
+            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.addStock.tr(), actions: []).build(),
+            body: _buildPage(context, state),
+            bottomNavigationBar:
+                _cubit.addProductOrderItems.isEmpty
+                    ? ButtonWidget(
+                      margin: const EdgeInsets.all(16),
+                      label: LocaleKeys.gotoProductsPage.tr(),
+                      onPressed: () {
+                        MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                      },
+                    )
+                    : buildPriceLayout(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Text(LocaleKeys.totalAmount.tr()),
+                          //     const SizedBox(width: 16),
+                          //     Expanded(
+                          //       child: AppTextFormFieldUiWidget(
+                          //         textAlign: TextAlign.right,
+                          //         autofocus: true,
+                          //         textValue: _cubit.totalPrice?.toString() ?? '0',
+                          //         keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          //         onChanged: (value) {
+                          //           _cubit.setTotalPrice(value);
+                          //         },
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 16),
+                          ButtonWidget(
+                            disabled: _cubit.disabledSubmit,
+                            label: LocaleKeys.proceedToAddProduct.tr(),
+                            leading: const Icon(Icons.add_circle_outline_rounded),
+                            onPressed: () {
+                              _cubit.submit();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+          );
+        },
+      ),
     );
   }
 }

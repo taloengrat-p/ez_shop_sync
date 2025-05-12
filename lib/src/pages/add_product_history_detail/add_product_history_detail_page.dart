@@ -109,7 +109,7 @@ class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
             ),
             TextTitleBoldValueWidget(
               title: LocaleKeys.paymentMethod.tr(),
-              value: _cubit.order?.paymentType?.display ?? '--',
+              value: _cubit.order?.getPaymentType.display ?? '--',
             ),
             Divider(color: Colors.grey.shade200),
             Row(

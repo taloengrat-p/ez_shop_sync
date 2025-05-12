@@ -67,6 +67,7 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ProductInitial());
     }
     await appCubit.loadProductByCurrentStore();
+
     emit(ProductRefresh(DateTime.now()));
   }
 
@@ -98,7 +99,15 @@ class ProductCubit extends Cubit<ProductState> {
 
   void addProductToStock(Product product, num amountCost) async {
     emit(ProductLoading());
-    await appCubit.addStock(product: product, amountCost: amountCost);
-    emit(ProductAddStockSuccess());
+    final resultAddProduct = await appCubit.addStock(product: product, amountCost: amountCost);
+
+    resultAddProduct.when(
+      success: (response) {
+        emit(ProductAddStockSuccess());
+      },
+      failure: (error) {
+        emit(ProductAddStockFailure(apiError: error));
+      },
+    );
   }
 }

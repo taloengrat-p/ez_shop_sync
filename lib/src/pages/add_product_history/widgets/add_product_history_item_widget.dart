@@ -40,7 +40,7 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                   ),
                   TextTitleBoldValueWidget(
                     title: LocaleKeys.paymentMethod.tr(),
-                    value: addProduct.paymentType?.display ?? '--',
+                    value: addProduct.getPaymentType.display,
                   ),
                 ],
               ),

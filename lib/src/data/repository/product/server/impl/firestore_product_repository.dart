@@ -202,7 +202,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
         .doc(request.storeId)
         .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
         .doc(request.productId)
-        .collection(FirebaseFirestoreConstance.COLLECTION_ORDER_HISTORY)
+        .collection(FirebaseFirestoreConstance.COLLECTION_HISTORY)
         .doc(docId)
         .set(request.toJson());
   }
@@ -263,7 +263,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
               .doc(storeId)
               .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
               .doc(productId)
-              .collection(FirebaseFirestoreConstance.COLLECTION_ORDER_HISTORY)
+              .collection(FirebaseFirestoreConstance.COLLECTION_HISTORY)
               .orderBy('info.createAt', descending: true)
               .limit(limit ?? 10)
               .get();

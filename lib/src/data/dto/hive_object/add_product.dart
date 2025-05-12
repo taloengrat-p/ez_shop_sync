@@ -25,8 +25,10 @@ class AddProduct extends BaseHiveObject {
   @HiveField(10, defaultValue: 0)
   num amountCost;
 
-  @HiveField(11, defaultValue: PaymentMethodType.cash)
-  final PaymentMethodType? paymentType;
+  @HiveField(11, defaultValue: null)
+  final String? paymentType;
+
+  PaymentMethodType get getPaymentType => PaymentMethodType.fromString(paymentType);
 
   AddProduct({
     super.id,
@@ -52,7 +54,7 @@ class AddProduct extends BaseHiveObject {
     List<OrderItem>? addProductItems,
     num? amountCost,
     BaseHiveData? info,
-    PaymentMethodType? paymentType,
+    String? paymentType,
   }) {
     return AddProduct(
       id: id ?? this.id,
