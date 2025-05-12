@@ -89,7 +89,10 @@
     "back": "Back",
     "done": "Done",
     "next": "Next",
-    "submit": "Submit"
+    "submit": "Submit",
+    "add": "Add",
+    "create": "Create",
+    "skip": "Skip"
   },
   "phoneNumber": "Phone number",
   "email": "Email",
@@ -201,7 +204,8 @@
     "loginWrongPassword": "Wrong password",
     "loginWrongUsernameOrPassword": "Username or password is wrong",
     "emailInvalid": "Email format is invalid",
-    "emailAlreadyUse": "This email already in use"
+    "emailAlreadyUse": "This email already in use",
+    "alreadyExist": "{} already exist."
   },
   "verifyPhoneNumber": "Verify phone number",
   "addUserPage": {
@@ -253,5 +257,22 @@
   },
   "notificationSetting": {
     "title": "Notifications"
-  }
+  },
+  "totalProductSold": "Total number of products sold",
+  "totalOrders": "Number of orders.",
+  "emptyNofification": "Your notifications are empty.",
+  "createFirstStore": "Create first store",
+  "branch": "Branch",
+  "branchManagement": "Branch Management",
+  "addBranchPage": {
+    "title": "Add branch",
+    "branchName": "Branch name",
+    "addBranchSuccess": "Add branch {} successfully."
+  },
+  "branchDetailManagementPage": {
+    "emptyMessage": "Your member is empty.",
+    "deleteBranchSuccess": "Delete branch {} successfully.",
+    "branchEmpty": "Your branch is empty."
+  },
+  "yourStores": "Your all Stores"
 }

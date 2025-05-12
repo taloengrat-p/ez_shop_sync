@@ -6,10 +6,11 @@ class AddProductQtyToStockrequest extends BaseRepoRequest<Product> {
   final String productId;
 
   AddProductQtyToStockrequest({
-    required super.storeId,
-    required super.userId,
     required super.data,
     required this.amountCost,
     required this.productId,
+    required super.storeId,
+    required super.userId,
+    required super.branchId,
   });
 }

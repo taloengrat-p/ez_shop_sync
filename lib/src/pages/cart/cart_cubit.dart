@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
@@ -92,10 +92,8 @@ class CartCubit extends Cubit<CartState> {
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
       log('[perform] increase');
       cartRepository.increaseQty(
-        BaseRepoRequest(
-          storeId: appCubit.storeId ?? '',
-          userId: appCubit.userId,
-          data: CartIncreaseQtyRequest(
+        appCubit.request(
+          CartIncreaseQtyRequest(
             cartId: appCubit.cart?.id,
             productId: item.product?.id,
             qty: item.product?.quantity ?? 0,
@@ -121,10 +119,8 @@ class CartCubit extends Cubit<CartState> {
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
       log('[perform] decrease');
       cartRepository.decreaseQty(
-        BaseRepoRequest(
-          storeId: appCubit.storeId,
-          userId: appCubit.userId,
-          data: CartDecreaseQtyRequest(
+        appCubit.request(
+          CartDecreaseQtyRequest(
             cartId: appCubit.cart?.id,
             productId: item.product?.id,
             qty: item.product?.quantity ?? 0,
@@ -192,13 +188,13 @@ class CartCubit extends Cubit<CartState> {
     throwIf(_cart == null, 'can not create order : cart is null');
 
     final orderCreated = await orderRepository.createFromCart(
-      BaseRepoRequest(
-        storeId: appCubit.store?.id ?? '',
-        userId: appCubit.user?.uid ?? '',
-        data: CreateOrderRequest(
+      appCubit.request(
+        CreateOrderRequest(
           cart: _cart!,
           orderItems: _cart?.cartItems ?? [],
-          status: paymentMethod == PaymentMethodType.cash ? OrderStatusType.complete : OrderStatusType.waitPayment,
+          status: paymentMethod == PaymentMethodType.cash ? OrderStatusType.complete : OrderStatusType.pending,
+          paymentStatusType:
+              paymentMethod == PaymentMethodType.cash ? PaymentStatusType.paid : PaymentStatusType.pending,
           paymentType: paymentMethod ?? PaymentMethodType.undefined,
           receiveAmount: receiveAmount,
           changeAmount: changeAmountDisplay,
@@ -211,13 +207,7 @@ class CartCubit extends Cubit<CartState> {
       success: (response) async {
         if (_cart != null) {
           // await productRepository.orderCompletedUpdate(_cart);
-          await cartRepository.update(
-            BaseRepoRequest(
-              storeId: appCubit.store?.id ?? '',
-              userId: appCubit.user?.uid ?? '',
-              data: _cart!..cartItems = [],
-            ),
-          );
+          await cartRepository.update(appCubit.request(_cart!..cartItems = []));
         }
 
         emit(CartSuccess(response));

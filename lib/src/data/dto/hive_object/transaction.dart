@@ -26,9 +26,6 @@ class Transaction extends BaseHiveObject {
   @HiveField(10)
   final num totalPrice;
 
-  @HiveField(11)
-  final String storeId;
-
   Transaction({
     super.id,
     BaseHiveData? super.info,
@@ -36,7 +33,6 @@ class Transaction extends BaseHiveObject {
     required this.method,
     required this.valueId,
     required this.totalPrice,
-    required this.storeId,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) => _$TransactionFromJson(json);

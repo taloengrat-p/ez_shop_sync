@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/delete_item_from_cart_request.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_repository.dart';
@@ -35,11 +36,7 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
     return result.when(
       success: (response) async {
         return await update(
-          BaseRepoRequest(
-            storeId: request.storeId,
-            userId: request.userId,
-            data: response..cartItems.removeWhere((item) => item.id == request.data.cartItemId),
-          ),
+          request.overide(data: response..cartItems.removeWhere((item) => item.id == request.data.cartItemId)),
         );
       },
       failure: (error) {
@@ -63,9 +60,7 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
 
         if (productExistInCart) {
           return await update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
+            request.overide(
               data:
                   response
                     ..cartItems =
@@ -86,9 +81,7 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
           );
         } else {
           return await update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
+            request.overide(
               data: response..cartItems.add(OrderItem(id: const Uuid().v1(), product: request.data.product)),
             ),
           );
@@ -121,9 +114,7 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
                 )
                 .toList();
 
-        await update(
-          BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: response..cartItems = cartItem),
-        );
+        await update(request.overide(data: response..cartItems = cartItem));
       },
       failure: (error) {
         return Future.value(ApiResult(error: 'increaseQty() cart is Null'));
@@ -134,18 +125,12 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
   }
 
   @override
-  Future<ApiResult> decreaseQty(
-    String? cartId,
-    String? productId,
-    num qty, {
-    required String storeId,
-    required String userId,
-  }) async {
+  Future<ApiResult> decreaseQty(BaseRepoRequest<CartDecreaseQtyRequest> request) async {
     log('[performRepo] decreaseQty : ');
-    if (cartId == null) {
+    if (request.data.cartId == null) {
       throw ('increaseQty() cartId is Null');
     }
-    final cartResult = await getById(cartId);
+    final cartResult = await getById(request.data.cartId!);
 
     cartResult.when(
       success: (response) async {
@@ -153,13 +138,13 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
             response.cartItems
                 .map(
                   (e) =>
-                      e.id == productId
+                      e.id == request.data.productId
                           ? e.copyWith(product: e.product?.copyWith(quantity: (e.product?.quantity ?? 0)))
                           : e,
                 )
                 .toList();
 
-        await update(BaseRepoRequest(storeId: storeId, userId: userId, data: response..cartItems = cartItem));
+        await update(request.overide(data: response..cartItems = cartItem));
       },
       failure: (error) {
         return Future.value(ApiResult(error: 'increaseQty() cart is Null'));

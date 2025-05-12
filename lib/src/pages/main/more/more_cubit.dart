@@ -1,14 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
-import 'package:ez_shop_sync/src/pages/main/main_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
-import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_select_store_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -38,6 +39,7 @@ class MoreCubit extends Cubit<MoreState> {
   String get storeName => appCubit.store?.name ?? '';
 
   Store? get currentStore => appCubit.store;
+  Branch? get currentBranch => appCubit.branch;
 
   Future<void> doLogout() async {
     await appCubit.logout();
@@ -78,13 +80,21 @@ class MoreCubit extends Cubit<MoreState> {
     emit(MoreRefresh(DateTime.now()));
   }
 
-  void selectStore(String id) async {
+  void selectStore(BottomSheetSelectStoreWidgetArgrument param) async {
     emit(MoreLoading());
-    final result = await userRepository.updateSelectedStore(id);
-    appCubit.setCurrentStoreById(id);
+    final result = await userRepository.updateSelectedBranchUnderStore(
+      BaseRepoRequest(
+        storeId: param.storeId,
+        userId: appCubit.userId ?? '',
+        branchId: param.branchId ?? '',
+        data: null,
+      ),
+    );
+    appCubit.setCurrentStoreById(param.storeId, branchId: param.branchId);
+
     result.when(
       success: (success) {
-        emit(MoreChangeStore(id));
+        emit(MoreChangeStore(storeId: param.storeId, branchId: param.branchId));
       },
       failure: (error, {errorType}) {
         emit(MoreFailure());

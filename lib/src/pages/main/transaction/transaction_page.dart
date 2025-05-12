@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/transaction_history_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -48,6 +49,7 @@ class _TransactionState extends State<TransactionPage> {
         bloc: _cubit,
         builder: (context, state) {
           return BaseScaffolds(
+            emptyIcon: CupertinoIcons.money_dollar_circle,
             isInitialLoading: state is TransactionInitialLoading,
             isEmpty: _cubit.transactions.isEmpty,
             onRefresh: _onRefresh,
@@ -82,7 +84,7 @@ class _TransactionState extends State<TransactionPage> {
               return const Divider(color: Colors.grey);
             },
           ),
-          Container(height: DimensionsKeys.heightBts / 2),
+          Container(height: DimensionsKeys.heightBts * 1.5),
         ],
       ),
     );

@@ -2,12 +2,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/local/dev_store_local_repository.dart';
-import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/local/store_local_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/store_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
+import 'package:ez_shop_sync/src/pages/add_user/add_user_cubit.dart';
 import 'package:ez_shop_sync/src/pages/store_management/store_management_router.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
 import 'package:injectable/injectable.dart';
@@ -119,5 +122,45 @@ class StoreRepository extends IRepository<Store> {
   Future<ApiResult> deleteAll() {
     // TODO: implement deleteAll
     throw UnimplementedError();
+  }
+
+  Future<ApiResult<Branch>> createBranch(BaseRepoRequest<AddBranchRequest> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.createBranch(request);
+    }
+  }
+
+  Future<ApiResult> sendInviteToStore(BaseRepoRequest<StoreSendInvite> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.sendInviteToStore(request);
+    }
+  }
+
+  Future<ApiResult<List<Branch>>> getStoreBranches(BaseRepoRequest<Null> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.getStoreBranches(request);
+    }
+  }
+
+  Future<ApiResult> deleteBranch(BaseRepoRequest request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.deleteBranch(request);
+    }
+  }
+
+  Future<ApiResult<List<Branch>>> getAllBranchesByStoreIds(BaseRepoRequest<List<String>> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.getAllBranchesByStoreIds(request);
+    }
   }
 }

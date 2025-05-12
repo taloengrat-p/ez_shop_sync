@@ -6,7 +6,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -247,10 +246,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     }
 
     final result = await productRepository.createProduct(
-      BaseRepoRequest(
-        storeId: currentStore!.id,
-        userId: currentUser?.uid ?? '',
-        data: CreateProductRequest(
+      appCubit.request(
+        CreateProductRequest(
           product:
               _productEditor!
                 ..productTypeList = _productEditor!.productTypeList?.map((e) => e..id = const Uuid().v4()).toList(),
@@ -276,10 +273,8 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
     emit(CreateProductLoading());
     final result = await productRepository.updateProduct(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data: UpdateProductImageRequest(
+      appCubit.request(
+        UpdateProductImageRequest(
           imageRefUrl: productOriginal!.imageUrl!,
           updatedImage: productImageFile,
           product:

@@ -40,11 +40,14 @@ class AddProductHistoryServerRepository implements IAddProductHistoryServerRepos
     try {
       final addProductId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.productImportPrefix);
       final addProductInfo = BaseHiveData(
+        storeId: request.storeId,
+        branchId: request.branchId,
         createAt: FieldValue.serverTimestamp(),
         updateAt: FieldValue.serverTimestamp(),
         createBy: request.userId,
         updateBy: request.userId,
       );
+
       request.data.info ??= addProductInfo;
 
       final refAddProductCreated = firebaseService.storesCollection
@@ -75,6 +78,7 @@ class AddProductHistoryServerRepository implements IAddProductHistoryServerRepos
             data: ProductHistoryEvent.addToStock,
             refId: addProductId,
             info: addProductInfo,
+            branchId: request.branchId,
           ),
         );
       }

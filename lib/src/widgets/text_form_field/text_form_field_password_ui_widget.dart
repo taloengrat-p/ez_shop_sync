@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'text_form_field_ui_widget.dart';
 
-class TextFormFieldPasswordUiWidget extends TextFormFieldUiWidget {
+class TextFormFieldPasswordUiWidget extends AppTextFormFieldUiWidget {
   const TextFormFieldPasswordUiWidget(
       {super.key,
       required super.label,
@@ -22,7 +22,7 @@ class TextFormFieldPasswordUiWidget extends TextFormFieldUiWidget {
       super.labelSuffix})
       : super(
           obscureText: true,
-          autoCompleteType: TextFormFieldUiType.password,
+          autoCompleteType: AppTextFormFieldUiType.password,
           autofillHints: const [AutofillHints.password],
           enableSuggestions: false,
           autoCorrect: false,

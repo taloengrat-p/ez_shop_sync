@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:injectable/injectable.dart';
@@ -36,7 +37,7 @@ class UserRepository {
     }, SetOptions(merge: true));
   }
 
-  Future<ApiResult> updateSelectedStore(id) async {
+  Future<ApiResult> updateSelectedBranchUnderStore(BaseRepoRequest request) async {
     try {
       if (firebaseService.user == null) {
         throw Exception('user == null');
@@ -44,11 +45,14 @@ class UserRepository {
 
       var currentUserRow = firebaseService.usersCollection.doc(firebaseService.userUid);
 
-      await currentUserRow.set({'storeSelected': id}, SetOptions(merge: true));
+      await currentUserRow.set({
+        'storeSelected': request.storeId,
+        'branchSelected': request.branchId.isEmpty ? null : request.branchId,
+      }, SetOptions(merge: true));
 
-      return ApiResult(response: id);
+      return ApiResult(response: request);
     } catch (e) {
-      return ApiResult(error: id);
+      return ApiResult(error: e);
     }
   }
 

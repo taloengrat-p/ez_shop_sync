@@ -8,7 +8,8 @@ class ContainerShadowWidget extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
   final Color? borderColor;
-
+  final BorderRadius? border;
+  final BoxConstraints? boxConstraints;
   const ContainerShadowWidget({
     super.key,
     required this.child,
@@ -17,6 +18,8 @@ class ContainerShadowWidget extends StatelessWidget {
     this.borderRadius,
     this.margin,
     this.padding,
+    this.border,
+    this.boxConstraints,
   });
 
   @override
@@ -24,9 +27,10 @@ class ContainerShadowWidget extends StatelessWidget {
     return Container(
       margin: margin,
       padding: padding,
+      constraints: boxConstraints,
       decoration: BoxDecoration(
         color: color ?? Colors.transparent,
-        borderRadius: BorderRadius.circular(borderRadius ?? DimensionsKeys.radius),
+        borderRadius: border ?? BorderRadius.circular(borderRadius ?? DimensionsKeys.radius),
         border: Border.all(color: borderColor ?? Colors.white),
         boxShadow: const [
           BoxShadow(

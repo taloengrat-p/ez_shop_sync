@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/tag/tag_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
@@ -43,21 +42,13 @@ class CreateTagCubit extends Cubit<CreateTagState> {
 
     final tagId = const Uuid().v1();
     final tagCreated = await tagRepository.create(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data: Tag(id: tagId, name: name, color: backgroundColor.toHex(), borderColor: borderColor.toHex()),
-      ),
+      appCubit.request(Tag(id: tagId, name: name, color: backgroundColor.toHex(), borderColor: borderColor.toHex())),
     );
 
     tagCreated.when(
       success: (tagResponse) async {
         final storeUpdated = await storeRepository.update(
-          BaseRepoRequest(
-            storeId: appCubit.storeId ?? '',
-            userId: appCubit.userId ?? '',
-            data: currentStore!..tags?.add(tagCreated.response?.id),
-          ),
+          appCubit.request(currentStore!..tags?.add(tagCreated.response?.id)),
         );
 
         storeUpdated.when(

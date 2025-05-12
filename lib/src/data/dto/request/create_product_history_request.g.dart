@@ -9,9 +9,10 @@ part of 'create_product_history_request.dart';
 CreateProductHistoryRequest _$CreateProductHistoryRequestFromJson(
         Map<String, dynamic> json) =>
     CreateProductHistoryRequest(
-      storeId: json['storeId'] as String?,
+      branchId: json['branchId'] as String,
+      storeId: json['storeId'] as String,
       productTypeId: json['productTypeId'] as String?,
-      userId: json['userId'] as String?,
+      userId: json['userId'] as String,
       productId: json['productId'] as String,
       data: $enumDecode(_$ProductHistoryEventEnumMap, json['data']),
       newData: json['newData'] as Map<String, dynamic>?,
@@ -28,6 +29,7 @@ Map<String, dynamic> _$CreateProductHistoryRequestToJson(
     <String, dynamic>{
       'storeId': instance.storeId,
       'userId': instance.userId,
+      'branchId': instance.branchId,
       'info': instance.info?.toJson(),
       'data': _$ProductHistoryEventEnumMap[instance.data]!,
       'productId': instance.productId,

@@ -15,6 +15,7 @@ class CreateProductHistoryRequest extends BaseRepoRequest<ProductHistoryEvent> {
   String? addStockId;
 
   CreateProductHistoryRequest({
+    required super.branchId,
     required super.storeId,
     this.productTypeId,
     required super.userId,

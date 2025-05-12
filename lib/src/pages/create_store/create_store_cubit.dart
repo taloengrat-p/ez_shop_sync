@@ -24,10 +24,8 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
   void submit() async {
     emit(CreateStoreLoading());
     final result = await storeRepository.create(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data: Store(
+      appCubit.request(
+        Store(
           ownerId: appCubit.userId ?? '',
           name: name,
           description: desc,
@@ -39,6 +37,9 @@ class CreateStoreCubit extends Cubit<CreateStoreState> {
 
     result.when(
       success: (response) async {
+        await userRepository.updateSelectedBranchUnderStore(
+          BaseRepoRequest(storeId: response.id, userId: appCubit.userId ?? '', data: null, branchId: ''),
+        );
         await appCubit.loadAllDependencies();
         emit(CreateStoreSuccess(response));
       },

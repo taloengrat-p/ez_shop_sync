@@ -18,14 +18,15 @@ class MoreLogoutSuccess extends MoreState {
 }
 
 class MoreChangeStore extends MoreState {
-  final String id;
-  const MoreChangeStore(this.id);
+  final String storeId;
+  final String? branchId;
+  const MoreChangeStore({required this.storeId, this.branchId});
 
   @override
-  String toString() => 'MoreChangeStore $id';
+  String toString() => 'MoreChangeStore $storeId ,$branchId';
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [storeId, branchId];
 }
 
 class MoreRefresh extends MoreState {
@@ -71,7 +72,4 @@ class MoreSetupPinSuccess extends MoreState {
   String toString() => 'MoreSetupPinSuccess';
 }
 
-enum PinType {
-  setting,
-  create;
-}
+enum PinType { setting, create }

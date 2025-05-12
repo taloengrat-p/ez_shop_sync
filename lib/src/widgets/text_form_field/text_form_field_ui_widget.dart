@@ -5,9 +5,9 @@ import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.da
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum TextFormFieldUiType { password, normal, email }
+enum AppTextFormFieldUiType { password, normal, email }
 
-class TextFormFieldUiWidget extends StatefulWidget {
+class AppTextFormFieldUiWidget extends StatefulWidget {
   final Widget? labelSuffix;
   final String? label;
   final String? hintText;
@@ -18,7 +18,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final bool isRequired;
   final Iterable<String>? autofillHints;
   final Widget? suffixIcon;
-  final TextFormFieldUiType autoCompleteType;
+  final AppTextFormFieldUiType autoCompleteType;
   final TextEditingController? controller;
   final Function()? onBlur;
   final Function()? onTap;
@@ -40,7 +40,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
   final Widget? child;
   final TextStyle? labelStyle;
 
-  const TextFormFieldUiWidget({
+  const AppTextFormFieldUiWidget({
     super.key,
     this.label,
     this.obscureText,
@@ -51,7 +51,7 @@ class TextFormFieldUiWidget extends StatefulWidget {
     this.autofillHints = const [],
     this.suffixIcon,
     this.hintText,
-    this.autoCompleteType = TextFormFieldUiType.normal,
+    this.autoCompleteType = AppTextFormFieldUiType.normal,
     this.controller,
     this.customMessageRequired,
     this.onChanged,
@@ -76,10 +76,10 @@ class TextFormFieldUiWidget extends StatefulWidget {
   });
 
   @override
-  State<TextFormFieldUiWidget> createState() => _TextFormFieldUiWidgetState();
+  State<AppTextFormFieldUiWidget> createState() => _AppTextFormFieldUiWidgetState();
 }
 
-class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
+class _AppTextFormFieldUiWidgetState extends State<AppTextFormFieldUiWidget> {
   late TextEditingController _controller;
   bool isBlured = false;
   bool _isVisible = false;
@@ -133,7 +133,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
   }
 
   @override
-  void didUpdateWidget(covariant TextFormFieldUiWidget oldWidget) {
+  void didUpdateWidget(covariant AppTextFormFieldUiWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     Future.delayed(Duration.zero, () async {
       if (widget.textValue != null) {
@@ -237,7 +237,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
                               widget.contentPadding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
                           readOnly: widget.readOnly,
                           suffixIcon:
-                              widget.autoCompleteType == TextFormFieldUiType.password
+                              widget.autoCompleteType == AppTextFormFieldUiType.password
                                   ? getSuffixPasswordType()
                                   : widget.suffixIcon,
                           errorText: widget.errorText,
@@ -273,7 +273,7 @@ class _TextFormFieldUiWidgetState extends State<TextFormFieldUiWidget> {
   }
 
   bool getObscureText() {
-    if (widget.autoCompleteType == TextFormFieldUiType.password) {
+    if (widget.autoCompleteType == AppTextFormFieldUiType.password) {
       return !_isVisible;
     }
 

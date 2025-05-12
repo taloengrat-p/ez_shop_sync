@@ -2,6 +2,7 @@ import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/delete_item_from_cart_request.dart';
 
@@ -14,13 +15,7 @@ abstract class ICartLocalRepository {
 
   Future<ApiResult> increaseQty(BaseRepoRequest<CartIncreaseQtyRequest> request);
 
-  Future<ApiResult> decreaseQty(
-    String? cartId,
-    String? productId,
-    num qty, {
-    required String storeId,
-    required String userId,
-  });
+  Future<ApiResult> decreaseQty(BaseRepoRequest<CartDecreaseQtyRequest> request);
 
   Future<ApiResult<Cart>> getCartByStoreAndUserId({required String storeId, required String userId});
 

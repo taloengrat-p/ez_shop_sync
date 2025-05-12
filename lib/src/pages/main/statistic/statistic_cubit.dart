@@ -1,3 +1,5 @@
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
@@ -31,12 +33,28 @@ class StatisticCubit extends Cubit<StatisticState> {
 
   DateTime get dateTimeSelected => _dateTimeSelected;
 
+  num get totalProductSold => _ordered
+      .where((e) => e.getPaymentStatus == PaymentStatusType.paid || e.geyStatusType == OrderStatusType.complete)
+      .fold(0.0, (sum, item) => sum + item.numberOfItems);
+
+  int get totalOrders =>
+      _ordered
+          .where((e) => e.getPaymentStatus == PaymentStatusType.paid || e.geyStatusType == OrderStatusType.complete)
+          .length;
+
+  num get totalCost => transaction
+      .where((e) => e.getTransactionType == TransactionType.expenses)
+      .fold(
+        0.0,
+        (sum, item) => sum + item.totalPrice,
+      ); // ordered.fold(0.0, (sum, item) => sum + item.totalPriceIncludeServiceCharge);
   num get totalSales => transaction
       .where((e) => e.getTransactionType == TransactionType.income)
       .fold(
         0.0,
         (sum, item) => sum + item.totalPrice,
       ); // ordered.fold(0.0, (sum, item) => sum + item.totalPriceIncludeServiceCharge);
+
   num get netProfit => transaction.fold(
     0.0,
     (sum, item) => item.getTransactionType == TransactionType.income ? sum + item.totalPrice : sum - item.totalPrice,

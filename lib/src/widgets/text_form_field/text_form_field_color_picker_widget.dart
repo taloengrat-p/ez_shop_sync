@@ -39,7 +39,7 @@ class TextFormFieldColorPickerWidgetState extends State<TextFormFieldColorPicker
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return TextFormFieldUiWidget(
+    return AppTextFormFieldUiWidget(
       label: widget.label,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

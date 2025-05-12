@@ -125,7 +125,7 @@ class _AddProductState extends State<AddProductPage> {
                               Text(LocaleKeys.totalAmount.tr()),
                               const SizedBox(width: 16),
                               Expanded(
-                                child: TextFormFieldUiWidget(
+                                child: AppTextFormFieldUiWidget(
                                   textAlign: TextAlign.right,
                                   autofocus: true,
                                   textValue: _cubit.totalPrice?.toString() ?? '0',

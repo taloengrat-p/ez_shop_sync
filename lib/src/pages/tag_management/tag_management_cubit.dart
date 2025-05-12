@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
@@ -53,9 +52,7 @@ class TagManagementCubit extends Cubit<TagManagementState> {
         appCubit.store!
           ..tags =
               appCubit.tags.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
-    await storeRepository.update(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: storeUpdated),
-    );
+    await storeRepository.update(appCubit.request(storeUpdated));
     toggleDeleteMode();
     appCubit.loadTagsByCurrentStore();
     emit(TagManagementDeleteSuccess());

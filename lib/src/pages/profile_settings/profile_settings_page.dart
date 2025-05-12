@@ -133,7 +133,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
             ColumnGapWidget(
               gap: 8,
               children: [
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   key: const ValueKey('display-name'),
                   readOnly: _cubit.screenMode == ScreenMode.display,
                   label: 'Display name',
@@ -141,7 +141,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                       _cubit.screenMode == ScreenMode.display ? _cubit.displayNameOriginal : _cubit.displayNameEditor,
                   onChanged: _cubit.doSetName,
                 ),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   key: const ValueKey('email'),
                   readOnly: true,
                   label: LocaleKeys.email.tr(),
@@ -190,7 +190,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
                 //             )
                 //           : null,
                 // ),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   key: const ValueKey('date-created'),
                   readOnly: true,
                   label: LocaleKeys.dateTimeCreated.tr(),

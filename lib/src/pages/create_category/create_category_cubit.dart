@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
@@ -44,10 +43,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
     final tagId = const Uuid().v1();
     final tagCreated = await categoryRepository.create(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data: Category(
+      appCubit.request(
+        Category(
           id: tagId,
           name: name,
           parentId: null,
@@ -61,11 +58,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     tagCreated.when(
       success: (tagResponse) async {
         final storeUpdated = await storeRepository.update(
-          BaseRepoRequest(
-            storeId: appCubit.storeId ?? '',
-            userId: appCubit.userId ?? '',
-            data: currentStore!..categories?.add(tagResponse.id),
-          ),
+          appCubit.request(currentStore!..categories?.add(tagResponse.id)),
         );
 
         storeUpdated.when(

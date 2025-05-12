@@ -58,6 +58,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
         productId: productId,
         data: ProductHistoryEvent.create,
         info: productInfo,
+        branchId: request.branchId,
       ),
     );
 

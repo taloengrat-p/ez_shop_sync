@@ -45,12 +45,14 @@ class FirestoreTransactionServerRepository implements ITransactionServerReposito
         method: request.data.method.name,
         valueId: request.data.valueId,
         totalPrice: request.data.totalPrice,
-        storeId: request.storeId ?? '',
+
         info: BaseHiveData(
           createAt: serverNow,
           updateAt: serverNow,
           createBy: request.userId,
           updateBy: request.userId,
+          storeId: request.storeId,
+          branchId: request.branchId,
         ),
       );
 

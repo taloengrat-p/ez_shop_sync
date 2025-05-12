@@ -1,4 +1,4 @@
-import 'package:ez_shop_sync/src/data/repository/store/server/dev_store_server_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/server/store_server_repository.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';

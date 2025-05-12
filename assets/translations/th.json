@@ -71,7 +71,7 @@
     "createSuccess": "สร้าง {} สำเร็จ",
     "createSuccessSeeDetail": "กดเพื่อดูรายละเอียด",
     "createNewPINTitle": "สร้าง PIN ใหม่สำเร็จ",
-    "emptyMessage": "การแจ้งเตือนของคุณยังว่างอยู่"
+    "emptyMessage": "การแจ้งเตือนของคุณยังว่างเปล่า"
   },
   "createPINTitle": "สร้าง PIN",
   "createPINDesc": "ป้อนรหัสสำหรับการตั้งค่า PIN",
@@ -89,7 +89,10 @@
     "back": "กลับ",
     "done": "เสร็จสิ้น",
     "next": "ถัดไป",
-    "submit": "ยืนยัน"
+    "submit": "ยืนยัน",
+    "add": "เพิ่ม",
+    "create": "สร้าง",
+    "skip": "ข้าม"
   },
   "phoneNumber": "หมายเลขโทรศัพท์",
   "email": "อีเมล",
@@ -202,7 +205,8 @@
     "loginWrongPassword": "รหัสผ่านผิด",
     "loginWrongUsernameOrPassword": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
     "emailInvalid": "รูปแบบอีเมล์ไม่ถูกต้อง",
-    "emailAlreadyUse": "อีเมลนี้ถูกใช้แล้ว"
+    "emailAlreadyUse": "อีเมลนี้ถูกใช้แล้ว",
+    "alreadyExist": "{} มีอยู่แล้ว"
   },
   "verifyPhoneNumber": "ยืนยันหมายเลขโทรศัพท์",
   "addUserPage": {
@@ -214,7 +218,7 @@
   },
   "productType": "ประเภทสินค้า",
   "notifications": {
-    "title": "Notification"
+    "title": "แจ้งเตือน"
   },
   "loadingPagination": {
     "loadingText": "กำลังโหลดข้อมูล…",
@@ -254,5 +258,22 @@
   },
   "notificationSetting": {
     "title": "การแจ้งเตือน"
-  }
+  },
+  "totalProductSold": "จำนวนสินค้าที่ขายได้ทั้งหมด",
+  "totalOrders": "จำนวนคำสั่งซื้อ",
+  "emptyNofification": "การแจ้งเตือนของคุณว่างเปล่า",
+  "createFirstStore": "สร้างร้านค้าแรกของคุณ",
+  "branch": "สาขา",
+  "branchManagement": "การจัดการสาขา",
+  "addBranchPage": {
+    "title": "เพิ่มสาขา",
+    "branchName": "ชื่อสาขา",
+    "addBranchSuccess": "เพิ่มสาขา {} สำเร็จ."
+  },
+  "branchDetailManagementPage": {
+    "emptyMessage": "สมาชิกของคุณว่างเปล่า",
+    "deleteBranchSuccess": "ลบสาขา {} สำเร็จ.",
+    "branchEmpty": "สาขาของคุณว่างเปล่า"
+  },
+  "yourStores": "ร้านค้าทั้งหมดของคุณ"
 }

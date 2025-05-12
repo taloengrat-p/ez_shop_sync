@@ -90,6 +90,9 @@ abstract class  LocaleKeys {
   static const button_done = 'button.done';
   static const button_next = 'button.next';
   static const button_submit = 'button.submit';
+  static const button_add = 'button.add';
+  static const button_create = 'button.create';
+  static const button_skip = 'button.skip';
   static const button = 'button';
   static const phoneNumber = 'phoneNumber';
   static const email = 'email';
@@ -195,6 +198,7 @@ abstract class  LocaleKeys {
   static const errorMessage_loginWrongUsernameOrPassword = 'errorMessage.loginWrongUsernameOrPassword';
   static const errorMessage_emailInvalid = 'errorMessage.emailInvalid';
   static const errorMessage_emailAlreadyUse = 'errorMessage.emailAlreadyUse';
+  static const errorMessage_alreadyExist = 'errorMessage.alreadyExist';
   static const errorMessage = 'errorMessage';
   static const verifyPhoneNumber = 'verifyPhoneNumber';
   static const addUserPage_title = 'addUserPage.title';
@@ -236,5 +240,20 @@ abstract class  LocaleKeys {
   static const addProductHistoryDetail = 'addProductHistoryDetail';
   static const notificationSetting_title = 'notificationSetting.title';
   static const notificationSetting = 'notificationSetting';
+  static const totalProductSold = 'totalProductSold';
+  static const totalOrders = 'totalOrders';
+  static const emptyNofification = 'emptyNofification';
+  static const createFirstStore = 'createFirstStore';
+  static const branch = 'branch';
+  static const branchManagement = 'branchManagement';
+  static const addBranchPage_title = 'addBranchPage.title';
+  static const addBranchPage_branchName = 'addBranchPage.branchName';
+  static const addBranchPage_addBranchSuccess = 'addBranchPage.addBranchSuccess';
+  static const addBranchPage = 'addBranchPage';
+  static const branchDetailManagementPage_emptyMessage = 'branchDetailManagementPage.emptyMessage';
+  static const branchDetailManagementPage_deleteBranchSuccess = 'branchDetailManagementPage.deleteBranchSuccess';
+  static const branchDetailManagementPage_branchEmpty = 'branchDetailManagementPage.branchEmpty';
+  static const branchDetailManagementPage = 'branchDetailManagementPage';
+  static const yourStores = 'yourStores';
 
 }

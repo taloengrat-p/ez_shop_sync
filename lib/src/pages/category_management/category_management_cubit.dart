@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
@@ -56,9 +55,7 @@ class CategoryManagementCubit extends Cubit<CategoryManagementState> {
         appCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
     Store storeUpdated = appCubit.store!..categories = categoryListUpdate;
 
-    await storeRepository.update(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: storeUpdated),
-    );
+    await storeRepository.update(appCubit.request(storeUpdated));
     appCubit.loadCategoryByCurrentStore();
     toggleDeleteMode();
     emit(CategoryManagementSuccess());

@@ -102,7 +102,7 @@ class _BottomSheetAddCartWidgetState extends State<BottomSheetAddCartWidget> {
                     });
                   },
                 ),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
                   autofocus: true,

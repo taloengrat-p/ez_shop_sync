@@ -1,6 +1,5 @@
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/user/user_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
@@ -33,7 +32,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
       ((nameEditor != nameOriginal) || (descEditor != descOriginal)) &&
       ((nameEditor?.isNotEmpty ?? false) && (descEditor?.isNotEmpty ?? false));
 
-  String get ownerName => elseDisplay();
+  String get ownerName => store?.ownerId.elseDisplay() ?? elseDisplay();
   String get storeDesc => store?.description.elseDisplay() ?? elseDisplay();
   String get storeName => store?.name.elseDisplay() ?? elseDisplay();
 
@@ -53,9 +52,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
     emit(StoreManagementLoading());
 
     final storeBuffer = store;
-    await storeRepository.delete(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: store?.id ?? ''),
-    );
+    await storeRepository.delete(appCubit.request(store?.id ?? ''));
     appCubit.setCurrentUser(appCubit.user);
     emit(StoreManagementDeleteSuccess(storeBuffer));
   }
@@ -75,13 +72,10 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
   void doSave() async {
     emit(StoreManagementLoading());
     await storeRepository.update(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data:
-            store!
-              ..name = nameEditor?.trim() ?? ''
-              ..description = descEditor?.trim(),
+      appCubit.request(
+        store!
+          ..name = nameEditor?.trim() ?? ''
+          ..description = descEditor?.trim(),
       ),
     );
     screenMode = ScreenMode.display;

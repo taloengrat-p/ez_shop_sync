@@ -1,6 +1,5 @@
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/theme_setting/theme_setting_state.dart';
@@ -62,17 +61,14 @@ class ThemeSettingCubit extends Cubit<ThemeSettingState> {
   doSaveAppTheme() {
     emit(ThemeSettingLoading());
     storeRepository.update(
-      BaseRepoRequest(
-        storeId: appCubit.storeId ?? '',
-        userId: appCubit.userId ?? '',
-        data:
-            store!
-              ..storeTheme = AppTheme(
-                primaryColor: primary.toHex(),
-                secondaryColor: secondary.toHex(),
-                accentColor: accent.toHex(),
-                backgroundColor: backgroundColor.toHex(),
-              ),
+      appCubit.request(
+        store!
+          ..storeTheme = AppTheme(
+            primaryColor: primary.toHex(),
+            secondaryColor: secondary.toHex(),
+            accentColor: accent.toHex(),
+            backgroundColor: backgroundColor.toHex(),
+          ),
       ),
     );
 

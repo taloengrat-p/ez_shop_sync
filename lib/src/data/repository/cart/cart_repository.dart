@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
-
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
@@ -99,10 +97,6 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   }
 
   Future<ApiResult> increaseQty(BaseRepoRequest<CartIncreaseQtyRequest> request) async {
-    if (request.userId == null) {
-      throw ('increaseQty request.userId');
-    }
-
     if (appMode == AppMode.local) {
       return await cartLocalRepository.increaseQty(request);
     } else {
@@ -111,18 +105,8 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   }
 
   Future<ApiResult> decreaseQty(BaseRepoRequest<CartDecreaseQtyRequest> request) async {
-    if (request.userId == null) {
-      throw ('increaseQty request.userId');
-    }
-
     if (appMode == AppMode.local) {
-      return await cartLocalRepository.decreaseQty(
-        request.data.cartId,
-        request.data.productId,
-        request.data.qty,
-        storeId: request.storeId ?? '',
-        userId: request.storeId ?? '',
-      );
+      return await cartLocalRepository.decreaseQty(request);
     } else {
       throw UnimplementedError();
     }

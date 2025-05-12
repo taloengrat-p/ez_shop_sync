@@ -378,7 +378,7 @@ class _CartState extends State<CartPage> {
                 value: Expanded(
                   child: Form(
                     key: _receiveAmountForm,
-                    child: TextFormFieldUiWidget(
+                    child: AppTextFormFieldUiWidget(
                       autofocus: true,
                       textAlign: TextAlign.end,
                       autoCorrect: true,

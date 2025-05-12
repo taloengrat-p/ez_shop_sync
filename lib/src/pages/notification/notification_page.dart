@@ -53,6 +53,7 @@ class _NotificationState extends State<NotificationPage> {
             },
             isEmpty: _cubit.notifications.isEmpty,
             emptyIcon: Icons.notifications,
+            emptyMessage: LocaleKeys.emptyNofification.tr(),
             appBar:
                 AppbarWidget(
                   context,

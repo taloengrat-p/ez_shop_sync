@@ -19,21 +19,20 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
     return ProductOrder(
       id: fields[1] as dynamic,
       info: fields[2] as BaseHiveData?,
-      storeId: fields[11] == null ? '' : fields[11] as String,
-      userId: fields[12] == null ? '' : fields[12] as String,
       status: fields[7] as String,
       orderItems: (fields[9] as List).cast<OrderItem>(),
       paymentType: fields[8] as String,
-      receiveAmount: fields[15] as num?,
-      changeAmount: fields[14] as num?,
+      receiveAmount: fields[12] as num?,
+      changeAmount: fields[11] as num?,
       serviceCharge: fields[10] == null ? 0 : fields[10] as num?,
+      paymentStatus: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductOrder obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
@@ -43,13 +42,11 @@ class ProductOrderAdapter extends TypeAdapter<ProductOrder> {
       ..writeByte(10)
       ..write(obj.serviceCharge)
       ..writeByte(11)
-      ..write(obj.storeId)
-      ..writeByte(12)
-      ..write(obj.userId)
-      ..writeByte(14)
       ..write(obj.changeAmount)
-      ..writeByte(15)
+      ..writeByte(12)
       ..write(obj.receiveAmount)
+      ..writeByte(13)
+      ..write(obj.paymentStatus)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -76,8 +73,6 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
       info: json['info'] == null
           ? null
           : BaseHiveData.fromJson(json['info'] as Map<String, dynamic>),
-      storeId: json['storeId'] as String,
-      userId: json['userId'] as String,
       status: json['status'] as String,
       orderItems: (json['orderItems'] as List<dynamic>)
           .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
@@ -86,6 +81,7 @@ ProductOrder _$ProductOrderFromJson(Map<String, dynamic> json) => ProductOrder(
       receiveAmount: json['receiveAmount'] as num?,
       changeAmount: json['changeAmount'] as num?,
       serviceCharge: json['serviceCharge'] as num?,
+      paymentStatus: json['paymentStatus'] as String?,
     );
 
 Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
@@ -96,8 +92,7 @@ Map<String, dynamic> _$ProductOrderToJson(ProductOrder instance) =>
       'paymentType': instance.paymentType,
       'orderItems': instance.orderItems.map((e) => e.toJson()).toList(),
       'serviceCharge': instance.serviceCharge,
-      'storeId': instance.storeId,
-      'userId': instance.userId,
       'changeAmount': instance.changeAmount,
       'receiveAmount': instance.receiveAmount,
+      'paymentStatus': instance.paymentStatus,
     };

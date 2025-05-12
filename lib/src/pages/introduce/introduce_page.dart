@@ -78,7 +78,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                             number: 1,
                             title: LocaleKeys.createYourStoreName.tr(),
                             children: [
-                              TextFormFieldUiWidget(
+                              AppTextFormFieldUiWidget(
                                 label: LocaleKeys.storeName.tr(),
                                 focusNode: _storeNameFocusNode,
                                 textInitial: _cubit.storeName,
@@ -89,8 +89,8 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                   FocusScope.of(context).requestFocus(_storeDescFocusNode);
                                 },
                               ),
-                              TextFormFieldUiWidget(
-                                label: LocaleKeys.description.tr(),
+                              AppTextFormFieldUiWidget(
+                                label: LocaleKeys.optionalField.tr(args: [LocaleKeys.description.tr()]),
                                 focusNode: _storeDescFocusNode,
                                 textInitial: _cubit.storeName,
                                 onChanged: _cubit.setStoreDesc,
@@ -111,7 +111,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                             number: 2,
                             title: LocaleKeys.introducePage_createOwnerInfomation.tr(),
                             children: [
-                              TextFormFieldUiWidget(
+                              AppTextFormFieldUiWidget(
                                 label: LocaleKeys.introducePage_firstName.tr(),
                                 focusNode: _firstNameFocusNode,
                                 textInitial: _cubit.firstName,
@@ -122,7 +122,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                   FocusScope.of(context).requestFocus(_lastNameFocusNode);
                                 },
                               ),
-                              TextFormFieldUiWidget(
+                              AppTextFormFieldUiWidget(
                                 label: LocaleKeys.introducePage_lastName.tr(),
                                 focusNode: _lastNameFocusNode,
                                 textInitial: _cubit.lastName,
@@ -133,7 +133,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                   FocusScope.of(context).requestFocus(_emailFocusNode);
                                 },
                               ),
-                              TextFormFieldUiWidget(
+                              AppTextFormFieldUiWidget(
                                 focusNode: _emailFocusNode,
                                 label: LocaleKeys.email.tr(),
                                 textInitial: _cubit.email,
@@ -144,7 +144,7 @@ class _IntroduceFlowPageState extends State<IntroduceFlowPage> {
                                   FocusScope.of(context).requestFocus(_phoneNumber);
                                 },
                               ),
-                              TextFormFieldUiWidget(
+                              AppTextFormFieldUiWidget(
                                 focusNode: _phoneNumber,
                                 label: LocaleKeys.phoneNumber.tr(),
                                 textInitial: _cubit.phoneNumber,

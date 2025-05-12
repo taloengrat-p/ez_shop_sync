@@ -57,7 +57,7 @@ class FormCreatePriceCetagoryWidgetState extends State<FormCreatePriceCetagoryWi
             gap: 8,
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 readOnly: widget.screenMode == ScreenMode.display,
                 textValue: widget.model?.name.toString() ?? '',
                 controller: _textProductTypeNameInput,
@@ -66,7 +66,7 @@ class FormCreatePriceCetagoryWidgetState extends State<FormCreatePriceCetagoryWi
                   widget.onChange?.call(name: _textProductTypeNameInput.text);
                 },
               ),
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 readOnly: widget.screenMode == ScreenMode.display,
                 textValue: widget.model?.desc?.toString() ?? '',
                 controller: _textProductTypeDescInput,
@@ -75,7 +75,7 @@ class FormCreatePriceCetagoryWidgetState extends State<FormCreatePriceCetagoryWi
                   widget.onChange?.call(desc: _textProductTypeDescInput.text);
                 },
               ),
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 readOnly: widget.screenMode == ScreenMode.display,
                 textValue: widget.model?.price?.toString() ?? '',
                 controller: _textProductTypePriceInput,
@@ -85,7 +85,7 @@ class FormCreatePriceCetagoryWidgetState extends State<FormCreatePriceCetagoryWi
                   widget.onChange?.call(price: num.tryParse(_textProductTypePriceInput.text) ?? 0);
                 },
               ),
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 readOnly: widget.screenMode == ScreenMode.display,
                 textValue: widget.model?.quantity?.toString() ?? '',
                 controller: _textProductQuantityInput,

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
@@ -74,8 +75,10 @@ class AppCubit extends Cubit<AppState> {
   User? _user;
   UserData? _userData;
   Store? _store;
+  Branch? _branch;
   List<Product> _products = [];
   List<Store> _stores = [];
+  List<Branch> _branches = [];
   List<Tag> _tags = [];
   List<Category> _categories = [];
   final List<AddProduct> _addProducts = [];
@@ -89,10 +92,12 @@ class AppCubit extends Cubit<AppState> {
   User? get user => _user;
   UserData? get userData => _userData;
   Store? get store => _store;
+  Branch? get branch => _branch;
   Cart? get cart => _cart;
   AddProduct? get addProduct => _addProduct;
   List<Product> get products => _products;
   List<Store> get stores => _stores;
+  List<Branch> get branches => _branches;
   List<Tag> get tags => _tags;
   List<Category> get categories => _categories;
   AppTheme? get appTheme => _appTheme;
@@ -102,6 +107,7 @@ class AppCubit extends Cubit<AppState> {
   RoleType? get userRoleTypeCurrentStore => store?.members.firstWhere((e) => e.uid == user?.uid).roleType;
   String? get userId => user?.uid;
   String? get storeId => store?.id;
+  String? get branchId => branch?.id;
   String get currentUsername {
     if (user?.displayName == null && user?.email == null) {
       return 'Unknown';
@@ -141,7 +147,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   BaseRepoRequest<T> request<T>(T value) {
-    return BaseRepoRequest<T>(storeId: storeId, userId: userId, data: value);
+    return BaseRepoRequest<T>(storeId: storeId ?? '', branchId: branchId ?? '', userId: userId ?? '', data: value);
   }
 
   Future<void> loadStores() async {
@@ -150,12 +156,30 @@ class AppCubit extends Cubit<AppState> {
     final result = await storeRepository.getAll();
 
     result.when(
-      success: (response) {
-        _stores = response;
-        emit(AppGetStoreSuccess(response));
-        setCurrentStoreById(userData?.storeSelected);
+      success: (storesResponse) async {
+        _stores = storesResponse;
+        final resultAllBranch = await storeRepository.getAllBranchesByStoreIds(
+          request(stores.map((e) => e.id.toString()).toList()),
+        );
+
+        resultAllBranch.when(
+          success: (brancesResponse) {
+            _stores =
+                stores
+                    .map(
+                      (item) =>
+                          item
+                            ..branches =
+                                brancesResponse.where((branchItem) => item.id == branchItem.info?.storeId).toList(),
+                    )
+                    .toList();
+          },
+        );
+        emit(AppGetStoreSuccess(storesResponse));
+        setCurrentStoreById(userData?.storeSelected, branchId: userData?.branchSelected);
       },
       failure: (error, {errorType}) {
+        _store?.branches?.clear();
         emit(AppGetStoreFailure());
       },
     );
@@ -192,9 +216,11 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoadAppThemeSuccess(appTheme));
   }
 
-  setCurrentStoreById(String? id) {
+  Future<void> setCurrentStoreById(String? id, {String? branchId}) async {
     final store = _stores.where((e) => e.id == id).firstOrNull;
-    setCurrentStore(store);
+    await setCurrentStore(store);
+
+    setCurrentBranchById(branchId);
   }
 
   setCurrentStoreByLastCreate() {}
@@ -209,6 +235,7 @@ class AppCubit extends Cubit<AppState> {
     }
 
     await loadProductByCurrentStore();
+    await doGetBranchByCurrentStore();
     // await loadAllDependencies();
     // await doGetAddProductByCurrentUserAndStore();
     setCurrentAddProductByCurrentStore();
@@ -254,11 +281,7 @@ class AppCubit extends Cubit<AppState> {
             }
 
             final cartCreated = await cartRepository.create(
-              BaseRepoRequest(
-                storeId: store?.id,
-                userId: userId!,
-                data: Cart(id: const Uuid().v1(), storeId: store!.id, userId: user?.uid ?? '--', cartItems: []),
-              ),
+              request(Cart(id: const Uuid().v1(), storeId: store!.id, userId: user?.uid ?? '--', cartItems: [])),
             );
 
             cartCreated.when(
@@ -277,11 +300,7 @@ class AppCubit extends Cubit<AppState> {
         }
 
         final cartCreated = await cartRepository.create(
-          BaseRepoRequest(
-            storeId: store?.id,
-            userId: userId!,
-            data: Cart(id: const Uuid().v1(), storeId: storeId ?? '', userId: userId ?? '', cartItems: []),
-          ),
+          request(Cart(id: const Uuid().v1(), storeId: storeId ?? '', userId: userId ?? '', cartItems: [])),
         );
 
         cartCreated.when(
@@ -308,8 +327,8 @@ class AppCubit extends Cubit<AppState> {
       setCurrentAddProduct(addProductFinded);
     } else {
       final addProductCreated = await addProductRepository.create(
-        BaseRepoRequest<AddProduct>(
-          data: AddProduct(
+        request(
+          AddProduct(
             id: const Uuid().v1(),
             storeId: storeId ?? '',
             userId: user?.uid ?? '',
@@ -317,8 +336,6 @@ class AppCubit extends Cubit<AppState> {
             amountCost: 0,
             paymentType: PaymentMethodType.cash,
           ),
-          storeId: storeId,
-          userId: user?.uid ?? '',
         ),
       );
 
@@ -457,9 +474,7 @@ class AppCubit extends Cubit<AppState> {
     log('addCart() $cart');
     if (cart != null && product != null) {
       emit(AppLoading());
-      final cartUpdate = await cartRepository.addCart(
-        BaseRepoRequest(storeId: storeId, userId: userId, data: AddCartRequest(id: _cart!.id, product: product)),
-      );
+      final cartUpdate = await cartRepository.addCart(request(AddCartRequest(id: _cart!.id, product: product)));
 
       log('cartUpdate $cartUpdate');
       emit(AppAddCartSuccess());
@@ -490,11 +505,7 @@ class AppCubit extends Cubit<AppState> {
   Future<ApiResult> deleteItemFromAddProduct(String addProductItemId) async {
     emit(AppLoading());
     final resultAddCartUpdated = await addProductRepository.deleteItemByIdFromAddProduct(
-      BaseRepoRequest(
-        storeId: storeId,
-        userId: userId,
-        data: DeleteItemFormCartRequest(id: addProduct?.id, addProductItemId: addProductItemId),
-      ),
+      request(DeleteItemFormCartRequest(id: addProduct?.id, addProductItemId: addProductItemId)),
     );
 
     resultAddCartUpdated.when(
@@ -523,11 +534,7 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoading());
 
     final addProductUpdate = await addProductRepository.addProductStock(
-      BaseRepoRequest(
-        storeId: storeId,
-        userId: userId,
-        data: AddProductStockRequest(id: addProduct!.id, orderItem: OrderItem(product: product, cost: amountCost)),
-      ),
+      request(AddProductStockRequest(id: addProduct!.id, orderItem: OrderItem(product: product, cost: amountCost))),
     );
 
     addProductUpdate.when(
@@ -595,5 +602,44 @@ class AppCubit extends Cubit<AppState> {
   Future<void> logout() async {
     await authRepository.logout();
     await setCurrentUser(null);
+  }
+
+  Future<ApiResult<List<Branch>>> doGetBranchByCurrentStore() async {
+    emit(AppLoading());
+    final result = await storeRepository.getStoreBranches(request(null));
+
+    result.when(
+      success: (response) {
+        _branches = response;
+        emit(AppBranchSuccess(branches: response));
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
+
+    return result;
+  }
+
+  Future<ApiResult> deleteBranch(BaseRepoRequest<String> request) async {
+    emit(AppLoading());
+    final result = await storeRepository.deleteBranch(request);
+
+    result.when(
+      success: (response) {
+        _branches.removeWhere((e) => e.id == request.data);
+        emit(AppSuccess());
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
+
+    return result;
+  }
+
+  void setCurrentBranchById(String? branchId) {
+    final branchFinded = _branches.where((e) => e.id == branchId).firstOrNull;
+    _branch = branchFinded;
   }
 }

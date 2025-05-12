@@ -9,8 +9,5 @@ abstract class BaseHiveObject extends BaseObject {
   @HiveField(2)
   BaseHiveData? info;
 
-  BaseHiveObject({
-    this.id,
-    this.info,
-  });
+  BaseHiveObject({this.id, this.info});
 }

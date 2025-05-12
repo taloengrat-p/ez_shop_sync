@@ -32,9 +32,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
     result.when(
       success: (response) async {
         return await update(
-          BaseRepoRequest(
-            storeId: request.storeId,
-            userId: request.userId,
+          request.overide(
             data: response..addProductItems.removeWhere((item) => item.id == request.data.addProductItemId),
           ),
         );
@@ -59,9 +57,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
 
         if (productExistInCart) {
           return await update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
+            request.overide(
               data:
                   response
                     ..addProductItems =
@@ -84,9 +80,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
           );
         } else {
           return await update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
+            request.overide(
               data:
                   response
                     ..addProductItems.add(
@@ -157,13 +151,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
                 )
                 .toList();
 
-        await update(
-          BaseRepoRequest(
-            storeId: request.storeId,
-            userId: request.userId,
-            data: response..addProductItems = addProductItem,
-          ),
-        );
+        await update(request.overide(data: response..addProductItems = addProductItem));
       },
       failure: (error) {
         return Future.value(ApiResult(error: 'increaseQty() addProduct is Null'));

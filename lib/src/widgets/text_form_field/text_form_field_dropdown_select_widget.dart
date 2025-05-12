@@ -5,7 +5,7 @@ import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widg
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class TextFormFieldDropdownSelectWidget<T extends Object>
+class AppTextFormFieldDropdownSelectWidget<T extends Object>
     extends StatefulWidget {
   final String label;
   final MultiSelectController<T> controller;
@@ -21,7 +21,7 @@ class TextFormFieldDropdownSelectWidget<T extends Object>
   final Widget? footerMenu;
   final List<T>? itemSelectd;
 
-  const TextFormFieldDropdownSelectWidget({
+  const AppTextFormFieldDropdownSelectWidget({
     super.key,
     required this.label,
     this.onSelected,
@@ -39,12 +39,12 @@ class TextFormFieldDropdownSelectWidget<T extends Object>
   });
 
   @override
-  _TextFormFieldDropdownSelectWidgetState createState() =>
-      _TextFormFieldDropdownSelectWidgetState<T>();
+  _AppTextFormFieldDropdownSelectWidgetState createState() =>
+      _AppTextFormFieldDropdownSelectWidgetState<T>();
 }
 
-class _TextFormFieldDropdownSelectWidgetState<T extends Object>
-    extends State<TextFormFieldDropdownSelectWidget<T>> {
+class _AppTextFormFieldDropdownSelectWidgetState<T extends Object>
+    extends State<AppTextFormFieldDropdownSelectWidget<T>> {
   @override
   void initState() {
     super.initState();
@@ -54,7 +54,7 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object>
 
   @override
   void didUpdateWidget(
-      covariant TextFormFieldDropdownSelectWidget<T> oldWidget) {
+      covariant AppTextFormFieldDropdownSelectWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     Future.delayed(
       Duration.zero,
@@ -66,7 +66,7 @@ class _TextFormFieldDropdownSelectWidgetState<T extends Object>
 
   @override
   Widget build(BuildContext context) {
-    return TextFormFieldUiWidget(
+    return AppTextFormFieldUiWidget(
       label: widget.label,
       child: MultiDropdown<T>(
         controller: widget.controller,

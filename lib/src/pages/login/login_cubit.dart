@@ -70,8 +70,8 @@ class LoginCubit extends Cubit<LoginState> {
         appCubit.setCurrentUser(response.user);
         emit(LoginSuccess());
       },
-      failure: (error, {AppErrorType? errorType}) {
-        emit(LoginFailure(error, errorType: errorType));
+      failure: (error) {
+        emit(LoginFailure(error, errorType: error.errorType));
       },
     );
   }

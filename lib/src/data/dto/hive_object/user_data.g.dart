@@ -23,13 +23,14 @@ class UserDataAdapter extends TypeAdapter<UserData> {
       storeSelected: fields[8] as String?,
       stores: fields[9] == null ? [] : (fields[9] as List?)?.cast<String>(),
       displayName: fields[10] as String?,
+      branchSelected: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserData obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(7)
       ..write(obj.uid)
       ..writeByte(8)
@@ -38,6 +39,8 @@ class UserDataAdapter extends TypeAdapter<UserData> {
       ..write(obj.stores)
       ..writeByte(10)
       ..write(obj.displayName)
+      ..writeByte(11)
+      ..write(obj.branchSelected)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -69,6 +72,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
       stores:
           (json['stores'] as List<dynamic>?)?.map((e) => e as String).toList(),
       displayName: json['displayName'] as String?,
+      branchSelected: json['branchSelected'] as String?,
     );
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
@@ -78,4 +82,5 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'storeSelected': instance.storeSelected,
       'stores': instance.stores,
       'displayName': instance.displayName,
+      'branchSelected': instance.branchSelected,
     };

@@ -11,17 +11,17 @@ part 'member.g.dart';
 class Member {
   @HiveField(1)
   final String uid;
+
   @HiveField(2)
   final String role;
   RoleType get roleType => RoleType.fromString(role);
+
   @HiveField(3)
   final String email;
 
-  const Member({
-    required this.uid,
-    required this.role,
-    required this.email,
-  });
+  bool? isSelect;
+
+  Member({required this.uid, required this.role, required this.email, this.isSelect});
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 

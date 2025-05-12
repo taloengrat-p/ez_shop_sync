@@ -23,14 +23,13 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       method: fields[8] as String,
       valueId: fields[9] as String,
       totalPrice: fields[10] as num,
-      storeId: fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Transaction obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(7)
       ..write(obj.transactionType)
       ..writeByte(8)
@@ -39,8 +38,6 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       ..write(obj.valueId)
       ..writeByte(10)
       ..write(obj.totalPrice)
-      ..writeByte(11)
-      ..write(obj.storeId)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -71,7 +68,6 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       method: json['method'] as String,
       valueId: json['valueId'] as String,
       totalPrice: json['totalPrice'] as num,
-      storeId: json['storeId'] as String,
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -82,5 +78,4 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'method': instance.method,
       'valueId': instance.valueId,
       'totalPrice': instance.totalPrice,
-      'storeId': instance.storeId,
     };

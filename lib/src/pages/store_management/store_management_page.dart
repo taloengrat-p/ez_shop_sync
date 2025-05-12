@@ -123,19 +123,19 @@ class _StoreManagementState extends State<StoreManagementPage> {
         child: ColumnGapWidget(
           gap: 8,
           children: [
-            TextFormFieldUiWidget(
+            AppTextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),
               textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeName : _cubit.nameEditor,
               onChanged: _cubit.doSetName,
             ),
-            TextFormFieldUiWidget(
+            AppTextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.description.tr(),
               textValue: _cubit.screenMode == ScreenMode.display ? _cubit.storeDesc : _cubit.descEditor,
               onChanged: _cubit.doSetDesc,
             ),
-            TextFormFieldUiWidget(
+            AppTextFormFieldUiWidget(
               readOnly: true,
               label: LocaleKeys.owner.tr(),
               textInitial: _cubit.ownerName,

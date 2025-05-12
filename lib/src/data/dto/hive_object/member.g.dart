@@ -54,10 +54,12 @@ Member _$MemberFromJson(Map<String, dynamic> json) => Member(
       uid: json['uid'] as String,
       role: json['role'] as String,
       email: json['email'] as String,
+      isSelect: json['isSelect'] as bool?,
     );
 
 Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
       'uid': instance.uid,
       'role': instance.role,
       'email': instance.email,
+      'isSelect': instance.isSelect,
     };

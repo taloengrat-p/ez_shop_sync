@@ -9,18 +9,18 @@ enum AppErrorType {
   emailAlreadyInUse,
   somethingWentWrong,
   undefined,
-  storeAlreadyThisUser;
+  storeAlreadyThisUser,
+  alreadyExist;
 
   String get label => switch (this) {
-        AppErrorType.userNotFound => LocaleKeys.errorMessage_loginUserNotFound.tr(),
-        AppErrorType.wrongPassword => LocaleKeys.errorMessage_loginWrongPassword.tr(),
-        AppErrorType.invalidCredential => LocaleKeys.errorMessage_loginWrongUsernameOrPassword.tr(),
-        AppErrorType.registerInvalidEmail => LocaleKeys.errorMessage_emailInvalid.tr(),
-        AppErrorType.emailAlreadyInUse => LocaleKeys.errorMessage_emailAlreadyUse.tr(),
-        AppErrorType.storeAlreadyThisUser => 'This user has already join store',
-        AppErrorType.somethingWentWrong => 'Something went wrong',
-        AppErrorType.undefined => 'Unknown',
-        null => 'Unknown',
-        // TODO: Handle this case.
-      };
+    AppErrorType.userNotFound => LocaleKeys.errorMessage_loginUserNotFound.tr(),
+    AppErrorType.wrongPassword => LocaleKeys.errorMessage_loginWrongPassword.tr(),
+    AppErrorType.invalidCredential => LocaleKeys.errorMessage_loginWrongUsernameOrPassword.tr(),
+    AppErrorType.registerInvalidEmail => LocaleKeys.errorMessage_emailInvalid.tr(),
+    AppErrorType.emailAlreadyInUse => LocaleKeys.errorMessage_emailAlreadyUse.tr(),
+    AppErrorType.storeAlreadyThisUser => 'This user has already join store',
+    AppErrorType.somethingWentWrong => 'Something went wrong',
+    AppErrorType.alreadyExist => LocaleKeys.errorMessage_alreadyExist.tr(),
+    AppErrorType.undefined => 'Unknown',
+  };
 }

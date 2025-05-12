@@ -6,7 +6,7 @@ class AppInputDecoration {
   EdgeInsetsGeometry? contentPadding;
   Widget? suffixIcon;
   Widget? suffix;
-  TextFormFieldUiType autoCompleteType;
+  AppTextFormFieldUiType autoCompleteType;
   double borderRadius;
   String? hintText;
   String? errorText;
@@ -17,7 +17,7 @@ class AppInputDecoration {
     this.contentPadding,
     this.suffixIcon,
     this.suffix,
-    this.autoCompleteType = TextFormFieldUiType.normal,
+    this.autoCompleteType = AppTextFormFieldUiType.normal,
     this.borderRadius = 8,
     this.hintText,
     this.errorText,

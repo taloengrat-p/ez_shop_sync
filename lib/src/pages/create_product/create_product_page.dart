@@ -96,13 +96,13 @@ class CreateProductPageState extends State<CreateProductPage> {
                         },
                       ),
                       const SizedBox(height: 32),
-                      TextFormFieldUiWidget(
+                      AppTextFormFieldUiWidget(
                         textValue: _cubit.productEditor?.name,
                         label: LocaleKeys.name.tr(),
                         onChanged: _cubit.setName,
                       ),
                       const SizedBox(height: 8),
-                      TextFormFieldUiWidget(
+                      AppTextFormFieldUiWidget(
                         textValue: _cubit.productEditor?.description,
                         label: LocaleKeys.optionalField.tr(args: [LocaleKeys.description.tr()]),
                         onChanged: _cubit.setDescription,
@@ -118,7 +118,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                       //   height: 8,
                       // ),
                       Divider(color: ColorKeys.primary.withOpacity(0.6)),
-                      TextFormFieldUiWidget(
+                      AppTextFormFieldUiWidget(
                         label: LocaleKeys.productType.tr(),
                         errorText: state is CreateProductProductTypeFailure ? state.message : null,
                         child: ColumnGapWidget(
@@ -259,7 +259,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                       //   ),
                       // ),
                       Divider(color: ColorKeys.primary.withOpacity(0.6)),
-                      TextFormFieldUiWidget(
+                      AppTextFormFieldUiWidget(
                         label: LocaleKeys.custom.tr(),
                         child: FormCustomFieldWidget<FormCreateCustomFieldArgrument>(
                           key: const ValueKey('form-create-custom-field'),

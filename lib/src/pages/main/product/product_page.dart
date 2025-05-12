@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -19,7 +18,6 @@ import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/product/widgets/product_list_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/product_detail/product_detail_page.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/widgets/app_pagination_loading_widget.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';

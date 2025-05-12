@@ -1,6 +1,8 @@
 // ignore_for_file: type_init_formals
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/repository/base_hive_object.dart';
@@ -16,6 +18,7 @@ part 'product_order.g.dart';
 class ProductOrder extends BaseHiveObject {
   @HiveField(7)
   final String status;
+  OrderStatusType get geyStatusType => OrderStatusType.fromString(status);
 
   @HiveField(8)
   final String paymentType;
@@ -27,17 +30,15 @@ class ProductOrder extends BaseHiveObject {
   @HiveField(10, defaultValue: 0)
   num? serviceCharge;
 
-  @HiveField(11, defaultValue: '')
-  String storeId;
-
-  @HiveField(12, defaultValue: '')
-  String userId;
-
-  @HiveField(14)
+  @HiveField(11)
   num? changeAmount;
 
-  @HiveField(15)
+  @HiveField(12)
   num? receiveAmount;
+
+  @HiveField(13)
+  final String? paymentStatus;
+  PaymentStatusType get getPaymentStatus => PaymentStatusType.fromString(paymentStatus);
 
   num get numberOfItems => orderItems.fold(0, (sum, item) => sum + (item.product?.quantity ?? 0));
 
@@ -52,14 +53,13 @@ class ProductOrder extends BaseHiveObject {
   ProductOrder({
     super.id,
     BaseHiveData? super.info,
-    required this.storeId,
-    required this.userId,
     required this.status,
     required this.orderItems,
     required this.paymentType,
     this.receiveAmount,
     this.changeAmount,
     this.serviceCharge,
+    this.paymentStatus,
   });
 
   factory ProductOrder.fromJson(Map<String, dynamic> json) => _$ProductOrderFromJson(json);

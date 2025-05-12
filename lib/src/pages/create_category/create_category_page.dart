@@ -94,7 +94,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
               ),
               const SizedBox(height: 16),
               TextFormFieldIconPickerWidget(label: LocaleKeys.icon.tr(), onSelected: _cubit.setIcon),
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,
                 autofocus: true,

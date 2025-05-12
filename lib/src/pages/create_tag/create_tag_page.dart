@@ -91,7 +91,7 @@ class _CreateTagState extends State<CreateTagPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextFormFieldUiWidget(
+              AppTextFormFieldUiWidget(
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,
                 autofocus: true,

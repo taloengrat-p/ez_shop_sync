@@ -1,15 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
-import 'package:injectable/injectable.dart';
-
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/enums/order_status_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/dto/response/order_history_reponse.dart';
 import 'package:ez_shop_sync/src/data/repository/cart/cart_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
@@ -19,7 +15,7 @@ import 'package:ez_shop_sync/src/data/repository/order/server/order_server_repos
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
-import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
+import 'package:injectable/injectable.dart';
 
 @Singleton()
 @Injectable()
@@ -40,46 +36,11 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
 
   @override
   Future<ApiResult<ProductOrder>> create(BaseRepoRequest<ProductOrder> request) async {
-    final now = DateTime.now();
     if (appMode == AppMode.local) {
-      final orderCreate = ProductOrder(
-        storeId: request.storeId ?? '',
-        id: now.toTransactionFormatId(),
-        status: OrderStatusType.complete.name,
-        orderItems: request.data.orderItems,
-        paymentType: request.data.paymentType,
-        userId: request.userId ?? '',
-      );
-
-      final result = await orderLocalRepository.create(
-        BaseRepoRequest(storeId: request.storeId, userId: orderCreate.userId, data: orderCreate),
-      );
-
-      result.when(
-        success: (response) {
-          return ApiResult(response: response);
-        },
-        failure: (error) {
-          return ApiResult(error: error);
-        },
-      );
-
-      // await transactionRepository.create(
-      //   CreateTransactionRequest(
-      //     storeId: request.storeId,
-      //     userId: request.userId,
-      //     method: TransactionMethodType.order,
-      //     totalPrice: request.cart.cartItems.totalPrice,
-      //     transactionType: TransactionType.income,
-      //     valueId: prefixedUuid,
-      //   ),
-      // );
-      // return ApiResult(response:  );
+      throw UnimplementedError();
     } else {
-      // return await orderServerRepository.createOrder(request);
+      throw UnimplementedError();
     }
-
-    return Future.value(ApiResult<ProductOrder>(error: 'create'));
   }
 
   @override
@@ -182,12 +143,8 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
   Future<ApiResult<ProductOrder>> createFromCart(BaseRepoRequest<CreateOrderRequest> request) async {
     if (appMode == AppMode.local) {
       return await create(
-        BaseRepoRequest(
-          storeId: request.storeId,
-          userId: request.userId,
+        request.overide(
           data: ProductOrder(
-            storeId: request.storeId ?? '',
-            userId: request.userId ?? '',
             status: request.data.status.name,
             orderItems: request.data.orderItems,
             paymentType: request.data.paymentType.name,

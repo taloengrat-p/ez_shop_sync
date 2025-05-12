@@ -77,7 +77,7 @@ class _CreateStoreState extends State<CreateStorePage> {
                           MainRouter(context).replace();
                         },
                         child: Text(
-                          'Skip',
+                          LocaleKeys.button_skip.tr(),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
                         ),
                       ),
@@ -91,8 +91,11 @@ class _CreateStoreState extends State<CreateStorePage> {
                     children: [
                       const CircleAvatar(radius: 44, child: Icon(Icons.store_mall_directory_rounded, size: 44)),
                       const SizedBox(height: 16),
-                      TextFormFieldUiWidget(label: LocaleKeys.name.tr(), onChanged: _cubit.setName, autofocus: true),
-                      TextFormFieldUiWidget(label: LocaleKeys.description.tr(), onChanged: _cubit.setDescription),
+                      AppTextFormFieldUiWidget(label: LocaleKeys.name.tr(), onChanged: _cubit.setName, autofocus: true),
+                      AppTextFormFieldUiWidget(
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.description.tr()]),
+                        onChanged: _cubit.setDescription,
+                      ),
                     ],
                   ),
                 ),

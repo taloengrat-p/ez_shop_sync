@@ -80,10 +80,13 @@ import '../../data/repository/product_history/product_history_repository.dart'
     as _i2;
 import '../../data/repository/product_history/server/product_history_server_repository.dart'
     as _i750;
-import '../../data/repository/store/local/dev_store_local_repository.dart'
-    as _i457;
-import '../../data/repository/store/server/dev_store_server_repository.dart'
-    as _i18;
+import '../../data/repository/store/local/impl/hivedb_store_local_repository.dart'
+    as _i731;
+import '../../data/repository/store/local/store_local_repository.dart' as _i171;
+import '../../data/repository/store/server/impl/firestore_store_server_repository.dart'
+    as _i300;
+import '../../data/repository/store/server/store_server_repository.dart'
+    as _i704;
 import '../../data/repository/store/store_repository.dart' as _i882;
 import '../../data/repository/tag/local/tag_local_repository.dart' as _i295;
 import '../../data/repository/tag/server/tag_server_repository.dart' as _i338;
@@ -98,12 +101,16 @@ import '../../data/repository/transactions/transaction_repository.dart'
     as _i370;
 import '../../data/repository/user/user_repository.dart' as _i118;
 import '../../pages/_app/app_cubit.dart' as _i283;
+import '../../pages/add_branch/add_branch_cubit.dart' as _i105;
 import '../../pages/add_product/add_product_cubit.dart' as _i294;
 import '../../pages/add_product_history/add_product_history_cubit.dart'
     as _i427;
 import '../../pages/add_product_history_detail/add_product_history_detail_cubit.dart'
     as _i734;
 import '../../pages/add_user/add_user_cubit.dart' as _i853;
+import '../../pages/branch_detail_management/branch_detail_management_cubit.dart'
+    as _i388;
+import '../../pages/branch_management/branch_management_cubit.dart' as _i290;
 import '../../pages/cart/cart_cubit.dart' as _i874;
 import '../../pages/category_management/category_management_cubit.dart'
     as _i647;
@@ -230,10 +237,6 @@ extension GetItInjectableX on _i174.GetIt {
         _tests,
       },
     );
-    gh.factory<_i457.StoreLocalRepository>(
-      () => _i457.StoreLocalRepository(),
-      registerFor: {_dev},
-    );
     gh.singleton<_i764.AddProductHistoryLocalRepository>(
       () => _i764.AddProductHistoryLocalRepository(),
       registerFor: {_dev},
@@ -275,6 +278,14 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
+    gh.factory<_i171.StoreLocalRepository>(
+      () => _i731.HivedbStoreLocalRepository(),
+      registerFor: {
+        _dev,
+        _prod,
+        _tests,
+      },
+    );
     gh.factory<_i1048.PinVerifyCubit>(() => _i1048.PinVerifyCubit(
         localStorageService: gh<_i461.LocalStorageService>()));
     gh.factory<_i306.PinSetupCubit>(() => _i306.PinSetupCubit(
@@ -294,6 +305,18 @@ extension GetItInjectableX on _i174.GetIt {
         _prod,
       },
     );
+    gh.factory<_i704.StoreServerRepository>(
+      () => _i300.FirestoreStoreServerRepository(
+        userRepository: gh<_i118.UserRepository>(),
+        firebaseService: gh<_i228.FirebaseService>(),
+        notificationRepository: gh<_i155.NotificationRepository>(),
+      ),
+      registerFor: {
+        _dev,
+        _tests,
+        _prod,
+      },
+    );
     gh.singleton<_i999.CartRepository>(() => _i999.CartRepository(
           cartLocalRepository: gh<_i544.ICartLocalRepository>(),
           cartServerRepository: gh<_i167.ICartServerRepository>(),
@@ -304,14 +327,6 @@ extension GetItInjectableX on _i174.GetIt {
           addProductServerRepository: gh<_i141.IAddProductServerRepository>(),
           navigationService: gh<_i892.NavigationService>(),
         ));
-    gh.factory<_i18.StoreServerRepository>(
-      () => _i18.StoreServerRepository(
-        userRepository: gh<_i118.UserRepository>(),
-        firebaseService: gh<_i228.FirebaseService>(),
-        notificationRepository: gh<_i155.NotificationRepository>(),
-      ),
-      registerFor: {_dev},
-    );
     gh.factory<_i830.IImageServerRepository>(
       () => _i656.FirebaseStorageImageServerRepository(
           firebaseService: gh<_i228.FirebaseService>()),
@@ -331,6 +346,8 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.singleton<_i678.ImageRepository>(() => _i678.ImageRepository(
         imageServerRepository: gh<_i830.IImageServerRepository>()));
+    gh.factory<_i18.NotificationDetailCubit>(() => _i18.NotificationDetailCubit(
+        storeServerRepository: gh<_i704.StoreServerRepository>()));
     gh.factory<_i663.ITransactionServerRepository>(
       () => _i418.FirestoreTransactionServerRepository(
           firebaseService: gh<_i228.FirebaseService>()),
@@ -345,8 +362,11 @@ extension GetItInjectableX on _i174.GetIt {
           transactionServerRepository: gh<_i663.ITransactionServerRepository>(),
           navigationService: gh<_i892.NavigationService>(),
         ));
-    gh.factory<_i18.NotificationDetailCubit>(() => _i18.NotificationDetailCubit(
-        storeServerRepository: gh<_i18.StoreServerRepository>()));
+    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
+          storeLocalRepository: gh<_i171.StoreLocalRepository>(),
+          storeServerRepository: gh<_i704.StoreServerRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
     gh.factory<_i592.IProductServerRepository>(
       () => _i78.FirestoreProductServerRepository(
         firebaseService: gh<_i228.FirebaseService>(),
@@ -374,10 +394,38 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_dev},
     );
-    gh.singleton<_i882.StoreRepository>(() => _i882.StoreRepository(
-          storeLocalRepository: gh<_i457.StoreLocalRepository>(),
-          storeServerRepository: gh<_i18.StoreServerRepository>(),
+    gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
+          authLocalRepository: gh<_i551.AuthLocalRepository>(),
+          storeRepository: gh<_i882.StoreRepository>(),
+          authServerRepository: gh<_i701.AuthServerRepository>(),
+        ));
+    gh.singleton<_i283.AppCubit>(() => _i283.AppCubit(
+          localStorageService: gh<_i461.LocalStorageService>(),
+          authLocalRepository: gh<_i551.AuthLocalRepository>(),
+          storeRepository: gh<_i882.StoreRepository>(),
+          productRepository: gh<_i846.ProductRepository>(),
           navigationService: gh<_i892.NavigationService>(),
+          tagRepository: gh<_i505.TagRepository>(),
+          categoryRepository: gh<_i635.CategoryRepository>(),
+          cartRepository: gh<_i999.CartRepository>(),
+          userRepository: gh<_i118.UserRepository>(),
+          addProductRepository: gh<_i13.AddProductRepository>(),
+          notificationRepository: gh<_i155.NotificationRepository>(),
+          authRepository: gh<_i214.AuthRepository>(),
+        ));
+    gh.factory<_i179.TransactionCubit>(() => _i179.TransactionCubit(
+          appCubit: gh<_i283.AppCubit>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
+        ));
+    gh.factory<_i272.CreateStoreCubit>(() => _i272.CreateStoreCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+          userRepository: gh<_i118.UserRepository>(),
+        ));
+    gh.factory<_i468.StoreManagementCubit>(() => _i468.StoreManagementCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+          userRepository: gh<_i118.UserRepository>(),
         ));
     gh.factory<_i843.IOrderServerRepository>(
       () => _i844.FirestoreOrderServerRepository(
@@ -399,69 +447,11 @@ extension GetItInjectableX on _i174.GetIt {
                   gh<_i710.IAddProductHistoryServerRepository>(),
               navigationService: gh<_i892.NavigationService>(),
             ));
-    gh.singleton<_i214.AuthRepository>(() => _i214.AuthRepository(
-          authLocalRepository: gh<_i551.AuthLocalRepository>(),
-          storeRepository: gh<_i882.StoreRepository>(),
-          authServerRepository: gh<_i701.AuthServerRepository>(),
-        ));
-    gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
-          orderLocalRepository: gh<_i337.IOrderLocalRepository>(),
-          orderServerRepository: gh<_i843.IOrderServerRepository>(),
-          cartRepository: gh<_i999.CartRepository>(),
-          transactionRepository: gh<_i370.TransactionRepository>(),
-          navigationService: gh<_i892.NavigationService>(),
-        ));
-    gh.singleton<_i283.AppCubit>(() => _i283.AppCubit(
-          localStorageService: gh<_i461.LocalStorageService>(),
-          authLocalRepository: gh<_i551.AuthLocalRepository>(),
-          storeRepository: gh<_i882.StoreRepository>(),
-          productRepository: gh<_i846.ProductRepository>(),
-          navigationService: gh<_i892.NavigationService>(),
-          tagRepository: gh<_i505.TagRepository>(),
-          categoryRepository: gh<_i635.CategoryRepository>(),
-          cartRepository: gh<_i999.CartRepository>(),
-          userRepository: gh<_i118.UserRepository>(),
-          addProductRepository: gh<_i13.AddProductRepository>(),
-          notificationRepository: gh<_i155.NotificationRepository>(),
-          authRepository: gh<_i214.AuthRepository>(),
-        ));
-    gh.factory<_i874.CartCubit>(() => _i874.CartCubit(
-          cartRepository: gh<_i999.CartRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-          orderRepository: gh<_i698.OrderRepository>(),
-          productRepository: gh<_i846.ProductRepository>(),
-        ));
-    gh.factory<_i179.TransactionCubit>(() => _i179.TransactionCubit(
-          appCubit: gh<_i283.AppCubit>(),
-          transactionRepository: gh<_i370.TransactionRepository>(),
-        ));
-    gh.factory<_i272.CreateStoreCubit>(() => _i272.CreateStoreCubit(
-          storeRepository: gh<_i882.StoreRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-          userRepository: gh<_i118.UserRepository>(),
-        ));
-    gh.factory<_i468.StoreManagementCubit>(() => _i468.StoreManagementCubit(
-          storeRepository: gh<_i882.StoreRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-          userRepository: gh<_i118.UserRepository>(),
-        ));
-    gh.factory<_i294.AddProductCubit>(() => _i294.AddProductCubit(
-          productRepository: gh<_i846.ProductRepository>(),
-          addProductHistoryRepository: gh<_i394.AddProductHistoryRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-          addProductRepository: gh<_i13.AddProductRepository>(),
-        ));
     gh.factory<_i734.AddProductHistoryDetailCubit>(
         () => _i734.AddProductHistoryDetailCubit(
               gh<_i394.AddProductHistoryRepository>(),
               gh<_i283.AppCubit>(),
             ));
-    gh.factory<_i948.StatisticCubit>(() => _i948.StatisticCubit(
-          categoryRepository: gh<_i635.CategoryRepository>(),
-          orderRepository: gh<_i698.OrderRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-          transactionRepository: gh<_i370.TransactionRepository>(),
-        ));
     gh.factory<_i75.CreateProductCubit>(() => _i75.CreateProductCubit(
           productRepository: gh<_i846.ProductRepository>(),
           appCubit: gh<_i283.AppCubit>(),
@@ -470,7 +460,19 @@ extension GetItInjectableX on _i174.GetIt {
           productRepository: gh<_i846.ProductRepository>(),
           appCubit: gh<_i283.AppCubit>(),
         ));
+    gh.factory<_i853.AddUserCubit>(() => _i853.AddUserCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
     gh.factory<_i304.UserManagementCubit>(() => _i304.UserManagementCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
+    gh.factory<_i290.BranchManagementCubit>(() => _i290.BranchManagementCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
+    gh.factory<_i105.AddBranchCubit>(() => _i105.AddBranchCubit(
           storeRepository: gh<_i882.StoreRepository>(),
           appCubit: gh<_i283.AppCubit>(),
         ));
@@ -499,15 +501,6 @@ extension GetItInjectableX on _i174.GetIt {
           appCubit: gh<_i283.AppCubit>(),
           localStorageService: gh<_i461.LocalStorageService>(),
         ));
-    gh.factory<_i867.OrderHistoryCubit>(() => _i867.OrderHistoryCubit(
-          orderRepository: gh<_i698.OrderRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-        ));
-    gh.factory<_i150.OrderHistoryDetailCubit>(
-        () => _i150.OrderHistoryDetailCubit(
-              orderRepository: gh<_i698.OrderRepository>(),
-              appCubit: gh<_i283.AppCubit>(),
-            ));
     gh.factory<_i924.TransactionsChartDetailsCubit>(() =>
         _i924.TransactionsChartDetailsCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i653.NotificationCubit>(
@@ -516,6 +509,15 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i315.OrderCompleteCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i853.HomeCubit>(
         () => _i853.HomeCubit(appCubit: gh<_i283.AppCubit>()));
+    gh.factory<_i388.BranchDetailManagementCubit>(() =>
+        _i388.BranchDetailManagementCubit(appCubit: gh<_i283.AppCubit>()));
+    gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
+          orderLocalRepository: gh<_i337.IOrderLocalRepository>(),
+          orderServerRepository: gh<_i843.IOrderServerRepository>(),
+          cartRepository: gh<_i999.CartRepository>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
+          navigationService: gh<_i892.NavigationService>(),
+        ));
     gh.factory<_i427.AddProductHistoryCubit>(() => _i427.AddProductHistoryCubit(
           addProductHistoryRepository: gh<_i394.AddProductHistoryRepository>(),
           appCubit: gh<_i283.AppCubit>(),
@@ -536,10 +538,6 @@ extension GetItInjectableX on _i174.GetIt {
           appCubit: gh<_i283.AppCubit>(),
           storeRepository: gh<_i882.StoreRepository>(),
         ));
-    gh.factory<_i853.AddUserCubit>(() => _i853.AddUserCubit(
-          storeRepository: gh<_i18.StoreServerRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-        ));
     gh.factory<_i419.CreateTagCubit>(() => _i419.CreateTagCubit(
           storeRepository: gh<_i882.StoreRepository>(),
           appCubit: gh<_i283.AppCubit>(),
@@ -551,6 +549,33 @@ extension GetItInjectableX on _i174.GetIt {
           authRepository: gh<_i214.AuthRepository>(),
           userRepository: gh<_i118.UserRepository>(),
         ));
+    gh.factory<_i874.CartCubit>(() => _i874.CartCubit(
+          cartRepository: gh<_i999.CartRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+          orderRepository: gh<_i698.OrderRepository>(),
+          productRepository: gh<_i846.ProductRepository>(),
+        ));
+    gh.factory<_i294.AddProductCubit>(() => _i294.AddProductCubit(
+          productRepository: gh<_i846.ProductRepository>(),
+          addProductHistoryRepository: gh<_i394.AddProductHistoryRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+          addProductRepository: gh<_i13.AddProductRepository>(),
+        ));
+    gh.factory<_i948.StatisticCubit>(() => _i948.StatisticCubit(
+          categoryRepository: gh<_i635.CategoryRepository>(),
+          orderRepository: gh<_i698.OrderRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+          transactionRepository: gh<_i370.TransactionRepository>(),
+        ));
+    gh.factory<_i867.OrderHistoryCubit>(() => _i867.OrderHistoryCubit(
+          orderRepository: gh<_i698.OrderRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
+    gh.factory<_i150.OrderHistoryDetailCubit>(
+        () => _i150.OrderHistoryDetailCubit(
+              orderRepository: gh<_i698.OrderRepository>(),
+              appCubit: gh<_i283.AppCubit>(),
+            ));
     return this;
   }
 }

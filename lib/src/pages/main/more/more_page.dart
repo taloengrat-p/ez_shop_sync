@@ -5,8 +5,10 @@ import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_router.dart';
+import 'package:ez_shop_sync/src/pages/branch_management/branch_management_router.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
 import 'package:ez_shop_sync/src/pages/login/login_router.dart';
@@ -29,9 +31,8 @@ import 'package:ez_shop_sync/src/pages/user_management/user_management_router.da
 import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/color_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
-import 'package:ez_shop_sync/src/widgets/bottom_sheet/bottom_menu_item.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_select_store_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/circle_profile_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
@@ -50,7 +51,6 @@ class MorePage extends StatefulWidget {
 
 class _MorePageState extends State<MorePage> {
   final _cubit = GetIt.I<MoreCubit>();
-
   @override
   void initState() {
     log('[init]', name: runtimeType.toString());
@@ -76,7 +76,7 @@ class _MorePageState extends State<MorePage> {
       listener: (context, state) async {
         if (state is MoreClickPinSetting) {
           if (state.type == PinType.create) {
-            final result = await PinSetupRouter(context).navigate();
+            await PinSetupRouter(context).navigate();
 
             _cubit.refresh();
           } else if (state.type == PinType.setting) {
@@ -99,15 +99,20 @@ class _MorePageState extends State<MorePage> {
           LoginRouter(context).pushNamedAndRemoveUntil();
         }
       },
-      child: BlocBuilder<MoreCubit, MoreState>(
-        bloc: _cubit,
-        builder: (context, state) {
-          return BaseScaffolds(
-            enableAppModeDisplay: false,
-            backgroundColor: Colors.white,
-            isLoading: state is AppLoading,
-            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.menu.tr(), actions: []).build(),
-            body: SingleChildScrollView(child: buildBody()),
+      child: BlocBuilder<AppCubit, AppState>(
+        bloc: GetIt.I<AppCubit>(),
+        builder: (context, appState) {
+          return BlocBuilder<MoreCubit, MoreState>(
+            bloc: _cubit,
+            builder: (context, state) {
+              return BaseScaffolds(
+                enableAppModeDisplay: false,
+                backgroundColor: Colors.white,
+                isLoading: state is AppLoading,
+                appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.menu.tr(), actions: []).build(),
+                body: SingleChildScrollView(child: buildBody()),
+              );
+            },
           );
         },
       ),
@@ -166,24 +171,42 @@ class _MorePageState extends State<MorePage> {
                 children: [
                   if (_cubit.stores.isNotEmpty) CircleProfileWidget(title: _cubit.storeShortName),
                   const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      _cubit.storeName,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                        color: ColorKeys.primary.withOpacity(0.6).getContrast(),
-                      ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            _cubit.storeName,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                              color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                            ),
+                          ),
+                        ),
+                        if (_cubit.storeName.isEmpty)
+                          Text(
+                            LocaleKeys.createFirstStore.tr(),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                              color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${LocaleKeys.branch.tr()} : ${_cubit.appCubit.branch?.name ?? '--'}',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            overflow: TextOverflow.ellipsis,
+                            color: ColorKeys.primary.withOpacity(0.6).getContrast(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  if (_cubit.storeName.isEmpty)
-                    Text(
-                      'Create first store',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                        color: ColorKeys.primary.withOpacity(0.6).getContrast(),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -215,26 +238,14 @@ class _MorePageState extends State<MorePage> {
   void onHandleChangeStore() async {
     final result = await BottomSheetUtils.showDragable(
       context,
-      title: 'Your Store',
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ..._cubit.stores.map(
-              (e) => BottomMenuItem(
-                label: e.name,
-                leading: CircleProfileWidget(title: e.name.toSubStringFirstToIndex(2)),
-                value: e.id,
-                trailing:
-                    e.id == _cubit.currentStore?.id
-                        ? const Icon(Icons.check_circle_rounded, color: Colors.green)
-                        : null,
-              ),
-            ),
-          ],
-        ),
+      title: LocaleKeys.yourStores.tr(),
+      body: BottomSheetSelectStoreWidget(
+        stores: _cubit.stores,
+        initStoreId: _cubit.currentStore?.id,
+        initBranchId: _cubit.currentBranch?.id,
       ),
     );
-    if (result != null) {
+    if (result != null && result is BottomSheetSelectStoreWidgetArgrument) {
       // TO DO
       _cubit.selectStore(result);
     }
@@ -253,9 +264,16 @@ class _MorePageState extends State<MorePage> {
           },
         ),
         MenuItemModel(
+          title: LocaleKeys.branchManagement.tr(),
+          value: 1,
+          onPressed: () {
+            BranchManagementRouter(context).navigate();
+          },
+        ),
+        MenuItemModel(
           title: LocaleKeys.userManagement.tr(),
           value: 2,
-          onPressed: () {
+          onPressed: () async {
             UserManagementRouter(context).navigate();
           },
         ),

@@ -57,7 +57,7 @@ class _FormCustomFieldWidgetState<T> extends State<FormCustomFieldWidget> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Expanded(
-                          child: TextFormFieldUiWidget(
+                          child: AppTextFormFieldUiWidget(
                             key: ValueKey('${widget.tag} $k'),
                             label: k,
                             textInitial: v?.toString(),
@@ -93,7 +93,7 @@ class _FormCustomFieldWidgetState<T> extends State<FormCustomFieldWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextFormFieldUiWidget(
+                        child: AppTextFormFieldUiWidget(
                           controller: _textProductTypeNameInput,
                           label: LocaleKeys.customName.tr(),
                           onChanged: (val) {
@@ -107,7 +107,7 @@ class _FormCustomFieldWidgetState<T> extends State<FormCustomFieldWidget> {
                         width: 8,
                       ),
                       Expanded(
-                        child: TextFormFieldUiWidget(
+                        child: AppTextFormFieldUiWidget(
                           controller: _textProductTypePriceInput,
                           label: LocaleKeys.customValue.tr(),
                           onChanged: (value) {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
@@ -93,6 +95,7 @@ class _LoginState extends State<LoginPage> {
   }
 
   Widget _buildPage(BuildContext context, LoginState state) {
+    log('state : $state', name: runtimeType.toString());
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,7 +111,7 @@ class _LoginState extends State<LoginPage> {
             child: ColumnGapWidget(
               gap: 8,
               children: [
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   label: LocaleKeys.loginPage_username.tr(),
                   labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
                   hintText: LocaleKeys.loginPage_yourEmail.tr(),
@@ -117,7 +120,7 @@ class _LoginState extends State<LoginPage> {
                     _cubit.setUsername(value);
                   },
                 ),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   label: LocaleKeys.loginPage_password.tr(),
                   hintText: LocaleKeys.loginPage_yourPassword.tr(),
                   labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
@@ -134,7 +137,7 @@ class _LoginState extends State<LoginPage> {
                   ),
                 ),
                 if (_cubit.screenMode == ScreenMode.register)
-                  TextFormFieldUiWidget(
+                  AppTextFormFieldUiWidget(
                     label: LocaleKeys.loginPage_confirmPassword.tr(),
                     labelStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
                     obscureText: !_cubit.isVisiblePassword,

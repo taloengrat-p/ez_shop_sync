@@ -2,7 +2,7 @@
 import 'text_form_field_ui_widget.dart';
 
 // ignore: must_be_immutable
-class TextFormFieldMobileUiWidget extends TextFormFieldUiWidget {
+class TextFormFieldMobileUiWidget extends AppTextFormFieldUiWidget {
   TextFormFieldMobileUiWidget({
     super.key,
     required String super.label,

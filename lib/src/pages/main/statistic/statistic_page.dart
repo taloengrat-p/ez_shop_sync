@@ -13,7 +13,6 @@ import 'package:ez_shop_sync/src/pages/transaction_statement_detail/transaction_
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_router.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/chart/bar_chart_widget.dart';
@@ -85,7 +84,52 @@ class _StatisticState extends State<StatisticPage> {
                   context,
                   centerTitle: false,
                   title: '${LocaleKeys.statistic_title.tr()} ( ${_cubit.periodType.label} )',
-                  actions: [],
+                  actions: [
+                    const SizedBox(width: 8),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.4),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          periodTitle,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    PopupMenuButton(
+                      itemBuilder:
+                          (context) => [
+                            PopupMenuItem(
+                              child: Text(LocaleKeys.week.tr()),
+                              onTap: () async {
+                                await pickPeriod(PeriodType.week);
+                              },
+                            ),
+                            PopupMenuItem(
+                              child: Text(LocaleKeys.month.tr()),
+                              onTap: () async {
+                                await pickPeriod(PeriodType.month);
+                              },
+                            ),
+                            PopupMenuItem(
+                              child: Text(LocaleKeys.year.tr()),
+                              onTap: () async {
+                                await pickPeriod(PeriodType.year);
+                              },
+                            ),
+                          ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(key: UniqueKey(), CupertinoIcons.calendar_circle, color: Colors.black, size: 40),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
                 ).build(),
             body: _buildPage(context, state),
           );
@@ -97,7 +141,6 @@ class _StatisticState extends State<StatisticPage> {
   Widget _buildPage(BuildContext context, StatisticState state) {
     return Column(
       children: [
-        _buildPeriodDateTime(),
         const SizedBox(height: 16),
         Expanded(
           child: SingleChildScrollView(
@@ -106,24 +149,76 @@ class _StatisticState extends State<StatisticPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: _buildTitleStatisticInfo(
-                          LocaleKeys.totalSales.tr(),
-                          _cubit.totalSales.toString().formatCurrency(),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _buildTitleStatisticInfo(
-                          LocaleKeys.netProfit.tr(),
-                          _cubit.netProfit.toString().formatCurrency(),
-                          valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: _cubit.netProfit > 0 ? Colors.green : Colors.white,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTitleStatisticInfo(
+                              LocaleKeys.totalProductSold.tr(),
+                              _cubit.totalProductSold.toInt().toString(),
+                              border: const BorderRadius.only(topLeft: Radius.circular(16)),
+                            ),
                           ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: _buildTitleStatisticInfo(
+                              LocaleKeys.totalOrders.tr(),
+                              _cubit.totalOrders.toString(),
+                              border: const BorderRadius.only(topRight: Radius.circular(16)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTitleStatisticInfo(
+                              LocaleKeys.amountCost.tr(),
+                              _cubit.totalCost.toString().formatCurrency(),
+                              border: BorderRadius.circular(0),
+                              valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: _buildTitleStatisticInfo(
+                              LocaleKeys.totalSales.tr(),
+                              _cubit.totalSales.toString().formatCurrency(),
+                              border: BorderRadius.circular(0),
+                              valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: Colors.green.shade200,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      _buildTitleStatisticInfo(
+                        LocaleKeys.netProfit.tr(),
+                        _cubit.netProfit.toString().formatCurrency(),
+                        valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color:
+                              _cubit.netProfit > 0
+                                  ? Colors.green
+                                  : _cubit.netProfit == 0
+                                  ? Colors.yellow
+                                  : Colors.red,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                        border: const BorderRadius.only(
+                          bottomRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(16),
                         ),
                       ),
                     ],
@@ -266,56 +361,76 @@ class _StatisticState extends State<StatisticPage> {
     );
   }
 
-  Widget _buildTitleStatisticInfo(String title, String value, {TextStyle? valueStyle}) {
+  Widget _buildTitleStatisticInfo(String title, String value, {TextStyle? valueStyle, BorderRadius? border}) {
     return ContainerShadowWidget(
+      border: border,
+      boxConstraints: const BoxConstraints(minHeight: 100),
       padding: const EdgeInsets.all(12),
       color: ColorKeys.primary.withOpacity(0.55),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
-          Text(value, style: valueStyle ?? Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Flexible(
+            child: Text(
+              value,
+              style:
+                  valueStyle ??
+                  Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildPeriodDateTime() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              periodTitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                periodTitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
-          ),
-          PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    child: Text(LocaleKeys.week.tr()),
-                    onTap: () async {
-                      await pickPeriod(PeriodType.week);
-                    },
-                  ),
-                  PopupMenuItem(
-                    child: Text(LocaleKeys.month.tr()),
-                    onTap: () async {
-                      await pickPeriod(PeriodType.month);
-                    },
-                  ),
-                  PopupMenuItem(
-                    child: Text(LocaleKeys.year.tr()),
-                    onTap: () async {
-                      await pickPeriod(PeriodType.year);
-                    },
-                  ),
-                ],
-            child: Icon(key: UniqueKey(), CupertinoIcons.calendar_circle, size: 40),
-          ),
-        ],
+            PopupMenuButton(
+              itemBuilder:
+                  (context) => [
+                    PopupMenuItem(
+                      child: Text(LocaleKeys.week.tr()),
+                      onTap: () async {
+                        await pickPeriod(PeriodType.week);
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text(LocaleKeys.month.tr()),
+                      onTap: () async {
+                        await pickPeriod(PeriodType.month);
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text(LocaleKeys.year.tr()),
+                      onTap: () async {
+                        await pickPeriod(PeriodType.year);
+                      },
+                    ),
+                  ],
+              child: Icon(key: UniqueKey(), CupertinoIcons.calendar_circle, size: 40),
+            ),
+          ],
+        ),
       ),
     );
   }

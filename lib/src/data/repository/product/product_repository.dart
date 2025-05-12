@@ -55,12 +55,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
       resultCreate.when(
         success: (response) async {
           await productHistoryRepository.create(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
-              data: ProductHistory(productId: response.id, event: request.data.toString()),
-              info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
-            ),
+            request.overide(data: ProductHistory(productId: response.id, event: request.data.toString())),
           );
 
           ToastNotificationService.show(
@@ -157,33 +152,22 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
 
   Future<ApiResult<Product>> addProductQuantityToStock(AddProductQtyToStockrequest request) async {
     if (appMode == AppMode.local) {
-      final product = await getById(
-        BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: request.productId),
-      );
+      final product = await getById(request.overide(data: request.productId));
 
       final newQuantity = (product.response?.quantity ?? 0) + (request.data.quantity ?? 0);
 
       product.when(
         success: (response) async {
-          final productUpdated = await update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
-              data: product.response!..quantity = newQuantity,
-            ),
-          );
+          final productUpdated = await update(request.overide(data: product.response!..quantity = newQuantity));
 
           final productHistory = await productHistoryRepository.create(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
+            request.overide(
               data: ProductHistory(
                 productId: response.id,
                 event: ProductHistoryEvent.addToStock.name,
                 newData: {"priceCategory": request.data.priceSelected, "qty": request.data.quantity},
                 info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
               ),
-              info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
             ),
           );
 
@@ -218,19 +202,11 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
       for (OrderItem item in request.data.cartItems) {
         if (item.product?.id != null) {
           // final product = await getById(storeId: cart!.storeId, productId: item.product!.id);
-          final product = await getById(
-            BaseRepoRequest(storeId: request.storeId, userId: request.userId, data: item.product?.id),
-          );
+          final product = await getById(request.overide(data: item.product?.id));
 
           final newQuantity = (product.response?.quantity ?? 0) - (item.product?.quantity ?? 0);
 
-          await productLocalRepository.update(
-            BaseRepoRequest(
-              storeId: request.storeId,
-              userId: request.userId,
-              data: product.response!..quantity = newQuantity,
-            ),
-          );
+          await productLocalRepository.update(request.overide(data: product.response!..quantity = newQuantity));
         }
       }
     } else {

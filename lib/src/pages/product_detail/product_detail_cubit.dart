@@ -4,7 +4,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
@@ -54,9 +53,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     }
     emit(ProductDetailLoading());
 
-    final result = await productRepository.deleteProduct(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product!),
-    );
+    final result = await productRepository.deleteProduct(appCubit.request(product!));
 
     result.when(
       success: (response) {
@@ -75,9 +72,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
   Future<void> refresh() async {
     log('get ${product!.id}');
     emit(ProductDetailLoading());
-    final result = await productRepository.getById(
-      BaseRepoRequest(storeId: appCubit.storeId ?? '', userId: appCubit.userId ?? '', data: product!.id),
-    );
+    final result = await productRepository.getById(appCubit.request(product!.id));
     result.when(
       success: (response) {
         product = response;

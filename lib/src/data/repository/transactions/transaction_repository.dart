@@ -39,16 +39,13 @@ class TransactionRepository extends IRepository<Transaction> {
     if (appMode == AppMode.local) {
       final now = DateTime.now();
       return await transactionLocalRepository.create(
-        BaseRepoRequest(
-          storeId: request.storeId,
-          userId: request.userId,
+        request.overide(
           data: Transaction(
             id: now.toTransactionFormatId(prefix: ApplicationConstance.transactionPrefix),
             transactionType: request.data.transactionType.name,
             method: request.data.method.name,
             valueId: request.data.valueId,
             totalPrice: request.data.totalPrice,
-            storeId: request.storeId ?? '',
           ),
         ),
       );
@@ -70,23 +67,6 @@ class TransactionRepository extends IRepository<Transaction> {
   Future<ApiResult> deleteAllByIds(List<String> request) async {
     if (appMode == AppMode.local) {
       return await transactionLocalRepository.deleteAll();
-    } else {
-      throw UnimplementedError();
-    }
-  }
-
-  Future<ApiResult<List<Transaction>>> getAllByStoreId(String storeId) async {
-    if (appMode == AppMode.local) {
-      final result = await transactionLocalRepository.getAll();
-
-      return result.when(
-        success: (response) {
-          return ApiResult(response: response.where((e) => e.storeId == storeId).toList());
-        },
-        failure: (error) {
-          return ApiResult(error: error);
-        },
-      );
     } else {
       throw UnimplementedError();
     }
@@ -129,7 +109,7 @@ class TransactionRepository extends IRepository<Transaction> {
         request.data.end.millisecondsSinceEpoch,
       );
 
-      return ApiResult(response: result.where((e) => e.storeId == request.storeId).toList());
+      return ApiResult(response: result.where((e) => e.info?.storeId == request.storeId).toList());
     } else {
       return await transactionServerRepository.getByDateRange(request);
     }

@@ -48,7 +48,7 @@ class _FormCreateCustomFieldState extends State<FormCreateCustomField> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFormFieldUiWidget(
+                    child: AppTextFormFieldUiWidget(
                       readOnly: widget.screenMode == ScreenMode.display,
                       textValue: widget.screenMode == ScreenMode.display ? widget.model?.name.toString() ?? '' : null,
                       controller: _textProductTypeNameInput,
@@ -62,7 +62,7 @@ class _FormCreateCustomFieldState extends State<FormCreateCustomField> {
                     width: 8,
                   ),
                   Expanded(
-                    child: TextFormFieldUiWidget(
+                    child: AppTextFormFieldUiWidget(
                       readOnly: widget.screenMode == ScreenMode.display,
                       textValue: widget.screenMode == ScreenMode.display ? widget.model?.price.toString() ?? '' : null,
                       controller: _textProductTypePriceInput,

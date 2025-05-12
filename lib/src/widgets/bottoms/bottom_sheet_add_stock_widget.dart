@@ -85,7 +85,7 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                   },
                 ),
                 const SizedBox(height: 8),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   controller: _qtyTextController,
                   label: LocaleKeys.quantity.tr(),
                   autofocus: true,
@@ -98,7 +98,7 @@ class _BottomSheetAddStockWidgetState extends State<BottomSheetAddStockWidget> {
                     });
                   },
                 ),
-                TextFormFieldUiWidget(
+                AppTextFormFieldUiWidget(
                   controller: _costAmountTextController,
                   label: LocaleKeys.amountCost.tr(),
                   autofocus: true,

@@ -197,10 +197,10 @@ extension DateTimeExtension on DateTime {
     return List<DateTime>.generate(12, (i) => DateTime(year, i + 1, 1));
   }
 
-  String toTransactionFormatId({String? prefix}) {
+  String toTransactionFormatId({String? prefix, int? fixDigit = 5}) {
     final now = DateTime.now();
     String fullUuid = const Uuid().v4();
-    String shortUuid = fullUuid.replaceAll('-', '').substring(0, 4);
+    String shortUuid = fullUuid.replaceAll('-', '').substring(0, fixDigit);
     final formatted = DateFormat('yyyyMMddHHmm').format(now);
     String transactionId = '${prefix != null ? '$prefix-' : ''}$formatted-$shortUuid';
 

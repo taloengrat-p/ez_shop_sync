@@ -3,11 +3,9 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_increase_request.dart';
-import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product_history/add_product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
-
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
@@ -75,10 +73,8 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
       addProductRepository.increaseQty(
-        BaseRepoRequest(
-          storeId: appCubit.storeId ?? '',
-          userId: appCubit.userId,
-          data: AddProductIncreaseRequest(
+        appCubit.request(
+          AddProductIncreaseRequest(
             addProductId: _addProduct?.id,
             orderItemId: item?.product?.id,
             qty: item?.product?.quantity ?? 0,
@@ -104,10 +100,8 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     timerUtils.debounceTime(const Duration(milliseconds: 500), () {
       addProductRepository.decreaseQty(
-        BaseRepoRequest(
-          storeId: appCubit.storeId ?? '',
-          userId: appCubit.userId,
-          data: AddProductDecreaseQtyRequest(
+        appCubit.request(
+          AddProductDecreaseQtyRequest(
             addProductId: _addProduct?.id,
             orderItemId: item?.id,
             qty: item?.product?.quantity ?? 0,
@@ -157,24 +151,14 @@ class AddProductCubit extends Cubit<AddProductState> {
     }
 
     final addProductCompleted = await addProductHistoryRepository.create(
-      BaseRepoRequest(
-        storeId: appCubit.storeId!,
-        userId: appCubit.userId!,
-        data: _addProduct!.copyWith(amountCost: totalPrice),
-      ),
+      appCubit.request(_addProduct!.copyWith(amountCost: totalPrice)),
     );
 
     addProductCompleted.when(
       success: (response) async {
         if (_addProduct != null) {
           // await productRepository.orderCompletedUpdate(_cart);
-          await addProductRepository.update(
-            BaseRepoRequest(
-              storeId: appCubit.store?.id ?? '',
-              userId: appCubit.user?.uid ?? '',
-              data: _addProduct!..addProductItems = [],
-            ),
-          );
+          await addProductRepository.update(appCubit.request(_addProduct!..addProductItems = []));
         }
         emit(AddProductSuccess(addProductCompleted.response));
       },

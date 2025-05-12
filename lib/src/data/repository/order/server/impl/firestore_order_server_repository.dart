@@ -50,12 +50,12 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
         updateAt: FieldValue.serverTimestamp(),
         createBy: request.userId,
         updateBy: request.userId,
+        branchId: request.branchId,
+        storeId: request.storeId,
       );
 
       final payload = ProductOrder(
         id: orderId,
-        storeId: request.storeId!,
-        userId: request.userId!,
         status: request.data.status.name,
         orderItems: request.data.orderItems,
         paymentType: request.data.paymentType.name,
@@ -91,6 +91,7 @@ class FirestoreOrderServerRepository implements IOrderServerRepository {
             data: ProductHistoryEvent.order,
             refId: orderId,
             info: info,
+            branchId: request.branchId,
           ),
         );
       }

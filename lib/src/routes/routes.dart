@@ -1,9 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ez_shop_sync/src/pages/add_branch/add_branch_page.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_page.dart';
-import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history/add_product_history_page.dart';
+import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_page.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_page.dart';
+import 'package:ez_shop_sync/src/pages/branch_detail_management/branch_detail_management_page.dart';
+import 'package:ez_shop_sync/src/pages/branch_management/branch_management_page.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_page.dart';
 import 'package:ez_shop_sync/src/pages/category_management/category_management_page.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_page.dart';
@@ -67,6 +70,9 @@ class Routes {
   static const String ROUTE_ADDUSER = '/ROUTE_ADDUSER';
   static const String ROUTE_NOTIFICATIONDETAIL = '/ROUTE_NOTIFICATIONDETAIL';
   static const String ROUTE_CREATEPRODUCTDETAIL = '/ROUTE_CREATEPRODUCTDETAIL';
+  static const String ROUTE_BRANCHMANAGEMENT = '/ROUTE_BRANCHMANAGEMENT';
+  static const String ROUTE_ADDBRANCH = '/ROUTE_ADDBRANCH';
+  static const String ROUTE_BRANCHDETAILMANAGEMENT = '/ROUTE_BRANCHDETAILMANAGEMENT';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -101,5 +107,8 @@ class Routes {
     ROUTE_ADDUSER: (context) => const AddUserPage(),
     ROUTE_NOTIFICATIONDETAIL: (context) => const NotificationDetailPage(),
     ROUTE_CREATEPRODUCTDETAIL: (context) => const CreateProductDetailPage(),
+    ROUTE_BRANCHMANAGEMENT: (context) => const BranchManagementPage(),
+    ROUTE_ADDBRANCH: (context) => const AddBranchPage(),
+    ROUTE_BRANCHDETAILMANAGEMENT: (context) => const BranchDetailManagementPage(),
   };
 }

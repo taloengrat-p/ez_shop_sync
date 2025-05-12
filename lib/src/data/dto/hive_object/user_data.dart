@@ -18,6 +18,8 @@ class UserData extends BaseHiveObject {
   final List<String>? stores;
   @HiveField(10)
   final String? displayName;
+  @HiveField(11, defaultValue: null)
+  final String? branchSelected;
   UserData({
     super.id,
     BaseHiveData? super.info,
@@ -25,6 +27,7 @@ class UserData extends BaseHiveObject {
     this.storeSelected,
     this.stores,
     this.displayName,
+    this.branchSelected,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) => _$UserDataFromJson(json);
