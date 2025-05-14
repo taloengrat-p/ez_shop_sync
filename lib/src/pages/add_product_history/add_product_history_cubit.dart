@@ -32,12 +32,9 @@ class AddProductHistoryCubit extends Cubit<AddProductHistoryState> {
     }
 
     final start = orderItems.length;
-    final end = orderItems.length + itemLength;
 
     final orderLoaded = await addProductHistoryRepository.getItemsByLimit(
-      appCubit.request(
-        PaginationIndexRequest(start: start, end: end, lastDocument: refresh ? null : lastDocument, limit: 10),
-      ),
+      appCubit.request(PaginationIndexRequest(start: start, lastDocument: refresh ? null : lastDocument, limit: 10)),
     );
 
     orderLoaded.when(
@@ -49,7 +46,7 @@ class AddProductHistoryCubit extends Cubit<AddProductHistoryState> {
         lastDocument = response.lastDocument;
         orderItems.addAll(response.orders);
         if (!disabledState) {
-          emit(AddProductHistoryLoadMoreSuccess(start, end));
+          emit(AddProductHistoryLoadMoreSuccess(start, itemLength));
         }
       },
       failure: (error) {

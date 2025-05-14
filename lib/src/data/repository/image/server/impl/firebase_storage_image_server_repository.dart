@@ -17,8 +17,7 @@ class FirebaseStorageImageServerRepository implements IImageServerRepository {
 
   @override
   Future<String> uploadImageToUser(BaseRepoRequest<UploadImageRequest> request) async {
-    throwIf(request.userId == null, 'uploadImageToUser() request.userId == null');
-    final storageRef = firebaseService.userStorage.child('${request.userId!}/${request.data.fileName}');
+    final storageRef = firebaseService.userStorage.child('${request.userId}/${request.data.fileName}');
     await storageRef.putFile(request.data.file);
     final imageUrl = await storageRef.getDownloadURL();
     return imageUrl;
@@ -26,10 +25,9 @@ class FirebaseStorageImageServerRepository implements IImageServerRepository {
 
   @override
   Future<String> uploadImageToStore(BaseRepoRequest<UploadImageRequest> request) async {
-    throwIf(request.storeId == null, 'uploadImageToStore() request.userId == null');
     throwIf(request.data.fileName.isEmpty, 'uploadImageToStore() fileName.isEmpty');
 
-    String reference = '${request.storeId!}/${request.data.fileName}';
+    String reference = '${request.storeId}/${request.data.fileName}';
     log('uploadImageToStore() $reference');
     final storageRef = firebaseService.storeStorage.child(reference);
     await storageRef.putFile(request.data.file);

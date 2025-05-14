@@ -122,7 +122,7 @@ class _BranchManagementState extends State<BranchManagementPage> {
               title: Text(branch.name),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [Text(branch.members.length.toString()), const SizedBox(width: 8), Icon(Icons.person)],
+                children: [Text(branch.members.length.toString()), const SizedBox(width: 8), const Icon(Icons.person)],
               ),
             ),
           ),

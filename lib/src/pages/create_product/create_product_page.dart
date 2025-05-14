@@ -8,19 +8,25 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
+import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
+import 'package:ez_shop_sync/src/pages/create_category/create_category_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/widgets/product_type_widget.dart';
 import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_router.dart';
+import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
+import 'package:ez_shop_sync/src/widgets/dropdown_select_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/form/form_create_custom_field.dart';
 import 'package:ez_shop_sync/src/widgets/form/form_custom_field_widget.dart';
 import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
+import 'package:ez_shop_sync/src/widgets/text_form_field/app_text_form_field_dropdown_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +58,8 @@ class CreateProductPageState extends State<CreateProductPage> {
 
       if (args is ProductEditArgrument) {
         _cubit.setArgruments(args);
+      } else {
+        _cubit.setArgruments(null);
       }
     });
   }
@@ -66,7 +74,7 @@ class CreateProductPageState extends State<CreateProductPage> {
     return BlocListener<CreateProductCubit, CreateProductState>(
       bloc: _cubit,
       listener: (context, state) {
-        log('create product state : $state, ${_cubit.productEditor?.attributes}');
+        log('create product state : ${_cubit.screenMode}');
         if (state is CreateProductSuccess || state is CreateProductUpdateSuccess) {
           CreateProductRouter(context).pop(BaseArgrument(refresh: true));
         }
@@ -167,51 +175,47 @@ class CreateProductPageState extends State<CreateProductPage> {
                           ],
                         ),
                       ),
-                      // Divider(
-                      //   color: ColorKeys.primary.withOpacity(0.6),
-                      // ),
-                      // TextFormFieldDropdownSelectWidget<Category>(
-                      //   controller: _categoryController,
-                      //   singleSelect: true,
-                      //   label: LocaleKeys.optionalField.tr(args: [LocaleKeys.category.tr()]),
-                      //   items: cubit.categories
-                      //       .map(
-                      //         (e) => DropdownItem<Category>(
-                      //           label: e.name,
-                      //           value: e,
-                      //           selected: cubit.productEditor?.category == e.id,
-                      //         ),
-                      //       )
-                      //       .toList(),
-                      //   itemBuilder: (item, index, onTap) {
-                      //     return DropdownSelectItemWidget(
-                      //       selected: item.selected,
-                      //       onTap: onTap,
-                      //       child: CategoryWidget(
-                      //         model: item.value,
-                      //         icon: IconPickerUtils.getIcon(item.value.iconData),
-                      //       ),
-                      //     );
-                      //   },
-                      //   selectedItemBuilder: (item) {
-                      //     return CategoryWidget(
-                      //       model: item.value,
-                      //       icon: IconPickerUtils.getIcon(item.value.iconData),
-                      //     );
-                      //   },
-                      //   onSelectionChange: cubit.setCategory,
-                      //   footerMenu: IconButton(
-                      //     icon: const Icon(Icons.add),
-                      //     onPressed: () async {
-                      //       final result = await CreateCategoryRouter(context).navigate();
+                      Divider(color: ColorKeys.primary.withOpacity(0.6)),
+                      AppTextFormFieldDropdownSelectWidget<Category>(
+                        controller: _categoryController,
+                        singleSelect: true,
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.category.tr()]),
+                        items:
+                            _cubit.categories
+                                .map(
+                                  (e) => DropdownItem<Category>(
+                                    label: e.name,
+                                    value: e,
+                                    selected: _cubit.productEditor?.category == e.id,
+                                  ),
+                                )
+                                .toList(),
+                        itemBuilder: (item, index, onTap) {
+                          return DropdownSelectItemWidget(
+                            selected: item.selected,
+                            onTap: onTap,
+                            child: CategoryWidget(
+                              model: item.value,
+                              icon: IconPickerUtils.getIcon(item.value.iconData),
+                            ),
+                          );
+                        },
+                        selectedItemBuilder: (item) {
+                          return CategoryWidget(model: item.value, icon: IconPickerUtils.getIcon(item.value.iconData));
+                        },
+                        onSelectionChange: _cubit.setCategory,
+                        footerMenu: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () async {
+                            final result = await CreateCategoryRouter(context).navigate();
 
-                      //       if (result is CreateCategorySuccess) {
-                      //         _categoryController.closeDropdown();
-                      //         cubit.refresh();
-                      //       }
-                      //     },
-                      //   ),
-                      // ),
+                            if (result is CreateCategorySuccess) {
+                              _categoryController.closeDropdown();
+                              _cubit.refresh();
+                            }
+                          },
+                        ),
+                      ),
                       // const SizedBox(
                       //   height: 8,
                       // ),

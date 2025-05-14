@@ -6,7 +6,7 @@ import 'package:ez_shop_sync/src/data/repository/base_hive_repository.dart';
 class IProductLocalRepository extends BaseHiveRepository<String, Product> {
   IProductLocalRepository() : super(boxName: HiveBoxConstance.product);
 
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+  Future<ApiResult<List<Product>?>> getAllByStoreAndBranchId(String id) async {
     final allResult = await getAll();
 
     allResult.when(

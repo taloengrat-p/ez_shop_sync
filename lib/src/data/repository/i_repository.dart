@@ -17,7 +17,7 @@ abstract class IRepository<T> {
   Future<ApiResult<List<T>>> getAll();
   Future<ApiResult<List<T>>> getAllByIds(List<String> ids);
   Future<ApiResult<T>> getById(BaseRepoRequest<String> id);
-  Future<ApiResult<T>> create(BaseRepoRequest<T> request);
+  // Future<ApiResult<T>> create(BaseRepoRequest<T> request);
   Future<ApiResult<T>> update(BaseRepoRequest<T> request);
   Future<ApiResult> delete(BaseRepoRequest<String> request);
   Future<ApiResult> deleteAllByIds(List<String> ids);

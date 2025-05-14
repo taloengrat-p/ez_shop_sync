@@ -144,6 +144,7 @@ import '../../pages/pin_verify/pin_verify_cubit.dart' as _i1048;
 import '../../pages/product_detail/product_detail_cubit.dart' as _i305;
 import '../../pages/product_settings/product_settings_cubit.dart' as _i717;
 import '../../pages/profile_settings/profile_settings_cubit.dart' as _i560;
+import '../../pages/splash/splash_cubit.dart' as _i420;
 import '../../pages/store_management/store_management_cubit.dart' as _i468;
 import '../../pages/tag_management/tag_management_cubit.dart' as _i277;
 import '../../pages/theme_setting/theme_setting_cubit.dart' as _i524;
@@ -521,6 +522,8 @@ extension GetItInjectableX on _i174.GetIt {
           appCubit: gh<_i283.AppCubit>(),
           localStorageService: gh<_i461.LocalStorageService>(),
         ));
+    gh.singleton<_i420.SplashCubit>(
+        () => _i420.SplashCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i924.TransactionsChartDetailsCubit>(() =>
         _i924.TransactionsChartDetailsCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i653.NotificationCubit>(

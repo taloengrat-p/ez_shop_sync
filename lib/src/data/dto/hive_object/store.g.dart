@@ -19,55 +19,58 @@ class StoreAdapter extends TypeAdapter<Store> {
     return Store(
       id: fields[1] as dynamic,
       info: fields[2] as BaseHiveData?,
-      ownerId: fields[7] as String,
-      name: fields[8] as String,
-      address: fields[9] as String?,
-      phoneNumbers: (fields[10] as List?)?.cast<String>(),
-      email: fields[11] as String?,
-      website: fields[12] as String?,
-      description: fields[13] as String?,
-      images: (fields[14] as List?)?.cast<String>(),
-      tags: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
-      storeTheme: fields[16] as AppTheme?,
+      ownerId: fields[3] as String,
+      name: fields[4] as String,
+      address: fields[5] as String?,
+      phoneNumbers: (fields[6] as List?)?.cast<String>(),
+      email: fields[7] as String?,
+      website: fields[8] as String?,
+      description: fields[9] as String?,
+      imageUrl: fields[10] as String?,
+      tags: fields[12] == null ? [] : (fields[12] as List?)?.cast<String>(),
+      storeTheme: fields[13] as AppTheme?,
       categories:
-          fields[17] == null ? [] : (fields[17] as List?)?.cast<String>(),
-      members: fields[18] == null ? [] : (fields[18] as List).cast<Member>(),
-      products: fields[19] == null ? [] : (fields[19] as List?)?.cast<String>(),
-      branches: fields[20] == null ? [] : (fields[20] as List?)?.cast<Branch>(),
+          fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
+      members: fields[15] == null ? [] : (fields[15] as List).cast<Member>(),
+      products: fields[16] == null ? [] : (fields[16] as List?)?.cast<String>(),
+      branches: fields[17] == null ? [] : (fields[17] as List?)?.cast<Branch>(),
+      imageCoverUrl: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(16)
-      ..writeByte(7)
-      ..write(obj.ownerId)
-      ..writeByte(8)
-      ..write(obj.name)
-      ..writeByte(9)
-      ..write(obj.address)
-      ..writeByte(10)
-      ..write(obj.phoneNumbers)
-      ..writeByte(11)
-      ..write(obj.email)
-      ..writeByte(12)
-      ..write(obj.website)
-      ..writeByte(13)
-      ..write(obj.description)
-      ..writeByte(14)
-      ..write(obj.images)
-      ..writeByte(15)
-      ..write(obj.tags)
-      ..writeByte(16)
-      ..write(obj.storeTheme)
       ..writeByte(17)
+      ..writeByte(3)
+      ..write(obj.ownerId)
+      ..writeByte(4)
+      ..write(obj.name)
+      ..writeByte(5)
+      ..write(obj.address)
+      ..writeByte(6)
+      ..write(obj.phoneNumbers)
+      ..writeByte(7)
+      ..write(obj.email)
+      ..writeByte(8)
+      ..write(obj.website)
+      ..writeByte(9)
+      ..write(obj.description)
+      ..writeByte(10)
+      ..write(obj.imageUrl)
+      ..writeByte(11)
+      ..write(obj.imageCoverUrl)
+      ..writeByte(12)
+      ..write(obj.tags)
+      ..writeByte(13)
+      ..write(obj.storeTheme)
+      ..writeByte(14)
       ..write(obj.categories)
-      ..writeByte(18)
+      ..writeByte(15)
       ..write(obj.members)
-      ..writeByte(19)
+      ..writeByte(16)
       ..write(obj.products)
-      ..writeByte(20)
+      ..writeByte(17)
       ..write(obj.branches)
       ..writeByte(1)
       ..write(obj.id)
@@ -104,8 +107,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       email: json['email'] as String?,
       website: json['website'] as String?,
       description: json['description'] as String?,
-      images:
-          (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      imageUrl: json['imageUrl'] as String?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       storeTheme: json['storeTheme'] == null
           ? null
@@ -122,6 +124,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       branches: (json['branches'] as List<dynamic>?)
           ?.map((e) => Branch.fromJson(e as Map<String, dynamic>))
           .toList(),
+      imageCoverUrl: json['imageCoverUrl'] as String?,
     );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
@@ -134,7 +137,8 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'email': instance.email,
       'website': instance.website,
       'description': instance.description,
-      'images': instance.images,
+      'imageUrl': instance.imageUrl,
+      'imageCoverUrl': instance.imageCoverUrl,
       'tags': instance.tags,
       'storeTheme': instance.storeTheme?.toJson(),
       'categories': instance.categories,

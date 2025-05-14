@@ -24,6 +24,11 @@ class ProfileSettingsInitial extends ProfileSettingsState {
   String toString() => 'ProfileSettingsInitial';
 }
 
+class ProfileSettingsInitialSuccess extends ProfileSettingsState {
+  @override
+  String toString() => 'ProfileSettingsInitialSuccess';
+}
+
 class ProfileSettingsLoading extends ProfileSettingsState {
   @override
   String toString() => 'ProfileSettingsLoading';

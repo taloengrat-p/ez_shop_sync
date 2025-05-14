@@ -15,7 +15,7 @@ import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 part 'product.g.dart';
 
 @HiveType(typeId: 1)
-@JsonSerializable(explicitToJson: true, createFactory: true)
+@JsonSerializable(explicitToJson: true)
 class Product extends BaseHiveObject {
   @HiveField(7)
   String name;
@@ -123,6 +123,7 @@ class Product extends BaseHiveObject {
     String? priceSelected,
     List<ProductType>? productTypeList,
     ProductStatus? status,
+    BaseHiveData? info,
   }) {
     return Product(
       id: super.id,
@@ -141,6 +142,7 @@ class Product extends BaseHiveObject {
       priceSelected: priceSelected ?? this.priceSelected,
       productTypeList: productTypeList ?? this.productTypeList,
       status: status ?? this.status,
+      info: info ?? this.info,
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:ez_shop_sync/src/data/dto/request/create_register_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/login_request.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/login/login_state.dart';
@@ -67,7 +66,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     resultLogin.when(
       success: (response) {
-        appCubit.setCurrentUser(response.user);
+        appCubit.setCurrentUser(response.user, origin: runtimeType.toString());
         emit(LoginSuccess());
       },
       failure: (error) {

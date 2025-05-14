@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
-import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class AddBranchState extends Equatable {

@@ -220,3 +220,18 @@ class AppBranchSuccess extends AppState {
   @override
   List<Object?> get props => [branches];
 }
+
+class AppGetAllDataStarterLoading extends AppState {
+  @override
+  String toString() => 'AppGetAllDataStarterLoading';
+}
+
+class AppGetAllDataStarterSuccess extends AppState {
+  @override
+  String toString() => 'AppGetAllDataStarterSuccess';
+}
+
+class AppGetAllDataStarterFailure extends AppState {
+  @override
+  String toString() => 'AppGetAllDataStarterFailure';
+}

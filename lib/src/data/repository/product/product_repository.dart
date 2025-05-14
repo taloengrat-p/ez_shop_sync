@@ -13,7 +13,9 @@ import 'package:ez_shop_sync/src/data/dto/request/add_product_qty_to_stock_reque
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/pagination_response.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/i_product_repository.dart';
@@ -22,10 +24,7 @@ import 'package:ez_shop_sync/src/data/repository/product/server/i_product_server
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/transactions/transaction_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
-import 'package:ez_shop_sync/src/pages/product_detail/product_detail_router.dart';
-import 'package:ez_shop_sync/src/services/navigation_service.dart';
 import 'package:ez_shop_sync/src/services/toast_notification_service.dart';
-import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:toastification/toastification.dart';
 
@@ -46,40 +45,6 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     required super.navigationService,
     required this.imageRepository,
   }) : super(AppMode.server, tag: 'Product');
-
-  @override
-  Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
-    if (appMode == AppMode.local) {
-      final resultCreate = await productLocalRepository.create(request);
-
-      resultCreate.when(
-        success: (response) async {
-          await productHistoryRepository.create(
-            request.overide(data: ProductHistory(productId: response.id, event: request.data.toString())),
-          );
-
-          ToastNotificationService.show(
-            title: LocaleKeys.notification_createSuccess.tr(args: [response.name]),
-            desc: LocaleKeys.notification_createSuccessSeeDetail.tr(),
-            onTap: (value) {
-              ProductDetailRouter(
-                GetIt.I<NavigationService>().navigatorKey.currentContext!,
-              ).navigate(argruments: response);
-            },
-          );
-
-          return resultCreate;
-        },
-        failure: (error) {
-          return resultCreate;
-        },
-      );
-
-      return resultCreate;
-    } else {
-      return await productServerRepository.create(request);
-    }
-  }
 
   @override
   Future<ApiResult> delete(BaseRepoRequest<String> request) async {
@@ -142,11 +107,14 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     }
   }
 
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+  Future<ApiResult<PaginationResponse<List<Product>>>> getAllByStoreAndBranchId(
+    BaseRepoRequest<PaginationIndexRequest> request,
+  ) async {
     if (appMode == AppMode.local) {
-      return productLocalRepository.getAllByStoreId(id);
+      throw UnimplementedError();
+      // return productLocalRepository.getAllByStoreAndBranchId(request.storeId);
     } else {
-      return productServerRepository.getAllByStoreId(id);
+      return productServerRepository.getAllByStoreAndBranchId(request);
     }
   }
 

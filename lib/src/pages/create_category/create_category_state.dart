@@ -31,9 +31,7 @@ class CreateCategoryLoading extends CreateCategoryState {
 
 class CreateCategorySuccess extends CreateCategoryState {
   final Category category;
-  const CreateCategorySuccess(
-    this.category,
-  );
+  const CreateCategorySuccess(this.category);
 
   @override
   String toString() => 'CreateCategorySuccess ${category.id}';
@@ -44,4 +42,11 @@ class CreateCategoryFailure extends CreateCategoryState {
 
   @override
   String toString() => 'CreateCategoryFailure';
+}
+
+class CreateCategoryUpdateSuccess extends CreateCategoryState {
+  const CreateCategoryUpdateSuccess();
+
+  @override
+  String toString() => 'CreateCategoryUpdateSuccess';
 }

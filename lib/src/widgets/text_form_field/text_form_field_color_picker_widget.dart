@@ -8,12 +8,7 @@ class TextFormFieldColorPickerWidget extends StatefulWidget {
   final String label;
   final Color? initialColor;
 
-  const TextFormFieldColorPickerWidget({
-    super.key,
-    this.onSelected,
-    required this.label,
-    this.initialColor,
-  });
+  const TextFormFieldColorPickerWidget({super.key, this.onSelected, required this.label, this.initialColor});
 
   @override
   State<TextFormFieldColorPickerWidget> createState() => TextFormFieldColorPickerWidgetState();
@@ -32,6 +27,11 @@ class TextFormFieldColorPickerWidgetState extends State<TextFormFieldColorPicker
 
   reset() {
     _color = _originalColor;
+    setState(() {});
+  }
+
+  setColor(Color value) {
+    _color = value;
     setState(() {});
   }
 

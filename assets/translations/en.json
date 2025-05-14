@@ -276,5 +276,9 @@
   },
   "yourStores": "Your all Stores",
   "displayName": "Display name",
-  "unitTypeManagement": "Unit Type Management"
+  "unitTypeManagement": "Unit Type Management",
+  "createFirstStoreSuccess": "Create your first store {} Successfully.",
+  "addProductInfo": "Add Product Information",
+  "storeValue": "Store : {}",
+  "branchValue": "Branch : {}"
 }

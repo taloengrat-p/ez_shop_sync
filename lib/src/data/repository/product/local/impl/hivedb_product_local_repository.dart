@@ -11,7 +11,7 @@ class HivedbProductLocalRepository extends BaseHiveRepository<String, Product> i
   HivedbProductLocalRepository() : super(boxName: HiveBoxConstance.product);
 
   @override
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+  Future<ApiResult<List<Product>?>> getAllByStoreAndBranchId(String id) async {
     final allResult = await getAll();
 
     allResult.when(

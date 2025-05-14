@@ -4,14 +4,16 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/pagination_response.dart';
 
 abstract class IProductServerRepository {
-  Future<ApiResult<Product>> create(BaseRepoRequest<Product> request);
-
   Future<ApiResult<Product>> createProduct(BaseRepoRequest<CreateProductRequest> request);
 
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id);
+  Future<ApiResult<PaginationResponse<List<Product>>>> getAllByStoreAndBranchId(
+    BaseRepoRequest<PaginationIndexRequest> request,
+  );
 
   Future<ApiResult> delete(BaseRepoRequest<String> request);
 

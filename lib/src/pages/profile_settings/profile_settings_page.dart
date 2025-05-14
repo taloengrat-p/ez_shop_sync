@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
@@ -57,6 +59,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
         builder: (context, state) {
           return BlocListener<ProfileSettingsCubit, ProfileSettingsState>(
             listener: (context, state) async {
+              log('profile state : $state');
               if (state is ProfileSettingsSendVerifyEmail) {
                 await DialogUtils.showAlertDialog(
                   context,
@@ -73,7 +76,7 @@ class _ProfileSettingsState extends State<ProfileSettingsPage> {
             child: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
               builder: (context, state) {
                 return BaseScaffolds(
-                  isInitialLoading: state is ProfileSettingsLoading,
+                  isInitialLoading: state is ProfileSettingsInitial,
                   isLoading: state is ProfileSettingsLoading,
                   appBar:
                       AppbarWidget(

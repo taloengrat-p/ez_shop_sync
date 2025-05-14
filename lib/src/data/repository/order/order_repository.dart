@@ -77,7 +77,7 @@ class OrderRepository extends IRepository<ProductOrder> implements IOrderReposit
       return Future.value(
         ApiResult(
           response: OrderHistoryResponse(
-            orders: orderLocalRepository.getAllRange(request.data.start, request.data.end),
+            orders: orderLocalRepository.getAllRange(request.data.start, request.data.limit),
           ),
         ),
       );

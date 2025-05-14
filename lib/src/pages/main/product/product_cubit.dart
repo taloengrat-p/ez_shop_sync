@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
@@ -17,27 +19,24 @@ class ProductCubit extends Cubit<ProductState> {
 
   ScreenMode screenMode = ScreenMode.display;
   String? searchText;
-  List<Product> get products =>
-      appCubit.products
-          .where(
-            (product) =>
-                (searchText?.isEmpty ?? true)
-                    ? true
-                    : product.name.ignoreSpaceAndUpperCase().contains(searchText!.ignoreSpaceAndUpperCase()),
-          )
-          .toList();
 
-  ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial());
+  List<Product> _products = [];
+  List<Product> get products => _products;
 
-  get productCount => products.isEmpty ? '' : ' ( ${products.length} )';
+  ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
+    updateCurrentProductFromAppCubit();
+    emit(const ProductLoadItemSuccess());
+  }
+
+  get productCount => products.isEmpty ? '' : ' ( ${appCubit.totalAllProduct} )';
 
   ProductDisplayType get displayType => appCubit.productDisplayType;
   ProductSortType get sortType => appCubit.productSortType;
 
-  void changeSortType() {
+  void changeSortType() async {
     appCubit.changeSortType();
-
     emit(ProductRefresh(DateTime.now()));
+    await refresh();
   }
 
   changeDisplayType() {
@@ -62,14 +61,30 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductRefresh(DateTime.now()));
   }
 
-  Future<void> init({bool isRefresh = false}) async {
-    if (!isRefresh) {
-      emit(ProductInitial());
-    }
-    await appCubit.loadProductByCurrentStore();
+  // Future<void> init({bool isRefresh = false}) async {
+  //   if (appCubit.storeId == null) {
+  //     return;
+  //   }
 
-    emit(ProductRefresh(DateTime.now()));
-  }
+  //   emit(ProductInitial());
+
+  //   final start = appCubit.products.length;
+
+  //   final result = await productRepository.getAllByStoreAndBranchId(
+  //     appCubit.request(PaginationIndexRequest(start: start, limit: limitLength, lastDocument: lastDocument)),
+  //   );
+
+  //   result.when(
+  //     success: (response) {
+  //       appCubit.doAddProduct(response ?? []);
+
+  //       emit(ProductLoadItemSuccess(start: start, limit: limitLength));
+  //     },
+  //     failure: (error, {errorType}) {
+  //       emit(ProductLoadItemSuccess(start: start, limit: limitLength));
+  //     },
+  //   );
+  // }
 
   void setSearchText(String? value) {
     searchText = value;
@@ -109,5 +124,61 @@ class ProductCubit extends Cubit<ProductState> {
         emit(ProductAddStockFailure(apiError: error));
       },
     );
+  }
+
+  Future<void> refresh() async {
+    if (appCubit.storeId == null) {
+      return;
+    }
+
+    final result = await appCubit.refreshProductByCurrentStoreAndBranch();
+
+    return result.when(
+      success: (response) {
+        updateCurrentProductFromAppCubit();
+        emit(const ProductLoadItemSuccess());
+      },
+      failure: (error, {errorType}) {
+        emit(const ProductLoadItemFailure());
+      },
+    );
+  }
+
+  Future<bool> loadMore() async {
+    if (appCubit.storeId == null) {
+      return false;
+    }
+
+    final result = await appCubit.loadProductByCurrentStore();
+
+    return result.when(
+      success: (response) {
+        if (response.data.isEmpty) {
+          emit(ProductLoadItemEmpty());
+        } else {
+          updateCurrentProductFromAppCubit();
+          emit(const ProductLoadItemSuccess());
+        }
+
+        return response.data.isNotEmpty;
+      },
+      failure: (error, {errorType}) {
+        emit(const ProductLoadItemFailure());
+      },
+    );
+  }
+
+  updateCurrentProductFromAppCubit() {
+    _products =
+        appCubit.products
+            .where(
+              (product) =>
+                  (searchText?.isEmpty ?? true)
+                      ? true
+                      : product.name.ignoreSpaceAndUpperCase().contains(searchText!.ignoreSpaceAndUpperCase()),
+            )
+            .toList();
+
+    log('updateCurrentProductFromAppCubit ${products.length}');
   }
 }

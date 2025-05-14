@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/repository/category/category_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
@@ -51,13 +50,18 @@ class CategoryManagementCubit extends Cubit<CategoryManagementState> {
     selected.removeWhere((key, value) => value == false);
     log('remove ${selected.keys}');
 
-    final categoryListUpdate =
-        appCubit.categories.where((e) => !selected.keys.toList().contains(e.id)).map((e) => e.id.toString()).toList();
-    Store storeUpdated = appCubit.store!..categories = categoryListUpdate;
+    final result = await categoryRepository.deleteCategoryByIds(appCubit.request(selected.keys.toList()));
 
-    await storeRepository.update(appCubit.request(storeUpdated));
-    appCubit.loadCategoryByCurrentStore();
+    result.when(
+      success: (response) async {
+        await appCubit.loadCategoryByCurrentStore();
+        emit(CategoryManagementDeleteSuccess());
+      },
+      failure: (error) {
+        emit(CategoryManagementSuccess());
+      },
+    );
+
     toggleDeleteMode();
-    emit(CategoryManagementSuccess());
   }
 }

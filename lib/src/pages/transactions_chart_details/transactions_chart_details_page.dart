@@ -3,7 +3,6 @@ import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_cubit.dart';
 import 'package:ez_shop_sync/src/pages/transactions_chart_details/transactions_chart_details_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/chart/bar_chart_widget.dart';

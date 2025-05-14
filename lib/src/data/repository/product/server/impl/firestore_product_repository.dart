@@ -1,6 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
+import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
@@ -13,17 +20,15 @@ import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/image_request/upload_image_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/pagination_response.dart';
 import 'package:ez_shop_sync/src/data/repository/image/image_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product/server/i_product_server_repository.dart';
 import 'package:ez_shop_sync/src/models/enums/app_error_type.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
 import 'package:ez_shop_sync/src/utils/image_picker_utils.dart';
-import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
-import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 @Injectable(as: IProductServerRepository, env: [Flavor.DEV, Flavor.STG, Flavor.PROD])
 class FirestoreProductServerRepository implements IProductServerRepository {
@@ -31,7 +36,6 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   final ImageRepository imageRepository;
   FirestoreProductServerRepository({required this.firebaseService, required this.imageRepository});
 
-  @override
   Future<ApiResult<Product>> create(BaseRepoRequest<Product> request) async {
     final now = DateTime.now();
 
@@ -41,6 +45,8 @@ class FirestoreProductServerRepository implements IProductServerRepository {
       updateAt: FieldValue.serverTimestamp(),
       createBy: request.data.ownerId,
       updateBy: request.data.ownerId,
+      storeId: request.storeId,
+      branchId: request.branchId,
     );
     request.data.info ??= productInfo;
 
@@ -65,30 +71,35 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     return ApiResult(response: request.data);
   }
 
+  Future<ProductProfileImage> createProductProfileImage(BaseRepoRequest<File> request) async {
+    String fileName = '${const Uuid().v4()}_${basename(request.data.path)}';
+
+    final imageUrlResult = await imageRepository.uploadImageToStore(
+      BaseRepoRequest.build(request, UploadImageRequest(file: request.data, fileName: fileName)),
+    );
+
+    final imageThumbnail = await ImagePickerUtils.compressImageForThumbnail(request.data);
+
+    throwIf(imageThumbnail == null, 'createProduct() imageThumbnail == null');
+
+    String thumbnailfileName = 'thumbnail-${const Uuid().v4()}_${basename(imageThumbnail!.path)}';
+    final imageThumbnailResult = await imageRepository.uploadImageToStore(
+      BaseRepoRequest.build(request, UploadImageRequest(file: imageThumbnail, fileName: thumbnailfileName)),
+    );
+
+    return ProductProfileImage(thumbnail: imageThumbnailResult, profile: imageUrlResult);
+  }
+
   @override
   Future<ApiResult<Product>> createProduct(BaseRepoRequest<CreateProductRequest> request) async {
     if (request.data.image != null) {
-      String fileName = '${const Uuid().v4()}_${basename(request.data.image!.path)}';
-
-      final imageUrlResult = await imageRepository.uploadImageToStore(
-        BaseRepoRequest.build(request, UploadImageRequest(file: request.data.image!, fileName: fileName)),
-      );
-
-      final imageThumbnail = await ImagePickerUtils.compressImageForThumbnail(request.data.image);
-
-      throwIf(imageThumbnail == null, 'createProduct() imageThumbnail == null');
-
-      String thumbnailfileName = 'thumbnail-${const Uuid().v4()}_${basename(imageThumbnail!.path)}';
-      final imageThumbnailResult = await imageRepository.uploadImageToStore(
-        BaseRepoRequest.build(request, UploadImageRequest(file: imageThumbnail, fileName: thumbnailfileName)),
-      );
-
+      final resultImageUpload = await createProductProfileImage(request.overide(data: request.data.image!));
       return await create(
         BaseRepoRequest.build(
           request,
           request.data.product
-            ..imageUrl = imageUrlResult
-            ..imageThumbnail = imageThumbnailResult,
+            ..imageUrl = resultImageUpload.profile
+            ..imageThumbnail = resultImageUpload.thumbnail,
         ),
       );
     } else {
@@ -97,25 +108,49 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   }
 
   @override
-  Future<ApiResult<List<Product>?>> getAllByStoreId(String id) async {
+  Future<ApiResult<PaginationResponse<List<Product>>>> getAllByStoreAndBranchId(
+    BaseRepoRequest<PaginationIndexRequest> request,
+  ) async {
     try {
-      final products =
-          await firebaseService.storesCollection
-              .doc(id)
-              .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
-              .orderBy('info.createAt', descending: true)
-              .get();
+      final QuerySnapshot<Map<String, dynamic>> productSnapshot;
 
-      final response = products.docs.map((e) => Product.fromJson(e.data())).toList();
+      final productUnderStoreCollection = firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS);
 
-      log('getAllByStoreId : ${response.map((e) => e.id)}');
-      if (products.docs.isEmpty) {
-        return ApiResult(error: null, appErrorType: AppErrorType.somethingWentWrong);
+      final totalItem = await productUnderStoreCollection.count().get();
+
+      if (request.data.lastDocument != null) {
+        productSnapshot =
+            await productUnderStoreCollection
+                .orderBy('info.createAt', descending: request.data.descending ?? true)
+                .limit(request.data.limit)
+                .startAfterDocument(request.data.lastDocument!)
+                .get();
+      } else {
+        productSnapshot =
+            await productUnderStoreCollection
+                .orderBy('info.createAt', descending: request.data.descending ?? true)
+                .limit(request.data.limit)
+                .get();
       }
 
-      return ApiResult(response: response);
+      log('productSnapshot.docs ${productSnapshot.docs}');
+
+      if (productSnapshot.docs.isEmpty) {
+        return ApiResult(response: PaginationResponse(data: [], totalItem: totalItem.count ?? 0));
+      } else {
+        final response = productSnapshot.docs.map((e) => Product.fromJson(e.data())).toList();
+        return ApiResult(
+          response: PaginationResponse(
+            data: response,
+            lastDocument: productSnapshot.docs.last,
+            totalItem: totalItem.count ?? 0,
+          ),
+        );
+      }
     } catch (e) {
-      return ApiResult(response: []);
+      return ApiResult(error: e);
     }
   }
 
@@ -144,7 +179,9 @@ class FirestoreProductServerRepository implements IProductServerRepository {
           .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
           .doc(request.data.id);
 
-      await docRef.update({...request.data.toJson(), 'updateAt': FieldValue.serverTimestamp()});
+      final updatedPayload = request.data.toJson();
+
+      await docRef.update({...updatedPayload, 'info.updateAt': FieldValue.serverTimestamp()});
 
       return ApiResult(response: request.data);
     } catch (e) {
@@ -280,12 +317,22 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   Future<ApiResult<Product>> updateProduct(BaseRepoRequest<UpdateProductImageRequest> request) async {
     try {
       if (request.data.updatedImage != null && request.data.product?.imageUrl != null) {
-        final ref = firebaseService.storage.refFromURL(request.data.imageRefUrl);
-
-        final newUrl = await ref.getDownloadURL();
-        await ref.putFile(request.data.updatedImage!);
-
-        return await update(BaseRepoRequest.build(request, request.data.product!..imageUrl = newUrl));
+        if (request.data.imageRefUrl != null) {
+          final ref = firebaseService.storage.refFromURL(request.data.imageRefUrl!);
+          final newUrl = await ref.getDownloadURL();
+          await ref.putFile(request.data.updatedImage!);
+          return await update(BaseRepoRequest.build(request, request.data.product!..imageUrl = newUrl));
+        } else {
+          final resultImageUpload = await createProductProfileImage(request.overide(data: request.data.updatedImage!));
+          return await update(
+            BaseRepoRequest.build(
+              request,
+              request.data.product!
+                ..imageUrl = resultImageUpload.profile
+                ..imageThumbnail = resultImageUpload.thumbnail,
+            ),
+          );
+        }
       } else {
         return await update(BaseRepoRequest.build(request, request.data.product!));
       }
@@ -304,4 +351,10 @@ class FirestoreProductServerRepository implements IProductServerRepository {
 
     return ApiResult(response: 'deleteProduct ${request.data.id} success');
   }
+}
+
+class ProductProfileImage {
+  final String thumbnail;
+  final String profile;
+  ProductProfileImage({required this.thumbnail, required this.profile});
 }

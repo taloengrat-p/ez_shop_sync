@@ -12,11 +12,9 @@ import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
-import 'package:ez_shop_sync/src/utils/folder_file_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
 
 @Injectable()
 class CreateProductCubit extends Cubit<CreateProductState> {
@@ -48,17 +46,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
   Product? get productEditor => _productEditor;
   Product? get productOriginal => _productOriginal;
 
-  CreateProductCubit({required this.productRepository, required this.appCubit}) : super(CreateProductInitial()) {
-    _productEditor = Product(
-      id: '',
-      name: '',
-      storeId: currentStore?.id ?? '',
-      status: ProductStatus.undefined,
-      ownerId: currentStore?.ownerId ?? '',
-      attributes: {},
-      productTypeList: [],
-    );
-  }
+  CreateProductCubit({required this.productRepository, required this.appCubit}) : super(CreateProductInitial());
 
   File? _productImage;
   File? get productImageFile => _productImage;
@@ -138,13 +126,25 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     emit(ProductScreenModeChange(_screenMode));
   }
 
-  void setArgruments(ProductEditArgrument args) {
-    _productOriginal = args.product?.copyWith();
-    _productEditor = args.product?.copyWith();
+  void setArgruments(ProductEditArgrument? args) {
+    if (args == null) {
+      _productEditor = Product(
+        id: '',
+        name: '',
+        storeId: currentStore?.id ?? '',
+        status: ProductStatus.undefined,
+        ownerId: currentStore?.ownerId ?? '',
+        attributes: {},
+        productTypeList: [],
+      );
+    } else {
+      _productOriginal = args.product?.copyWith();
+      _productEditor = args.product?.copyWith();
+    }
 
     log('_productEditor $_productEditor');
     emit(CreateProductInitial());
-    setScreenMode(ScreenMode.edit);
+    setScreenMode(args?.screenMode ?? ScreenMode.create);
   }
 
   checkTempCustomFieldRemaining() {
@@ -227,16 +227,6 @@ class CreateProductCubit extends Cubit<CreateProductState> {
 
   void submitCreate() async {
     emit(CreateProductLoading());
-    List<String> imageDetailFileName = [];
-
-    if (_productEditor?.imagesUrl?.isNotEmpty ?? false) {
-      for (var element in _productEditor!.imagesUrl!) {
-        final fileBytes = await FolderFileUtils.getFileBytes(File(element));
-        final imageName = const Uuid().v1().substring(0, 10);
-        final imageSaveModel = (await FolderFileUtils.saveImageInApp(fileBytes, imageName));
-        imageDetailFileName.add(imageSaveModel.fileName);
-      }
-    }
 
     checkTempCustomFieldRemaining();
     checkTempPriceCategoryRemaining();
@@ -246,55 +236,77 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     }
 
     final result = await productRepository.createProduct(
-      appCubit.request(
-        CreateProductRequest(
-          product:
-              _productEditor!
-                ..productTypeList = _productEditor!.productTypeList?.map((e) => e..id = const Uuid().v4()).toList(),
-          image: productImageFile,
-        ),
-      ),
+      appCubit.request(CreateProductRequest(product: _productEditor!, image: productImageFile)),
     );
 
     result.when(
       success: (response) {
         emit(CreateProductSuccess(response));
       },
+      failure: (error) {
+        emit(CreateProductFailure());
+      },
     );
   }
 
   Future<void> saveEdit() async {
-    if (_productEditor == null) {
-      return;
-    }
-
     checkTempCustomFieldRemaining();
     checkTempPriceCategoryRemaining();
+
+    if (_productEditor == null) {
+      throw ('createProduct Product editor is Null');
+    }
 
     emit(CreateProductLoading());
     final result = await productRepository.updateProduct(
       appCubit.request(
         UpdateProductImageRequest(
-          imageRefUrl: productOriginal!.imageUrl!,
+          product: _productEditor,
           updatedImage: productImageFile,
-          product:
-              _productEditor!
-                ..productTypeList =
-                    _productEditor!.productTypeList?.map((e) {
-                      e.id ??= const Uuid().v4();
-                      return e;
-                    }).toList(),
+          imageRefUrl: productOriginal?.imageUrl,
         ),
       ),
     );
 
     result.when(
-      success: (success) {
+      success: (response) {
         emit(CreateProductUpdateSuccess(_productEditor));
       },
-      failure: (error, {errorType}) {
+      failure: (error) {
         emit(CreateProductUpdateFailure());
       },
     );
+    //   if (_productEditor == null) {
+    //     return;
+    //   }
+
+    //   checkTempCustomFieldRemaining();
+    //   checkTempPriceCategoryRemaining();
+
+    //   emit(CreateProductLoading());
+    //   final result = await productRepository.updateProduct(
+    //     appCubit.request(
+    //       UpdateProductImageRequest(
+    //         imageRefUrl: productOriginal!.imageUrl!,
+    //         updatedImage: productImageFile,
+    //         product:
+    //             _productEditor!
+    //               ..productTypeList =
+    //                   _productEditor!.productTypeList?.map((e) {
+    //                     e.id ??= const Uuid().v4();
+    //                     return e;
+    //                   }).toList(),
+    //       ),
+    //     ),
+    //   );
+
+    //   result.when(
+    //     success: (success) {
+    //       emit(CreateProductUpdateSuccess(_productEditor));
+    //     },
+    //     failure: (error, {errorType}) {
+    //       emit(CreateProductUpdateFailure());
+    //     },
+    //   );
   }
 }

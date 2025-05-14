@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/repository/store/store_repository.dart';
@@ -28,6 +30,8 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
   String? nameEditor;
   String? descEditor;
 
+  Store? storeEditor;
+  File? storeProfileFileEditor;
   bool get hasChange =>
       ((nameEditor != nameOriginal) || (descEditor != descOriginal)) &&
       ((nameEditor?.isNotEmpty ?? false) && (descEditor?.isNotEmpty ?? false));
@@ -53,7 +57,7 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
 
     final storeBuffer = store;
     await storeRepository.delete(appCubit.request(store?.id ?? ''));
-    appCubit.setCurrentUser(appCubit.user);
+    // appCubit.setCurrentUser(appCubit.user);
     emit(StoreManagementDeleteSuccess(storeBuffer));
   }
 
@@ -90,5 +94,9 @@ class StoreManagementCubit extends Cubit<StoreManagementState> {
   doSetDesc(String? value) {
     descEditor = value;
     emit(StoreManagementRefresh(DateTime.now()));
+  }
+
+  setStoreProfileImage(File? file) {
+    storeProfileFileEditor = file;
   }
 }

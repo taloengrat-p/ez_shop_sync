@@ -4,5 +4,5 @@ import 'package:injectable/injectable.dart';
 
 @Injectable()
 class UnitTypeManagementCubit extends Cubit<UnitTypeManagementState> {
-  UnitTypeManagementCubit() : super(UnitTypeManagementInitial()) {}
+  UnitTypeManagementCubit() : super(UnitTypeManagementInitial());
 }

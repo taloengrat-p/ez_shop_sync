@@ -37,7 +37,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   String get profileEmail => user?.email.elseDisplay() ?? elseDisplay();
 
   Future<void> initial() async {
-    emit(ProfileSettingsLoading());
+    emit(ProfileSettingsInitial());
     await user?.reload();
     displayNameEditor = displayNameOriginal;
     // phoneOriginal = user?.phoneNumber ?? '';
@@ -46,7 +46,7 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     doSetPhoneNumber(user?.phoneNumber);
     doSetEmail(user?.email);
     // doSetDesc(user?.description);
-    emit(ProfileSettingsInitial());
+    emit(ProfileSettingsInitialSuccess());
   }
 
   void doEdit() {

@@ -33,6 +33,16 @@ class CategoryManagementSuccess extends CategoryManagementState {
   String toString() => 'CategoryManagementSuccess';
 }
 
+class CategoryManagementDeleteSuccess extends CategoryManagementState {
+  @override
+  String toString() => 'CategoryManagementDeleteSuccess';
+}
+
+class CategoryManagementDeleteFailure extends CategoryManagementState {
+  @override
+  String toString() => 'CategoryManagementDeleteFailure';
+}
+
 class CategoryManagementFailure extends CategoryManagementState {
   const CategoryManagementFailure();
 

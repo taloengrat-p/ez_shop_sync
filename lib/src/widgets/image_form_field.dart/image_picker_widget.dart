@@ -71,12 +71,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     Center(
                       // child: ClipOval(
                       // child:
-                      child: Image.file(
-                        File(widget.path!),
-                        width: widget.width,
-                        height: widget.height,
-                        fit: BoxFit.contain,
-                      ),
+                          child: Image.file(
+                            File(widget.path!),
+                            width: widget.width,
+                            height: widget.height,
+                            fit: BoxFit.contain,
+                          ),
 
                       // ),
                     ),

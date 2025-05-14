@@ -68,13 +68,29 @@ class _MainPageState extends State<MainPage> {
         builder: (context, state) {
           return BaseScaffolds(
             enableAppModeDisplay: true,
-            isLoading: state is MainLoading,
+            // isLoading: state is MainLoading,
             backgroundColor: Colors.white,
             appBar:
                 AppbarWidget(
                   context,
                   color: Colors.transparent,
-                  titleWidget: Row(children: [Expanded(child: ProfileWidget(name: _cubit.username ?? ''))]),
+                  titleWidget: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ProfileWidget(
+                              title: LocaleKeys.storeValue.tr(args: [_cubit.storeName]),
+                              name: _cubit.username ?? '',
+                              desc: LocaleKeys.branchValue.tr(args: [_cubit.branchName]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
                   actions: [
                     BlocBuilder(
                       bloc: _cubit.appCubit,

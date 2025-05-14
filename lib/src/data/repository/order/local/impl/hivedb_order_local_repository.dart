@@ -11,6 +11,7 @@ import 'package:injectable/injectable.dart';
 class HivedbOrderLocalRepository extends BaseHiveRepository<String, ProductOrder> implements IOrderLocalRepository {
   HivedbOrderLocalRepository() : super(boxName: HiveBoxConstance.order);
 
+  @override
   List<ProductOrder> getAllRangeByDateTime(BaseRepoRequest<OrderGetByDateRangeRequest> request) {
     return super.getAllRange(request.data.start.millisecondsSinceEpoch, request.data.end.millisecondsSinceEpoch);
   }

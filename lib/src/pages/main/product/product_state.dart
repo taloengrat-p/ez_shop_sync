@@ -21,6 +21,25 @@ class ProductInitial extends ProductState {
   String toString() => 'ProductInitial';
 }
 
+class ProductLoadItemSuccess extends ProductState {
+  const ProductLoadItemSuccess();
+
+  @override
+  String toString() => 'ProductLoadItemSuccess';
+}
+
+class ProductLoadItemFailure extends ProductState {
+  const ProductLoadItemFailure();
+
+  @override
+  String toString() => 'ProductLoadItemFailure';
+}
+
+class ProductInitialLoading extends ProductState {
+  @override
+  String toString() => 'ProductInitialLoading';
+}
+
 class ProductRefresh extends ProductState {
   final DateTime dateTime;
 
@@ -90,4 +109,9 @@ class ProductChangeScreenMode extends ProductState {
 class ProductFailure extends ProductState {
   @override
   String toString() => 'ProductFailure';
+}
+
+class ProductLoadItemEmpty extends ProductState {
+  @override
+  String toString() => 'ProductLoadItemEmpty';
 }

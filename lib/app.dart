@@ -6,11 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
-import 'package:ez_shop_sync/src/pages/login/login_page.dart';
-import 'package:ez_shop_sync/src/pages/main/main_page.dart';
+import 'package:ez_shop_sync/src/pages/splash/splash_page.dart';
 import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +32,6 @@ class _AppState extends State<App> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      appCubit.setCurrentUser(FirebaseAuth.instance.currentUser);
       subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
         if (result.contains(ConnectivityResult.none)) {
           appCubit.changeMode(AppMode.local);
@@ -98,7 +95,8 @@ class _AppState extends State<App> {
             builder: (context, state) {
               return Stack(
                 children: [
-                  appCubit.user == null ? const LoginPage() : const MainPage(),
+                  const SplashPage(),
+                  // appCubit.user == null ? const LoginPage() : const MainPage(),
                   // if (state is BaseLoading)
                   //   Container(
                   //     width: double.infinity,
@@ -125,15 +123,4 @@ class _AppState extends State<App> {
       ),
     );
   }
-
-  Widget _flavorBanner({required Widget child, bool show = true}) =>
-      show
-          ? Banner(
-            location: BannerLocation.topStart,
-            message: F.name,
-            color: Colors.green.withOpacity(0.6),
-            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
-            child: child,
-          )
-          : Container(child: child);
 }

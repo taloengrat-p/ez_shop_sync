@@ -216,7 +216,7 @@
     "title": "อยู่ในโหมดออฟไลน์",
     "desc": "บางฟีเจอร์จะไม่พร้อมใช้งานจนกว่าคุณจะออนไลน์อีกครั้ง"
   },
-  "productType": "ประเภทสินค้า",
+  "productType": "รูปแบบของสินค้า",
   "notifications": {
     "title": "แจ้งเตือน"
   },
@@ -277,5 +277,9 @@
   },
   "yourStores": "ร้านค้าทั้งหมดของคุณ",
   "displayName": "ชื่อที่แสดง",
-  "unitTypeManagement": "การจัดการหน่วยสินค้า"
+  "unitTypeManagement": "การจัดการหน่วยสินค้า",
+  "createFirstStoreSuccess": "สร้างร้านค้าแรกของคุณ {} สำเร็จ",
+  "addProductInfo": "ข้อมูลการเพิ่มสินค้า",
+  "storeValue": "ร้านค้า : {}",
+  "branchValue": "สาขา : {}"
 }

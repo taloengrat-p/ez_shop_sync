@@ -9,6 +9,8 @@ import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
+import 'package:ez_shop_sync/src/widgets/image_form_field.dart/image_picker_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
@@ -123,6 +125,22 @@ class _StoreManagementState extends State<StoreManagementPage> {
         child: ColumnGapWidget(
           gap: 8,
           children: [
+            Stack(
+              children: [
+                const ImageWidget(),
+                Center(
+                  child: ClipOval(
+                    child: ImagePickerWidget(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: 150,
+                      imageUrl: _cubit.storeEditor?.imageUrl,
+                      onImagePicked: _cubit.setStoreProfileImage,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
             AppTextFormFieldUiWidget(
               readOnly: _cubit.screenMode == ScreenMode.display,
               label: LocaleKeys.name.tr(),

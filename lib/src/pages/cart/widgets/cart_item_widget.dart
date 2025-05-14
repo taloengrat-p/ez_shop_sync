@@ -31,7 +31,6 @@ class CartItemWidget extends StatelessWidget {
     CartErrorType.invalid => LocaleKeys.error_productInvalid.tr(),
     CartErrorType.undefined => 'undefined',
     null => throw UnimplementedError(),
-    // TODO: Handle this case.
   };
 
   @override
@@ -75,7 +74,10 @@ class CartItemWidget extends StatelessWidget {
                         margin: EdgeInsets.zero,
                         imageUrl: cartItem?.product?.imageThumbnail,
                         width: 120,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                        ),
                       ),
                       Expanded(
                         child: ProductInfoListItem(

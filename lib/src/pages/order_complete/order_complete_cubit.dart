@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart';
@@ -29,7 +28,7 @@ class OrderCompleteCubit extends Cubit<OrderCompleteState> {
 
   void setArgruments(OrderCompleteArgrument? argruments) async {
     this.argruments = argruments;
-    await appCubit.loadProductByCurrentStore();
+    // await appCubit.loadProductByCurrentStore();
     emit(OrderCompleteInitial());
   }
 }

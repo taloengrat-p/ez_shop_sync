@@ -27,7 +27,6 @@ import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.d
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
-import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,10 +52,6 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
-      _cubit.init();
-    });
   }
 
   @override
@@ -153,36 +148,14 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   Widget buildContent() {
-    var size = MediaQuery.of(context).size;
-
-    if (_cubit.products.isNotEmpty) {
-      return BlocBuilder<AppCubit, AppState>(
-        bloc: _cubit.appCubit,
-        builder: (context, baseState) {
-          return Expanded(
-            child: ContainerScrollableWidget(
-              radius: DimensionsKeys.radius + 4,
-              child: (_cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct()),
-            ),
-          );
-        },
-      );
-    } else {
-      return Expanded(
-        child: SmartRefresher(
-          controller: _refreshEmptyViewController,
-          onRefresh: _onRefresh,
-          child: Center(
-            child: EmptyDataWidget(
-              height: size.height * 0.45,
-              width: 200,
-              message: LocaleKeys.productsEmpty.tr(),
-              icon: CupertinoIcons.bag,
-            ),
-          ),
-        ),
-      );
-    }
+    return BlocBuilder<AppCubit, AppState>(
+      bloc: _cubit.appCubit,
+      builder: (context, baseState) {
+        return Expanded(
+          child: _cubit.displayType == ProductDisplayType.grid ? buildGridViewProduct() : buildListProduct(),
+        );
+      },
+    );
   }
 
   @override
@@ -239,9 +212,9 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       ),
     );
 
-    if (result is BaseArgrument && result.refresh) {
-      _cubit.init();
-    }
+    // if (result is BaseArgrument && result.refresh) {
+    //   _cubit.init();
+    // }
   }
 
   void _onRefresh() async {
@@ -252,7 +225,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     } else {
       _refreshListViewController.requestRefresh();
     }
-    await _cubit.init(isRefresh: true);
+    await _cubit.refresh();
 
     if (_cubit.products.isEmpty) {
       _refreshEmptyViewController.refreshCompleted();
@@ -270,14 +243,21 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     } else {
       _refreshListViewController.requestLoading();
     }
-    await Future.delayed(const Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // _cubit.testAddProduct();
 
-    if (_cubit.displayType == ProductDisplayType.grid) {
-      _refreshGridViewController.loadComplete();
+    final result = await _cubit.loadMore();
+
+    if (result) {
+      if (_cubit.displayType == ProductDisplayType.grid) {
+        _refreshGridViewController.loadComplete();
+      } else {
+        _refreshListViewController.loadComplete();
+      }
     } else {
-      _refreshListViewController.loadComplete();
+      if (_cubit.displayType == ProductDisplayType.grid) {
+        _refreshGridViewController.loadNoData();
+      } else {
+        _refreshListViewController.loadNoData();
+      }
     }
   }
 
@@ -291,8 +271,12 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           builder: (context, state) {
             log('state : $state', name: runtimeType.toString());
             return BaseScaffolds(
-              isInitialLoading: state is ProductInitial || appState is AppLoading,
-              isLoading: state is ProductLoading,
+              isInitialLoading: state is ProductInitial,
+              // isLoading: state is ProductLoading,
+              onRefresh: () async {
+                await _cubit.refresh();
+              },
+              isEmpty: _cubit.products.isEmpty,
               enableAppModeDisplay: false,
               backgroundColor: Colors.white,
               appBar:
@@ -347,7 +331,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                             }
                             final result = await CreateProductRouter(context).navigate();
                             if (result is BaseArgrument && result.refresh) {
-                              _cubit.init();
+                              _cubit.refresh();
                             }
                           },
                         ),

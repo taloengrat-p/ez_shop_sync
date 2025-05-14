@@ -13,7 +13,6 @@ import 'package:ez_shop_sync/src/widgets/category_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_select_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
-import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +84,7 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
                                   child: const Icon(CupertinoIcons.delete),
                                 ),
                       ),
+                    const SizedBox(width: 16),
                   ],
                 ).build(),
             body: _buildPage(context, state),
@@ -109,7 +109,11 @@ class _CategoryManagementState extends State<CategoryManagementPage> {
                         isSelect: _cubit.selected[e.id] ?? false,
                         margin: const EdgeInsets.only(top: 12, left: 12),
                         onChange: () {
-                          _cubit.setSelect(e.id);
+                          if (_cubit.screenMode == ScreenMode.delete) {
+                            _cubit.setSelect(e.id);
+                          } else {
+                            CreateCategoryRouter(context).navigate(argruments: e);
+                          }
                         },
                         child: CategoryWidget(icon: IconPickerUtils.getIcon(e.iconData), model: e),
                       ),

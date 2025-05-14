@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
@@ -20,6 +21,8 @@ import 'package:ez_shop_sync/src/data/dto/request/add_product_request/delete_ite
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/delete_item_from_cart_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
+import 'package:ez_shop_sync/src/data/dto/response/pagination_response.dart';
 import 'package:ez_shop_sync/src/data/repository/add_product/add_product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/auth_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/auth/local/auth_local_repository.dart';
@@ -34,6 +37,7 @@ import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
+import 'package:ez_shop_sync/src/pages/splash/splash_cubit.dart';
 import 'package:ez_shop_sync/src/services/firebase_service.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/services/navigation_service.dart';
@@ -62,31 +66,36 @@ class AppCubit extends Cubit<AppState> {
   //
 
   AppTheme? _appTheme;
-
+  final int limitProductLength = 10;
+  QueryDocumentSnapshot? lastDocument;
   Size deviceSize = const Size(0, 0);
 
   final durationAddCart = const Duration(milliseconds: 700);
   NavigationService navigationService;
   AppMode _appMode = AppMode.local;
   ProductDisplayType productDisplayType = ProductDisplayType.grid;
-  ProductSortType productSortType = ProductSortType.asc;
+  ProductSortType productSortType = ProductSortType.desc;
   bool isFirstRun = false;
   bool? isIntroduceFlowDone;
   User? _user;
   UserData? _userData;
   Store? _store;
   Branch? _branch;
-  List<Product> _products = [];
+  final List<Product> _products = [];
   List<Store> _stores = [];
   List<Branch> _branches = [];
   List<Tag> _tags = [];
   List<Category> _categories = [];
-  final List<AddProduct> _addProducts = [];
   List<Notification> _notification = [];
   Cart? _cart;
   AddProduct? _addProduct;
+  int _totalAllProduct = 0;
 
+  bool descending = true;
   // getter sections
+
+  int get totalAllProduct => _totalAllProduct;
+
   List<Notification> get notification => _notification;
   AppMode get appMode => _appMode;
   User? get user => _user;
@@ -96,6 +105,7 @@ class AppCubit extends Cubit<AppState> {
   Cart? get cart => _cart;
   AddProduct? get addProduct => _addProduct;
   List<Product> get products => _products;
+  List<String> get productIds => products.map((e) => e.id.toString()).toList();
   List<Store> get stores => _stores;
   List<Branch> get branches => _branches;
   List<Tag> get tags => _tags;
@@ -133,17 +143,23 @@ class AppCubit extends Cubit<AppState> {
     init();
   }
 
+  String get currentStoreName => store?.name ?? '--';
+  String get currentBranchName => branch?.name ?? '--';
+
   void init() {
     log('init()', name: runtimeType.toString());
     startProfileUpdateListen();
   }
 
   Future<void> loadAllDependencies() async {
-    emit(AppLoading());
+    log('state app cubloadAllDependencies successit : ${GetIt.instance.isRegistered<SplashCubit>()}');
+    emit(AppGetAllDataStarterLoading());
     await loadUserData();
     await loadStores();
     await loadNotifications();
-    emit(AppSuccess());
+
+    log('updateCurrentProductFromAppCubit loadAllDependencies success');
+    emit(AppGetAllDataStarterSuccess());
   }
 
   BaseRepoRequest<T> request<T>(T value) {
@@ -155,7 +171,7 @@ class AppCubit extends Cubit<AppState> {
 
     final result = await storeRepository.getAll();
 
-    result.when(
+    return await result.when(
       success: (storesResponse) async {
         _stores = storesResponse;
         final resultAllBranch = await storeRepository.getAllBranchesByStoreIds(
@@ -176,7 +192,7 @@ class AppCubit extends Cubit<AppState> {
           },
         );
         emit(AppGetStoreSuccess(storesResponse));
-        setCurrentStoreById(
+        await setCurrentStoreAndBranchById(
           userData?.storeSelected,
           branchId: userData?.branchSelected,
           origin: runtimeType.toString(),
@@ -206,7 +222,7 @@ class AppCubit extends Cubit<AppState> {
   startProfileUpdateListen() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       log('userChanges() isClosed:: $isClosed $user', name: runtimeType.toString());
-      setCurrentUser(user);
+      setCurrentUser(user, origin: runtimeType.toString());
       GetIt.I<FirebaseService>().updateUserFcmToken(userId!);
     });
   }
@@ -220,17 +236,21 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoadAppThemeSuccess(appTheme));
   }
 
-  Future<void> setCurrentStoreById(String? id, {String? branchId, String? origin}) async {
-    log('setCurrentStoreById($origin)');
+  Future<void> setCurrentStoreAndBranchById(String? id, {String? branchId, String? origin}) async {
+    log('setCurrentStoreById($origin) store : ($id), branch : ($branchId)');
     final store = _stores.where((e) => e.id == id).firstOrNull;
+    final branchFinded = _branches.where((e) => e.id == branchId).firstOrNull;
+    _branch = branchFinded;
     await setCurrentStore(store);
-
-    setCurrentBranchById(branchId);
   }
 
   setCurrentStoreByLastCreate() {}
 
-  setCurrentStore(Store? value) async {
+  Future<void> setCurrentStore(Store? value) async {
+    if (_store == value) {
+      return;
+    }
+
     _store = value;
 
     // await authLocalRepository.update(user?.id, user!..storeLatest = store!.id);
@@ -239,21 +259,21 @@ class AppCubit extends Cubit<AppState> {
       throw ('setCurrentStore store == null');
     }
 
-    await loadProductByCurrentStore();
+    await refreshProductByCurrentStoreAndBranch();
     await doGetBranchByCurrentStore();
     // await loadAllDependencies();
     // await doGetAddProductByCurrentUserAndStore();
     await setCurrentAddProductByCurrentStore();
-    setCurrentCartByCurrentStore();
+    await setCurrentCartByCurrentStore();
+    await loadCategoryByCurrentStore();
 
     emit(AppSelectStore(_store?.id));
     // loadAppTheme(_store?.storeTheme);
     // loadTagsByCurrentStore();
-    // loadCategoryByCurrentStore();
   }
 
-  Future<void> setCurrentUser(User? user) async {
-    log('setCurrentUser ');
+  Future<void> setCurrentUser(User? user, {String? origin}) async {
+    log('setCurrentUser($origin) $user');
     _user = user;
     if (_user != null) {
       await loadAllDependencies();
@@ -268,7 +288,7 @@ class AppCubit extends Cubit<AppState> {
     // await doGetStores(_user?.storeId ?? []);
   }
 
-  setCurrentCartByCurrentStore() async {
+  Future<ApiResult<List<Cart>>> setCurrentCartByCurrentStore() async {
     final resultCart = await cartRepository.getAll();
 
     log('setCurrentCartByCurrentStore() : $storeId, $userId : result ${resultCart.response?.map((e) => e.id)}');
@@ -324,6 +344,8 @@ class AppCubit extends Cubit<AppState> {
         emit(AppRefresh(DateTime.now()));
       },
     );
+
+    return resultCart;
   }
 
   Future<void> setCurrentAddProductByCurrentStore() async {
@@ -389,61 +411,64 @@ class AppCubit extends Cubit<AppState> {
   }
 
   changeSortType() {
-    productSortType = productSortType == ProductSortType.asc ? ProductSortType.desc : ProductSortType.asc;
+    descending = !descending;
+    productSortType = descending ? ProductSortType.desc : ProductSortType.asc;
 
-    sortProduct(productSortType);
+    // sortProduct(productSortType);
   }
 
-  sortProduct(ProductSortType sortType) {
-    try {
-      if (sortType == ProductSortType.asc) {
-        products.sort(
-          (a, b) => a.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
-            b.info!.createAtDateTime.millisecondsSinceEpoch,
-          ),
-        );
-      } else {
-        products.sort(
-          (a, b) => b.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
-            a.info!.createAtDateTime.millisecondsSinceEpoch,
-          ),
-        );
-      }
-    } catch (e) {
-      log('sortProduct error $e');
-    }
-  }
+  // sortProduct(ProductSortType sortType) {
+  //   try {
+  //     if (sortType == ProductSortType.asc) {
+  //       products.sort(
+  //         (a, b) => a.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
+  //           b.info!.createAtDateTime.millisecondsSinceEpoch,
+  //         ),
+  //       );
+  //     } else {
+  //       products.sort(
+  //         (a, b) => b.info!.createAtDateTime.millisecondsSinceEpoch.compareTo(
+  //           a.info!.createAtDateTime.millisecondsSinceEpoch,
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     log('sortProduct error $e');
+  //   }
+  // }
 
   emitInitLocalStorageServiceSuccess() {
     emit(AppInitialLocalStorageServiceSuccess());
   }
 
-  Future<ApiResult<List<Product>?>> loadProductByCurrentStore() async {
+  Future<ApiResult<PaginationResponse<List<Product>>>> loadProductByCurrentStore() async {
     if (storeId == null) {
       return ApiResult(error: storeId == null);
     }
 
     emit(AppLoading());
-    final result = await productRepository.getAllByStoreId(storeId!);
+    final result = await productRepository.getAllByStoreAndBranchId(
+      request(
+        PaginationIndexRequest(
+          start: products.length,
+          limit: limitProductLength,
+          lastDocument: lastDocument,
+          descending: descending,
+        ),
+      ),
+    );
 
     result.when(
       success: (response) {
-        setCurrentProduct(response ?? []);
-
-        // sortProduct(productSortType);
+        lastDocument = response.lastDocument;
+        doAddProduct(response.data, totalItem: response.totalItem);
         emit(AppSuccess());
       },
       failure: (error, {errorType}) {
-        setCurrentProduct([]);
         emit(AppFailure());
       },
     );
-
     return result;
-  }
-
-  void setCurrentProduct(List<Product> value) {
-    _products = value;
   }
 
   doDeleteProduct({required String storeId, required Product product}) async {
@@ -471,7 +496,7 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  void loadCategoryByCurrentStore() async {
+  Future<void> loadCategoryByCurrentStore() async {
     emit(AppLoading());
     final result = await categoryRepository.getCategoryByStoreId(request(null));
 
@@ -506,7 +531,7 @@ class AppCubit extends Cubit<AppState> {
 
   Future<ApiResult> deleteItemFromCart(String cartItemId) async {
     emit(AppLoading());
-    log('deleteItemFromCart : ${cartItemId}, ${cart?.id}');
+    log('deleteItemFromCart : $cartItemId, ${cart?.id}');
     final resultCartUpdated = await cartRepository.deleteItemByIdFromCart(
       request(DeleteItemFromCartRequest(cartItemId: cartItemId, id: cart?.id)),
     );
@@ -601,7 +626,7 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> logout() async {
     await authRepository.logout();
-    await setCurrentUser(null);
+    await setCurrentUser(null, origin: runtimeType.toString());
   }
 
   Future<ApiResult<List<Branch>>> doGetBranchByCurrentStore() async {
@@ -638,8 +663,21 @@ class AppCubit extends Cubit<AppState> {
     return result;
   }
 
-  void setCurrentBranchById(String? branchId) {
-    final branchFinded = _branches.where((e) => e.id == branchId).firstOrNull;
-    _branch = branchFinded;
+  void doAddProduct(List<Product> list, {required int totalItem}) {
+    log('updateCurrentProductFromAppCubit doAddProduct() ${list.length}');
+    final productFilted = list.where((product) => !productIds.contains(product.id)).toList();
+    _totalAllProduct = totalItem;
+    _products.addAll(productFilted);
+    emit(AppRefresh(DateTime.now()));
+  }
+
+  Future<ApiResult<PaginationResponse<List<Product>>>> refreshProductByCurrentStoreAndBranch() async {
+    clearCurrentProducts();
+    return await loadProductByCurrentStore();
+  }
+
+  void clearCurrentProducts() {
+    lastDocument = null;
+    _products.clear();
   }
 }

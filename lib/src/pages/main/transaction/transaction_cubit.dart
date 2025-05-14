@@ -19,7 +19,7 @@ class TransactionCubit extends Cubit<TransactionState> {
   void initialize() async {
     emit(TransactionInitialLoading());
     final result = await transactionRepository.getItemByLimit(
-      appCubit.request(PaginationIndexRequest(start: 0, end: itemLength, limit: itemLength)),
+      appCubit.request(PaginationIndexRequest(start: 0, limit: itemLength)),
     );
 
     result.when(
@@ -35,10 +35,9 @@ class TransactionCubit extends Cubit<TransactionState> {
 
   Future<void> refresh() async {
     final start = transactions.length;
-    final end = transactions.length + itemLength;
 
     final result = await transactionRepository.getItemByLimit(
-      appCubit.request(PaginationIndexRequest(start: start, end: end, limit: itemLength)),
+      appCubit.request(PaginationIndexRequest(start: start, limit: itemLength)),
     );
 
     result.when(
@@ -57,11 +56,10 @@ class TransactionCubit extends Cubit<TransactionState> {
       emit(TransactionLoadmore());
     }
     final start = transactions.length;
-    final end = transactions.length + itemLength;
 
     final orderLoaded = await transactionRepository.getItemByLimit(
       appCubit.request(
-        PaginationIndexRequest(start: start, end: end, lastDocument: refresh ? null : lastDocument, limit: itemLength),
+        PaginationIndexRequest(start: start, lastDocument: refresh ? null : lastDocument, limit: itemLength),
       ),
     );
 
@@ -70,7 +68,7 @@ class TransactionCubit extends Cubit<TransactionState> {
         lastDocument = response.lastDocument;
         transactions.addAll(response.transactions);
 
-        emit(OrderHistoryLoadMoreSuccess(start: start, end: end));
+        emit(OrderHistoryLoadMoreSuccess(start: start, end: itemLength));
       },
       failure: (error) {
         emit(OrderHistoryLoadMoreFailure());

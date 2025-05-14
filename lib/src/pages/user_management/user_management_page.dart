@@ -75,6 +75,7 @@ class _UserManagementState extends State<UserManagementPage> {
               Flexible(
                 child: ProfileWidget(
                   name: member.email,
+                  title: member.email,
                   desc: member.role,
                   nameStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.black87),
                   descStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87),

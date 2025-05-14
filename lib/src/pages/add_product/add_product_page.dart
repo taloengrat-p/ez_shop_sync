@@ -21,7 +21,6 @@ import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
-import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -157,7 +156,7 @@ class _AddProductState extends State<AddProductPage> {
             return const SizedBox(height: 16);
           },
         ),
-        buildPaymentInfo(),
+        buildAddProductInfo(),
       ],
     );
   }
@@ -170,12 +169,12 @@ class _AddProductState extends State<AddProductPage> {
     );
   }
 
-  Widget buildPaymentInfo() {
+  Widget buildAddProductInfo() {
     return ContainerShadowGroupWidget(
       margin: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       color: Colors.white,
-      title: LocaleKeys.paymentInfo.tr(),
+      title: LocaleKeys.addProductInfo.tr(),
       children: [
         ColumnGapWidget(
           mainAxisSize: MainAxisSize.min,

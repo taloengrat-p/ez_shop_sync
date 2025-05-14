@@ -32,19 +32,17 @@ class AppbarWidget {
     final ModalRoute<dynamic>? parentRoute = ModalRoute.of(context);
 
     return AppBar(
-      leading: (parentRoute?.impliesAppBarDismissal ?? false)
-          ? ContainerCircleWidget(
-              margin: const EdgeInsets.only(left: 8),
-              backgroundColor: ColorKeys.primary.withOpacity(0.1),
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: ColorKeys.primary,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          : null,
+      leading:
+          (parentRoute?.impliesAppBarDismissal ?? false)
+              ? ContainerCircleWidget(
+                margin: const EdgeInsets.only(left: 8),
+                backgroundColor: ColorKeys.primary.withOpacity(0.1),
+                child: Icon(Icons.arrow_back_ios_new_rounded, color: ColorKeys.primary),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+              : null,
       backgroundColor: color ?? Colors.transparent,
       shadowColor: Colors.transparent,
       foregroundColor: Colors.transparent,
@@ -53,15 +51,13 @@ class AppbarWidget {
       centerTitle: centerTitle,
       title: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
-        child: titleWidget ??
+        child:
+            titleWidget ??
             Text(
               title ?? '',
-              style: titleStyle ??
-                  TextStyle(
-                    color: (color ?? Colors.white).getContrast(),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              style:
+                  titleStyle ??
+                  TextStyle(color: (color ?? Colors.white).getContrast(), fontSize: 18, fontWeight: FontWeight.bold),
             ),
       ),
       actions: actions,

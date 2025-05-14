@@ -53,7 +53,10 @@ class _CreateStoreState extends State<CreateStorePage> {
         if (state is CreateStoreSuccess) {
           if (_cubit.argruments != null) {
             OrderCompleteRouter(context).replace(
-              argruments: const OrderCompleteArgrument(title: 'Create Store Success', from: Routes.ROUTE_CREATESTORE),
+              argruments: OrderCompleteArgrument(
+                title: LocaleKeys.createFirstStoreSuccess.tr(args: [_cubit.name]),
+                from: Routes.ROUTE_CREATESTORE,
+              ),
             );
           } else {
             CreateStoreRouter(context).pop();

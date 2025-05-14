@@ -257,5 +257,9 @@ abstract class  LocaleKeys {
   static const yourStores = 'yourStores';
   static const displayName = 'displayName';
   static const unitTypeManagement = 'unitTypeManagement';
+  static const createFirstStoreSuccess = 'createFirstStoreSuccess';
+  static const addProductInfo = 'addProductInfo';
+  static const storeValue = 'storeValue';
+  static const branchValue = 'branchValue';
 
 }

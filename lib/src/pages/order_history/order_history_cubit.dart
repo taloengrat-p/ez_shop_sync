@@ -13,11 +13,10 @@ import 'package:injectable/injectable.dart';
 class OrderHistoryCubit extends Cubit<OrderHistoryState> {
   OrderHistoryCubit({required this.orderRepository, required this.appCubit}) : super(OrderHistoryInitial());
 
-  final int itemLength = 10;
-
   final OrderRepository orderRepository;
   final AppCubit appCubit;
 
+  final int itemLength = 10;
   List<ProductOrder> orderItems = [];
   QueryDocumentSnapshot? lastDocument;
 
@@ -32,12 +31,9 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
       emit(OrderHistoryLoadMore());
     }
     final start = orderItems.length;
-    final end = orderItems.length + itemLength;
 
     final orderLoaded = await orderRepository.getAllRange(
-      appCubit.request(
-        PaginationIndexRequest(start: start, end: end, lastDocument: refresh ? null : lastDocument, limit: 10),
-      ),
+      appCubit.request(PaginationIndexRequest(start: start, lastDocument: refresh ? null : lastDocument, limit: 10)),
     );
 
     orderLoaded.when(
@@ -50,7 +46,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
         orderItems.addAll(response.orders);
         log('orderItems ::: ${orderItems.length}');
         if (!disabledState) {
-          emit(OrderHistoryLoadMoreSuccess(start, end));
+          emit(OrderHistoryLoadMoreSuccess(start, itemLength));
         }
       },
       failure: (error) {

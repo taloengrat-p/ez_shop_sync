@@ -5,8 +5,7 @@ import 'package:ez_shop_sync/src/widgets/text_form_field/text_form_field_ui_widg
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class AppTextFormFieldDropdownSelectWidget<T extends Object>
-    extends StatefulWidget {
+class AppTextFormFieldDropdownSelectWidget<T extends Object> extends StatefulWidget {
   final String label;
   final MultiSelectController<T> controller;
   final Function(T? value)? onSelected;
@@ -39,8 +38,7 @@ class AppTextFormFieldDropdownSelectWidget<T extends Object>
   });
 
   @override
-  _AppTextFormFieldDropdownSelectWidgetState createState() =>
-      _AppTextFormFieldDropdownSelectWidgetState<T>();
+  _AppTextFormFieldDropdownSelectWidgetState createState() => _AppTextFormFieldDropdownSelectWidgetState<T>();
 }
 
 class _AppTextFormFieldDropdownSelectWidgetState<T extends Object>
@@ -53,15 +51,11 @@ class _AppTextFormFieldDropdownSelectWidgetState<T extends Object>
   }
 
   @override
-  void didUpdateWidget(
-      covariant AppTextFormFieldDropdownSelectWidget<T> oldWidget) {
+  void didUpdateWidget(covariant AppTextFormFieldDropdownSelectWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    Future.delayed(
-      Duration.zero,
-      () async {
-        widget.controller.setItems(widget.items);
-      },
-    );
+    Future.delayed(Duration.zero, () async {
+      widget.controller.setItems(widget.items);
+    });
   }
 
   @override
@@ -86,12 +80,7 @@ class _AppTextFormFieldDropdownSelectWidgetState<T extends Object>
         itemBuilder: widget.itemBuilder,
         itemSeparator: widget.itemSeparator,
         selectedItemBuilder: widget.selectedItemBuilder,
-        chipDecoration: const ChipDecoration(
-          backgroundColor: Colors.yellow,
-          wrap: true,
-          runSpacing: 2,
-          spacing: 10,
-        ),
+        chipDecoration: const ChipDecoration(backgroundColor: Colors.yellow, wrap: true, runSpacing: 2, spacing: 10),
         fieldDecoration: FieldDecoration(
           hintText: widget.hintText,
           showClearIcon: false,

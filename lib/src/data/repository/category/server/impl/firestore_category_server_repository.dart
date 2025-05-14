@@ -1,4 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
@@ -22,11 +25,12 @@ class FirestoreCategoryServerRepository implements ICategoryServerRepository {
   @override
   Future<ApiResult<Category>> create(BaseRepoRequest<Category> request) async {
     try {
+      final cateId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.productPrefix);
       final categoryRef = firebaseService.storesCollection
           .doc(request.storeId)
-          .collection(FirebaseFirestoreConstance.COLLECTION_BRANCHES)
-          .doc(request.branchId);
-      final cateId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.productPrefix);
+          .collection(FirebaseFirestoreConstance.COLLECTION_CATEGORIES)
+          .doc(cateId);
+
       final payload = request.data.copyWith(
         id: cateId,
         info: BaseHiveData(
@@ -57,6 +61,36 @@ class FirestoreCategoryServerRepository implements ICategoryServerRepository {
       final categorySnapshot = await categoryRef.get();
       final categoryList = categorySnapshot.docs.map((e) => Category.fromJson(e.data())).toList();
       return ApiResult(response: categoryList);
+    } catch (e) {
+      return ApiResult(error: e);
+    }
+  }
+
+  @override
+  Future<ApiResult> deleteCategoryByIds(BaseRepoRequest<List<String>> request) async {
+    try {
+      final categoryCollectionRef = firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_CATEGORIES);
+
+      await Future.wait(request.data.map((e) => categoryCollectionRef.doc(e).delete()).toList());
+
+      return ApiResult(response: 'Delete categories ${request.data} successfully.');
+    } catch (e) {
+      return ApiResult(error: e);
+    }
+  }
+
+  @override
+  Future<ApiResult> update(BaseRepoRequest<Category> request) async {
+    try {
+      final updated = {...request.data.toJson(), 'info.updateAt': FieldValue.serverTimestamp()};
+      firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_CATEGORIES)
+          .doc(request.data.id)
+          .update(updated);
+      return ApiResult(response: 'Update category ${request.data.id} successfully.');
     } catch (e) {
       return ApiResult(error: e);
     }

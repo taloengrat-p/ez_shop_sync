@@ -73,10 +73,6 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   }
 
   Future<ApiResult<Cart>> deleteItemByIdFromCart(BaseRepoRequest<DeleteItemFromCartRequest> request) async {
-    if (request.userId == null) {
-      throw ('deleteItemByIdFromCart appCubit.user == null');
-    }
-
     if (appMode == AppMode.local) {
       return await cartLocalRepository.deleteItemByIdFromCart(request);
     } else {
@@ -85,10 +81,6 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
   }
 
   Future<ApiResult<Cart>> addCart(BaseRepoRequest<AddCartRequest> request) async {
-    if (request.userId == null) {
-      throw ('addCart appCubit.user == null');
-    }
-
     if (appMode == AppMode.local) {
       return await cartLocalRepository.addCart(request);
     } else {
@@ -141,7 +133,6 @@ class CartRepository extends IRepository<Cart> implements ICartRepository {
 
   @override
   Future<ApiResult> deleteAll() {
-    // TODO: implement deleteAll
     throw UnimplementedError();
   }
 }
