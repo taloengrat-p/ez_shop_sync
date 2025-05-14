@@ -24,7 +24,7 @@ class ProductCubit extends Cubit<ProductState> {
   List<Product> get products => _products;
 
   ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
-    updateCurrentProductFromAppCubit();
+    updateCurrentProductFromAppCubit(appCubit.products);
     emit(const ProductLoadItemSuccess());
   }
 
@@ -128,6 +128,14 @@ class ProductCubit extends Cubit<ProductState> {
     );
   }
 
+  refreshProductFromAppState() {
+    emit(ProductLoading());
+
+    _products.clear();
+    _products = appCubit.products;
+    emit(ProductSuccess());
+  }
+
   Future<void> refresh() async {
     if (appCubit.storeId == null) {
       return;
@@ -137,7 +145,8 @@ class ProductCubit extends Cubit<ProductState> {
 
     return result.when(
       success: (response) {
-        updateCurrentProductFromAppCubit();
+        _products.clear();
+        updateCurrentProductFromAppCubit(response.data);
         emit(const ProductLoadItemSuccess());
       },
       failure: (error, {errorType}) {
@@ -158,7 +167,7 @@ class ProductCubit extends Cubit<ProductState> {
         if (response.data.isEmpty) {
           emit(ProductLoadItemEmpty());
         } else {
-          updateCurrentProductFromAppCubit();
+          updateCurrentProductFromAppCubit(response.data);
           emit(const ProductLoadItemSuccess());
         }
 
@@ -170,17 +179,7 @@ class ProductCubit extends Cubit<ProductState> {
     );
   }
 
-  updateCurrentProductFromAppCubit() {
-    _products =
-        appCubit.products
-            .where(
-              (product) =>
-                  (searchText?.isEmpty ?? true)
-                      ? true
-                      : product.name.ignoreSpaceAndUpperCase().contains(searchText!.ignoreSpaceAndUpperCase()),
-            )
-            .toList();
-
-    log('updateCurrentProductFromAppCubit ${products.length}');
+  updateCurrentProductFromAppCubit(List<Product> data) {
+    _products.addAll(data);
   }
 }

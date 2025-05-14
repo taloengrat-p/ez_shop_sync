@@ -76,6 +76,16 @@ class AppLoading extends AppState {
   String toString() => 'AppLoading';
 }
 
+class AppGetAllProductByCurrentStoreSuccess extends AppState {
+  @override
+  String toString() => 'AppGetAllProductByCurrentStoreSuccess';
+}
+
+class AppGetAllProductByCurrentStoreFailure extends AppState {
+  @override
+  String toString() => 'AppGetAllProductByCurrentStoreFailure';
+}
+
 class AppSuccess extends AppState {
   @override
   String toString() => 'AppSuccess';
@@ -246,4 +256,9 @@ class AppGetAllDataStarterSuccess extends AppState {
 class AppGetAllDataStarterFailure extends AppState {
   @override
   String toString() => 'AppGetAllDataStarterFailure';
+}
+
+class AppRefreshProductByCurrentStoreAndBranch extends AppState {
+  @override
+  String toString() => 'AppRefreshProductByCurrentStoreAndBranch';
 }

@@ -467,10 +467,10 @@ class AppCubit extends Cubit<AppState> {
       success: (response) {
         lastDocument = response.lastDocument;
         doAddProduct(response.data, totalItem: response.totalItem);
-        emit(AppSuccess());
+        emit(AppGetAllProductByCurrentStoreSuccess());
       },
       failure: (error, {errorType}) {
-        emit(AppFailure());
+        emit(AppGetAllProductByCurrentStoreFailure());
       },
     );
     return result;
@@ -695,7 +695,10 @@ class AppCubit extends Cubit<AppState> {
 
   Future<ApiResult<PaginationResponse<List<Product>>>> refreshProductByCurrentStoreAndBranch() async {
     clearCurrentProducts();
-    return await loadProductByCurrentStore();
+    final result = await loadProductByCurrentStore();
+    emit(AppRefreshProductByCurrentStoreAndBranch());
+
+    return result;
   }
 
   void clearCurrentProducts() {

@@ -7,13 +7,7 @@ class BodyWidget extends StatelessWidget {
   final List<Widget>? actions;
   final Widget? header;
 
-  const BodyWidget({
-    super.key,
-    required this.children,
-    this.title,
-    this.actions,
-    this.header,
-  });
+  const BodyWidget({super.key, required this.children, this.title, this.actions, this.header});
 
   @override
   Widget build(BuildContext context) {
@@ -24,42 +18,26 @@ class BodyWidget extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: DimensionsKeys.pagePaddingHzt,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: DimensionsKeys.pagePaddingHzt),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title ?? '',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
+                    Text(title ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                     const Spacer(),
-                    ...actions?.toList() ?? []
+                    ...actions?.toList() ?? [],
                   ],
                 ),
               ),
-              if (header != null) ...[
-                const SizedBox(
-                  height: 8,
-                ),
-                header!
-              ],
+              if (header != null) ...[const SizedBox(height: 8), header!],
             ],
           ),
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: DimensionsKeys.pagePaddingHzt,
-            ),
-            child: Column(
-              children: [...children],
-            ),
+          child: Container(
+            // margin: ,
+            padding: const EdgeInsets.only(left: DimensionsKeys.pagePaddingHzt, right: DimensionsKeys.pagePaddingHzt),
+            child: Column(children: [...children, SizedBox(height: 50)]),
           ),
-        ),
-        Container(
-          height: DimensionsKeys.heightBts ,
         ),
       ],
     );

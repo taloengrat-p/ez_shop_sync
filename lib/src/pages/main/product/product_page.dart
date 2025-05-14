@@ -93,31 +93,28 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
         var size = MediaQuery.of(context).size;
         final crossAxisCount = orientation == Orientation.landscape ? 3 : 2;
         final double itemWidth = size.width / crossAxisCount;
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: AppPaginationLoadingWidget(
-            controller: _refreshGridViewController,
-            enablePullDown: true,
-            enablePullUp: true,
-            onRefresh: _onRefresh,
-            onLoading: _onLoading,
-            child: GridView.count(
-              cacheExtent: MediaQuery.of(context).size.height,
-              padding: const EdgeInsets.all(8),
-              crossAxisCount: crossAxisCount,
-              childAspectRatio: (itemWidth / itemHeight),
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              children:
-                  _cubit.products
-                      .map(
-                        (e) => GestureDetector(
-                          onTap: () => onClickGoToDetailPage(e),
-                          child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
-                        ),
-                      )
-                      .toList(),
-            ),
+        return AppPaginationLoadingWidget(
+          controller: _refreshGridViewController,
+          enablePullDown: true,
+          enablePullUp: true,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: GridView.count(
+            cacheExtent: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.all(8),
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: (itemWidth / itemHeight),
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            children:
+                _cubit.products
+                    .map(
+                      (e) => GestureDetector(
+                        onTap: () => onClickGoToDetailPage(e),
+                        child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
+                      ),
+                    )
+                    .toList(),
           ),
         );
       },
@@ -125,30 +122,27 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   Widget buildListProduct() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: AppPaginationLoadingWidget(
-        controller: _refreshListViewController,
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: ListView.separated(
-          cacheExtent: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.all(8),
-          itemCount: _cubit.products.length,
-          itemBuilder: (context, index) {
-            final product = _cubit.products.elementAt(index);
+    return AppPaginationLoadingWidget(
+      controller: _refreshListViewController,
+      enablePullDown: true,
+      enablePullUp: true,
+      onRefresh: _onRefresh,
+      onLoading: _onLoading,
+      child: ListView.separated(
+        cacheExtent: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.all(8),
+        itemCount: _cubit.products.length,
+        itemBuilder: (context, index) {
+          final product = _cubit.products.elementAt(index);
 
-            return GestureDetector(
-              onTap: () => onClickGoToDetailPage(product),
-              child: ProductListItemWidget(product: product, iProductItem: this),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return const SizedBox(height: 8);
-          },
-        ),
+          return GestureDetector(
+            onTap: () => onClickGoToDetailPage(product),
+            child: ProductListItemWidget(product: product, iProductItem: this),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(height: 8);
+        },
       ),
     );
   }
@@ -269,89 +263,96 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppCubit, AppState>(
-      bloc: GetIt.I<AppCubit>(),
-      builder: (context, appState) {
-        log('product page app cubit state : $appState');
-        return BlocBuilder<ProductCubit, ProductState>(
-          bloc: _cubit,
-          builder: (context, state) {
-            log('state : $state', name: runtimeType.toString());
-            return BaseScaffolds(
-              emptyIcon: CupertinoIcons.bag,
-              isInitialLoading: state is ProductInitial,
-              // isLoading: state is ProductLoading,
-              onRefresh: () async {
-                await _cubit.refresh();
-              },
-              isEmpty: _cubit.products.isEmpty,
-              enableAppModeDisplay: false,
-              backgroundColor: Colors.white,
-              appBar:
-                  AppbarWidget(
-                    context,
-                    centerTitle: false,
-                    title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
-                    titleWidget:
-                        _cubit.screenMode == ScreenMode.search
-                            ? TextField(
-                              controller: _searchTextController,
-                              autofocus: true,
-                              decoration:
-                                  AppInputDecoration(
-                                    context,
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.clear, color: Colors.black),
-                                      onPressed: () {
-                                        _searchTextController.clear();
-                                        _cubit.clearSearchText();
-                                      },
-                                    ),
-                                  ).build(),
-                              onChanged: _cubit.setSearchText,
-                            )
-                            : null,
-                    actions: [
-                      if (_cubit.screenMode == ScreenMode.search)
-                        TextButton(
-                          onPressed: () {
-                            _searchTextController.clear();
-                            _cubit.doSwitchToDisplay();
-                          },
-                          child: Text(LocaleKeys.cancel.tr()),
-                        ),
-                      if (_cubit.screenMode == ScreenMode.display) ...[
-                        ActionAppbarButtonWidget(
-                          onPressed: _cubit.doSwitchToSearch,
-                          child: const Icon(CupertinoIcons.search),
-                        ),
-                        const SizedBox(width: 5),
-                        ActionAppbarButtonWidget(
-                          child: const Icon(CupertinoIcons.add),
-                          onPressed: () async {
-                            if (_cubit.appCubit.store == null) {
-                              return await DialogUtils.showAlertDialog(
-                                context,
-                                title: LocaleKeys.dialogUnableCreateProduct_title.tr(),
-                                desc: LocaleKeys.dialogUnableCreateProduct_desc.tr(),
-                              );
-                            }
-                            final result = await CreateProductRouter(context).navigate();
-                            if (result is BaseArgrument && result.refresh) {
-                              _cubit.refresh();
-                            }
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ],
-                  ).build(),
-              body: buildBody(state),
-            );
-          },
-        );
+    return BlocListener<AppCubit, AppState>(
+      bloc: _cubit.appCubit,
+      listener: (context, appstate) {
+        if (appstate is AppRefreshProductByCurrentStoreAndBranch) {
+          _cubit.refreshProductFromAppState();
+        }
       },
+      child: BlocBuilder<AppCubit, AppState>(
+        bloc: _cubit.appCubit,
+        builder: (context, appState) {
+          return BlocBuilder<ProductCubit, ProductState>(
+            bloc: _cubit,
+            builder: (context, state) {
+              log('state : $state', name: runtimeType.toString());
+              return BaseScaffolds(
+                emptyIcon: CupertinoIcons.bag,
+                isInitialLoading: state is ProductInitial,
+                // isLoading: state is ProductLoading,
+                onRefresh: () async {
+                  await _cubit.refresh();
+                },
+                isEmpty: _cubit.products.isEmpty,
+                enableAppModeDisplay: false,
+                backgroundColor: Colors.white,
+                appBar:
+                    AppbarWidget(
+                      context,
+                      centerTitle: false,
+                      title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
+                      titleWidget:
+                          _cubit.screenMode == ScreenMode.search
+                              ? TextField(
+                                controller: _searchTextController,
+                                autofocus: true,
+                                decoration:
+                                    AppInputDecoration(
+                                      context,
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.clear, color: Colors.black),
+                                        onPressed: () {
+                                          _searchTextController.clear();
+                                          _cubit.clearSearchText();
+                                        },
+                                      ),
+                                    ).build(),
+                                onChanged: _cubit.setSearchText,
+                              )
+                              : null,
+                      actions: [
+                        if (_cubit.screenMode == ScreenMode.search)
+                          TextButton(
+                            onPressed: () {
+                              _searchTextController.clear();
+                              _cubit.doSwitchToDisplay();
+                            },
+                            child: Text(LocaleKeys.cancel.tr()),
+                          ),
+                        if (_cubit.screenMode == ScreenMode.display) ...[
+                          ActionAppbarButtonWidget(
+                            onPressed: _cubit.doSwitchToSearch,
+                            child: const Icon(CupertinoIcons.search),
+                          ),
+                          const SizedBox(width: 5),
+                          ActionAppbarButtonWidget(
+                            child: const Icon(CupertinoIcons.add),
+                            onPressed: () async {
+                              if (_cubit.appCubit.store == null) {
+                                return await DialogUtils.showAlertDialog(
+                                  context,
+                                  title: LocaleKeys.dialogUnableCreateProduct_title.tr(),
+                                  desc: LocaleKeys.dialogUnableCreateProduct_desc.tr(),
+                                );
+                              }
+                              final result = await CreateProductRouter(context).navigate();
+                              if (result is BaseArgrument && result.refresh) {
+                                _cubit.refresh();
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                      ],
+                    ).build(),
+                body: buildBody(state),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
