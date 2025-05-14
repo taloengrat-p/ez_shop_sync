@@ -189,8 +189,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i156.VerifyPhoneNumberCubit());
     gh.factory<_i415.CreateProductDetailCubit>(
         () => _i415.CreateProductDetailCubit());
-    gh.factory<_i627.UnitTypeManagementCubit>(
-        () => _i627.UnitTypeManagementCubit());
     gh.singleton<_i286.ImagePickerUtils>(() => _i286.ImagePickerUtils());
     gh.singleton<_i750.ProductHistoryServerRepository>(
         () => _i750.ProductHistoryServerRepository());
@@ -497,6 +495,11 @@ extension GetItInjectableX on _i174.GetIt {
           storeRepository: gh<_i882.StoreRepository>(),
           appCubit: gh<_i283.AppCubit>(),
         ));
+    gh.factory<_i627.UnitTypeManagementCubit>(
+        () => _i627.UnitTypeManagementCubit(
+              storeRepository: gh<_i882.StoreRepository>(),
+              appCubit: gh<_i283.AppCubit>(),
+            ));
     gh.factory<_i377.LoginCubit>(() => _i377.LoginCubit(
           authRepository: gh<_i214.AuthRepository>(),
           appCubit: gh<_i283.AppCubit>(),

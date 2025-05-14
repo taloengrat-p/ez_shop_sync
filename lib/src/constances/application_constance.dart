@@ -19,4 +19,5 @@ class ApplicationConstance {
   static const String orderHistory = 'HTR';
   static const String branchPrefix = 'BR';
   static const String categoryPrefix = 'CAT';
+  static const String unitTypePrefix = 'UNT';
 }

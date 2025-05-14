@@ -281,5 +281,17 @@
   "createFirstStoreSuccess": "สร้างร้านค้าแรกของคุณ {} สำเร็จ",
   "addProductInfo": "ข้อมูลการเพิ่มสินค้า",
   "storeValue": "ร้านค้า : {}",
-  "branchValue": "สาขา : {}"
+  "branchValue": "สาขา : {}",
+  "locales": {
+    "th": "ไทย",
+    "en": "อังกฤษ",
+    "thHint": "หน่วยภาษาไทย",
+    "enHint": "หน่วยภาษาอังกฤษ",
+    "thShortHint": "ตัวย่อไทย",
+    "enShortHint": "ตัวย่ออังกฤษ",
+    "thValue": "ไทย : {}",
+    "enValue": "อังกฤษ : {}"
+  },
+  "createUnitType": "สร้างหน่วยสินค้า",
+  "unitType": "ประเภทของหน่วยสินค้า"
 }

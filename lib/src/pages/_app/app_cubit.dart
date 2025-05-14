@@ -15,6 +15,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_request/add_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/add_product_request/delete_item_form_cart_request.dart';
@@ -146,6 +147,9 @@ class AppCubit extends Cubit<AppState> {
   String get currentStoreName => store?.name ?? '--';
   String get currentBranchName => branch?.name ?? '--';
 
+  List<UnitType> _unitTypes = [];
+  List<UnitType> get unitTypes => _unitTypes;
+
   void init() {
     log('init()', name: runtimeType.toString());
     startProfileUpdateListen();
@@ -261,6 +265,7 @@ class AppCubit extends Cubit<AppState> {
 
     await refreshProductByCurrentStoreAndBranch();
     await doGetBranchByCurrentStore();
+    await doGetUniTypeByCurrentStore();
     // await loadAllDependencies();
     // await doGetAddProductByCurrentUserAndStore();
     await setCurrentAddProductByCurrentStore();
@@ -475,7 +480,7 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoading());
 
     _products.removeWhere((elelment) => elelment.id == product.id);
-    emit(AppRefresh(DateTime.now()));
+    emit(AppDeleteProductSuccess());
   }
 
   void refresh() {
@@ -646,6 +651,23 @@ class AppCubit extends Cubit<AppState> {
     return result;
   }
 
+  Future<ApiResult<List<UnitType>>> doGetUniTypeByCurrentStore() async {
+    emit(AppLoading());
+    final result = await storeRepository.getUnitTypes(request(null));
+
+    result.when(
+      success: (response) {
+        _unitTypes = response;
+        emit(AppGetUnitTypesSuccess(unitTypes: response));
+      },
+      failure: (error) {
+        emit(AppFailure());
+      },
+    );
+
+    return result;
+  }
+
   Future<ApiResult> deleteBranch(BaseRepoRequest<String> request) async {
     emit(AppLoading());
     final result = await storeRepository.deleteBranch(request);
@@ -679,5 +701,20 @@ class AppCubit extends Cubit<AppState> {
   void clearCurrentProducts() {
     lastDocument = null;
     _products.clear();
+  }
+
+  void addUnitTypes(UnitType unitType) {
+    if (unitTypes.any((e) => e.id == unitType.id)) {
+      return;
+    }
+
+    _unitTypes.add(unitType);
+  }
+
+  void updateUnitType(UnitType result) {
+    int index = _unitTypes.indexWhere((unitType) => unitType.id == result.id);
+    if (index != -1) {
+      _unitTypes[index] = result;
+    }
   }
 }

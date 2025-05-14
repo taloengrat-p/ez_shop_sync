@@ -280,5 +280,17 @@
   "createFirstStoreSuccess": "Create your first store {} Successfully.",
   "addProductInfo": "Add Product Information",
   "storeValue": "Store : {}",
-  "branchValue": "Branch : {}"
+  "branchValue": "Branch : {}",
+  "locales": {
+    "th": "Thai",
+    "en": "English",
+    "thHint": "Unit thai word",
+    "enHint": "Unit english word",
+    "thShortHint": "Thai shortcut",
+    "enShortHint": "English shortcut",
+    "thValue": "Thai : {}",
+    "enValue": "English : {}"
+  },
+  "createUnitType": "Create Unit Type",
+  "unitType": "Unit type of product"
 }

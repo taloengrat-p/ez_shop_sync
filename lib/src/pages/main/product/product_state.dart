@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 
 abstract class ProductState extends Equatable {
@@ -33,6 +34,28 @@ class ProductLoadItemFailure extends ProductState {
 
   @override
   String toString() => 'ProductLoadItemFailure';
+}
+
+class ProductChangeSortType extends ProductState {
+  final ProductSortType sortType;
+  const ProductChangeSortType({required this.sortType});
+
+  @override
+  String toString() => 'ProductChangeSortType $sortType';
+
+  @override
+  List<Object?> get props => [sortType];
+}
+
+class ProductChangeSortTypeSuccess extends ProductState {
+  final ProductSortType sortType;
+  const ProductChangeSortTypeSuccess({required this.sortType});
+
+  @override
+  String toString() => 'ProductChangeSortTypeSuccess $sortType';
+
+  @override
+  List<Object?> get props => [sortType];
 }
 
 class ProductInitialLoading extends ProductState {

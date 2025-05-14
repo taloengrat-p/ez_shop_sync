@@ -11,6 +11,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/role_type.enum.dart'
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/notification.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
 import 'package:ez_shop_sync/src/data/repository/notifications/notification_repository.dart';
@@ -251,6 +252,72 @@ class FirestoreStoreServerRepository implements StoreServerRepository {
       return ApiResult(response: branchFiltered);
     } catch (e) {
       return ApiResult(error: e, appErrorType: AppErrorType.somethingWentWrong);
+    }
+  }
+
+  @override
+  Future<ApiResult> deleteUnitTypeByIds(BaseRepoRequest<List<String>> request) {
+    // TODO: implement deleteUnitTypeByIds
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult<UnitType>> createUnitTypes(BaseRepoRequest<UnitType> request) async {
+    try {
+      final unitTypeId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.unitTypePrefix);
+      final payload = request.data.copyWith(
+        id: unitTypeId,
+        info: BaseHiveData(
+          storeId: request.storeId,
+          createBy: request.userId,
+          updateBy: request.userId,
+          branchId: request.branchId,
+          createAt: FieldValue.serverTimestamp(),
+          updateAt: FieldValue.serverTimestamp(),
+        ),
+      );
+      await firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_UNIT_TYPES)
+          .doc(unitTypeId)
+          .set(payload.toJson());
+
+      return ApiResult(response: payload);
+    } catch (e) {
+      return ApiResult(error: e);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<UnitType>>> getUnitTypes(BaseRepoRequest<Null> request) async {
+    try {
+      final refUnitTypes = firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_UNIT_TYPES);
+
+      final refDocs = await refUnitTypes.get();
+      final docs = refDocs.docs;
+      final unitTypes = docs.map((e) => UnitType.fromJson(e.data())).toList();
+      return ApiResult(response: unitTypes);
+    } catch (e) {
+      return ApiResult(error: e);
+    }
+  }
+
+  @override
+  Future<ApiResult<UnitType>> updateUnitType(BaseRepoRequest<UnitType> request) async {
+    try {
+      final payload = {...request.data.toJson(), 'info.updateAt': FieldValue.serverTimestamp()};
+      final refUnitTypes = firebaseService.storesCollection
+          .doc(request.storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_UNIT_TYPES)
+          .doc(request.data.id);
+
+      await refUnitTypes.update(payload);
+
+      return ApiResult(response: request.data);
+    } catch (e) {
+      return ApiResult(error: e);
     }
   }
 }

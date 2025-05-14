@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
@@ -65,6 +66,10 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     } else {
       _productEditor?.category = list?.first.id;
     }
+  }
+
+  setUnitType(List<UnitType>? list) {
+    _productEditor?.unitType = list?.elementAtOrNull(0);
   }
 
   setProductImages(List<String>? images) {
@@ -249,7 +254,7 @@ class CreateProductCubit extends Cubit<CreateProductState> {
     );
   }
 
-  Future<void> saveEdit() async {
+  Future<void> submitEdit() async {
     checkTempCustomFieldRemaining();
     checkTempPriceCategoryRemaining();
 

@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
@@ -161,6 +162,38 @@ class StoreRepository extends IRepository<Store> {
       throw UnimplementedError();
     } else {
       return await storeServerRepository.getAllBranchesByStoreIds(request);
+    }
+  }
+
+  Future<ApiResult> deleteUnitTypeByIds(BaseRepoRequest<List<String>> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.deleteUnitTypeByIds(request);
+    }
+  }
+
+  Future<ApiResult<List<UnitType>>> getUnitTypes(BaseRepoRequest<Null> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.getUnitTypes(request);
+    }
+  }
+
+  Future<ApiResult<UnitType>> createUnitTypes(BaseRepoRequest<UnitType> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.createUnitTypes(request);
+    }
+  }
+
+  Future<ApiResult> updateUnitType(BaseRepoRequest<UnitType> payload) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await storeServerRepository.updateUnitType(payload);
     }
   }
 }

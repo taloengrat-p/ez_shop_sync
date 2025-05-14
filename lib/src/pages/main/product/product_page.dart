@@ -60,14 +60,20 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     super.dispose();
   }
 
-  Widget buildBody() {
+  Widget buildBody(ProductState state) {
     return BodyWidget(
       actions: [
         IconButton(
-          onPressed: () {
-            _cubit.changeSortType();
-          },
-          icon: Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
+          onPressed:
+              state is ProductChangeSortType
+                  ? null
+                  : () {
+                    _cubit.changeSortType();
+                  },
+          icon:
+              state is ProductChangeSortType
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.grey))
+                  : Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
         ),
         IconButton(
           onPressed: () {
@@ -339,7 +345,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                       ],
                     ],
                   ).build(),
-              body: buildBody(),
+              body: buildBody(state),
             );
           },
         );

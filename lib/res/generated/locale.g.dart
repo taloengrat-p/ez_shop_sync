@@ -261,5 +261,16 @@ abstract class  LocaleKeys {
   static const addProductInfo = 'addProductInfo';
   static const storeValue = 'storeValue';
   static const branchValue = 'branchValue';
+  static const locales_th = 'locales.th';
+  static const locales_en = 'locales.en';
+  static const locales_thHint = 'locales.thHint';
+  static const locales_enHint = 'locales.enHint';
+  static const locales_thShortHint = 'locales.thShortHint';
+  static const locales_enShortHint = 'locales.enShortHint';
+  static const locales_thValue = 'locales.thValue';
+  static const locales_enValue = 'locales.enValue';
+  static const locales = 'locales';
+  static const createUnitType = 'createUnitType';
+  static const unitType = 'unitType';
 
 }

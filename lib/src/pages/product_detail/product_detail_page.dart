@@ -35,6 +35,7 @@ import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/product_detail_title_value.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/tag_widget.dart';
+import 'package:ez_shop_sync/src/widgets/unit_type_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -124,9 +125,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   : [CategoryWidget(model: _cubit.category!, icon: IconPickerUtils.getIcon(_cubit.category!.iconData))],
         ),
         ProductDetailTitleValue(
-          title: LocaleKeys.tags.tr(),
-          widgetValues: _cubit.tags.map((e) => TagWidget(model: e)).toList(),
+          title: LocaleKeys.unitType.tr(),
+          widgetValues: _cubit.unitType == null ? [] : [UnitTypeWidget(unitType: _cubit.unitType)],
         ),
+        // ProductDetailTitleValue(
+        //   title: LocaleKeys.tags.tr(),
+        //   widgetValues: _cubit.tags.map((e) => TagWidget(model: e)).toList(),
+        // ),
         ...data,
       ],
     );

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
@@ -219,6 +220,17 @@ class AppBranchSuccess extends AppState {
 
   @override
   List<Object?> get props => [branches];
+}
+
+class AppGetUnitTypesSuccess extends AppState {
+  final List<UnitType> unitTypes;
+  const AppGetUnitTypesSuccess({required this.unitTypes});
+
+  @override
+  String toString() => 'AppGetUnitTypesSuccess $unitTypes';
+
+  @override
+  List<Object?> get props => unitTypes;
 }
 
 class AppGetAllDataStarterLoading extends AppState {

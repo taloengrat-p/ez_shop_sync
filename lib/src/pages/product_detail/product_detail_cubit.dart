@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/product_history/product_history_repository.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
@@ -46,6 +47,8 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
 
   List<String> get imageMerged =>
       product?.imageUrl != null ? [product!.imageUrl!, ...product?.imagesUrl ?? []] : product?.imagesUrl ?? [];
+
+  UnitType? get unitType => product?.unitType;
 
   Future<void> deleteProduct() async {
     if (product?.id == null) {

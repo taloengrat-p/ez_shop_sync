@@ -90,7 +90,7 @@ class _AppTextFormFieldUiWidgetState extends State<AppTextFormFieldUiWidget> {
 
     if (widget.controller == null) {
       _controller = TextEditingController();
-    } else if (widget.controller != null) {
+    } else {
       _controller = widget.controller!;
     }
 
@@ -135,11 +135,11 @@ class _AppTextFormFieldUiWidgetState extends State<AppTextFormFieldUiWidget> {
   @override
   void didUpdateWidget(covariant AppTextFormFieldUiWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    Future.delayed(Duration.zero, () async {
-      if (widget.textValue != null) {
-        _controller.text = widget.textValue!;
-      }
-    });
+    // Future.delayed(Duration.zero, () async {
+    //   if (widget.textValue != null) {
+    //     _controller.text = widget.textValue!;
+    //   }
+    // });
   }
 
   @override
@@ -169,7 +169,7 @@ class _AppTextFormFieldUiWidgetState extends State<AppTextFormFieldUiWidget> {
                     readOnly: widget.readOnly,
                     autofillHints: widget.autofillHints,
                     focusNode: widget.focusNode,
-                    controller: _controller,
+                    controller: widget.controller,
                     onFieldSubmitted: widget.onFieldSubmitted,
                     onTap: () {
                       widget.onTap?.call();

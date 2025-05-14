@@ -35,8 +35,9 @@ class ProductCubit extends Cubit<ProductState> {
 
   void changeSortType() async {
     appCubit.changeSortType();
-    emit(ProductRefresh(DateTime.now()));
+    emit(ProductChangeSortType(sortType: sortType));
     await refresh();
+    emit(ProductChangeSortTypeSuccess(sortType: sortType));
   }
 
   changeDisplayType() {
@@ -50,6 +51,7 @@ class ProductCubit extends Cubit<ProductState> {
 
     result.when(
       success: (response) {
+        _products.removeWhere((e) => e.id == product.id);
         appCubit.doDeleteProduct(storeId: storeId, product: product);
         emit(ProductDeleteSuccess(id: product.id));
       },

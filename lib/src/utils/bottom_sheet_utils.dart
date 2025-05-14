@@ -1,6 +1,8 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/models/option_item.dart';
 import 'package:ez_shop_sync/src/widgets/bottom_sheet/app_bottom_sheet.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_create_unit_type.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetUtils {
@@ -45,6 +47,15 @@ class BottomSheetUtils {
           ),
           child: AppBottomSheet(props: AppBottomSheetProps(title: title ?? '', body: body, bottom: bottom)),
         );
+      },
+    );
+  }
+
+  static Future<UnitType?> openUnitTypeBottomSheet(BuildContext context, {UnitType? value}) async {
+    return await BottomSheetUtils.show(
+      context,
+      builder: (p0) {
+        return BottomSheetCreateUniTypeWidget(unitType: value);
       },
     );
   }

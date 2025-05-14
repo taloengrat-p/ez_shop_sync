@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/create_category/create_category_router.dart';
@@ -15,6 +16,7 @@ import 'package:ez_shop_sync/src/pages/create_product/create_product_router.dart
 import 'package:ez_shop_sync/src/pages/create_product/create_product_state.dart';
 import 'package:ez_shop_sync/src/pages/create_product/widgets/product_type_widget.dart';
 import 'package:ez_shop_sync/src/pages/create_product_detail/create_product_detail_router.dart';
+import 'package:ez_shop_sync/src/utils/bottom_sheet_utils.dart';
 import 'package:ez_shop_sync/src/utils/icon_picker_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
@@ -44,9 +46,10 @@ class CreateProductPageState extends State<CreateProductPage> {
   final _cubit = GetIt.I<CreateProductCubit>();
 
   final ScrollController _scrollController = ScrollController();
-
+  final _formKey = GlobalKey<FormState>();
   final _tagController = MultiSelectController<Tag>();
   final _categoryController = MultiSelectController<Category>();
+  final _unitTypeController = MultiSelectController<UnitType>();
   final _textProductTypeNameInput = TextEditingController();
   final _textProductTypePriceInput = TextEditingController();
   @override
@@ -91,6 +94,7 @@ class CreateProductPageState extends State<CreateProductPage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       const SizedBox(height: 16),
@@ -108,6 +112,7 @@ class CreateProductPageState extends State<CreateProductPage> {
                         textValue: _cubit.productEditor?.name,
                         label: LocaleKeys.name.tr(),
                         onChanged: _cubit.setName,
+                        isRequired: true,
                       ),
                       const SizedBox(height: 8),
                       AppTextFormFieldUiWidget(
@@ -216,6 +221,45 @@ class CreateProductPageState extends State<CreateProductPage> {
                           },
                         ),
                       ),
+                      Divider(color: ColorKeys.primary.withOpacity(0.6)),
+                      AppTextFormFieldDropdownSelectWidget<UnitType>(
+                        controller: _unitTypeController,
+                        singleSelect: true,
+                        label: LocaleKeys.optionalField.tr(args: [LocaleKeys.unitType.tr()]),
+                        items:
+                            _cubit.appCubit.unitTypes
+                                .map(
+                                  (e) => DropdownItem<UnitType>(
+                                    label: e.name.tr(context),
+                                    value: e,
+                                    selected: _cubit.productEditor?.unitType?.id == e.id,
+                                  ),
+                                )
+                                .toList(),
+                        itemBuilder: (item, index, onTap) {
+                          return DropdownSelectItemWidget(
+                            selected: item.selected,
+                            onTap: onTap,
+                            child: Text(item.value.name.tr(context)),
+                          );
+                        },
+                        selectedItemBuilder: (item) {
+                          return Text(item.value.name.tr(context));
+                        },
+                        onSelectionChange: _cubit.setUnitType,
+                        footerMenu: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () async {
+                            final result = await BottomSheetUtils.openUnitTypeBottomSheet(context);
+
+                            if (result is UnitType) {
+                              _unitTypeController.closeDropdown();
+                              _cubit.refresh();
+                            }
+                          },
+                        ),
+                      ),
+
                       // const SizedBox(
                       //   height: 8,
                       // ),
@@ -307,10 +351,12 @@ class CreateProductPageState extends State<CreateProductPage> {
               label:
                   _cubit.screenMode == ScreenMode.create ? LocaleKeys.button_submit.tr() : LocaleKeys.button_save.tr(),
               onPressed: () {
-                if (_cubit.screenMode == ScreenMode.create) {
-                  _cubit.submitCreate();
-                } else {
-                  _cubit.saveEdit();
+                if (_formKey.currentState?.validate() ?? false) {
+                  if (_cubit.screenMode == ScreenMode.create) {
+                    _cubit.submitCreate();
+                  } else {
+                    _cubit.submitEdit();
+                  }
                 }
               },
             ),

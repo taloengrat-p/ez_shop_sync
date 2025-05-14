@@ -78,7 +78,10 @@ class _ProductGridItemWidgetState extends State<ProductGridItemWidget> {
                           Text(
                             overflow: TextOverflow.ellipsis,
                             LocaleKeys.qty.tr(
-                              args: [widget.product.allQuantity?.toString() ?? '', LocaleKeys.units_piece.tr()],
+                              args: [
+                                widget.product.allQuantity?.toString() ?? '',
+                                widget.product.unitType?.name.tr(context) ?? LocaleKeys.units_piece.tr(),
+                              ],
                             ),
                           ),
                       ],

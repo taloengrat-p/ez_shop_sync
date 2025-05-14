@@ -1,6 +1,7 @@
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
 import 'package:ez_shop_sync/src/pages/add_user/add_user_cubit.dart';
@@ -23,4 +24,12 @@ abstract class StoreServerRepository {
   Future<ApiResult> deleteBranch(BaseRepoRequest request);
 
   Future<ApiResult<List<Branch>>> getAllBranchesByStoreIds(BaseRepoRequest<List<String>> request);
+
+  Future<ApiResult> deleteUnitTypeByIds(BaseRepoRequest<List<String>> request);
+
+  Future<ApiResult<List<UnitType>>> getUnitTypes(BaseRepoRequest<Null> request);
+
+  Future<ApiResult<UnitType>> createUnitTypes(BaseRepoRequest<UnitType> request);
+
+  Future<ApiResult<UnitType>> updateUnitType(BaseRepoRequest<UnitType> payload);
 }
