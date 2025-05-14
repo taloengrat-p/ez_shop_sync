@@ -49,7 +49,7 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
   Future<ApiResult<AddProduct>> addProductStock(BaseRepoRequest<AddProductStockRequest> request) async {
     final addProductResult = await super.getById(request.data.id);
 
-    addProductResult.when(
+    return addProductResult.when(
       success: (response) async {
         final productExistInCart = response.addProductItems.any(
           (item) => item.product?.id == request.data.orderItem.product?.id && item.cost == request.data.orderItem.cost,
@@ -95,11 +95,9 @@ class HiveAddProductLocalRepository extends BaseHiveRepository<String, AddProduc
         }
       },
       failure: (error) {
-        return ApiResult(error: 'Cart by ${request.data.id} is Null');
+        return ApiResult(error: 'Add product by ${request.data.id} is Null');
       },
     );
-
-    return ApiResult(error: 'Cart by ${request.data.id} is Null');
   }
 
   @override

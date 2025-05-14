@@ -200,6 +200,20 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
     );
   }
 
+  Future<void> addQuantity({
+    required String storeId,
+    required productId,
+    String? productTypeId,
+    required num reduceQty,
+  }) async {
+    await productServerRepository.addQuantity(
+      storeId: storeId,
+      productId: productId,
+      productTypeId: productTypeId,
+      reduceQty: reduceQty,
+    );
+  }
+
   Future<ApiResult<List<ProductHistory>>> getProductHistory({
     required String productId,
     required String storeId,

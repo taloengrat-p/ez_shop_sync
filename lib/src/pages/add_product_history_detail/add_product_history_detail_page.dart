@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_cubit.dart';
 import 'package:ez_shop_sync/src/pages/add_product_history_detail/add_product_history_detail_state.dart';
 import 'package:ez_shop_sync/src/utils/extensions/date_time_extension.dart';
@@ -82,7 +83,7 @@ class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
           itemBuilder: (context, index) {
             final cartItem = _cubit.order?.addProductItems.elementAt(index);
 
-            return OrderItemWidget(order: cartItem);
+            return OrderItemWidget(order: cartItem, type: TransactionMethodType.addProduct);
           },
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(height: 16);

@@ -112,30 +112,17 @@ class _AddProductState extends State<AddProductPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           itemCount: _cubit.addProductOrderItems.length,
           itemBuilder: (context, index) {
-            bool hasInsufficientError = false;
             bool hasInvalid = false;
 
             final orderItem = _cubit.addProductOrderItems.elementAtOrNull(index);
             try {
-              final productStockItem = _cubit.productInStock.firstWhere((e) => e.id == orderItem?.product?.id);
-
-              hasInsufficientError =
-                  (productStockItem.productTypeList
-                          ?.firstWhere((e) => e.id == orderItem?.product?.priceSelected)
-                          .quantity ??
-                      0) <
-                  (orderItem?.product?.quantity ?? 0);
+              _cubit.productInStock.firstWhere((e) => e.id == orderItem?.product?.id);
             } catch (e) {
               hasInvalid = true;
             }
 
             return AddProductItemWidget(
-              errorMessageType:
-                  hasInvalid
-                      ? CartErrorType.invalid
-                      : hasInsufficientError
-                      ? CartErrorType.insufficient
-                      : null,
+              errorMessageType: hasInvalid ? CartErrorType.invalid : null,
               orderItem: orderItem,
               onIncreaseQty: () {
                 _cubit.increaseProductQtyByIndex(index);

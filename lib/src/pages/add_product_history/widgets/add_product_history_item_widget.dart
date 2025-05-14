@@ -63,7 +63,7 @@ class AddProductHistoryItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       name: firstOrderItem.product?.name ?? '',
                       desc: firstOrderItem.product?.description,
-                      price: firstOrderItem.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
+                      price: firstOrderItem.cost?.prefixCurrency() ?? '--',
                       priceCategory: firstOrderItem.product?.productTypeSelectDisplay,
                     ),
                   ),

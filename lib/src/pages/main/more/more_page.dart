@@ -170,7 +170,7 @@ class _MorePageState extends State<MorePage> {
             Expanded(
               child: Row(
                 children: [
-                  if (_cubit.stores.isNotEmpty) CircleProfileWidget(title: _cubit.storeShortName),
+                  if (_cubit.stores.isNotEmpty) CircleProfileWidget(title: _cubit.user?.displayName),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -180,7 +180,7 @@ class _MorePageState extends State<MorePage> {
                       children: [
                         Flexible(
                           child: Text(
-                            _cubit.storeName,
+                            _cubit.user?.displayName ?? _cubit.user?.email ?? '-',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               overflow: TextOverflow.ellipsis,
                               color: ColorKeys.primary.withOpacity(0.6).getContrast(),

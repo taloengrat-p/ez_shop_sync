@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 class CircleProfileWidget extends StatelessWidget {
   final String? title;
   final double? radius;
-  const CircleProfileWidget({
-    super.key,
-    this.title,
-    this.radius,
-  });
+  const CircleProfileWidget({super.key, this.title, this.radius});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +16,8 @@ class CircleProfileWidget extends StatelessWidget {
         radius: radius ?? 24,
         backgroundColor: ColorKeys.white,
         child: Text(
-          title ?? '',
-          style: const TextStyle(
-            color: Colors.black,
-            overflow: TextOverflow.ellipsis,
-          ),
+          title?.substring(0, 2) ?? '',
+          style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis),
         ),
       ),
     );

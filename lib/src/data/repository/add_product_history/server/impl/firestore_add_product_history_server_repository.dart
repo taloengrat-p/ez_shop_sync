@@ -62,8 +62,8 @@ class AddProductHistoryServerRepository implements IAddProductHistoryServerRepos
       final orderCreated = await refAddProductCreated.get();
 
       for (var orderItem in request.data.addProductItems) {
-        await productRepository.reduceQuantity(
-          storeId: request.storeId ?? '',
+        await productRepository.addQuantity(
+          storeId: request.storeId,
           productId: orderItem.product?.id ?? '',
           productTypeId: orderItem.product?.priceSelected,
           reduceQty: orderItem.product?.quantity ?? 0,

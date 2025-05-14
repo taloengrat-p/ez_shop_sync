@@ -32,15 +32,14 @@ class AddProductCubit extends Cubit<AddProductState> {
     }
 
     try {
-      final productStockItem = productInStock
+      productInStock
           .firstWhere((e) => e.id == item.product?.id)
           .productTypeList
           ?.firstWhere((e) => e.id == item.product?.priceSelected);
-      final stockQty = (productStockItem?.quantity ?? 0);
-      final addStockQty = (item.product?.quantity ?? 0);
+      // final stockQty = (productStockItem?.quantity ?? 0);
+      // final addStockQty = (item.product?.quantity ?? 0);
 
-      final hasError = (stockQty < addStockQty);
-      return hasError;
+      return false;
     } catch (e) {
       return true;
     }

@@ -49,6 +49,10 @@ class _MainPageState extends State<MainPage> {
       final argruments = ModalRoute.of(context)?.settings.arguments;
       if (argruments is MainArgruments) {
         _pageController.jumpToPage(argruments.startWithIndexPage);
+
+        if (argruments.isRefresh ?? false) {
+          _cubit.appCubit.refreshProductByCurrentStoreAndBranch();
+        }
       }
       _cubit.doCheckUserAlreadyUseApp();
     });
@@ -82,7 +86,7 @@ class _MainPageState extends State<MainPage> {
                           Expanded(
                             child: ProfileWidget(
                               title: LocaleKeys.storeValue.tr(args: [_cubit.storeName]),
-                              name: _cubit.username ?? '',
+                              name: _cubit.storeName,
                               desc: LocaleKeys.branchValue.tr(args: [_cubit.branchName]),
                             ),
                           ),

@@ -16,7 +16,7 @@ class ProfileWidget extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CircleProfileWidget(title: name.substring(0, 1).toUpperCase(), radius: 18),
+        CircleProfileWidget(title: name, radius: 18),
         const SizedBox(width: 8),
         Expanded(
           child: Column(

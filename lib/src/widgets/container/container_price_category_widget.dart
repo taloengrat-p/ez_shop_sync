@@ -5,27 +5,18 @@ class ContainerPriceCategoryWidget extends StatelessWidget {
   final String label;
   final Color? color;
   final bool isSelect;
-  const ContainerPriceCategoryWidget({
-    super.key,
-    required this.label,
-    this.color,
-    required this.isSelect,
-  });
+  const ContainerPriceCategoryWidget({super.key, required this.label, this.color, required this.isSelect});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 12),
+      padding: const EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 12),
       decoration: BoxDecoration(
         color: isSelect ? Colors.amber : null,
-        border: Border.all(
-            color: isSelect ? Colors.transparent : color ?? Colors.amber),
+        border: Border.all(color: isSelect ? Colors.transparent : color ?? Colors.amber),
         borderRadius: BorderRadius.circular(DimensionsKeys.radius / 2),
       ),
-      child: Text(
-        label,
-      ),
+      child: Text(label, overflow: TextOverflow.ellipsis),
     );
   }
 }

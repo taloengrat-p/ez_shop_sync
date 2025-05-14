@@ -62,7 +62,7 @@ class _OrderCompleteState extends State<OrderCompletePage> {
                 height: 44,
                 label: LocaleKeys.backToHomePage.tr(),
                 onPressed: () {
-                  MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(1));
+                  MainRouter(context).pushNamedAndRemoveUntil(argruments: const MainArgruments(2, isRefresh: true));
                 },
               ),
             ),

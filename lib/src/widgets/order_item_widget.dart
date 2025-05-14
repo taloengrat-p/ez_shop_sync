@@ -1,4 +1,5 @@
 import 'package:ez_shop_sync/res/dimensions.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/utils/extensions/num_extension.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_widget.dart';
@@ -8,9 +9,10 @@ import 'package:ez_shop_sync/src/widgets/product_info_list_item.dart';
 import 'package:flutter/material.dart';
 
 class OrderItemWidget extends StatelessWidget {
+  final TransactionMethodType? type;
   final OrderItem? order;
 
-  const OrderItemWidget({super.key, required this.order});
+  const OrderItemWidget({super.key, required this.order, this.type = TransactionMethodType.order});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,10 @@ class OrderItemWidget extends StatelessWidget {
                       name: order?.product?.name ?? '',
                       desc: order?.product?.description,
                       qty: order?.product?.quantity,
-                      price: order?.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
+                      price:
+                          type == TransactionMethodType.addProduct
+                              ? order?.cost?.prefixCurrency() ?? '--'
+                              : order?.product?.priceCurrentSelected?.prefixCurrency() ?? '--',
                       priceCategory: order?.product?.productTypeSelectDisplay,
                     ),
                   ),

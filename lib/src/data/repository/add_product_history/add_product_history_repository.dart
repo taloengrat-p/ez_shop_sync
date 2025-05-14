@@ -22,7 +22,6 @@ class AddProductHistoryRepository extends IRepository<AddProduct> {
     required super.navigationService,
   }) : super(AppMode.server);
 
-  @override
   Future<ApiResult<AddProduct>> create(BaseRepoRequest<AddProduct> request) async {
     if (appMode == AppMode.local) {
       return await addProductHistoryLocalRepository.create(request);

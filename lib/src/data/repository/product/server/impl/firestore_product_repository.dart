@@ -289,6 +289,50 @@ class FirestoreProductServerRepository implements IProductServerRepository {
   }
 
   @override
+  Future<void> addQuantity({
+    required String storeId,
+    required productId,
+    String? productTypeId,
+    required num reduceQty,
+  }) async {
+    try {
+      final currentProductRef = firebaseService.storesCollection
+          .doc(storeId)
+          .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+          .doc(productId);
+
+      final currentProduct = await currentProductRef.get();
+
+      if (!currentProduct.exists) {
+        log('Document does not exist');
+        return;
+      }
+
+      var currentProductType = Product.fromJson(currentProduct.data() ?? {});
+
+      final currentProductTypeQty = currentProductType.productTypeList?.firstWhere((e) => e.id == productTypeId);
+
+      int? index = currentProductType.productTypeList?.indexWhere((item) => item.id == productTypeId);
+
+      if (index == -1) {
+        log('Item not found in the array');
+        return;
+      }
+
+      // if ((currentProductTypeQty?.quantity ?? 0) >= reduceQty) {
+      final addQty = (currentProductTypeQty?.quantity ?? 0) + reduceQty;
+
+      currentProductType.productTypeList![index!].quantity = addQty;
+      await currentProductRef.update({
+        'productTypeList': currentProductType.productTypeList?.map((e) => e.toJson()).toList(),
+      });
+      // }
+    } catch (e) {
+      log('error reduceQuantity : $e');
+    }
+  }
+
+  @override
   Future<ApiResult<List<ProductHistory>>> getProductHistory({
     required productId,
     required String storeId,

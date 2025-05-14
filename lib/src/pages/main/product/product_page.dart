@@ -272,6 +272,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     return BlocBuilder<AppCubit, AppState>(
       bloc: GetIt.I<AppCubit>(),
       builder: (context, appState) {
+        log('product page app cubit state : $appState');
         return BlocBuilder<ProductCubit, ProductState>(
           bloc: _cubit,
           builder: (context, state) {

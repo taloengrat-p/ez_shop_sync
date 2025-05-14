@@ -37,4 +37,11 @@ abstract class IProductServerRepository {
   Future<ApiResult<Product>> updateProduct(BaseRepoRequest<UpdateProductImageRequest> request);
 
   Future<ApiResult> deleteProduct(BaseRepoRequest<Product> request);
+
+  Future<void> addQuantity({
+    required String storeId,
+    required productId,
+    String? productTypeId,
+    required num reduceQty,
+  });
 }

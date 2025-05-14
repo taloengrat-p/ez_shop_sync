@@ -9,13 +9,13 @@ abstract class MainState extends Equatable {
 
 class MainArgruments extends MainState {
   final int startWithIndexPage;
-
-  const MainArgruments(this.startWithIndexPage);
+  final bool? isRefresh;
+  const MainArgruments(this.startWithIndexPage, {this.isRefresh});
 
   @override
   String toString() => 'MainArgruments $startWithIndexPage';
   @override
-  List<Object?> get props => [startWithIndexPage];
+  List<Object?> get props => [startWithIndexPage, isRefresh];
 }
 
 class MainInitial extends MainState {

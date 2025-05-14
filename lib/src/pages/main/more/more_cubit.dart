@@ -10,6 +10,7 @@ import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/services/local_storage_service.dart/local_storage_service.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_select_store_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -21,6 +22,7 @@ class MoreCubit extends Cubit<MoreState> {
   AuthRepository authRepository;
   final UserRepository userRepository;
   List<Store> get stores => appCubit.stores;
+  User? get user => appCubit.user;
   late Locale locale;
   String version = '';
   String buildNumber = '';
