@@ -17,7 +17,7 @@ class MainCubit extends Cubit<MainState> {
   String get userShortName => appCubit.user?.displayName?.toSubStringFirstToIndex(2) ?? '';
 
   String get storeName => appCubit.currentStoreName;
-  String get branchName => appCubit.currentStoreName;
+  String get branchName => appCubit.currentBranchName;
 
   void setCurrentPageView(int value) {
     currentPage = value;

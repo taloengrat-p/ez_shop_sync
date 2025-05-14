@@ -277,6 +277,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           builder: (context, state) {
             log('state : $state', name: runtimeType.toString());
             return BaseScaffolds(
+              emptyIcon: CupertinoIcons.bag,
               isInitialLoading: state is ProductInitial,
               // isLoading: state is ProductLoading,
               onRefresh: () async {
