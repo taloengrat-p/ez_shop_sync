@@ -63,7 +63,12 @@ class _BranchDetailManagementState extends State<BranchDetailManagementPage> {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final member = _cubit.members[index];
-        return CheckboxListTile(title: Text(member.email), value: member.isSelect, onChanged: _cubit.onCheckedChanged);
+        return CheckboxListTile(
+          key: ValueKey('branch-member-${member.uid}'),
+          title: Text(member.email),
+          value: member.isSelect,
+          onChanged: _cubit.onCheckedChanged,
+        );
       },
       separatorBuilder: (context, index) {
         return const Divider(color: Colors.grey);

@@ -79,6 +79,7 @@ class _BottomSheetSelectStoreWidgetState extends State<BottomSheetSelectStoreWid
                               final branch = store.branches?.elementAtOrNull(index);
 
                               return RadioListTile(
+                                key: ValueKey('branch-item-${branch?.id}'),
                                 activeColor: Colors.green,
                                 title: Text(branch?.name ?? '--', style: Theme.of(context).textTheme.bodyMedium),
                                 value: branch?.id,

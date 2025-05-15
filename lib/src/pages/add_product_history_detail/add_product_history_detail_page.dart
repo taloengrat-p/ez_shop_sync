@@ -83,7 +83,11 @@ class _AddProductHistoryDetailState extends State<AddProductHistoryDetailPage> {
           itemBuilder: (context, index) {
             final cartItem = _cubit.order?.addProductItems.elementAt(index);
 
-            return OrderItemWidget(order: cartItem, type: TransactionMethodType.addProduct);
+            return OrderItemWidget(
+              key: ValueKey('cart-item-${cartItem?.id}'),
+              order: cartItem,
+              type: TransactionMethodType.addProduct,
+            );
           },
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(height: 16);

@@ -91,7 +91,7 @@ class _OrderHistoryState extends State<OrderHistoryPage> {
                 final model = _cubit.orderItems[index];
 
                 return InkWell(
-                  child: OrderHistoryItemWidget(order: model),
+                  child: OrderHistoryItemWidget(key: ValueKey('order-item-${model.id}'), order: model),
                   onTap: () {
                     OrderHistoryDetailRouter(
                       context,

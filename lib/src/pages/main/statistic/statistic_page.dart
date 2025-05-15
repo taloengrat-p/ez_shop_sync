@@ -262,7 +262,10 @@ class _StatisticState extends State<StatisticPage> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final transaction = _cubit.transactionPerview[index];
-                            return TransactionHistoryWidget(transaction: transaction);
+                            return TransactionHistoryWidget(
+                              key: ValueKey('transaction-item-${transaction.id}'),
+                              transaction: transaction,
+                            );
                           },
                           separatorBuilder: (context, index) {
                             return const Divider(color: Colors.grey);

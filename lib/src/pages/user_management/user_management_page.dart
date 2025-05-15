@@ -69,6 +69,7 @@ class _UserManagementState extends State<UserManagementPage> {
       itemBuilder: (context, index) {
         final member = _cubit.members[index];
         return Padding(
+          key: ValueKey('user-item-${member.uid}'),
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [

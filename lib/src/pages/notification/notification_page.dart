@@ -75,6 +75,7 @@ class _NotificationState extends State<NotificationPage> {
       itemBuilder: (context, index) {
         final item = _cubit.notifications[index];
         return InkWell(
+          key: ValueKey('notification-item-${item.id}'),
           onTap: () {
             NotificationDetailRouter(context).navigate(argruments: NotificationDetailArgrument(item));
           },

@@ -87,6 +87,7 @@ class _BranchManagementState extends State<BranchManagementPage> {
       itemBuilder: (context, index) {
         final branch = _cubit.branches[index];
         return GestureDetector(
+          key: ValueKey('branch-member-${branch.id}'),
           onTap: () {
             BranchDetailManagementRouter(context).navigate(argruments: BranchDetailManagementArgrument(branch));
           },

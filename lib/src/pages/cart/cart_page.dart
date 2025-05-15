@@ -360,6 +360,7 @@ class _CartState extends State<CartPage> {
             }
 
             return CartItemWidget(
+              key: ValueKey('cart-item-${cartItem?.id}'),
               errorMessageType:
                   isProductInvalid
                       ? CartErrorType.invalid

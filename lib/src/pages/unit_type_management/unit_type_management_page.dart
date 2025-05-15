@@ -135,7 +135,7 @@ class _UnitTypeManagementState extends State<UnitTypeManagementPage> {
                 ),
               ],
             ),
-            child: UnitTypeWidget(unitType: unitType),
+            child: UnitTypeWidget(key: ValueKey('transaction-item-${unitType?.id}'), unitType: unitType),
           ),
         );
       },

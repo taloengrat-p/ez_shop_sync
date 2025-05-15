@@ -156,7 +156,11 @@ class Section extends StatelessWidget implements IProductPage {
                 final random = Random();
                 final randomIndex = random.nextInt(products.length);
                 final product = products[randomIndex];
-                return HomeProductItemWidget(product: product, iProductItem: this);
+                return HomeProductItemWidget(
+                  key: ValueKey('product-home-${product.id}'),
+                  product: product,
+                  iProductItem: this,
+                );
               },
             ),
           ),

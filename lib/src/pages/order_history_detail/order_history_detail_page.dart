@@ -78,7 +78,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetailPage> {
 
             // log('_cubit.products.length ${_cubit.products.length}, $index, ${product.quantity}');
 
-            return OrderItemWidget(order: cartItem);
+            return OrderItemWidget(key: ValueKey('cart-item-${cartItem?.id ?? index}'), order: cartItem);
           },
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(height: 16);

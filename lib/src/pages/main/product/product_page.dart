@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
@@ -25,7 +24,6 @@ import 'package:ez_shop_sync/src/widgets/body/body_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
-import 'package:ez_shop_sync/src/widgets/container/container_scrollable_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
@@ -109,9 +107,13 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
             children:
                 _cubit.products
                     .map(
-                      (e) => GestureDetector(
-                        onTap: () => onClickGoToDetailPage(e),
-                        child: ProductGridItemWidget(key: ValueKey(e.id), product: e, iProductItem: this),
+                      (product) => GestureDetector(
+                        onTap: () => onClickGoToDetailPage(product),
+                        child: ProductGridItemWidget(
+                          key: ValueKey('product-grid-view-${product.id}'),
+                          product: product,
+                          iProductItem: this,
+                        ),
                       ),
                     )
                     .toList(),
@@ -137,7 +139,11 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
           return GestureDetector(
             onTap: () => onClickGoToDetailPage(product),
-            child: ProductListItemWidget(product: product, iProductItem: this),
+            child: ProductListItemWidget(
+              key: ValueKey('product-list-view-${product.id}'),
+              product: product,
+              iProductItem: this,
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) {

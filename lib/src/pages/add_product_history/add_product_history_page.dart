@@ -107,6 +107,7 @@ class _AddProductHistoryState extends State<AddProductHistoryPage> {
                 final model = _cubit.orderItems.elementAt(index);
 
                 return InkWell(
+                  key: ValueKey('order-${model.id}'),
                   child: AddProductHistoryItemWidget(addProduct: model),
                   onTap: () {
                     AddProductHistoryDetailRouter(

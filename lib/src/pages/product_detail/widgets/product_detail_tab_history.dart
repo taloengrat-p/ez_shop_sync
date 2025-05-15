@@ -45,6 +45,7 @@ class _ProductDetailTabHistoryState extends State<ProductDetailTabHistory> {
               itemBuilder: (context, index) {
                 final history = productDetailCubit.productHistory?[index];
                 return InkWell(
+                  key: ValueKey('product-history-item-${history?.id}'),
                   onTap: () => doHandleProductHistoryItemClick(history),
                   child: ProductHistoryItemWidget(history: history),
                 );

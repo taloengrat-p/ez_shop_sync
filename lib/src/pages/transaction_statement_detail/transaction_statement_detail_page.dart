@@ -72,7 +72,10 @@ class _TransactionStatementDetailState extends State<TransactionStatementDetailP
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final transaction = _cubit.argruments!.transactions[index];
-              return TransactionHistoryWidget(transaction: transaction);
+              return TransactionHistoryWidget(
+                key: ValueKey('transaction-item-${transaction.id}'),
+                transaction: transaction,
+              );
             },
             separatorBuilder: (context, index) {
               return const Divider(color: Colors.grey);
