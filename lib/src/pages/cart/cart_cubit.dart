@@ -7,7 +7,6 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_status_type.
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
-import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
@@ -252,9 +251,9 @@ class CartCubit extends Cubit<CartState> {
     return result ?? [];
   }
 
-  void addCartFromSearch(Product copyWith) async {
+  Future<void> addCartFromSearch(Product copyWith) async {
     emit(CartLoading());
-    appCubit.addCart(product: copyWith);
+    await appCubit.addCart(product: copyWith);
     await initial();
     emit(CartAddProductFromSearchSuccess());
   }

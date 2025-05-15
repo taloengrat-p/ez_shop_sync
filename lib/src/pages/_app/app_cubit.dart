@@ -545,7 +545,7 @@ class AppCubit extends Cubit<AppState> {
     // setCurrentUser(localUser: resultUpdated);
   }
 
-  void addCart({Offset? offset, required Product? product}) async {
+  Future<void> addCart({Offset? offset, required Product? product}) async {
     log('addCart() $cart');
     if (cart != null && product != null) {
       emit(AppLoading());
@@ -561,7 +561,7 @@ class AppCubit extends Cubit<AppState> {
         ),
       );
 
-      cartUpdate.when(
+      return cartUpdate.when(
         success: (response) {
           log('cartUpdate $cartUpdate');
           emit(AppAddCartSuccess());

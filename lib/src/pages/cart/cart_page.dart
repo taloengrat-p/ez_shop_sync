@@ -24,6 +24,7 @@ import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/opacity_widget.dart';
@@ -193,6 +194,20 @@ class _CartState extends State<CartPage> {
 
                                   return results.map((product) {
                                     return ListTile(
+                                      leading: ImageWidget(
+                                        imageUrl: product.imageThumbnail,
+                                        width: 40,
+                                        height: 160,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      trailing: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(product.allQuantity.toString()),
+                                          Text(product.unitType?.shortName.tr(context) ?? LocaleKeys.units_piece.tr()),
+                                        ],
+                                      ),
                                       title: Text(product.name),
                                       onTap: () async {
                                         // widget.onResultSelected?.call(result);
@@ -200,12 +215,15 @@ class _CartState extends State<CartPage> {
                                         final result = await DialogUtils.showAddCartDialog(context, product);
 
                                         if (result is BottomSheetAddCartSuccess) {
-                                          _cubit.addCartFromSearch(
+                                          await _cubit.addCartFromSearch(
                                             product.copyWith(
                                               quantity: result.qty,
                                               priceSelected: result.priceCategorySelected,
                                             ),
                                           );
+                                          controller.clear();
+                                          _isSearch = false;
+                                          setState(() {});
                                         }
                                       },
                                     );
