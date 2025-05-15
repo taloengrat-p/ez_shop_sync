@@ -395,6 +395,26 @@ class FirestoreProductServerRepository implements IProductServerRepository {
 
     return ApiResult(response: 'deleteProduct ${request.data.id} success');
   }
+
+  @override
+  Future<ApiResult<List<Product>>> searchProductByKey(BaseRepoRequest<String> request) async {
+    try {
+      final snapShot =
+          await firebaseService.storesCollection
+              .doc(request.storeId)
+              .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS)
+              .orderBy('name')
+              .startAt([request.data])
+              .endAt(['${request.data}\uf8ff']) // "\uf8ff" is a unicode character
+              .get();
+
+      final products = snapShot.docs.map((e) => Product.fromJson(e.data())).toList();
+
+      return ApiResult(response: products);
+    } catch (e) {
+      return ApiResult(error: e);
+    }
+  }
 }
 
 class ProductProfileImage {

@@ -32,43 +32,43 @@ class Product extends BaseHiveObject {
   @HiveField(10, defaultValue: null)
   String? brand;
 
-  @HiveField(23, defaultValue: null)
+  @HiveField(11, defaultValue: null)
   String? imageUrl;
 
-  @HiveField(11, defaultValue: null)
+  @HiveField(12, defaultValue: null)
   List<String>? imagesUrl;
 
-  @HiveField(12, defaultValue: null)
+  @HiveField(13, defaultValue: null)
   String? imageThumbnail;
 
-  @HiveField(13, defaultValue: {})
+  @HiveField(14, defaultValue: {})
   Map<String, dynamic>? attributes;
 
-  @HiveField(14, defaultValue: [])
+  @HiveField(15, defaultValue: [])
   List<String>? tag;
 
-  @HiveField(15, defaultValue: ProductStatus.undefined)
+  @HiveField(16, defaultValue: ProductStatus.undefined)
   ProductStatus status;
 
-  @HiveField(16)
+  @HiveField(17)
   String storeId;
 
-  @HiveField(17, defaultValue: null)
+  @HiveField(18, defaultValue: null)
   num? quantity;
 
-  @HiveField(18, defaultValue: null)
+  @HiveField(19, defaultValue: null)
   String ownerId;
 
-  @HiveField(19, defaultValue: null)
+  @HiveField(20, defaultValue: null)
   String? priceSelected;
 
-  @HiveField(20, defaultValue: null)
+  @HiveField(21, defaultValue: null)
   ProductConfig? config;
 
-  @HiveField(21, defaultValue: null)
+  @HiveField(22, defaultValue: null)
   List<ProductType>? productTypeList;
 
-  @HiveField(22, defaultValue: null)
+  @HiveField(23, defaultValue: null)
   UnitType? unitType;
 
   num? get allQuantity => productTypeList?.fold(0, (sum, item) => (sum ?? 0) + (item.quantity ?? 0));

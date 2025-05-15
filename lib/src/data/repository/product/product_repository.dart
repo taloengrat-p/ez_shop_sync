@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/product_history_event.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
@@ -134,7 +133,6 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
                 productId: response.id,
                 event: ProductHistoryEvent.addToStock.name,
                 newData: {"priceCategory": request.data.priceSelected, "qty": request.data.quantity},
-                info: BaseHiveData(createAt: DateTime.now(), updateAt: DateTime.now()),
               ),
             ),
           );
@@ -274,5 +272,14 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
       type: ToastificationType.success,
     );
     return result;
+  }
+
+  @override
+  Future<ApiResult<List<Product>>> searchProductByKey(BaseRepoRequest<String> request) async {
+    if (appMode == AppMode.local) {
+      throw UnimplementedError();
+    } else {
+      return await productServerRepository.searchProductByKey(request);
+    }
   }
 }

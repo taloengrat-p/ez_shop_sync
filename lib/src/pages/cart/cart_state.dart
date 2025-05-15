@@ -1,9 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
+
 import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class CartState extends Equatable {
   const CartState([List props = const []]) : super();
@@ -50,6 +53,38 @@ class CartGetProductsFailure extends CartState {
 class CartLoading extends CartState {
   @override
   String toString() => 'CartLoading';
+}
+
+class CartAddProductFromSearchSuccess extends CartState {
+  @override
+  String toString() => 'CartAddProductFromSearchSuccess';
+}
+
+class CartSearchProductLoading extends CartState {
+  final String key;
+  const CartSearchProductLoading({required this.key});
+  @override
+  String toString() => 'CartSearchProductLoading $key';
+
+  @override
+  List<Object?> get props => [key];
+}
+
+class CartSearchProductFailure extends CartState {
+  @override
+  String toString() => 'CartSearchProductFailure';
+}
+
+class CartSearchProductSuccess extends CartState {
+  final List<Product> products;
+
+  const CartSearchProductSuccess({required this.products});
+
+  @override
+  String toString() => 'CartSearchProductSuccess ${products.map((e) => e.id).toList()}';
+
+  @override
+  List<Object?> get props => products.map((e) => e.id).toList();
 }
 
 class CartProductInsufficient extends CartState {

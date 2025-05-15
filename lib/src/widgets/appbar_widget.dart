@@ -15,7 +15,7 @@ class AppbarWidget {
   Widget? titleWidget;
   PreferredSizeWidget? bottom;
   final BuildContext context;
-
+  bool showLeading;
   AppbarWidget(
     this.context, {
     this.title,
@@ -27,13 +27,14 @@ class AppbarWidget {
     this.titleWidget,
     this.titleStyle,
     this.bottom,
+    this.showLeading = true,
   });
   AppBar build() {
     final ModalRoute<dynamic>? parentRoute = ModalRoute.of(context);
 
     return AppBar(
       leading:
-          (parentRoute?.impliesAppBarDismissal ?? false)
+          showLeading && (parentRoute?.impliesAppBarDismissal ?? false)
               ? ContainerCircleWidget(
                 margin: const EdgeInsets.only(left: 8),
                 backgroundColor: ColorKeys.primary.withOpacity(0.1),
@@ -43,6 +44,7 @@ class AppbarWidget {
                 },
               )
               : null,
+      automaticallyImplyLeading: showLeading && (parentRoute?.impliesAppBarDismissal ?? false),
       backgroundColor: color ?? Colors.transparent,
       shadowColor: Colors.transparent,
       foregroundColor: Colors.transparent,
@@ -61,6 +63,7 @@ class AppbarWidget {
             ),
       ),
       actions: actions,
+
       elevation: 0,
       bottom: bottom,
     );

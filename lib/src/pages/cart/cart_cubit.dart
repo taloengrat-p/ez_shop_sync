@@ -7,6 +7,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_status_type.
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/order_item.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/request/cart_request/add_cart_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_decrease_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/cart_request/cart_increase_qty_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_order_request.dart';
@@ -31,6 +32,7 @@ class CartCubit extends Cubit<CartState> {
   final num _serviceCharge = 7;
   TimerUtils timerUtils = TimerUtils();
   List<OrderItem> _products = [];
+  List<Product> productSearch = [];
   Cart? _cart;
   List<OrderItem> get products => _products;
   CartCubit({
@@ -89,7 +91,7 @@ class CartCubit extends Cubit<CartState> {
     item.product?.quantity = (_products[index].product?.quantity ?? 0) + 1;
     emit(CartIncrease(productId: item.id, qty: item.product!.quantity!));
 
-    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () async {
       log('[perform] increase');
       cartRepository.increaseQty(
         appCubit.request(
@@ -116,7 +118,7 @@ class CartCubit extends Cubit<CartState> {
     item.product?.quantity = _products[index].product!.quantity! - 1;
     emit(CartDecrease(productId: item.id, qty: item.product!.quantity!));
 
-    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () async {
       log('[perform] decrease');
       cartRepository.decreaseQty(
         appCubit.request(
@@ -130,7 +132,7 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  void initial() async {
+  Future<void> initial() async {
     emit(CartInitial());
     _cart = appCubit.cart;
     _products = appCubit.cart?.cartItems.map((e) => e).toList() ?? [];
@@ -230,5 +232,30 @@ class CartCubit extends Cubit<CartState> {
   void setReceiveAmount(String? value) {
     receiveAmount = num.tryParse(value.toString());
     emit(CartRefresh(DateTime.now()));
+  }
+
+  Future<List<Product>> onSearchProduct(String value) async {
+    final result = await timerUtils.debounceTime<List<Product>>(const Duration(seconds: 1), () async {
+      final result = await productRepository.searchProductByKey(appCubit.request(value));
+
+      return result.when(
+        success: (response) {
+          log('responseeee : $response');
+          return response;
+        },
+        failure: (error) {
+          return [];
+        },
+      );
+    });
+
+    return result ?? [];
+  }
+
+  void addCartFromSearch(Product copyWith) async {
+    emit(CartLoading());
+    appCubit.addCart(product: copyWith);
+    await initial();
+    emit(CartAddProductFromSearchSuccess());
   }
 }

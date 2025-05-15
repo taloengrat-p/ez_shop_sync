@@ -479,15 +479,11 @@ extension GetItInjectableX on _i174.GetIt {
           productRepository: gh<_i846.ProductRepository>(),
           appCubit: gh<_i283.AppCubit>(),
         ));
-    gh.factory<_i853.AddUserCubit>(() => _i853.AddUserCubit(
-          storeRepository: gh<_i882.StoreRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-        ));
-    gh.factory<_i304.UserManagementCubit>(() => _i304.UserManagementCubit(
-          storeRepository: gh<_i882.StoreRepository>(),
-          appCubit: gh<_i283.AppCubit>(),
-        ));
     gh.factory<_i290.BranchManagementCubit>(() => _i290.BranchManagementCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
+    gh.factory<_i853.AddUserCubit>(() => _i853.AddUserCubit(
           storeRepository: gh<_i882.StoreRepository>(),
           appCubit: gh<_i283.AppCubit>(),
         ));
@@ -500,6 +496,10 @@ extension GetItInjectableX on _i174.GetIt {
               storeRepository: gh<_i882.StoreRepository>(),
               appCubit: gh<_i283.AppCubit>(),
             ));
+    gh.factory<_i304.UserManagementCubit>(() => _i304.UserManagementCubit(
+          storeRepository: gh<_i882.StoreRepository>(),
+          appCubit: gh<_i283.AppCubit>(),
+        ));
     gh.factory<_i377.LoginCubit>(() => _i377.LoginCubit(
           authRepository: gh<_i214.AuthRepository>(),
           appCubit: gh<_i283.AppCubit>(),
@@ -531,12 +531,12 @@ extension GetItInjectableX on _i174.GetIt {
         _i924.TransactionsChartDetailsCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i653.NotificationCubit>(
         () => _i653.NotificationCubit(appCubit: gh<_i283.AppCubit>()));
+    gh.factory<_i388.BranchDetailManagementCubit>(() =>
+        _i388.BranchDetailManagementCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i315.OrderCompleteCubit>(
         () => _i315.OrderCompleteCubit(appCubit: gh<_i283.AppCubit>()));
     gh.factory<_i853.HomeCubit>(
         () => _i853.HomeCubit(appCubit: gh<_i283.AppCubit>()));
-    gh.factory<_i388.BranchDetailManagementCubit>(() =>
-        _i388.BranchDetailManagementCubit(appCubit: gh<_i283.AppCubit>()));
     gh.singleton<_i698.OrderRepository>(() => _i698.OrderRepository(
           orderLocalRepository: gh<_i337.IOrderLocalRepository>(),
           orderServerRepository: gh<_i843.IOrderServerRepository>(),

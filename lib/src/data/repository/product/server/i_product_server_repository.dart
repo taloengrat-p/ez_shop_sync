@@ -44,4 +44,6 @@ abstract class IProductServerRepository {
     String? productTypeId,
     required num reduceQty,
   });
+
+  Future<ApiResult<List<Product>>> searchProductByKey(BaseRepoRequest<String> request);
 }

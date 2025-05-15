@@ -50,13 +50,15 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
     log('addCart id ${request.data.id}');
     final cartResult = await getById(request.data.id);
 
-    cartResult.when(
+    return await cartResult.when(
       success: (response) async {
         final productExistInCart = response.cartItems.any(
           (item) =>
               item.product?.id == request.data.product.id &&
               item.product?.priceSelected == request.data.product.priceSelected,
         );
+
+        log('addCart id productExistInCart ${productExistInCart}');
 
         if (productExistInCart) {
           return await update(
@@ -91,7 +93,6 @@ class HivedbCartLocalRepository extends BaseHiveRepository<String, Cart> impleme
         return Future.value(ApiResult(error: 'Cart by ${request.data.id} is Null'));
       },
     );
-    return Future.value(ApiResult(error: 'Cart by ${request.data.id} is Null'));
   }
 
   @override

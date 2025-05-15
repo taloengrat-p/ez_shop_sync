@@ -8,6 +8,7 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
+import 'package:ez_shop_sync/src/data/repository/store/i_store_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/local/store_local_repository.dart';
 import 'package:ez_shop_sync/src/data/repository/store/server/store_server_repository.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
@@ -19,7 +20,7 @@ import 'package:toastification/toastification.dart';
 
 @Singleton()
 @Injectable()
-class StoreRepository extends IRepository<Store> {
+class StoreRepository extends IRepository<Store> implements IStoreRepository {
   final StoreLocalRepository storeLocalRepository;
   final StoreServerRepository storeServerRepository;
 
@@ -121,10 +122,10 @@ class StoreRepository extends IRepository<Store> {
 
   @override
   Future<ApiResult> deleteAll() {
-    // TODO: implement deleteAll
     throw UnimplementedError();
   }
 
+  @override
   Future<ApiResult<Branch>> createBranch(BaseRepoRequest<AddBranchRequest> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -133,6 +134,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult> sendInviteToStore(BaseRepoRequest<StoreSendInvite> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -141,6 +143,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult<List<Branch>>> getStoreBranches(BaseRepoRequest<Null> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -149,6 +152,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult> deleteBranch(BaseRepoRequest request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -157,6 +161,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult<List<Branch>>> getAllBranchesByStoreIds(BaseRepoRequest<List<String>> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -165,6 +170,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult> deleteUnitTypeByIds(BaseRepoRequest<List<String>> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -173,6 +179,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult<List<UnitType>>> getUnitTypes(BaseRepoRequest<Null> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -181,6 +188,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult<UnitType>> createUnitTypes(BaseRepoRequest<UnitType> request) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();
@@ -189,6 +197,7 @@ class StoreRepository extends IRepository<Store> {
     }
   }
 
+  @override
   Future<ApiResult> updateUnitType(BaseRepoRequest<UnitType> payload) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();

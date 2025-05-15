@@ -329,7 +329,7 @@ class AppCubit extends Cubit<AppState> {
 
             cartCreated.when(
               success: (response) {
-                setCurrentCart(null);
+                setCurrentCart(response);
               },
             );
           },
@@ -348,7 +348,7 @@ class AppCubit extends Cubit<AppState> {
 
         cartCreated.when(
           success: (response) {
-            setCurrentCart(null);
+            setCurrentCart(response);
           },
           failure: (error) {
             log('message');
@@ -393,8 +393,25 @@ class AppCubit extends Cubit<AppState> {
         success: (response) async {
           setCurrentAddProduct(response, origin: 'create new');
         },
-        failure: (error) {
-          setCurrentAddProduct(null, origin: 'is null and failure');
+        failure: (error) async {
+          final addProductCreated = await addProductRepository.create(
+            request(
+              AddProduct(
+                id: const Uuid().v1(),
+                storeId: storeId ?? '',
+                userId: user?.uid ?? '',
+                addProductItems: [],
+                amountCost: 0,
+                paymentType: PaymentMethodType.cash.name,
+              ),
+            ),
+          );
+
+          addProductCreated.when(
+            success: (response) {
+              setCurrentAddProduct(response, origin: 'is null and failure');
+            },
+          );
         },
       );
     }
@@ -403,7 +420,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   setCurrentCart(Cart? value) {
-    log('setCurrentCart $value');
+    log('setCurrentCart::: ${value?.id}');
     _cart = value;
     emit(AppCartUpdate());
   }
@@ -532,13 +549,30 @@ class AppCubit extends Cubit<AppState> {
     log('addCart() $cart');
     if (cart != null && product != null) {
       emit(AppLoading());
-      final cartUpdate = await cartRepository.addCart(request(AddCartRequest(id: _cart!.id, product: product)));
+      final cartUpdate = await cartRepository.addCart(
+        request(
+          AddCartRequest(
+            id: _cart!.id,
+            product:
+                product
+                  ..info?.createAt = null
+                  ..info?.updateAt = null,
+          ),
+        ),
+      );
 
-      log('cartUpdate $cartUpdate');
-      emit(AppAddCartSuccess());
-      Future.delayed(durationAddCart).then((value) {
-        emit(AppAddCartAnimationSuccess());
-      });
+      cartUpdate.when(
+        success: (response) {
+          log('cartUpdate $cartUpdate');
+          emit(AppAddCartSuccess());
+          Future.delayed(durationAddCart).then((value) {
+            emit(AppAddCartAnimationSuccess());
+          });
+        },
+        failure: (error) {
+          emit(AppAddCartFailure());
+        },
+      );
     }
   }
 
@@ -588,7 +622,18 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoading());
 
     final addProductUpdate = await addProductRepository.addProductStock(
-      request(AddProductStockRequest(id: addProduct!.id, orderItem: OrderItem(product: product, cost: amountCost))),
+      request(
+        AddProductStockRequest(
+          id: addProduct!.id,
+          orderItem: OrderItem(
+            product:
+                product
+                  ..info?.createAt = null
+                  ..info?.updateAt = null,
+            cost: amountCost,
+          ),
+        ),
+      ),
     );
 
     addProductUpdate.when(

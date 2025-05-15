@@ -10,4 +10,5 @@ abstract class IProductRepository {
   Future<ApiResult<Product>> createProduct(BaseRepoRequest<CreateProductRequest> request);
   Future<ApiResult<Product>> updateProduct(BaseRepoRequest<UpdateProductImageRequest> request);
   Future<ApiResult> deleteProduct(BaseRepoRequest<Product> request);
+  Future<ApiResult<List<Product>>> searchProductByKey(BaseRepoRequest<String> request);
 }

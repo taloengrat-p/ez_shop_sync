@@ -70,7 +70,7 @@ class AddProductCubit extends Cubit<AddProductState> {
     item?.product?.quantity = (_addProduct?.addProductItems.elementAtOrNull(index)?.product?.quantity ?? 0) + 1;
     emit(AddProductIncrease(productId: item?.id, qty: (item?.product?.quantity ?? 0)));
 
-    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () async {
       addProductRepository.increaseQty(
         appCubit.request(
           AddProductIncreaseRequest(
@@ -97,7 +97,7 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     emit(AddProductDecrease(productId: item?.id, qty: (item?.product?.quantity ?? 0)));
 
-    timerUtils.debounceTime(const Duration(milliseconds: 500), () {
+    timerUtils.debounceTime(const Duration(milliseconds: 500), () async {
       addProductRepository.decreaseQty(
         appCubit.request(
           AddProductDecreaseQtyRequest(

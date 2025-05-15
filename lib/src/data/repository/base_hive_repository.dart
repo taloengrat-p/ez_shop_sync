@@ -25,7 +25,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
       await box.put(
         id,
         request.data
-          ..info?.createAt = DateTime.now()
+          // ..info?.createAt = DateTime.now()
           ..info?.createBy = request.userId
           ..info?.updateBy = request.userId,
       );
@@ -66,10 +66,10 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
   Future<ApiResult<List<T>>> getAll() {
     try {
       List<T> result = box.values.toList();
-      result.sort(
-        (a, b) =>
-            b.info?.createAt?.millisecondsSinceEpoch.compareTo(a.info?.createAt?.millisecondsSinceEpoch ?? -1) ?? -1,
-      );
+      // result.sort(
+      //   (a, b) =>
+      //       b.info?.createAt?.millisecondsSinceEpoch.compareTo(a.info?.createAt?.millisecondsSinceEpoch ?? -1) ?? -1,
+      // );
       if (result.isEmpty) {
         return Future.value(ApiResult(error: 'getAll is empty'));
       } else {
@@ -82,10 +82,10 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
 
   List<T> getAllRange(int start, int end) {
     List<T> result = box.values.toList();
-    result.sort(
-      (a, b) =>
-          b.info?.createAt?.millisecondsSinceEpoch.compareTo(a.info?.createAt?.millisecondsSinceEpoch ?? -1) ?? -1,
-    );
+    // result.sort(
+    //   (a, b) =>
+    //       b.info?.createAt?.millisecondsSinceEpoch.compareTo(a.info?.createAt?.millisecondsSinceEpoch ?? -1) ?? -1,
+    // );
     return result.length < (end - start) ? result : result.sublist(start, end);
   }
 
@@ -118,12 +118,7 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
 
   Future<ApiResult<T>> update(BaseRepoRequest<T> request) async {
     try {
-      await box.put(
-        request.data.id,
-        request.data
-          ..info?.updateAt = DateTime.now()
-          ..info?.updateBy = request.userId,
-      );
+      await box.put(request.data.id, request.data);
 
       return Future.value(ApiResult(response: request.data));
     } catch (e) {
@@ -141,17 +136,17 @@ abstract class BaseHiveRepository<I, T extends BaseHiveObject> {
     final result = await getAll();
     return Future.value(
       ApiResult(
-        response:
-            result.response?.where((e) {
-              final result =
-                  (e.info?.createAt?.isAfter(start) ?? false) && (e.info?.createAt?.isBefore(end) ?? false) ||
-                  (e.info?.createAt?.isAtSameMomentAs(start) ?? false) ||
-                  (e.info?.createAt?.isAtSameMomentAs(end) ?? false);
-              log(
-                'getAllBetween ${start.toDisplay()} to ${end.toDisplay()} but ${e.info?.createAt!.toDisplay()} is $result',
-              );
-              return result;
-            }).toList(),
+        response: result.response,
+        // ?.where((e) {
+        // final result =
+        //     (e.info?.createAt?.isAfter(start) ?? false) && (e.info?.createAt?.isBefore(end) ?? false) ||
+        //     (e.info?.createAt?.isAtSameMomentAs(start) ?? false) ||
+        //     (e.info?.createAt?.isAtSameMomentAs(end) ?? false);
+        // log(
+        //   'getAllBetween ${start.toDisplay()} to ${end.toDisplay()} but ${e.info?.createAt!.toDisplay()} is $result',
+        // );
+        // return result;
+        // }).toList(),
       ),
     );
   }

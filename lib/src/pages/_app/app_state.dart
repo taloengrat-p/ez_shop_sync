@@ -159,6 +159,11 @@ class AppAddCartSuccess extends AppState {
   String toString() => 'AppAddCartSuccess';
 }
 
+class AppAddCartFailure extends AppState {
+  @override
+  String toString() => 'AppAddCartFailure';
+}
+
 class AppDeleteProductSuccess extends AppState {
   @override
   String toString() => 'AppDeleteProductSuccess';

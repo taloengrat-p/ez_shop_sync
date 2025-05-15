@@ -1,0 +1,41 @@
+import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
+import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/store_request/add_branch_request.dart';
+import 'package:ez_shop_sync/src/pages/add_user/add_user_cubit.dart';
+
+abstract class IStoreRepository {
+  Future<ApiResult<Store>> create(BaseRepoRequest<Store> request);
+
+  Future<ApiResult> delete(BaseRepoRequest<String> request);
+
+  Future<ApiResult> deleteAllByIds(List<String> ids);
+
+  Future<ApiResult<List<Store>>> getAll();
+
+  Future<ApiResult<Store>> getById(BaseRepoRequest<String> request);
+
+  Future<ApiResult<Store>> update(BaseRepoRequest<Store> request);
+
+  Future<ApiResult<List<Store>>> getAllByIds(List<String> ids);
+
+  Future<ApiResult<Branch>> createBranch(BaseRepoRequest<AddBranchRequest> request);
+
+  Future<ApiResult> sendInviteToStore(BaseRepoRequest<StoreSendInvite> request);
+
+  Future<ApiResult<List<Branch>>> getStoreBranches(BaseRepoRequest<Null> request);
+
+  Future<ApiResult> deleteBranch(BaseRepoRequest request);
+
+  Future<ApiResult<List<Branch>>> getAllBranchesByStoreIds(BaseRepoRequest<List<String>> request);
+
+  Future<ApiResult> deleteUnitTypeByIds(BaseRepoRequest<List<String>> request);
+
+  Future<ApiResult<List<UnitType>>> getUnitTypes(BaseRepoRequest<Null> request);
+
+  Future<ApiResult<UnitType>> createUnitTypes(BaseRepoRequest<UnitType> request);
+
+  Future<ApiResult> updateUnitType(BaseRepoRequest<UnitType> payload);
+}

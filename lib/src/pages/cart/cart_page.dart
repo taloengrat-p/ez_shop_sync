@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
@@ -16,8 +17,11 @@ import 'package:ez_shop_sync/src/pages/order_complete/order_complete_state.dart'
 import 'package:ez_shop_sync/src/routes/routes.dart';
 import 'package:ez_shop_sync/src/utils/dialog_utils.dart';
 import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
+import 'package:ez_shop_sync/src/utils/timer_utils.dart';
 import 'package:ez_shop_sync/src/widgets/appbar_widget.dart';
+import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
+import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
@@ -43,9 +47,11 @@ class _CartState extends State<CartPage> {
   final _scrollViewController = ScrollController();
   final _receiveAmountController = TextEditingController();
   final _receiveAmountForm = GlobalKey<FormState>();
+  final _searchController = SearchController();
   bool _isBottomScroll = false;
+  TimerUtils timerUtils = TimerUtils();
   bool _canScroll = false;
-
+  bool _isSearch = false;
   void _onScroll() {
     final pixel = _listViewController.position.pixels;
     final maxScroll = _listViewController.position.maxScrollExtent;
@@ -98,9 +104,22 @@ class _CartState extends State<CartPage> {
     super.dispose();
   }
 
+  final ValueNotifier<Future<List<String>>> _resultsFuture = ValueNotifier(Future.value([]));
+
+  void _onSearchChanged() {
+    final query = _searchController.text;
+    // Simulate API call with delay
+    _resultsFuture.value = _fetchItems(query);
+  }
+
+  Future<List<String>> _fetchItems(String query) async {
+    await Future.delayed(Duration(milliseconds: 500)); // simulate network delay
+    final allItems = ['Apple', 'Banana', 'Mango', 'Orange', 'Grape'];
+    return allItems.where((item) => item.toLowerCase().contains(query.toLowerCase())).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return BlocListener<CartCubit, CartState>(
       bloc: _cubit,
       listener: (context, state) {
@@ -134,7 +153,82 @@ class _CartState extends State<CartPage> {
             enableAppModeDisplay: true,
             emptyIcon: CupertinoIcons.cart,
             isLoading: state is CartLoading,
-            appBar: AppbarWidget(context, centerTitle: false, title: LocaleKeys.cart.tr(), actions: []).build(),
+            appBar:
+                AppbarWidget(
+                  context,
+                  showLeading: !_isSearch,
+                  centerTitle: false,
+                  title: LocaleKeys.cart.tr(),
+                  titleWidget:
+                      _isSearch
+                          ? Theme(
+                            data: Theme.of(context),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                              child: SearchAnchor.bar(
+                                barPadding: const WidgetStatePropertyAll(EdgeInsets.only(left: 8)),
+                                barElevation: const WidgetStatePropertyAll(0),
+                                searchController: _searchController,
+
+                                // onChanged: (value) {
+                                //   log('suggestion search $value');
+                                //   _cubit.onSearchProduct(value);
+                                // },
+                                onSubmitted: (value) {
+                                  log('onSubmitted $value');
+                                },
+                                constraints: const BoxConstraints(maxHeight: 48),
+                                barTrailing: [
+                                  IconButton(
+                                    onPressed: () {
+                                      _isSearch = !_isSearch;
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.close_rounded),
+                                  ),
+                                ],
+                                barHintText: LocaleKeys.search.tr(),
+                                suggestionsBuilder: (context, controller) async {
+                                  final results = await _cubit.onSearchProduct(controller.text);
+
+                                  return results.map((product) {
+                                    return ListTile(
+                                      title: Text(product.name),
+                                      onTap: () async {
+                                        // widget.onResultSelected?.call(result);
+                                        controller.closeView(product.name);
+                                        final result = await DialogUtils.showAddCartDialog(context, product);
+
+                                        if (result is BottomSheetAddCartSuccess) {
+                                          _cubit.addCartFromSearch(
+                                            product.copyWith(
+                                              quantity: result.qty,
+                                              priceSelected: result.priceCategorySelected,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  }).toList();
+                                },
+                              ),
+                            ),
+                          )
+                          : null,
+                  actions: [
+                    if (!_isSearch) ...[
+                      ContainerCircleWidget(
+                        child: const Icon(Icons.search_rounded),
+                        onPressed: () {
+                          setState(() {
+                            _isSearch = !_isSearch;
+                          });
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ).build(),
             body: _buildPage(context, state),
             bottomNavigationBar:
                 _cubit.products.isEmpty

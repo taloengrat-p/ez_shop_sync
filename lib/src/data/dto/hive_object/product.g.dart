@@ -23,23 +23,23 @@ class ProductAdapter extends TypeAdapter<Product> {
       description: fields[8] as String?,
       category: fields[9] as String?,
       brand: fields[10] as String?,
-      imageUrl: fields[23] as String?,
-      imagesUrl: (fields[11] as List?)?.cast<String>(),
-      imageThumbnail: fields[12] as String?,
-      attributes: fields[13] == null
+      imageUrl: fields[11] as String?,
+      imagesUrl: (fields[12] as List?)?.cast<String>(),
+      imageThumbnail: fields[13] as String?,
+      attributes: fields[14] == null
           ? {}
-          : (fields[13] as Map?)?.cast<String, dynamic>(),
-      tag: fields[14] == null ? [] : (fields[14] as List?)?.cast<String>(),
-      storeId: fields[16] as String,
-      status: fields[15] == null
+          : (fields[14] as Map?)?.cast<String, dynamic>(),
+      tag: fields[15] == null ? [] : (fields[15] as List?)?.cast<String>(),
+      storeId: fields[17] as String,
+      status: fields[16] == null
           ? ProductStatus.undefined
-          : fields[15] as ProductStatus,
-      quantity: fields[17] as num?,
-      ownerId: fields[18] as String,
-      priceSelected: fields[19] as String?,
-      productTypeList: (fields[21] as List?)?.cast<ProductType>(),
-      unitType: fields[22] as UnitType?,
-    )..config = fields[20] as ProductConfig?;
+          : fields[16] as ProductStatus,
+      quantity: fields[18] as num?,
+      ownerId: fields[19] as String,
+      priceSelected: fields[20] as String?,
+      productTypeList: (fields[22] as List?)?.cast<ProductType>(),
+      unitType: fields[23] as UnitType?,
+    )..config = fields[21] as ProductConfig?;
   }
 
   @override
@@ -54,31 +54,31 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..write(obj.category)
       ..writeByte(10)
       ..write(obj.brand)
-      ..writeByte(23)
-      ..write(obj.imageUrl)
       ..writeByte(11)
-      ..write(obj.imagesUrl)
+      ..write(obj.imageUrl)
       ..writeByte(12)
-      ..write(obj.imageThumbnail)
+      ..write(obj.imagesUrl)
       ..writeByte(13)
-      ..write(obj.attributes)
+      ..write(obj.imageThumbnail)
       ..writeByte(14)
-      ..write(obj.tag)
+      ..write(obj.attributes)
       ..writeByte(15)
-      ..write(obj.status)
+      ..write(obj.tag)
       ..writeByte(16)
-      ..write(obj.storeId)
+      ..write(obj.status)
       ..writeByte(17)
-      ..write(obj.quantity)
+      ..write(obj.storeId)
       ..writeByte(18)
-      ..write(obj.ownerId)
+      ..write(obj.quantity)
       ..writeByte(19)
-      ..write(obj.priceSelected)
+      ..write(obj.ownerId)
       ..writeByte(20)
-      ..write(obj.config)
+      ..write(obj.priceSelected)
       ..writeByte(21)
-      ..write(obj.productTypeList)
+      ..write(obj.config)
       ..writeByte(22)
+      ..write(obj.productTypeList)
+      ..writeByte(23)
       ..write(obj.unitType)
       ..writeByte(1)
       ..write(obj.id)

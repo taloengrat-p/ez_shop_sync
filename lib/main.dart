@@ -6,6 +6,7 @@ import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/hive_box_constance.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/add_product.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/base_hive_data.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/cart.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart' as et;
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
@@ -16,8 +17,10 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product_history.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_order.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/string_locale.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/tag.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/transaction.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/user_data.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/services/inject_service/inject.dart';
@@ -93,6 +96,10 @@ Future<void> initialHiveDB() async {
   Hive.registerAdapter(TransactionAdapter());
   Hive.registerAdapter(AddProductAdapter());
   Hive.registerAdapter(ProductTypeAdapter());
+  Hive.registerAdapter(UnitTypeAdapter());
+  Hive.registerAdapter(StringLocaleAdapter());
+  Hive.registerAdapter(BaseHiveDataAdapter());
+  // Hive.registerAdapter(adapter)
 
   await Hive.openBox<Product>(HiveBoxConstance.product);
   await Hive.openBox<ProductHistory>(HiveBoxConstance.productHistory);
