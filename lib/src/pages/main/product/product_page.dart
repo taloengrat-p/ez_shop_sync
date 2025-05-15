@@ -265,11 +265,7 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   Widget build(BuildContext context) {
     return BlocListener<AppCubit, AppState>(
       bloc: _cubit.appCubit,
-      listener: (context, appstate) {
-        if (appstate is AppRefreshProductByCurrentStoreAndBranch) {
-          _cubit.refreshProductFromAppState();
-        }
-      },
+      listener: (context, appstate) {},
       child: BlocBuilder<AppCubit, AppState>(
         bloc: _cubit.appCubit,
         builder: (context, appState) {

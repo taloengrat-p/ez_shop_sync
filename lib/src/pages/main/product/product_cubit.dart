@@ -128,26 +128,31 @@ class ProductCubit extends Cubit<ProductState> {
     );
   }
 
-  refreshProductFromAppState() {
-    emit(ProductLoading());
+  // refreshProductFromAppState() {
+  //   emit(ProductLoading());
 
-    _products.clear();
-    _products = appCubit.products;
-    emit(ProductSuccess());
-  }
+  //   _products.clear();
+  //   _products = appCubit.products;
+  //   emit(ProductSuccess());
+  // }
 
   Future<void> refresh() async {
     if (appCubit.storeId == null) {
       return;
     }
 
+    emit(ProductLoading());
     final result = await appCubit.refreshProductByCurrentStoreAndBranch();
 
     return result.when(
       success: (response) {
-        _products.clear();
-        updateCurrentProductFromAppCubit(response.data);
-        emit(const ProductLoadItemSuccess());
+        if (response.data.isEmpty) {
+          emit(const ProductLoadItemSuccess());
+        } else {
+          _products.clear();
+          updateCurrentProductFromAppCubit(response.data);
+          emit(const ProductLoadItemSuccess());
+        }
       },
       failure: (error, {errorType}) {
         emit(const ProductLoadItemFailure());
@@ -164,12 +169,8 @@ class ProductCubit extends Cubit<ProductState> {
 
     return result.when(
       success: (response) {
-        if (response.data.isEmpty) {
-          emit(ProductLoadItemEmpty());
-        } else {
-          updateCurrentProductFromAppCubit(response.data);
-          emit(const ProductLoadItemSuccess());
-        }
+        updateCurrentProductFromAppCubit(response.data);
+        emit(const ProductLoadItemSuccess());
 
         return response.data.isNotEmpty;
       },
