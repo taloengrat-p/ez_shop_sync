@@ -127,6 +127,9 @@ class AppCubit extends Cubit<AppState> {
     return user?.displayName ?? user?.email?.substring(0, user?.email?.indexOf("@")) ?? '--';
   }
 
+  String get userRoleOnStoreSelect =>
+      store?.members.where((e) => e.email == user?.email).firstOrNull?.roleType.label ?? '--';
+
   AppCubit({
     required this.localStorageService,
     required this.authLocalRepository,
@@ -195,12 +198,14 @@ class AppCubit extends Cubit<AppState> {
                     .toList();
           },
         );
-        emit(AppGetStoreSuccess(storesResponse));
+
         await setCurrentStoreAndBranchById(
           userData?.storeSelected,
           branchId: userData?.branchSelected,
           origin: runtimeType.toString(),
         );
+
+        emit(AppGetStoreSuccess(storesResponse));
       },
       failure: (error, {errorType}) {
         _store?.branches?.clear();
@@ -242,6 +247,7 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> setCurrentStoreAndBranchById(String? id, {String? branchId, String? origin}) async {
     log('setCurrentStoreById($origin) store : ($id), branch : ($branchId)');
+    emit(AppGetStoreLoading());
     final store = _stores.where((e) => e.id == id).firstOrNull;
     final branchFinded = _branches.where((e) => e.id == branchId).firstOrNull;
     _branch = branchFinded;
@@ -262,6 +268,8 @@ class AppCubit extends Cubit<AppState> {
     if (value == null) {
       throw ('setCurrentStore store == null');
     }
+
+    emit(AppChangeStoreLoading());
 
     await refreshProductByCurrentStoreAndBranch();
     await doGetBranchByCurrentStore();

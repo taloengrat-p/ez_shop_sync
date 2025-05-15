@@ -127,7 +127,7 @@ class _MorePageState extends State<MorePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStoreProfile(),
+            _buildUserProfile(),
             const SizedBox(height: 16),
             _buildMenuSettings(),
             const SizedBox(height: 16),
@@ -160,7 +160,7 @@ class _MorePageState extends State<MorePage> {
     );
   }
 
-  Widget _buildStoreProfile() {
+  Widget _buildUserProfile() {
     return Card(
       color: ColorKeys.primary.withOpacity(0.6),
       child: Padding(
@@ -198,7 +198,7 @@ class _MorePageState extends State<MorePage> {
                           ),
                         const SizedBox(height: 4),
                         Text(
-                          '${LocaleKeys.branch.tr()} : ${_cubit.appCubit.branch?.name ?? '--'}',
+                          'Role : ${_cubit.userRoleOnStore ?? '--'}',
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             overflow: TextOverflow.ellipsis,
@@ -356,6 +356,7 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.notificationSetting_title.tr(),
           value: 1,
+          disabled: true,
           onPressed: () async {
             final result = await ThemeSettingRouter(context).navigate();
 

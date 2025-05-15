@@ -56,7 +56,7 @@ extension DateTimeExtension on DateTime {
     } else if (spaceTime > 3600 && spaceTime <= 86400) {
       return toDisplayTimeDependLocale(context);
     } else {
-      return toDisplayDateDependLocale(context);
+      return toDisplayDependLocale(context);
     }
   }
 

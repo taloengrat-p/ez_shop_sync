@@ -27,15 +27,9 @@ class HistoryWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           leading,
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: buildInfo(context),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
+          Expanded(child: buildInfo(context)),
+          const SizedBox(width: 8),
           if (trailing != null) trailing!,
         ],
       ),
@@ -46,37 +40,17 @@ class HistoryWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        if (desc != null)
-          Text(
-            desc ?? '',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        const SizedBox(
-          height: 8,
-        ),
+        Text(title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        if (desc != null) Text(desc ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
+        const SizedBox(height: 8),
         Row(
           children: [
-            const Icon(
-              CupertinoIcons.time_solid,
-              color: Colors.grey,
-              size: 18,
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Text(dateTime.toDisplayTimeDependLocale(context)),
+            const Icon(CupertinoIcons.time_solid, color: Colors.grey, size: 18),
+            const SizedBox(width: 8),
+            Text(dateTime?.toDisplayConditionTimeAgoDisplay(context) ?? '--'),
           ],
-        )
+        ),
       ],
     );
   }

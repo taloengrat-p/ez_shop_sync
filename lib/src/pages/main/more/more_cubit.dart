@@ -43,6 +43,8 @@ class MoreCubit extends Cubit<MoreState> {
   Store? get currentStore => appCubit.store;
   Branch? get currentBranch => appCubit.branch;
 
+  String get userRoleOnStore => appCubit.userRoleOnStoreSelect;
+
   Future<void> doLogout() async {
     await appCubit.logout();
     emit(MoreLogoutSuccess());
@@ -92,7 +94,12 @@ class MoreCubit extends Cubit<MoreState> {
         data: null,
       ),
     );
-    appCubit.setCurrentStoreAndBranchById(param.storeId, branchId: param.branchId, origin: runtimeType.toString());
+
+    await appCubit.setCurrentStoreAndBranchById(
+      param.storeId,
+      branchId: param.branchId,
+      origin: runtimeType.toString(),
+    );
 
     result.when(
       success: (success) {

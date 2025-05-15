@@ -12,6 +12,7 @@ import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,6 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final cubit = GetIt.I<HomeCubit>();
   final bool _stretch = true;
+
+  final controller = PageController(viewportFraction: 0.8, keepPage: true);
 
   @override
   void initState() {
@@ -36,6 +39,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = List.generate(
+      6,
+      (index) => Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.grey.shade300),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: SizedBox(height: 280, child: Center(child: Text("Page $index", style: TextStyle(color: Colors.indigo)))),
+      ),
+    );
+
     return BlocBuilder(
       bloc: GetIt.I<AppCubit>(),
       builder: (context, state) {
@@ -57,10 +69,43 @@ class _HomePageState extends State<HomePage> {
                 // Setting [stretchTriggerOffset] to a value of 300.0 will trigger
                 // [onStretchTrigger] when the user has overscrolled by 300.0 pixels.
                 stretchTriggerOffset: 300.0,
-                expandedHeight: 200.0,
+                expandedHeight: 290.0,
                 flexibleSpace: FlexibleSpaceBar(
                   // title: Text(cubit.appCubit.store?.name ?? '--'),
-                  background: Image.asset('assets/images/logo_outlined.png', width: 100, height: 100),
+                  // background: Image.asset('assets/images/logo_outlined.png', width: 100, height: 100),
+                  background: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 240,
+                        child: PageView.builder(
+                          controller: controller,
+                          // itemCount: pages.length,
+                          itemBuilder: (_, index) {
+                            return pages[index % pages.length];
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SmoothPageIndicator(
+                        controller: controller,
+                        count: pages.length,
+                        effect: const WormEffect(
+                          dotHeight: 16,
+                          dotWidth: 16,
+                          activeDotColor: Colors.amber,
+                          type: WormType.thinUnderground,
+                        ),
+                        onDotClicked: (index) {
+                          controller.animateToPage(
+                            index,
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.linear,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SliverList(

@@ -36,6 +36,11 @@ class AppSelectStore extends AppState {
   List<Object?> get props => [id];
 }
 
+class AppGetStoreLoading extends AppState {
+  @override
+  String toString() => 'AppGetStoreLoading';
+}
+
 class AppGetStoreSuccess extends AppState {
   final List<Store> stores;
 
@@ -89,6 +94,11 @@ class AppGetAllProductByCurrentStoreFailure extends AppState {
 class AppSuccess extends AppState {
   @override
   String toString() => 'AppSuccess';
+}
+
+class AppChangeStoreLoading extends AppState {
+  @override
+  String toString() => 'AppChangeStoreLoading';
 }
 
 class AppFailure extends AppState {

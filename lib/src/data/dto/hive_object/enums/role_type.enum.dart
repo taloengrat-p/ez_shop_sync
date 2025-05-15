@@ -30,4 +30,24 @@ enum RoleType {
         return RoleType.undefined;
     }
   }
+
+  String get label {
+    switch (this) {
+      case RoleType.owner:
+        return 'Owner';
+      case RoleType.admin:
+        return 'Admin';
+      case RoleType.manager:
+        return 'Manager';
+      case RoleType.staff:
+        return 'Staff';
+      case RoleType.user:
+        return 'User';
+      case RoleType.anonymous:
+        return 'Anonymous';
+
+      default:
+        return 'Unknown';
+    }
+  }
 }

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
 import 'package:ez_shop_sync/src/pages/add_product/add_product_router.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_router.dart';
 import 'package:ez_shop_sync/src/pages/create_store/create_store_router.dart';
@@ -25,6 +28,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -81,16 +86,26 @@ class _MainPageState extends State<MainPage> {
                   titleWidget: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ProfileWidget(
-                              title: LocaleKeys.storeValue.tr(args: [_cubit.storeName]),
-                              name: _cubit.storeName,
-                              desc: LocaleKeys.branchValue.tr(args: [_cubit.branchName]),
-                            ),
-                          ),
-                        ],
+                      BlocBuilder(
+                        bloc: _cubit.appCubit,
+                        builder: (context, appState) {
+                          log('appcubitstate : $appState');
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Skeletonizer(
+                                  enabled: state is AppLoading,
+                                  child: ProfileWidget(
+                                    title: LocaleKeys.storeValue.tr(args: [_cubit.storeName]),
+                                    titleStyle: Theme.of(context).textTheme.bodyMedium,
+                                    name: _cubit.storeName,
+                                    desc: LocaleKeys.branchValue.tr(args: [_cubit.branchName]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -133,7 +148,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const SizedBox(width: 8),
                     BlocBuilder(
-                      bloc: GetIt.I<AppCubit>(),
+                      bloc: _cubit.appCubit,
                       builder: (context, state) {
                         return ContainerCircleWidget(
                           child:

@@ -83,6 +83,8 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   shimmer: ^3.0.0
   firebase_messaging: ^15.2.5
+  skeletonizer: ^1.4.3
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:

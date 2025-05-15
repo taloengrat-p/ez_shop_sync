@@ -9,7 +9,16 @@ class ProfileWidget extends StatelessWidget {
   final String? desc;
   final TextStyle? descStyle;
   final TextStyle? nameStyle;
-  const ProfileWidget({super.key, required this.name, this.desc, this.descStyle, this.nameStyle, required this.title});
+  final TextStyle? titleStyle;
+  const ProfileWidget({
+    super.key,
+    required this.name,
+    this.desc,
+    this.descStyle,
+    this.nameStyle,
+    required this.title,
+    this.titleStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +35,7 @@ class ProfileWidget extends StatelessWidget {
                 title,
                 overflow: TextOverflow.ellipsis,
                 style:
-                    nameStyle ??
+                    titleStyle ??
                     Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorKeys.brightness.getContrast()),
               ),
               if (desc != null)
