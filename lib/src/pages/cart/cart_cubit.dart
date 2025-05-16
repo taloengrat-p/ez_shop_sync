@@ -234,15 +234,19 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<List<Product>> onSearchProduct(String value) async {
+    log('onSearchProduct ::: $value');
+
     final result = await timerUtils.debounceTime<List<Product>>(const Duration(seconds: 1), () async {
       final result = await productRepository.searchProductByKey(appCubit.request(value));
 
       return result.when(
         success: (response) {
           log('responseeee : $response');
+          emit(const CartSearchProductSuccess());
           return response;
         },
         failure: (error) {
+          emit(CartSearchProductFailure());
           return [];
         },
       );
@@ -256,5 +260,9 @@ class CartCubit extends Cubit<CartState> {
     await appCubit.addCart(product: copyWith);
     await initial();
     emit(CartAddProductFromSearchSuccess());
+  }
+
+  void doCartSearchProductLoading() {
+    emit(const CartSearchProductLoading());
   }
 }

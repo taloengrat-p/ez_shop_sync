@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/member.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
@@ -13,6 +15,9 @@ class BranchDetailManagementCubit extends Cubit<BranchDetailManagementState> {
   Store? store;
   List<Member> _members = [];
   List<Member> get members => _members;
+  List<Member> get brachMember => branch?.members.toList() ?? [];
+  List<String> get brachMemberIds => branch?.members.map((e) => e.uid).toList() ?? [];
+
   BranchDetailManagementCubit({required this.appCubit}) : super(BranchDetailManagementInitial());
 
   void initial(BranchDetailManagementArgrument argrument) {
@@ -20,17 +25,20 @@ class BranchDetailManagementCubit extends Cubit<BranchDetailManagementState> {
     branch = argrument.branch;
     _members =
         appCubit.store?.members.map((Member e) {
-          if (store?.memberIds.contains(e.uid) ?? false) {
+          if (brachMemberIds.contains(e.uid)) {
             e.isSelect = true;
-            return e;
           } else {
             e.isSelect = false;
-            return e;
           }
+          return e;
         }).toList() ??
         [];
+
     emit(BranchDetailManagementSuccess());
   }
 
-  void onCheckedChanged(bool? value) {}
+  void onCheckedChanged(int index, bool? value) {
+    _members[index].isSelect = value;
+    emit(BranchDetailManagementToggleCheck(index: index, value: value));
+  }
 }

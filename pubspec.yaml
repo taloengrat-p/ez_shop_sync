@@ -85,6 +85,7 @@ dependencies:
   firebase_messaging: ^15.2.5
   skeletonizer: ^1.4.3
   smooth_page_indicator: ^1.2.1
+  firebase_remote_config: ^5.4.3
 
 dev_dependencies:
   flutter_test:

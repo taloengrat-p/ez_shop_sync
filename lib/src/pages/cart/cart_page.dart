@@ -1,15 +1,16 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/payment_type.enum.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/enums/transaction_method_type.enum.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/models/enums/cart_error_type.enum.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_cubit.dart';
 import 'package:ez_shop_sync/src/pages/cart/cart_state.dart';
 import 'package:ez_shop_sync/src/pages/cart/widgets/cart_item_widget.dart';
+import 'package:ez_shop_sync/src/pages/cart/widgets/cart_search_product_item_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_state.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_router.dart';
@@ -24,7 +25,6 @@ import 'package:ez_shop_sync/src/widgets/buttons/button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_circle_widget.dart';
 import 'package:ez_shop_sync/src/widgets/container/container_shadow_group_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
-import 'package:ez_shop_sync/src/widgets/image/image_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/column_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_between_widget.dart';
 import 'package:ez_shop_sync/src/widgets/opacity_widget.dart';
@@ -189,42 +189,55 @@ class _CartState extends State<CartPage> {
                                   ),
                                 ],
                                 barHintText: LocaleKeys.search.tr(),
+                                onChanged: (value) {
+                                  _cubit.doCartSearchProductLoading();
+                                },
+                                viewBuilder: (suggestions) {
+                                  return BlocBuilder<CartCubit, CartState>(
+                                    bloc: _cubit,
+                                    builder: (context, state) {
+                                      if (_searchController.text.isEmpty) {
+                                        return SingleChildScrollView(
+                                          child: Column(
+                                            children:
+                                                _cubit.appCubit.products.map((product) {
+                                                  return CartSearchProductItemWidget(
+                                                    product: product,
+                                                    onTap: () async {
+                                                      _handleTapProductSeachResult(_searchController, product);
+                                                    },
+                                                  );
+                                                }).toList(),
+                                          ),
+                                        );
+                                      }
+
+                                      if (state is CartSearchProductLoading) {
+                                        return const Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [CupertinoActivityIndicator()],
+                                        );
+                                      }
+
+                                      return SingleChildScrollView(child: Column(children: suggestions.toList()));
+                                    },
+                                  );
+                                },
                                 suggestionsBuilder: (context, controller) async {
-                                  final results = await _cubit.onSearchProduct(controller.text);
+                                  if (state is CartSearchProductLoading) {
+                                    return [CupertinoActivityIndicator()];
+                                  }
+
+                                  final results =
+                                      controller.text.isEmpty
+                                          ? _cubit.appCubit.products
+                                          : await _cubit.onSearchProduct(controller.text);
 
                                   return results.map((product) {
-                                    return ListTile(
-                                      leading: ImageWidget(
-                                        imageUrl: product.imageThumbnail,
-                                        width: 40,
-                                        height: 160,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      trailing: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(product.allQuantity.toString()),
-                                          Text(product.unitType?.shortName.tr(context) ?? LocaleKeys.units_piece.tr()),
-                                        ],
-                                      ),
-                                      title: Text(product.name),
+                                    return CartSearchProductItemWidget(
+                                      product: product,
                                       onTap: () async {
-                                        // widget.onResultSelected?.call(result);
-                                        controller.closeView(product.name);
-                                        final result = await DialogUtils.showAddCartDialog(context, product);
-
-                                        if (result is BottomSheetAddCartSuccess) {
-                                          await _cubit.addCartFromSearch(
-                                            product.copyWith(
-                                              quantity: result.qty,
-                                              priceSelected: result.priceCategorySelected,
-                                            ),
-                                          );
-                                          controller.clear();
-                                          _isSearch = false;
-                                          setState(() {});
-                                        }
+                                        _handleTapProductSeachResult(controller, product);
                                       },
                                     );
                                   }).toList();
@@ -524,5 +537,20 @@ class _CartState extends State<CartPage> {
         ),
       ],
     );
+  }
+
+  _handleTapProductSeachResult(SearchController controller, Product product) async {
+    // widget.onResultSelected?.call(result);
+    controller.closeView(product.name);
+    final result = await DialogUtils.showAddCartDialog(context, product);
+
+    if (result is BottomSheetAddCartSuccess) {
+      await _cubit.addCartFromSearch(
+        product.copyWith(quantity: result.qty, priceSelected: result.priceCategorySelected),
+      );
+      controller.clear();
+      _isSearch = false;
+      setState(() {});
+    }
   }
 }

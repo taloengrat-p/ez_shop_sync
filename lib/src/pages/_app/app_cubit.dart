@@ -144,7 +144,7 @@ class AppCubit extends Cubit<AppState> {
     required this.notificationRepository,
     required this.authRepository,
   }) : super(AppInitial()) {
-    init();
+  // init();
   }
 
   String get currentStoreName => store?.name ?? '--';
@@ -153,10 +153,10 @@ class AppCubit extends Cubit<AppState> {
   List<UnitType> _unitTypes = [];
   List<UnitType> get unitTypes => _unitTypes;
 
-  void init() {
-    log('init()', name: runtimeType.toString());
-    startProfileUpdateListen();
-  }
+  // void init() {
+  // log('init()', name: runtimeType.toString());
+  // startProfileUpdateListen();
+  // }
 
   Future<void> loadAllDependencies() async {
     log('state app cubloadAllDependencies successit : ${GetIt.instance.isRegistered<SplashCubit>()}');
@@ -228,13 +228,9 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  startProfileUpdateListen() {
-    FirebaseAuth.instance.userChanges().listen((User? user) {
-      log('userChanges() isClosed:: $isClosed $user', name: runtimeType.toString());
-      setCurrentUser(user, origin: runtimeType.toString());
-      GetIt.I<FirebaseService>().updateUserFcmToken(userId!);
-    });
-  }
+  // startProfileUpdateListen() {
+
+  // }
 
   loadAppTheme(AppTheme? value) {
     _appTheme = value;

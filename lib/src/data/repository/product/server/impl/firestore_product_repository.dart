@@ -406,6 +406,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
               .orderBy('name')
               .startAt([request.data])
               .endAt(['${request.data}\uf8ff']) // "\uf8ff" is a unicode character
+              .limit(10)
               .get();
 
       final products = snapShot.docs.map((e) => Product.fromJson(e.data())).toList();

@@ -1,13 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 
-import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/dimensions.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/home/home_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/home/widget/product_home_widget.dart';
 import 'package:ez_shop_sync/src/pages/main/product/models/product_item.interface.dart';
-import 'package:ez_shop_sync/src/pages/main/product/widgets/product_grid_item_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,29 +24,48 @@ class _HomePageState extends State<HomePage> {
   final cubit = GetIt.I<HomeCubit>();
   final bool _stretch = true;
 
-  final controller = PageController(viewportFraction: 0.8, keepPage: true);
+  final controller = PageController(viewportFraction: 1, keepPage: true);
+  int _currentPage = 0;
+  late final Timer _timer;
+  int get numPage => 6;
+  List<Widget> pages = [];
 
   @override
   void initState() {
+    pages = List<Widget>.generate(
+      numPage,
+      (index) => Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.grey.shade300),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: SizedBox(
+          height: 280,
+          width: 200,
+          child: Center(child: Text("Page $index", style: TextStyle(color: Colors.indigo))),
+        ),
+      ),
+    );
+
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      if (_currentPage < numPage - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      controller.animateToPage(_currentPage, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
+    _timer.cancel();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final pages = List.generate(
-      6,
-      (index) => Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.grey.shade300),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: SizedBox(height: 280, child: Center(child: Text("Page $index", style: TextStyle(color: Colors.indigo)))),
-      ),
-    );
-
     return BlocBuilder(
       bloc: GetIt.I<AppCubit>(),
       builder: (context, state) {
@@ -58,8 +76,6 @@ class _HomePageState extends State<HomePage> {
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
-                backgroundColor: ColorKeys.primary.withOpacity(0.8),
-                stretch: _stretch,
                 onStretchTrigger: () async {
                   // Triggers when stretching
                 },
@@ -78,11 +94,15 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       SizedBox(
                         height: 240,
+                        width: double.infinity,
                         child: PageView.builder(
                           controller: controller,
                           // itemCount: pages.length,
                           itemBuilder: (_, index) {
                             return pages[index % pages.length];
+                          },
+                          onPageChanged: (value) {
+                            _currentPage = value;
                           },
                         ),
                       ),
@@ -91,8 +111,8 @@ class _HomePageState extends State<HomePage> {
                         controller: controller,
                         count: pages.length,
                         effect: const WormEffect(
-                          dotHeight: 16,
-                          dotWidth: 16,
+                          dotHeight: 12,
+                          dotWidth: 12,
                           activeDotColor: Colors.amber,
                           type: WormType.thinUnderground,
                         ),

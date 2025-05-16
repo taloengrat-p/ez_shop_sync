@@ -61,13 +61,13 @@ class CartAddProductFromSearchSuccess extends CartState {
 }
 
 class CartSearchProductLoading extends CartState {
-  final String key;
-  const CartSearchProductLoading({required this.key});
+  // final String key;
+  const CartSearchProductLoading();
   @override
-  String toString() => 'CartSearchProductLoading $key';
+  String toString() => 'CartSearchProductLoading ';
 
-  @override
-  List<Object?> get props => [key];
+  // @override
+  // List<Object?> get props => [key];
 }
 
 class CartSearchProductFailure extends CartState {
@@ -76,15 +76,10 @@ class CartSearchProductFailure extends CartState {
 }
 
 class CartSearchProductSuccess extends CartState {
-  final List<Product> products;
-
-  const CartSearchProductSuccess({required this.products});
+  const CartSearchProductSuccess();
 
   @override
-  String toString() => 'CartSearchProductSuccess ${products.map((e) => e.id).toList()}';
-
-  @override
-  List<Object?> get props => products.map((e) => e.id).toList();
+  String toString() => 'CartSearchProductSuccess';
 }
 
 class CartProductInsufficient extends CartState {

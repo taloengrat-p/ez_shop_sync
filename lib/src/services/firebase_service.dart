@@ -5,10 +5,13 @@ import 'package:ez_shop_sync/flavors.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_storage_constance.dart';
 import 'package:ez_shop_sync/src/data/api_result.dart';
+import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton()
@@ -25,6 +28,7 @@ class FirebaseService {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseRemoteConfig _firebaseRemoteConfig = FirebaseRemoteConfig.instance;
 
   CollectionReference<Map<String, dynamic>> get usersCollection =>
       _firebaseFirestore.collection(FirebaseFirestoreConstance.COLLECTION_USERS);
@@ -39,6 +43,8 @@ class FirebaseService {
   Reference get userStorage => _firebaseStorage.ref().child(FirebaseStorageConstance.COLLECTION_USERS);
   FirebaseMessaging get firebaseMessaging => _firebaseMessaging;
   FirebaseStorage get storage => _firebaseStorage;
+  FirebaseRemoteConfig get remoteConfig => _firebaseRemoteConfig;
+  FirebaseAuth get firebaseAuth => _firebaseAuth;
   User? get user => _firebaseAuth.currentUser;
   String? get userUid => user?.uid;
   String? get userEmail => user?.email;
@@ -57,9 +63,16 @@ class FirebaseService {
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
       await usersCollection.doc(userUid).update({'fcmToken': newToken});
     });
+
+    firebaseAuth.userChanges().listen((User? user) {
+      log('userChanges() $user', name: runtimeType.toString());
+      GetIt.I<AppCubit>().setCurrentUser(user, origin: runtimeType.toString());
+      updateUserFcmToken(user?.uid);
+    });
   }
 
-  Future<ApiResult> updateUserFcmToken(String userId) async {
+  Future<ApiResult> updateUserFcmToken(String? userId) async {
+    throwIf(userId == null, 'can not updateUserFcmToken userId == null');
     try {
       // Request permission (required on iOS)
       NotificationSettings settings = await firebaseMessaging.requestPermission();

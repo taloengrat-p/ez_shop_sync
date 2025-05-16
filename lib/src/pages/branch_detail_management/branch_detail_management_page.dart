@@ -65,9 +65,17 @@ class _BranchDetailManagementState extends State<BranchDetailManagementPage> {
         final member = _cubit.members[index];
         return CheckboxListTile(
           key: ValueKey('branch-member-${member.uid}'),
-          title: Text(member.email),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(member.email, style: Theme.of(context).textTheme.titleMedium),
+              Text(member.roleType.label, style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
           value: member.isSelect,
-          onChanged: _cubit.onCheckedChanged,
+          onChanged: (val) {
+            _cubit.onCheckedChanged(index, val);
+          },
         );
       },
       separatorBuilder: (context, index) {
