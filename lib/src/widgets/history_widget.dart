@@ -45,10 +45,11 @@ class HistoryWidget extends StatelessWidget {
         if (desc != null) Text(desc ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
         const SizedBox(height: 8),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Icon(CupertinoIcons.time_solid, color: Colors.grey, size: 18),
             const SizedBox(width: 8),
-            Text(dateTime?.toDisplayConditionTimeAgoDisplay(context) ?? '--'),
+            Flexible(child: Text(dateTime?.toDisplayConditionTimeAgoDisplay(context) ?? '--')),
           ],
         ),
       ],
