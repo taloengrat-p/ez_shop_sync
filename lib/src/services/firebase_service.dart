@@ -64,10 +64,10 @@ class FirebaseService {
       await usersCollection.doc(userUid).update({'fcmToken': newToken});
     });
 
-    firebaseAuth.userChanges().listen((User? user) {
-      log('userChanges() $user', name: runtimeType.toString());
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      // log('userChanges() $user', name: runtimeType.toString());
       GetIt.I<AppCubit>().setCurrentUser(user, origin: runtimeType.toString());
-      updateUserFcmToken(user?.uid);
+      updateUserFcmToken(user?.uid ?? "");
     });
   }
 

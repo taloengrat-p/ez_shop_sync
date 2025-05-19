@@ -1,11 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
-import 'package:ez_shop_sync/src/data/api_result.dart';
-import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:ez_shop_sync/src/data/api_result.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/branch.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/store.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/unit_type.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/theme/app_theme.dart';
 
@@ -82,8 +83,12 @@ class AppLoading extends AppState {
 }
 
 class AppGetAllProductByCurrentStoreSuccess extends AppState {
+  final List<Product> products;
+  const AppGetAllProductByCurrentStoreSuccess({required this.products});
   @override
-  String toString() => 'AppGetAllProductByCurrentStoreSuccess';
+  String toString() => 'AppGetAllProductByCurrentStoreSuccess $products';
+  @override
+  List<Object?> get props => products.map((e) => e.id).toList();
 }
 
 class AppGetAllProductByCurrentStoreFailure extends AppState {

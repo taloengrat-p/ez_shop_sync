@@ -29,6 +29,13 @@ class ProductLoadItemSuccess extends ProductState {
   String toString() => 'ProductLoadItemSuccess';
 }
 
+class ProductUpdateCartFromAppState extends ProductState {
+  const ProductUpdateCartFromAppState();
+
+  @override
+  String toString() => 'ProductUpdateCartFromAppState';
+}
+
 class ProductLoadItemFailure extends ProductState {
   const ProductLoadItemFailure();
 

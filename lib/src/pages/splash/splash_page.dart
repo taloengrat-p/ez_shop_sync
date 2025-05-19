@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
+import 'package:ez_shop_sync/src/pages/login/login_router.dart';
 import 'package:ez_shop_sync/src/pages/main/main_router.dart';
 import 'package:ez_shop_sync/src/pages/splash/splash_cubit.dart';
 import 'package:ez_shop_sync/src/pages/splash/splash_state.dart';
@@ -22,7 +23,12 @@ class _SplashState extends State<SplashPage> {
 
   @override
   void initState() {
+    log('initState()', name: runtimeType.toString());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      log('addPostFrameCallback()', name: runtimeType.toString());
+      _cubit.initial();
+    });
   }
 
   @override
@@ -40,10 +46,19 @@ class _SplashState extends State<SplashPage> {
             log('state app cubit : $state', name: runtimeType.toString());
             if (state is AppGetAllDataStarterSuccess) {
               MainRouter(context).replace();
+            } else if (state is AppGetAllDataStarterFailure) {
+              LoginRouter(context).replace();
             }
           },
         ),
-        BlocListener<SplashCubit, SplashState>(bloc: _cubit, listener: (context, state) {}),
+        BlocListener<SplashCubit, SplashState>(
+          bloc: _cubit,
+          listener: (context, state) {
+            if (state is SplashFailure) {
+              LoginRouter(context).replace();
+            }
+          },
+        ),
       ],
       child: BlocBuilder<AppCubit, AppState>(
         bloc: _cubit.appCubit,

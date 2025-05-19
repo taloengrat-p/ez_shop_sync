@@ -7,7 +7,6 @@ import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
-import 'package:ez_shop_sync/src/utils/extensions/string_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -22,10 +21,10 @@ class ProductCubit extends Cubit<ProductState> {
 
   List<Product> _products = [];
   List<Product> get products => _products;
-
+  List<String> get productIds => products.map((e) => e.id.toString()).toList();
   ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
     updateCurrentProductFromAppCubit(appCubit.products);
-    emit(const ProductLoadItemSuccess());
+    emit(ProductInitial());
   }
 
   get productCount => products.isEmpty ? '' : ' ( ${appCubit.totalAllProduct} )';
@@ -62,31 +61,6 @@ class ProductCubit extends Cubit<ProductState> {
 
     emit(ProductRefresh(DateTime.now()));
   }
-
-  // Future<void> init({bool isRefresh = false}) async {
-  //   if (appCubit.storeId == null) {
-  //     return;
-  //   }
-
-  //   emit(ProductInitial());
-
-  //   final start = appCubit.products.length;
-
-  //   final result = await productRepository.getAllByStoreAndBranchId(
-  //     appCubit.request(PaginationIndexRequest(start: start, limit: limitLength, lastDocument: lastDocument)),
-  //   );
-
-  //   result.when(
-  //     success: (response) {
-  //       appCubit.doAddProduct(response ?? []);
-
-  //       emit(ProductLoadItemSuccess(start: start, limit: limitLength));
-  //     },
-  //     failure: (error, {errorType}) {
-  //       emit(ProductLoadItemSuccess(start: start, limit: limitLength));
-  //     },
-  //   );
-  // }
 
   void setSearchText(String? value) {
     searchText = value;
@@ -181,6 +155,9 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   updateCurrentProductFromAppCubit(List<Product> data) {
-    _products.addAll(data);
+    final productToAdd = data.where((newData) => !productIds.contains(newData.id)).toList();
+
+    _products.addAll(productToAdd);
+    emit(const ProductUpdateCartFromAppState());
   }
 }

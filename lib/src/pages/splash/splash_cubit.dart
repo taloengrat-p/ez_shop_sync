@@ -7,4 +7,12 @@ import 'package:injectable/injectable.dart';
 class SplashCubit extends Cubit<SplashState> {
   final AppCubit appCubit;
   SplashCubit({required this.appCubit}) : super(SplashInitial());
+
+  void initial() {
+    if (appCubit.user != null) {
+      appCubit.setCurrentUser(appCubit.user);
+    } else {
+      emit(const SplashFailure());
+    }
+  }
 }

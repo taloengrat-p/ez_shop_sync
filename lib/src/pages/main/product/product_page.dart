@@ -271,87 +271,88 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   Widget build(BuildContext context) {
     return BlocListener<AppCubit, AppState>(
       bloc: _cubit.appCubit,
-      listener: (context, appstate) {},
-      child: BlocBuilder<AppCubit, AppState>(
-        bloc: _cubit.appCubit,
-        builder: (context, appState) {
-          return BlocBuilder<ProductCubit, ProductState>(
-            bloc: _cubit,
-            builder: (context, state) {
-              log('state : $state', name: runtimeType.toString());
-              return BaseScaffolds(
-                emptyIcon: CupertinoIcons.bag,
-                isInitialLoading: state is ProductInitial,
-                // isLoading: state is ProductLoading,
-                onRefresh: () async {
-                  await _cubit.refresh();
-                },
-                isEmpty: _cubit.products.isEmpty,
-                enableAppModeDisplay: false,
-                backgroundColor: Colors.white,
-                appBar:
-                    AppbarWidget(
-                      context,
-                      centerTitle: false,
-                      title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
-                      titleWidget:
-                          _cubit.screenMode == ScreenMode.search
-                              ? TextField(
-                                controller: _searchTextController,
-                                autofocus: true,
-                                decoration:
-                                    AppInputDecoration(
-                                      context,
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-                                      suffixIcon: IconButton(
-                                        icon: const Icon(Icons.clear, color: Colors.black),
-                                        onPressed: () {
-                                          _searchTextController.clear();
-                                          _cubit.clearSearchText();
-                                        },
-                                      ),
-                                    ).build(),
-                                onChanged: _cubit.setSearchText,
-                              )
-                              : null,
-                      actions: [
-                        if (_cubit.screenMode == ScreenMode.search)
-                          TextButton(
-                            onPressed: () {
-                              _searchTextController.clear();
-                              _cubit.doSwitchToDisplay();
-                            },
-                            child: Text(LocaleKeys.cancel.tr()),
-                          ),
-                        if (_cubit.screenMode == ScreenMode.display) ...[
-                          ActionAppbarButtonWidget(
-                            onPressed: _cubit.doSwitchToSearch,
-                            child: const Icon(CupertinoIcons.search),
-                          ),
-                          const SizedBox(width: 5),
-                          ActionAppbarButtonWidget(
-                            child: const Icon(CupertinoIcons.add),
-                            onPressed: () async {
-                              if (_cubit.appCubit.store == null) {
-                                return await DialogUtils.showAlertDialog(
-                                  context,
-                                  title: LocaleKeys.dialogUnableCreateProduct_title.tr(),
-                                  desc: LocaleKeys.dialogUnableCreateProduct_desc.tr(),
-                                );
-                              }
-                              final result = await CreateProductRouter(context).navigate();
-                              if (result is BaseArgrument && result.refresh) {
-                                _cubit.refresh();
-                              }
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                      ],
-                    ).build(),
-                body: buildBody(state),
-              );
+      listener: (context, appstate) {
+        if (appstate is AppGetAllProductByCurrentStoreSuccess) {
+          _cubit.updateCurrentProductFromAppCubit(appstate.products);
+        } else if (appstate is AppDeleteProductSuccess) {
+          setState(() {});
+        }
+      },
+      child: BlocBuilder<ProductCubit, ProductState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          log('product _ state : $state', name: runtimeType.toString());
+          return BaseScaffolds(
+            emptyIcon: CupertinoIcons.bag,
+            isInitialLoading: state is ProductInitial,
+            // isLoading: state is ProductLoading,
+            onRefresh: () async {
+              await _cubit.refresh();
             },
+            isEmpty: _cubit.products.isEmpty,
+            enableAppModeDisplay: false,
+            backgroundColor: Colors.white,
+            appBar:
+                AppbarWidget(
+                  context,
+                  centerTitle: false,
+                  title: '${LocaleKeys.inventory.tr()}${_cubit.productCount}',
+                  titleWidget:
+                      _cubit.screenMode == ScreenMode.search
+                          ? TextField(
+                            controller: _searchTextController,
+                            autofocus: true,
+                            decoration:
+                                AppInputDecoration(
+                                  context,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.clear, color: Colors.black),
+                                    onPressed: () {
+                                      _searchTextController.clear();
+                                      _cubit.clearSearchText();
+                                    },
+                                  ),
+                                ).build(),
+                            onChanged: _cubit.setSearchText,
+                          )
+                          : null,
+                  actions: [
+                    if (_cubit.screenMode == ScreenMode.search)
+                      TextButton(
+                        onPressed: () {
+                          _searchTextController.clear();
+                          _cubit.doSwitchToDisplay();
+                        },
+                        child: Text(LocaleKeys.cancel.tr()),
+                      ),
+                    if (_cubit.screenMode == ScreenMode.display) ...[
+                      ActionAppbarButtonWidget(
+                        onPressed: _cubit.doSwitchToSearch,
+                        child: const Icon(CupertinoIcons.search),
+                      ),
+                      const SizedBox(width: 5),
+                      ActionAppbarButtonWidget(
+                        child: const Icon(CupertinoIcons.add),
+                        onPressed: () async {
+                          if (_cubit.appCubit.store == null) {
+                            return await DialogUtils.showAlertDialog(
+                              context,
+                              title: LocaleKeys.dialogUnableCreateProduct_title.tr(),
+                              desc: LocaleKeys.dialogUnableCreateProduct_desc.tr(),
+                            );
+                          }
+                          final result = await CreateProductRouter(context).navigate();
+                          if (result is BaseArgrument && result.refresh) {
+                            _cubit.refresh();
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ).build(),
+            body: buildBody(state),
           );
         },
       ),

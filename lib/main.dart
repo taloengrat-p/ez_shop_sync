@@ -74,6 +74,7 @@ Future<void> setupConfiguration() async {
   log('appEnv $appEnv');
 
   configureDependencies(F.appFlavor.name);
+  log('configureDependencies');
 }
 
 Future<void> initialHiveDB() async {

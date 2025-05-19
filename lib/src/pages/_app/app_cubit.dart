@@ -144,7 +144,7 @@ class AppCubit extends Cubit<AppState> {
     required this.notificationRepository,
     required this.authRepository,
   }) : super(AppInitial()) {
-  // init();
+    // init();
   }
 
   String get currentStoreName => store?.name ?? '--';
@@ -290,11 +290,6 @@ class AppCubit extends Cubit<AppState> {
     } else {
       emit(AppUserChange(user));
     }
-    // if (_user?.storeId?.isEmpty ?? true) {
-    //   return;
-    // }
-
-    // await doGetStores(_user?.storeId ?? []);
   }
 
   Future<ApiResult<List<Cart>>> setCurrentCartByCurrentStore() async {
@@ -488,7 +483,7 @@ class AppCubit extends Cubit<AppState> {
       success: (response) {
         lastDocument = response.lastDocument;
         doAddProduct(response.data, totalItem: response.totalItem);
-        emit(AppGetAllProductByCurrentStoreSuccess());
+        emit(AppGetAllProductByCurrentStoreSuccess(products: response.data));
       },
       failure: (error, {errorType}) {
         emit(AppGetAllProductByCurrentStoreFailure());
@@ -499,7 +494,7 @@ class AppCubit extends Cubit<AppState> {
 
   doDeleteProduct({required String storeId, required Product product}) async {
     emit(AppLoading());
-
+    _totalAllProduct--;
     _products.removeWhere((elelment) => elelment.id == product.id);
     emit(AppDeleteProductSuccess());
   }

@@ -23,17 +23,17 @@ class LoginCubit extends Cubit<LoginState> {
 
   void setUsername(String? value) {
     username = value ?? '';
-    emit(LoginRefresh(username));
+    // emit(LoginRefresh(username));
   }
 
   void setPassword(String? value) {
     password = value ?? '';
-    emit(LoginRefresh(password));
+    // emit(LoginRefresh(password));
   }
 
   void setConfirmPassword(String? value) {
     confirmPassword = value ?? '';
-    emit(LoginRefresh(confirmPassword));
+    // emit(LoginRefresh(confirmPassword));
   }
 
   void register() async {
