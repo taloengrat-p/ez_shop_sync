@@ -48,7 +48,6 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   final _refreshListViewController = RefreshController();
   final _refreshGridViewController = RefreshController();
   final _refreshEmptyViewController = RefreshController();
-  String? categorySelect;
 
   @override
   void initState() {
@@ -78,17 +77,13 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                           (e) => InkWell(
                             onTap: () {
                               _cubit.changeCategoryProductView(e.id);
-
-                              categorySelect = e.id;
-
-                              setState(() {});
                             },
                             child: Container(
                               key: ValueKey(e.id),
                               decoration: BoxDecoration(
                                 border: Border(
                                   bottom:
-                                      categorySelect == e.id
+                                      _cubit.categorySelect == e.id
                                           ? BorderSide(
                                             color: ColorKeys.primary, // Border color
                                             width: 2.0, // Border thickness
@@ -100,8 +95,8 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
                               child: Text(
                                 e.name,
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: categorySelect == e.id ? FontWeight.bold : FontWeight.w100,
-                                  fontSize: categorySelect == e.id ? 16 : 14,
+                                  fontWeight: _cubit.categorySelect == e.id ? FontWeight.bold : FontWeight.w100,
+                                  fontSize: _cubit.categorySelect == e.id ? 16 : 14,
                                 ),
                               ),
                             ),

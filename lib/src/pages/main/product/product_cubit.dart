@@ -21,8 +21,9 @@ class ProductCubit extends Cubit<ProductState> {
 
   ScreenMode screenMode = ScreenMode.display;
   String? searchText;
-
+  String? categorySelect;
   List<Product> _products = [];
+
   List<Product> get products => _products;
   List<String> get productIds => products.map((e) => e.id.toString()).toList();
   ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
@@ -170,6 +171,12 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   void changeCategoryProductView(String? cateId) async {
+    if (cateId == categorySelect) {
+      return;
+    }
+
+    categorySelect = cateId;
+
     emit(ProductInitialLoading());
     final result = await productRepository.getAllByStoreAndBranchId(
       appCubit.request(PaginationIndexRequest(start: 0, limit: 10, payload: GetProductRequest(categoryId: cateId))),
