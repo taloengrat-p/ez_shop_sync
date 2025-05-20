@@ -69,16 +69,15 @@ class _NotificationSettingsState extends State<NotificationSettingsPage> {
               Expanded(child: Text(LocaleKeys.notificationSettings_orderSuccess.tr())),
               Row(
                 children: [
-                  Text(LocaleKeys.languageEn.tr()),
+                  Text(LocaleKeys.notificationSettings_off.tr()),
                   const SizedBox(width: 4),
                   Switch.adaptive(
-                    value: context.locale == const Locale('th'),
+                    value: false,
                     activeColor: ColorKeys.primary,
-                    inactiveTrackColor: ColorKeys.primary,
                     onChanged: (val) => _cubit.toggle(val),
                   ),
                   const SizedBox(width: 4),
-                  Text(LocaleKeys.languageTh.tr()),
+                  Text(LocaleKeys.notificationSettings_on.tr()),
                 ],
               ),
             ],

@@ -275,6 +275,8 @@ abstract class  LocaleKeys {
   static const all = 'all';
   static const notificationSettings_title = 'notificationSettings.title';
   static const notificationSettings_orderSuccess = 'notificationSettings.orderSuccess';
+  static const notificationSettings_on = 'notificationSettings.on';
+  static const notificationSettings_off = 'notificationSettings.off';
   static const notificationSettings = 'notificationSettings';
 
 }

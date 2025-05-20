@@ -296,6 +296,8 @@
   "all": "All",
   "notificationSettings": {
     "title": "Notification Settings",
-    "orderSuccess": "Order success"
+    "orderSuccess": "Order success",
+    "on": "On",
+    "off": "Off"
   }
 }

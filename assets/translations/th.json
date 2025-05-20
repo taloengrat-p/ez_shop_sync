@@ -297,6 +297,8 @@
   "all": "ทั้งหมด",
   "notificationSettings": {
     "title": "ตั้งค่าการแจ้งเตือน",
-    "orderSuccess": "ทำรายการสำเร็จ"
+    "orderSuccess": "ทำรายการสำเร็จ",
+    "on": "เปิด",
+    "off": "ปิด"
   }
 }
