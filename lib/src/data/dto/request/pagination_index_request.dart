@@ -2,16 +2,17 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PaginationIndexRequest {
+class PaginationIndexRequest<T> {
   int start;
   int limit;
   QueryDocumentSnapshot? lastDocument;
   bool? descending;
+  T? payload;
 
-  PaginationIndexRequest({required this.start, required this.limit, this.lastDocument, this.descending = true});
+  PaginationIndexRequest({required this.start, required this.limit, this.lastDocument, this.descending, this.payload});
 
   @override
   String toString() {
-    return 'OrderGetAllRangeRequest(start: $start, limit: $limit, lastDocument: $lastDocument)';
+    return 'OrderGetAllRangeRequest(start: $start, limit: $limit, lastDocument: $lastDocument, payload: $payload)';
   }
 }

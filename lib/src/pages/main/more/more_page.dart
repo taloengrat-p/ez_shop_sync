@@ -16,6 +16,7 @@ import 'package:ez_shop_sync/src/pages/main/more/models/menu_item_model.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_cubit.dart';
 import 'package:ez_shop_sync/src/pages/main/more/more_state.dart';
 import 'package:ez_shop_sync/src/pages/main/more/widgets/menu_group_widget.dart';
+import 'package:ez_shop_sync/src/pages/notification_settings/notification_settings_router.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_router.dart';
 import 'package:ez_shop_sync/src/pages/password_setting/password_setting_router.dart';
 import 'package:ez_shop_sync/src/pages/pin_setup/pin_setup_router.dart';
@@ -261,21 +262,21 @@ class _MorePageState extends State<MorePage> {
           title: LocaleKeys.storeManagement.tr(),
           value: 1,
           onPressed: () {
-            StoreManagementRouter(context).navigate();
+            StoreManagementRouter(context).navigate(isVerifyPin: true);
           },
         ),
         MenuItemModel(
           title: LocaleKeys.branchManagement.tr(),
           value: 1,
-          onPressed: () {
-            BranchManagementRouter(context).navigate();
+          onPressed: () async {
+            BranchManagementRouter(context).navigate(isVerifyPin: true);
           },
         ),
         MenuItemModel(
           title: LocaleKeys.userManagement.tr(),
           value: 2,
           onPressed: () async {
-            UserManagementRouter(context).navigate();
+            UserManagementRouter(context).navigate(isVerifyPin: true);
           },
         ),
         if (false)
@@ -356,13 +357,8 @@ class _MorePageState extends State<MorePage> {
         MenuItemModel(
           title: LocaleKeys.notificationSetting_title.tr(),
           value: 1,
-          disabled: true,
           onPressed: () async {
-            final result = await ThemeSettingRouter(context).navigate();
-
-            if (result is ThemeSettingSuccess) {
-              _cubit.refresh();
-            }
+            final result = await NotificationSettingsRouter(context).navigate();
           },
         ),
         if (false)

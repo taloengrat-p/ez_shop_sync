@@ -272,5 +272,9 @@ abstract class  LocaleKeys {
   static const locales = 'locales';
   static const createUnitType = 'createUnitType';
   static const unitType = 'unitType';
+  static const all = 'all';
+  static const notificationSettings_title = 'notificationSettings.title';
+  static const notificationSettings_orderSuccess = 'notificationSettings.orderSuccess';
+  static const notificationSettings = 'notificationSettings';
 
 }

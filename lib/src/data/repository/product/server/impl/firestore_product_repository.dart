@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ez_shop_sync/src/data/dto/request/product_request/get_product_request.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart';
@@ -109,7 +110,7 @@ class FirestoreProductServerRepository implements IProductServerRepository {
 
   @override
   Future<ApiResult<PaginationResponse<List<Product>>>> getAllByStoreAndBranchId(
-    BaseRepoRequest<PaginationIndexRequest> request,
+    BaseRepoRequest<PaginationIndexRequest<GetProductRequest>> request,
   ) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> productSnapshot;
@@ -121,18 +122,36 @@ class FirestoreProductServerRepository implements IProductServerRepository {
       final totalItem = await productUnderStoreCollection.count().get();
 
       if (request.data.lastDocument != null) {
-        productSnapshot =
-            await productUnderStoreCollection
-                .orderBy('info.createAt', descending: request.data.descending ?? true)
-                .limit(request.data.limit)
-                .startAfterDocument(request.data.lastDocument!)
-                .get();
+        if (request.data.payload?.categoryId != null) {
+          productSnapshot =
+              await productUnderStoreCollection
+                  .orderBy('info.createAt', descending: request.data.descending ?? true)
+                  .limit(request.data.limit)
+                  .startAfterDocument(request.data.lastDocument!)
+                  .get();
+        } else {
+          productSnapshot =
+              await productUnderStoreCollection
+                  .orderBy('info.createAt', descending: request.data.descending ?? true)
+                  .limit(request.data.limit)
+                  .startAfterDocument(request.data.lastDocument!)
+                  .get();
+        }
       } else {
-        productSnapshot =
-            await productUnderStoreCollection
-                .orderBy('info.createAt', descending: request.data.descending ?? true)
-                .limit(request.data.limit)
-                .get();
+        if (request.data.payload?.categoryId != null) {
+          productSnapshot =
+              await productUnderStoreCollection
+                  .where('category', isEqualTo: request.data.payload?.categoryId, isNull: false)
+                  .orderBy('info.createAt', descending: request.data.descending ?? true)
+                  .limit(request.data.limit)
+                  .get();
+        } else {
+          productSnapshot =
+              await productUnderStoreCollection
+                  .orderBy('info.createAt', descending: request.data.descending ?? true)
+                  .limit(request.data.limit)
+                  .get();
+        }
       }
 
       log('productSnapshot.docs ${productSnapshot.docs}');

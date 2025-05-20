@@ -19,28 +19,33 @@ class UserDataAdapter extends TypeAdapter<UserData> {
     return UserData(
       id: fields[1] as dynamic,
       info: fields[2] as BaseHiveData?,
-      uid: fields[7] as String,
-      storeSelected: fields[8] as String?,
-      stores: fields[9] == null ? [] : (fields[9] as List?)?.cast<String>(),
-      displayName: fields[10] as String?,
-      branchSelected: fields[11] as String?,
+      uid: fields[3] as String,
+      storeSelected: fields[4] as String?,
+      stores: fields[5] == null ? [] : (fields[5] as List?)?.cast<String>(),
+      displayName: fields[6] as String?,
+      branchSelected: fields[7] as String?,
+      notificationSettings: fields[8] == null
+          ? []
+          : (fields[8] as List?)?.cast<UserNotificationSettings>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, UserData obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(7)
-      ..write(obj.uid)
       ..writeByte(8)
+      ..writeByte(3)
+      ..write(obj.uid)
+      ..writeByte(4)
       ..write(obj.storeSelected)
-      ..writeByte(9)
+      ..writeByte(5)
       ..write(obj.stores)
-      ..writeByte(10)
+      ..writeByte(6)
       ..write(obj.displayName)
-      ..writeByte(11)
+      ..writeByte(7)
       ..write(obj.branchSelected)
+      ..writeByte(8)
+      ..write(obj.notificationSettings)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -73,6 +78,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
           (json['stores'] as List<dynamic>?)?.map((e) => e as String).toList(),
       displayName: json['displayName'] as String?,
       branchSelected: json['branchSelected'] as String?,
+      notificationSettings: (json['notificationSettings'] as List<dynamic>?)
+          ?.map((e) =>
+              UserNotificationSettings.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
@@ -83,4 +92,6 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'stores': instance.stores,
       'displayName': instance.displayName,
       'branchSelected': instance.branchSelected,
+      'notificationSettings':
+          instance.notificationSettings?.map((e) => e.toJson()).toList(),
     };

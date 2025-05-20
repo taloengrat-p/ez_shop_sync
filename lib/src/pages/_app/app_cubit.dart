@@ -468,6 +468,7 @@ class AppCubit extends Cubit<AppState> {
     }
 
     emit(AppLoading());
+
     final result = await productRepository.getAllByStoreAndBranchId(
       request(
         PaginationIndexRequest(

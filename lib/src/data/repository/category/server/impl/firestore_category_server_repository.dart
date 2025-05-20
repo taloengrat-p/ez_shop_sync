@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_shop_sync/src/constances/application_constance.dart';
 import 'package:ez_shop_sync/src/constances/firebase/firebase_firestore_constance.dart';
@@ -25,7 +23,7 @@ class FirestoreCategoryServerRepository implements ICategoryServerRepository {
   @override
   Future<ApiResult<Category>> create(BaseRepoRequest<Category> request) async {
     try {
-      final cateId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.productPrefix);
+      final cateId = DateTime.now().toTransactionFormatId(prefix: ApplicationConstance.categoryPrefix);
       final categoryRef = firebaseService.storesCollection
           .doc(request.storeId)
           .collection(FirebaseFirestoreConstance.COLLECTION_CATEGORIES)

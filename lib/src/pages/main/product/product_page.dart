@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/colors.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 import 'package:ez_shop_sync/src/models/base_argrument.dart';
@@ -25,6 +26,7 @@ import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.da
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,11 +44,12 @@ class ProductPage extends StatefulWidget {
 
 class ProductPageState extends State<ProductPage> implements IProductPage {
   final _cubit = GetIt.I<ProductCubit>();
-
   final _searchTextController = TextEditingController();
   final _refreshListViewController = RefreshController();
   final _refreshGridViewController = RefreshController();
   final _refreshEmptyViewController = RefreshController();
+  String? categorySelect;
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +63,56 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
 
   Widget buildBody(ProductState state) {
     return BodyWidget(
+      isInitialLoading: state is ProductInitialLoading || state is ProductCubitInitial,
+      titleWidget: Expanded(
+        child: BlocBuilder<AppCubit, AppState>(
+          bloc: _cubit.appCubit,
+          builder: (context, appState) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: RowGapWidget(
+                gap: 8,
+                children:
+                    _cubit.categories
+                        .map(
+                          (e) => InkWell(
+                            onTap: () {
+                              _cubit.changeCategoryProductView(e.id);
+
+                              categorySelect = e.id;
+
+                              setState(() {});
+                            },
+                            child: Container(
+                              key: ValueKey(e.id),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom:
+                                      categorySelect == e.id
+                                          ? BorderSide(
+                                            color: ColorKeys.primary, // Border color
+                                            width: 2.0, // Border thickness
+                                          )
+                                          : BorderSide.none,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              child: Text(
+                                e.name,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: categorySelect == e.id ? FontWeight.bold : FontWeight.w100,
+                                  fontSize: categorySelect == e.id ? 16 : 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+              ),
+            );
+          },
+        ),
+      ),
       actions: [
         IconButton(
           onPressed:
@@ -281,10 +334,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       child: BlocBuilder<ProductCubit, ProductState>(
         bloc: _cubit,
         builder: (context, state) {
-          log('product _ state : $state', name: runtimeType.toString());
+          log('state : $state', name: runtimeType.toString());
           return BaseScaffolds(
             emptyIcon: CupertinoIcons.bag,
-            isInitialLoading: state is ProductInitial,
+            // isInitialLoading: state is ProductInitialLoading,
             // isLoading: state is ProductLoading,
             onRefresh: () async {
               await _cubit.refresh();

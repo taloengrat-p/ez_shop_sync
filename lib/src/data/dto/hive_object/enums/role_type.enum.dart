@@ -1,10 +1,22 @@
+import 'package:hive_flutter/hive_flutter.dart';
+
+part 'role_type.enum.g.dart';
+
+@HiveType(typeId: 23)
 enum RoleType {
+  @HiveField(0)
   owner(1000),
+  @HiveField(1)
   admin(900),
+  @HiveField(2)
   manager(800),
+  @HiveField(3)
   staff(700),
+  @HiveField(4)
   user(600),
+  @HiveField(5)
   anonymous(500),
+  @HiveField(6)
   undefined(0);
 
   final int power;

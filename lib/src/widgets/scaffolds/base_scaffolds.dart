@@ -4,6 +4,7 @@ import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/models/app_mode.enum.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_state.dart';
+import 'package:ez_shop_sync/src/widgets/app_loading_widget.dart';
 import 'package:ez_shop_sync/src/widgets/debug/debugger_dragable.dart';
 import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
@@ -11,7 +12,6 @@ import 'package:ez_shop_sync/src/widgets/overlay_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lottie/lottie.dart';
 
 enum RouteAwareType { pop, popNext, push, pushNext }
 
@@ -35,7 +35,7 @@ class BaseScaffolds extends StatefulWidget {
   final Function()? onLoading;
   final bool? isAppBarOverlay;
   final String? emptyMessage;
-
+  final EdgeInsets? bodyPadding;
   const BaseScaffolds({
     this.emptyIcon,
     this.isEmpty = false,
@@ -57,6 +57,7 @@ class BaseScaffolds extends StatefulWidget {
     this.onRefresh,
     this.isAppBarOverlay = false,
     this.emptyMessage,
+    this.bodyPadding,
   });
 
   @override
@@ -178,29 +179,20 @@ class _BaseScaffoldsState extends State<BaseScaffolds> implements RouteAware {
                           },
                         ),
                         Expanded(
-                          child:
-                              widget.isInitialLoading
-                                  ? Container(
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    color: Colors.white,
-                                    child: Center(
-                                      child: Stack(
-                                        children: [
-                                          Center(child: Lottie.asset('assets/loading.json')),
-                                          Center(child: Image.asset('assets/images/logo.png', height: 100)),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  : widget.isEmpty
-                                  ? EmptyDataWidget(
-                                    onRefresh: widget.onRefresh,
-                                    onLoading: widget.onLoading,
-                                    message: widget.emptyMessage ?? LocaleKeys.dataEmptyMessage.tr(),
-                                    icon: widget.emptyIcon,
-                                  )
-                                  : widget.body ?? Container(),
+                          child: Container(
+                            padding: widget.bodyPadding,
+                            child:
+                                widget.isInitialLoading
+                                    ? const AppLoadingWidget()
+                                    : widget.isEmpty
+                                    ? EmptyDataWidget(
+                                      onRefresh: widget.onRefresh,
+                                      onLoading: widget.onLoading,
+                                      message: widget.emptyMessage ?? LocaleKeys.dataEmptyMessage.tr(),
+                                      icon: widget.emptyIcon,
+                                    )
+                                    : widget.body ?? Container(),
+                          ),
                         ),
                       ],
                     ),

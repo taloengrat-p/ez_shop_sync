@@ -13,6 +13,7 @@ import 'package:ez_shop_sync/src/data/dto/request/base_repo_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_history_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/create_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/product_request/get_product_request.dart';
 import 'package:ez_shop_sync/src/data/dto/request/product_request/update_product_image_request.dart';
 import 'package:ez_shop_sync/src/data/dto/response/pagination_response.dart';
 import 'package:ez_shop_sync/src/data/repository/i_repository.dart';
@@ -107,7 +108,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
   }
 
   Future<ApiResult<PaginationResponse<List<Product>>>> getAllByStoreAndBranchId(
-    BaseRepoRequest<PaginationIndexRequest> request,
+    BaseRepoRequest<PaginationIndexRequest<GetProductRequest>> request,
   ) async {
     if (appMode == AppMode.local) {
       throw UnimplementedError();

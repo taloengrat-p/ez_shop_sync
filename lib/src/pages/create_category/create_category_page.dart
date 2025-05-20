@@ -33,6 +33,9 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
   final _formKey = GlobalKey<FormState>();
   final _backgroundColorKey = GlobalKey<TextFormFieldColorPickerWidgetState>();
   final _borderColorKey = GlobalKey<TextFormFieldColorPickerWidgetState>();
+
+  final _nameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +47,7 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
         _cubit.setArgrument(argruments);
         _borderColorKey.currentState?.setColor(argruments.borderColor?.toColor() ?? Colors.white);
         _backgroundColorKey.currentState?.setColor(argruments.color?.toColor() ?? Colors.white);
+        _nameController.text = argruments.name;
       }
 
       setState(() {});
@@ -116,11 +120,11 @@ class _CreateCategoryState extends State<CreateCategoryPage> {
               const SizedBox(height: 16),
               // TextFormFieldIconPickerWidget(label: LocaleKeys.icon.tr(), onSelected: _cubit.setIcon),
               AppTextFormFieldUiWidget(
+                controller: _nameController,
                 label: LocaleKeys.name.tr(),
                 onChanged: _cubit.setName,
                 autofocus: true,
                 isRequired: true,
-                textValue: _cubit.name,
               ),
               const SizedBox(height: 8),
               TextFormFieldColorPickerWidget(

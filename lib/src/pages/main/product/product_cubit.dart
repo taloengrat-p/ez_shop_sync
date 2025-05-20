@@ -1,6 +1,9 @@
-import 'dart:developer';
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:ez_shop_sync/res/generated/locale.g.dart';
+import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
+import 'package:ez_shop_sync/src/data/dto/request/pagination_index_request.dart';
+import 'package:ez_shop_sync/src/data/dto/request/product_request/get_product_request.dart';
 import 'package:ez_shop_sync/src/data/repository/product/product_repository.dart';
 import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
@@ -23,6 +26,7 @@ class ProductCubit extends Cubit<ProductState> {
   List<Product> get products => _products;
   List<String> get productIds => products.map((e) => e.id.toString()).toList();
   ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
+    emit(ProductInitialLoading());
     updateCurrentProductFromAppCubit(appCubit.products);
     emit(ProductInitial());
   }
@@ -32,10 +36,12 @@ class ProductCubit extends Cubit<ProductState> {
   ProductDisplayType get displayType => appCubit.productDisplayType;
   ProductSortType get sortType => appCubit.productSortType;
 
+  List<Category> get categories => [Category(id: null, name: LocaleKeys.all.tr()), ...appCubit.categories];
+
   void changeSortType() async {
     appCubit.changeSortType();
     emit(ProductChangeSortType(sortType: sortType));
-    await refresh();
+    await refresh(loading: false);
     emit(ProductChangeSortTypeSuccess(sortType: sortType));
   }
 
@@ -110,12 +116,14 @@ class ProductCubit extends Cubit<ProductState> {
   //   emit(ProductSuccess());
   // }
 
-  Future<void> refresh() async {
+  Future<void> refresh({bool? loading = true}) async {
     if (appCubit.storeId == null) {
       return;
     }
 
-    emit(ProductLoading());
+    if (loading == true) {
+      emit(ProductLoading());
+    }
     final result = await appCubit.refreshProductByCurrentStoreAndBranch();
 
     return result.when(
@@ -159,5 +167,23 @@ class ProductCubit extends Cubit<ProductState> {
 
     _products.addAll(productToAdd);
     emit(const ProductUpdateCartFromAppState());
+  }
+
+  void changeCategoryProductView(String? cateId) async {
+    emit(ProductInitialLoading());
+    final result = await productRepository.getAllByStoreAndBranchId(
+      appCubit.request(PaginationIndexRequest(start: 0, limit: 10, payload: GetProductRequest(categoryId: cateId))),
+    );
+
+    result.when(
+      success: (response) {
+        _products.clear();
+        _products.addAll(response.data);
+        emit(ProductSuccess());
+      },
+      failure: (error) {
+        emit(ProductFailure());
+      },
+    );
   }
 }

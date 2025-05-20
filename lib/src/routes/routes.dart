@@ -19,6 +19,7 @@ import 'package:ez_shop_sync/src/pages/login/login_page.dart';
 import 'package:ez_shop_sync/src/pages/main/main_page.dart';
 import 'package:ez_shop_sync/src/pages/notification/notification_page.dart';
 import 'package:ez_shop_sync/src/pages/notification_detail/notification_detail_page.dart';
+import 'package:ez_shop_sync/src/pages/notification_settings/notification_settings_page.dart';
 import 'package:ez_shop_sync/src/pages/order_complete/order_complete_page.dart';
 import 'package:ez_shop_sync/src/pages/order_history/order_history_page.dart';
 import 'package:ez_shop_sync/src/pages/order_history_detail/order_history_detail_page.dart';
@@ -77,6 +78,7 @@ class Routes {
   static const String ROUTE_BRANCHDETAILMANAGEMENT = '/ROUTE_BRANCHDETAILMANAGEMENT';
   static const String ROUTE_UNITTYPEMANAGEMENT = '/ROUTE_UNITTYPEMANAGEMENT';
   static const String ROUTE_SPLASH = '/ROUTE_SPLASH';
+  static const String ROUTE_NOTIFICATIONSETTINGS = '/ROUTE_NOTIFICATIONSETTINGS';
 
   static Map<String, Widget Function(BuildContext)> values = {
     ROUTE_MAIN: (context) => const MainPage(),
@@ -116,5 +118,6 @@ class Routes {
     ROUTE_BRANCHDETAILMANAGEMENT: (context) => const BranchDetailManagementPage(),
     ROUTE_UNITTYPEMANAGEMENT: (context) => const UnitTypeManagementPage(),
     ROUTE_SPLASH: (context) => const SplashPage(),
+    ROUTE_NOTIFICATIONSETTINGS: (context) => const NotificationSettingsPage(),
   };
 }

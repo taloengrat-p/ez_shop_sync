@@ -292,5 +292,10 @@
     "enValue": "English : {}"
   },
   "createUnitType": "Create Unit Type",
-  "unitType": "Unit type of product"
+  "unitType": "Unit type of product",
+  "all": "All",
+  "notificationSettings": {
+    "title": "Notification Settings",
+    "orderSuccess": "Order success"
+  }
 }
