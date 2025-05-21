@@ -114,7 +114,7 @@ class ProductRepository extends IRepository<Product> implements IProductReposito
       throw UnimplementedError();
       // return productLocalRepository.getAllByStoreAndBranchId(request.storeId);
     } else {
-      return productServerRepository.getAllByStoreAndBranchId(request);
+      return await productServerRepository.getAllByStoreAndBranchId(request);
     }
   }
 

@@ -9,9 +9,7 @@ class SplashCubit extends Cubit<SplashState> {
   SplashCubit({required this.appCubit}) : super(SplashInitial());
 
   void initial() {
-    if (appCubit.user != null) {
-      appCubit.setCurrentUser(appCubit.user);
-    } else {
+    if (appCubit.user == null) {
       emit(const SplashFailure());
     }
   }

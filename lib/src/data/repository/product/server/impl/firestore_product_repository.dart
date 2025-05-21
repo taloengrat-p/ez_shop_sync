@@ -113,47 +113,25 @@ class FirestoreProductServerRepository implements IProductServerRepository {
     BaseRepoRequest<PaginationIndexRequest<GetProductRequest>> request,
   ) async {
     try {
-      final QuerySnapshot<Map<String, dynamic>> productSnapshot;
-
-      final productUnderStoreCollection = firebaseService.storesCollection
+      final refCollection = firebaseService.storesCollection
           .doc(request.storeId)
           .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS);
 
-      final totalItem = await productUnderStoreCollection.count().get();
+      late Query<Map<String, dynamic>> query;
+      final totalItem = await refCollection.count().get();
 
-      if (request.data.lastDocument != null) {
-        if (request.data.payload?.categoryId != null) {
-          productSnapshot =
-              await productUnderStoreCollection
-                  .orderBy('info.createAt', descending: request.data.descending ?? true)
-                  .limit(request.data.limit)
-                  .startAfterDocument(request.data.lastDocument!)
-                  .get();
-        } else {
-          productSnapshot =
-              await productUnderStoreCollection
-                  .orderBy('info.createAt', descending: request.data.descending ?? true)
-                  .limit(request.data.limit)
-                  .startAfterDocument(request.data.lastDocument!)
-                  .get();
-        }
-      } else {
-        if (request.data.payload?.categoryId != null) {
-          productSnapshot =
-              await productUnderStoreCollection
-                  .where('category', isEqualTo: request.data.payload?.categoryId, isNull: false)
-                  .orderBy('info.createAt', descending: request.data.descending ?? true)
-                  .limit(request.data.limit)
-                  .get();
-        } else {
-          productSnapshot =
-              await productUnderStoreCollection
-                  .orderBy('info.createAt', descending: request.data.descending ?? true)
-                  .limit(request.data.limit)
-                  .get();
-        }
+      if (request.data.payload?.categoryId != null) {
+        query = refCollection.where('category', isEqualTo: request.data.payload?.categoryId);
       }
 
+      query = refCollection
+          .orderBy('info.createAt', descending: request.data.descending ?? true)
+          .limit(request.data.limit);
+      if (request.data.lastDocument != null) {
+        query = query.startAfterDocument(request.data.lastDocument!);
+      }
+
+      QuerySnapshot<Map<String, dynamic>> productSnapshot = await query.get();
       log('productSnapshot.docs ${productSnapshot.docs}');
 
       if (productSnapshot.docs.isEmpty) {

@@ -75,7 +75,7 @@ class AppCubit extends Cubit<AppState> {
   NavigationService navigationService;
   AppMode _appMode = AppMode.local;
   ProductDisplayType productDisplayType = ProductDisplayType.grid;
-  ProductSortType productSortType = ProductSortType.desc;
+  AppSortType productSortType = AppSortType.desc;
   bool isFirstRun = false;
   bool? isIntroduceFlowDone;
   User? _user;
@@ -433,7 +433,7 @@ class AppCubit extends Cubit<AppState> {
 
   changeSortType() {
     descending = !descending;
-    productSortType = descending ? ProductSortType.desc : ProductSortType.asc;
+    productSortType = descending ? AppSortType.desc : AppSortType.asc;
 
     // sortProduct(productSortType);
   }
@@ -522,7 +522,7 @@ class AppCubit extends Cubit<AppState> {
     emit(AppLoading());
     final result = await categoryRepository.getCategoryByStoreId(request(null));
 
-    result.when(
+    return result.when(
       success: (response) {
         _categories = response;
         emit(AppLoadCategoriesByStoreSuccess(store?.categories ?? []));

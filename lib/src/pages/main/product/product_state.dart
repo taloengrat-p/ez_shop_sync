@@ -44,7 +44,7 @@ class ProductLoadItemFailure extends ProductState {
 }
 
 class ProductChangeSortType extends ProductState {
-  final ProductSortType sortType;
+  final AppSortType sortType;
   const ProductChangeSortType({required this.sortType});
 
   @override
@@ -55,7 +55,7 @@ class ProductChangeSortType extends ProductState {
 }
 
 class ProductChangeSortTypeSuccess extends ProductState {
-  final ProductSortType sortType;
+  final AppSortType sortType;
   const ProductChangeSortTypeSuccess({required this.sortType});
 
   @override

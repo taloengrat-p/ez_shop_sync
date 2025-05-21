@@ -26,6 +26,7 @@ import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_cart_widget.da
 import 'package:ez_shop_sync/src/widgets/bottoms/bottom_sheet_add_stock_widget.dart';
 import 'package:ez_shop_sync/src/widgets/buttons/action_appbar_button_widget.dart';
 import 'package:ez_shop_sync/src/widgets/dialogs/confirm_dialog_widget.dart';
+import 'package:ez_shop_sync/src/widgets/empty_data_widget.dart';
 import 'package:ez_shop_sync/src/widgets/layout/row_gap_widget.dart';
 import 'package:ez_shop_sync/src/widgets/scaffolds/base_scaffolds.dart';
 import 'package:ez_shop_sync/src/widgets/text_form_field/app_input_decoration.dart';
@@ -52,84 +53,16 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      // _cubit.updateCurrentProductFromAppCubit(data);
+    });
   }
 
   @override
   void dispose() {
     log('[dispose]', name: runtimeType.toString());
     super.dispose();
-  }
-
-  Widget buildBody(ProductState state) {
-    return BodyWidget(
-      isInitialLoading: state is ProductInitialLoading || state is ProductCubitInitial,
-      titleWidget: Expanded(
-        child: BlocBuilder<AppCubit, AppState>(
-          bloc: _cubit.appCubit,
-          builder: (context, appState) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: RowGapWidget(
-                gap: 8,
-                children:
-                    _cubit.categories
-                        .map(
-                          (e) => InkWell(
-                            onTap: () {
-                              _cubit.changeCategoryProductView(e.id);
-                            },
-                            child: Container(
-                              key: ValueKey(e.id),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom:
-                                      _cubit.categorySelect == e.id
-                                          ? BorderSide(
-                                            color: ColorKeys.primary, // Border color
-                                            width: 2.0, // Border thickness
-                                          )
-                                          : BorderSide.none,
-                                ),
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              child: Text(
-                                e.name,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: _cubit.categorySelect == e.id ? FontWeight.bold : FontWeight.w100,
-                                  fontSize: _cubit.categorySelect == e.id ? 16 : 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-              ),
-            );
-          },
-        ),
-      ),
-      actions: [
-        IconButton(
-          onPressed:
-              state is ProductChangeSortType
-                  ? null
-                  : () {
-                    _cubit.changeSortType();
-                  },
-          icon:
-              state is ProductChangeSortType
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.grey))
-                  : Icon(_cubit.sortType == ProductSortType.asc ? CupertinoIcons.sort_up : CupertinoIcons.sort_down),
-        ),
-        IconButton(
-          onPressed: () {
-            _cubit.changeDisplayType();
-          },
-          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
-        ),
-      ],
-      children: [buildContent()],
-    );
   }
 
   Widget buildGridViewProduct() {
@@ -212,6 +145,86 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     );
   }
 
+  Widget buildBody(ProductState state) {
+    return BodyWidget(
+      isInitialLoading: state is ProductInitialLoading || state is ProductCubitInitial,
+
+      titleWidget: Expanded(
+        child: BlocBuilder<AppCubit, AppState>(
+          bloc: _cubit.appCubit,
+          builder: (context, appState) {
+            return Opacity(
+              opacity: state is ProductInitialLoading ? 0.3 : 1,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: RowGapWidget(
+                  gap: 8,
+                  children:
+                      _cubit.categories
+                          .map(
+                            (e) => InkWell(
+                              onTap: () {
+                                _cubit.changeCategoryProductView(e.id);
+                              },
+                              child: Container(
+                                key: ValueKey(e.id),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom:
+                                        _cubit.categorySelect == e.id
+                                            ? BorderSide(
+                                              color: ColorKeys.primary, // Border color
+                                              width: 2.0, // Border thickness
+                                            )
+                                            : BorderSide.none,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                child: Text(
+                                  e.name,
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: _cubit.categorySelect == e.id ? FontWeight.bold : FontWeight.w100,
+                                    fontSize: _cubit.categorySelect == e.id ? 16 : 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      actions: [
+        IconButton(
+          onPressed:
+              state is ProductChangeSortType
+                  ? null
+                  : () {
+                    _cubit.changeSortType();
+                  },
+          icon:
+              state is ProductChangeSortType
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.grey))
+                  : Icon(_cubit.isDesc ? CupertinoIcons.sort_down : CupertinoIcons.sort_up),
+        ),
+        IconButton(
+          onPressed: () {
+            _cubit.changeDisplayType();
+          },
+          icon: Icon(_cubit.displayType == ProductDisplayType.grid ? Icons.list_rounded : Icons.grid_view),
+        ),
+      ],
+      children: [
+        _cubit.products.isEmpty
+            ? Expanded(child: EmptyDataWidget(icon: CupertinoIcons.bag, message: LocaleKeys.productsEmpty.tr()))
+            : buildContent(),
+      ],
+    );
+  }
+
   @override
   onAddStock(Product product) async {
     final result = await DialogUtils.showAddStockDialog(context, product);
@@ -272,18 +285,18 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
   }
 
   void _onRefresh() async {
-    if (_cubit.products.isEmpty) {
-      _refreshEmptyViewController.requestLoading();
-    } else if (_cubit.displayType == ProductDisplayType.grid) {
+    if (!mounted) {
+      return;
+    }
+
+    if (_cubit.displayType == ProductDisplayType.grid) {
       _refreshGridViewController.requestRefresh();
     } else {
       _refreshListViewController.requestRefresh();
     }
     await _cubit.refresh();
 
-    if (_cubit.products.isEmpty) {
-      _refreshEmptyViewController.refreshCompleted();
-    } else if (_cubit.displayType == ProductDisplayType.grid) {
+    if (_cubit.displayType == ProductDisplayType.grid) {
       _refreshGridViewController.refreshCompleted();
     } else {
       _refreshListViewController.refreshCompleted();
@@ -308,9 +321,9 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
       }
     } else {
       if (_cubit.displayType == ProductDisplayType.grid) {
-        _refreshGridViewController.loadNoData();
+        _refreshGridViewController.loadComplete(); // _refreshGridViewController.loadNoData();
       } else {
-        _refreshListViewController.loadNoData();
+        _refreshGridViewController.loadComplete(); //  _refreshListViewController.loadNoData();
       }
     }
   }
@@ -320,9 +333,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
     return BlocListener<AppCubit, AppState>(
       bloc: _cubit.appCubit,
       listener: (context, appstate) {
-        if (appstate is AppGetAllProductByCurrentStoreSuccess) {
-          _cubit.updateCurrentProductFromAppCubit(appstate.products);
-        } else if (appstate is AppDeleteProductSuccess) {
+        // if (appstate is AppGetAllProductByCurrentStoreSuccess) {
+        //   _cubit.initial(appstate.products);
+        // } else
+        if (appstate is AppDeleteProductSuccess) {
           setState(() {});
         }
       },
@@ -333,11 +347,10 @@ class ProductPageState extends State<ProductPage> implements IProductPage {
           return BaseScaffolds(
             emptyIcon: CupertinoIcons.bag,
             // isInitialLoading: state is ProductInitialLoading,
-            // isLoading: state is ProductLoading,
+            isLoading: state is ProductLoading,
             onRefresh: () async {
               await _cubit.refresh();
             },
-            isEmpty: _cubit.products.isEmpty,
             enableAppModeDisplay: false,
             backgroundColor: Colors.white,
             appBar:

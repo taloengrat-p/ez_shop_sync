@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:ez_shop_sync/res/generated/locale.g.dart';
 import 'package:ez_shop_sync/src/data/dto/hive_object/category.dart';
@@ -9,6 +12,7 @@ import 'package:ez_shop_sync/src/models/product_display_type.enum.dart';
 import 'package:ez_shop_sync/src/models/product_sort_type.enum.dart';
 import 'package:ez_shop_sync/src/models/screen_mode.dart';
 import 'package:ez_shop_sync/src/pages/_app/app_cubit.dart';
+import 'package:ez_shop_sync/src/pages/main/product/models/product_category_group.dart';
 import 'package:ez_shop_sync/src/pages/main/product/product_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,32 +22,47 @@ import 'package:injectable/injectable.dart';
 class ProductCubit extends Cubit<ProductState> {
   final AppCubit appCubit;
   final ProductRepository productRepository;
-
+  final int limitLength = 10;
   ScreenMode screenMode = ScreenMode.display;
   String? searchText;
   String? categorySelect;
-  List<Product> _products = [];
-
-  List<Product> get products => _products;
-  List<String> get productIds => products.map((e) => e.id.toString()).toList();
-  ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
-    emit(ProductInitialLoading());
-    updateCurrentProductFromAppCubit(appCubit.products);
-    emit(ProductInitial());
-  }
+  Map<String?, ProductCategoryGroup> _products = {};
+  // AppSortType sortType = AppSortType.desc;
+  bool isDesc = true;
+  List<Product> get products => _products[categorySelect]?.products ?? [];
+  QueryDocumentSnapshot? get lastDocumentByCategorySelected => _products[categorySelect]?.lastDocument;
 
   get productCount => products.isEmpty ? '' : ' ( ${appCubit.totalAllProduct} )';
 
   ProductDisplayType get displayType => appCubit.productDisplayType;
-  ProductSortType get sortType => appCubit.productSortType;
 
   List<Category> get categories => [Category(id: null, name: LocaleKeys.all.tr()), ...appCubit.categories];
 
+  List<String> get productIds => products.map((e) => e.id.toString()).toList();
+  ProductCubit({required this.productRepository, required this.appCubit}) : super(ProductCubitInitial()) {
+    emit(ProductInitialLoading());
+    _initial(appCubit.products);
+    emit(ProductInitial());
+  }
+
+  _initial(List<Product> data) {
+    // final productToAdd = data.where((newData) => !productIds.contains(newData.id)).toList();
+
+    Map<String?, ProductCategoryGroup> itemMap = {
+      for (var item in categories) item.id: ProductCategoryGroup(products: []),
+    };
+
+    _products = itemMap;
+    products.addAll(data);
+    log('updateCurrentProductFromAppCubit ${itemMap.toString()}) ');
+    emit(const ProductUpdateCartFromAppState());
+  }
+
   void changeSortType() async {
-    appCubit.changeSortType();
-    emit(ProductChangeSortType(sortType: sortType));
+    isDesc = !isDesc;
+    emit(ProductChangeSortType(sortType: isDesc ? AppSortType.desc : AppSortType.asc));
     await refresh(loading: false);
-    emit(ProductChangeSortTypeSuccess(sortType: sortType));
+    emit(ProductChangeSortTypeSuccess(sortType: isDesc ? AppSortType.desc : AppSortType.asc));
   }
 
   changeDisplayType() {
@@ -57,8 +76,8 @@ class ProductCubit extends Cubit<ProductState> {
 
     result.when(
       success: (response) {
-        _products.removeWhere((e) => e.id == product.id);
-        appCubit.doDeleteProduct(storeId: storeId, product: product);
+        products.removeWhere((e) => e.id == product.id);
+        // appCubit.doDeleteProduct(storeId: storeId, product: product);
         emit(ProductDeleteSuccess(id: product.id));
       },
       failure: (error) {
@@ -109,14 +128,6 @@ class ProductCubit extends Cubit<ProductState> {
     );
   }
 
-  // refreshProductFromAppState() {
-  //   emit(ProductLoading());
-
-  //   _products.clear();
-  //   _products = appCubit.products;
-  //   emit(ProductSuccess());
-  // }
-
   Future<void> refresh({bool? loading = true}) async {
     if (appCubit.storeId == null) {
       return;
@@ -125,17 +136,23 @@ class ProductCubit extends Cubit<ProductState> {
     if (loading == true) {
       emit(ProductLoading());
     }
-    final result = await appCubit.refreshProductByCurrentStoreAndBranch();
+    final result = await productRepository.getAllByStoreAndBranchId(
+      appCubit.request(
+        PaginationIndexRequest(
+          start: 0,
+          limit: limitLength,
+          descending: isDesc,
+          payload: GetProductRequest(categoryId: categorySelect),
+        ),
+      ),
+    );
 
     return result.when(
       success: (response) {
-        if (response.data.isEmpty) {
-          emit(const ProductLoadItemSuccess());
-        } else {
-          _products.clear();
-          updateCurrentProductFromAppCubit(response.data);
-          emit(const ProductLoadItemSuccess());
-        }
+        products.clear();
+        _products[categorySelect]?.lastDocument = response.lastDocument;
+        doAddAllProductLoaded(response.data);
+        emit(const ProductLoadItemSuccess());
       },
       failure: (error, {errorType}) {
         emit(const ProductLoadItemFailure());
@@ -148,49 +165,77 @@ class ProductCubit extends Cubit<ProductState> {
       return false;
     }
 
-    final result = await appCubit.loadProductByCurrentStore();
+    log('loadMore ${categories.where((e) => e.id == categorySelect).firstOrNull?.name}', name: runtimeType.toString());
+    final result = await productRepository.getAllByStoreAndBranchId(
+      appCubit.request(
+        PaginationIndexRequest(
+          start: products.length,
+          limit: limitLength,
+          lastDocument: lastDocumentByCategorySelected,
+          descending: isDesc,
+          payload: GetProductRequest(categoryId: categorySelect),
+        ),
+      ),
+    );
 
     return result.when(
       success: (response) {
-        updateCurrentProductFromAppCubit(response.data);
+        _products[categorySelect]?.lastDocument = response.lastDocument;
+        doAddAllProductLoaded(response.data);
         emit(const ProductLoadItemSuccess());
 
         return response.data.isNotEmpty;
       },
       failure: (error, {errorType}) {
         emit(const ProductLoadItemFailure());
+        return false;
       },
     );
   }
 
-  updateCurrentProductFromAppCubit(List<Product> data) {
-    final productToAdd = data.where((newData) => !productIds.contains(newData.id)).toList();
-
-    _products.addAll(productToAdd);
-    emit(const ProductUpdateCartFromAppState());
-  }
-
   void changeCategoryProductView(String? cateId) async {
-    if (cateId == categorySelect) {
+    if (cateId == categorySelect || state is ProductInitialLoading) {
       return;
     }
 
+    emit(ProductInitialLoading());
+
     categorySelect = cateId;
 
-    emit(ProductInitialLoading());
+    if (products.isNotEmpty) {
+      emit(ProductSuccess());
+      return;
+    }
+
     final result = await productRepository.getAllByStoreAndBranchId(
-      appCubit.request(PaginationIndexRequest(start: 0, limit: 10, payload: GetProductRequest(categoryId: cateId))),
+      appCubit.request(
+        PaginationIndexRequest(
+          start: products.length,
+          limit: limitLength,
+          descending: isDesc,
+          lastDocument: lastDocumentByCategorySelected,
+          payload: GetProductRequest(categoryId: cateId),
+        ),
+      ),
     );
 
     result.when(
       success: (response) {
-        _products.clear();
-        _products.addAll(response.data);
+        _products[categorySelect]?.lastDocument = response.lastDocument;
+        doAddAllProductLoaded(response.data);
+        // _products[categorySelect]?.products = response.data;
         emit(ProductSuccess());
       },
       failure: (error) {
         emit(ProductFailure());
       },
     );
+  }
+
+  void doAddAllProductLoaded(List<Product> data) {
+    final productToAdd = data.where((newData) => !productIds.contains(newData.id)).toList();
+
+    products.addAll(productToAdd);
+    emit(const ProductUpdateCartFromAppState());
   }
 }

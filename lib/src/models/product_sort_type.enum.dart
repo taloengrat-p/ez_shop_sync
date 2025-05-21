@@ -1,4 +1,1 @@
-enum ProductSortType {
-  asc,
-  desc,
-}
+enum AppSortType { asc, desc }
