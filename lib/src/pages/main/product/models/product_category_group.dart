@@ -5,6 +5,8 @@ import 'package:ez_shop_sync/src/data/dto/hive_object/product.dart';
 
 class ProductCategoryGroup {
   List<Product> products;
+  int totalItems;
   QueryDocumentSnapshot? lastDocument;
-  ProductCategoryGroup({required this.products, this.lastDocument});
+
+  ProductCategoryGroup({required this.products, required this.totalItems, this.lastDocument});
 }

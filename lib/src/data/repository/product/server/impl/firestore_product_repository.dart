@@ -118,15 +118,18 @@ class FirestoreProductServerRepository implements IProductServerRepository {
           .collection(FirebaseFirestoreConstance.COLLECTION_PRODUCTS);
 
       late Query<Map<String, dynamic>> query;
-      final totalItem = await refCollection.count().get();
 
       if (request.data.payload?.categoryId != null) {
-        query = refCollection.where('category', isEqualTo: request.data.payload?.categoryId);
+        query = refCollection
+            .where('category', isEqualTo: request.data.payload?.categoryId)
+            .orderBy('info.createAt', descending: request.data.descending ?? true);
+      } else {
+        query = refCollection.orderBy('info.createAt', descending: request.data.descending ?? true);
       }
 
-      query = refCollection
-          .orderBy('info.createAt', descending: request.data.descending ?? true)
-          .limit(request.data.limit);
+      final totalItem = await query.count().get();
+
+      query = query.limit(request.data.limit);
       if (request.data.lastDocument != null) {
         query = query.startAfterDocument(request.data.lastDocument!);
       }

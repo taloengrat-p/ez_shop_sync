@@ -32,7 +32,10 @@ class ProductCubit extends Cubit<ProductState> {
   List<Product> get products => _products[categorySelect]?.products ?? [];
   QueryDocumentSnapshot? get lastDocumentByCategorySelected => _products[categorySelect]?.lastDocument;
 
-  get productCount => products.isEmpty ? '' : ' ( ${appCubit.totalAllProduct} )';
+  get productCount =>
+      products.isEmpty
+          ? ''
+          : ' ( ${_products[categorySelect]?.totalItems != 0 ? _products[categorySelect]?.totalItems : (appCubit.totalAllProduct != 0 ? appCubit.totalAllProduct : 0)} )';
 
   ProductDisplayType get displayType => appCubit.productDisplayType;
 
@@ -46,15 +49,13 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   _initial(List<Product> data) {
-    // final productToAdd = data.where((newData) => !productIds.contains(newData.id)).toList();
-
     Map<String?, ProductCategoryGroup> itemMap = {
-      for (var item in categories) item.id: ProductCategoryGroup(products: []),
+      for (var item in categories) item.id: ProductCategoryGroup(products: [], totalItems: 0),
     };
 
     _products = itemMap;
-    products.addAll(data);
-    log('updateCurrentProductFromAppCubit ${itemMap.toString()}) ');
+    doAddAllProductLoaded(data);
+    log('updateCurrentProductFromAppCubit ${appCubit.totalAllProduct}) ');
     emit(const ProductUpdateCartFromAppState());
   }
 
@@ -151,6 +152,7 @@ class ProductCubit extends Cubit<ProductState> {
       success: (response) {
         products.clear();
         _products[categorySelect]?.lastDocument = response.lastDocument;
+        _products[categorySelect]?.totalItems = response.totalItem;
         doAddAllProductLoaded(response.data);
         emit(const ProductLoadItemSuccess());
       },
@@ -181,6 +183,7 @@ class ProductCubit extends Cubit<ProductState> {
     return result.when(
       success: (response) {
         _products[categorySelect]?.lastDocument = response.lastDocument;
+        _products[categorySelect]?.totalItems = response.totalItem;
         doAddAllProductLoaded(response.data);
         emit(const ProductLoadItemSuccess());
 
@@ -222,6 +225,7 @@ class ProductCubit extends Cubit<ProductState> {
     result.when(
       success: (response) {
         _products[categorySelect]?.lastDocument = response.lastDocument;
+        _products[categorySelect]?.totalItems = response.totalItem;
         doAddAllProductLoaded(response.data);
         // _products[categorySelect]?.products = response.data;
         emit(ProductSuccess());
